@@ -1,0 +1,37 @@
+{
+  "baseURL": "https://example.com",
+  "trailingSlash": false,
+  "favicon": "/images/favicon.png",
+  "logo": {
+    "src": "/images/logo.svg",
+    "alt": "Obicol",
+    "width": 110,
+    "height": 29
+  },
+  "seo": {
+    "title": "Obicol - Agency & Portfolio Template",
+    "description": "Obicol is a world-class creative studio. We design & build world-class digital products that make an impact and connect people.",
+    "keywords": "agency, portfolio, creative studio, design, branding, astro template",
+    "author": "Platoltheme",
+    "image": "/images/ogimage.png"
+  },
+  "author": {
+    "name": "Platoltheme",
+    "url": "https://example.com"
+  },
+  "footer": {
+    "cta": {
+      "title": "Have an idea, tell us about it!",
+      "url": "/contact",
+      "label": "Contact Us"
+    },
+    "email": "hello@example.com",
+    "phone": "+1 555 0123",
+    "address_line_1": "123 Example Street, Suite 456",
+    "address_line_2": "Fictitious City, FC 12345, USA"
+  },
+  "buyNow": {
+    "label": "Buy Now",
+    "url": "https://platoltheme.com/themes/obicol-astro"
+  }
+}

@@ -1,0 +1,23 @@
+---
+import Base from '@/layouts/Base.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Base title="Page Not Found" noindex>
+  <section class="py-35 max-md:py-25">
+    <div class="container">
+      <div class="row justify-center text-center">
+        <div class="lg:col-8">
+          <p class="mb-3 font-medium text-9xl text-white">40<span class="rotate-y-180 inline-block">4</span></p>
+          <h1 class="mb-6 font-normal text-white">
+            Page not found<span class="text-primary">.</span>
+          </h1>
+          <p class="lead mb-8 text-white/80">
+            The page you’re looking for doesn’t exist or has been moved.
+          </p>
+          <Button href="/" label="Back to Home" />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

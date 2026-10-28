@@ -1,0 +1,40 @@
+---
+interface Props {
+  label: string;
+  href?: string;
+  variant?: 'white' | 'black';
+  type?: 'button' | 'submit';
+  block?: boolean;
+  target?: string;
+  rel?: string;
+  class?: string;
+}
+
+const {
+  label,
+  href,
+  variant = 'white',
+  type = 'button',
+  block = false,
+  target,
+  rel,
+  class: className = '',
+} = Astro.props;
+
+const variantClass = variant === 'black' ? 'btn-black' : 'btn-white';
+const classes = ['btn', variantClass, block ? 'block w-full text-center' : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+{
+  href ? (
+    <a href={href} class={classes} data-text={label} target={target} rel={rel}>
+      <span>{label}</span>
+    </a>
+  ) : (
+    <button type={type} class={classes} data-text={label}>
+      <span>{label}</span>
+    </button>
+  )
+}

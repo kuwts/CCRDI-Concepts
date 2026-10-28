@@ -1,0 +1,198 @@
+---
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+type Service = {
+  icon: string;
+  title: string;
+  info: string;
+  meta?: string;
+  image?: string;
+};
+
+type Props = {
+  services: Service[];
+  withDramaEffect?: boolean;
+  stackOffset?: number;
+  paneGap?: false | string;
+  scrollRunway?: string;
+  className?: string;
+};
+
+const {
+  services,
+  withDramaEffect = true,
+  stackOffset = 5,
+  paneGap = 'gap-2',
+  scrollRunway = '0px',
+  className,
+} = Astro.props;
+
+const total = services.length;
+const gapClass = paneGap === false ? undefined : paneGap;
+---
+
+<div
+  data-stacked-services=""
+  data-stacked-drama={withDramaEffect}
+  class:list={['flex w-full flex-col', gapClass, className]}
+  style={{
+    '--numcards': total,
+    '--stacked-top-offset': `${stackOffset}px`,
+  }}
+>
+  {services.map((service, index) => {
+    const cardIndex = index + 1;
+    return (
+      <div
+        data-stacked-card=""
+        class="sticky top-16 lg:top-21 w-full"
+        style={{
+          '--index': cardIndex,
+          zIndex: cardIndex,
+          paddingTop: `calc(${cardIndex} * var(--stacked-top-offset))`,
+        }}
+      >
+        <div data-stacked-content="" class="min-h-0 origin-[50%_0%]">
+          <article class="group relative h-95 text-white p-4 overflow-clip">
+            <AstroImage
+              src={service.image}
+              alt={service.title}
+              widths={[400, 800, 1200]}
+              loading="lazy"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+            <div class="relative bg-dark/60 backdrop-blur-2xl h-full flex flex-col p-8 has-anim">
+              <span class="text-4xl absolute top-9 right-8">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <AstroImage src={service.icon} alt={service.title} class="size-10" width={40} height={40} />
+              <div class="space-y-4 mt-auto">
+                <h3 class="font-bold text-xl sm:text-2xl">{service.title}</h3>
+                <p class="text-sm leading-relaxed text-light">{service.info}</p>
+                {service.meta && (
+                  <p class="pt-2 text-sm">{service.meta}</p>
+                )}
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    );
+  })}
+  {scrollRunway !== '0px' && (
+    <div
+      aria-hidden
+      class="w-full shrink-0"
+      style={{ height: scrollRunway }}
+      data-stacked-runway=""
+    />
+  )}
+</div>
+
+<script>
+  // Each instance gets its own marker (not the Services page's `data-stacked-deck`)
+  // so several decks, or this plus that page's deck, don't pick up each other.
+  document.querySelectorAll<HTMLElement>('[data-stacked-services]').forEach((deck) => {
+    const withDramaEffect = deck.dataset.stackedDrama !== 'false';
+    const stackOffsetStr = getComputedStyle(deck).getPropertyValue('--stacked-top-offset');
+    const stackOffset = parseInt(stackOffsetStr) || 5;
+
+    const cards = Array.from(deck.querySelectorAll<HTMLElement>('[data-stacked-card]'));
+    const contents = Array.from(deck.querySelectorAll<HTMLElement>('[data-stacked-content]'));
+    const total = cards.length;
+
+    if (!withDramaEffect || total === 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    function clamp(value: number, min: number, max: number) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function getScrollParent(node: HTMLElement | null): HTMLElement | null {
+      let element = node?.parentElement ?? null;
+      while (element && element !== document.body && element !== document.documentElement) {
+        const overflowY = getComputedStyle(element).overflowY;
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          return element;
+        }
+        element = element.parentElement;
+      }
+      return null;
+    }
+
+    const scroller = getScrollParent(deck);
+    let frame = 0;
+
+    function isNextCardPinned(cardIndex: number, containerTop: number) {
+      const nextCard = cards[cardIndex + 1];
+      if (!nextCard) return false;
+      return (
+        nextCard.getBoundingClientRect().top - containerTop <= (cardIndex + 1) * stackOffset + 1
+      );
+    }
+
+    function scaleAtDepth(cardIndex: number) {
+      const reverseIndex = total - (cardIndex - 1);
+      return 1.1 - 0.1 * reverseIndex;
+    }
+
+    function update() {
+      frame = 0;
+      const containerTop = scroller ? scroller.getBoundingClientRect().top : 0;
+
+      for (let i = 0; i < total; i++) {
+        const card = cards[i];
+        const content = contents[i];
+        if (!card || !content) continue;
+
+        const endScale = scaleAtDepth(i + 1);
+        const covered = isNextCardPinned(i, containerTop);
+
+        if (covered) {
+          content.dataset.stackedCovered = '';
+          content.style.transform = `scale(${endScale})`;
+          continue;
+        }
+
+        delete content.dataset.stackedCovered;
+
+        const nextCard = cards[i + 1];
+        if (!nextCard) {
+          content.style.transform = '';
+          continue;
+        }
+
+        const pinnedTop = (i + 1) * stackOffset;
+        const offset = nextCard.getBoundingClientRect().top - containerTop - pinnedTop;
+        const rowH = card.offsetHeight > 0 ? card.offsetHeight : 1;
+        const distance = Math.max(rowH - pinnedTop, 1);
+        const progress = clamp(1 - offset / distance, 0, 1);
+        const scale = 1 + (endScale - 1) * progress;
+        content.style.transform = progress <= 0.001 ? '' : `scale(${scale})`;
+      }
+    }
+
+    function onScroll() {
+      if (!frame) {
+        frame = requestAnimationFrame(update);
+      }
+    }
+
+    update();
+    const target: Window | HTMLElement = scroller ?? window;
+    target.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    window.addEventListener('cleanup', () => {
+      target.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      for (const content of contents) {
+        if (content) {
+          delete content.dataset.stackedCovered;
+          content.style.transform = '';
+        }
+      }
+    });
+  });
+</script>

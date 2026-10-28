@@ -1,0 +1,24 @@
+---
+import { getEntry } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Faq from '@/components/Faq.astro';
+
+const faqEntry = await getEntry('faq', 'index');
+const { header, groups } = faqEntry!.data;
+---
+
+<Base title="FAQ">
+  <PageHeader subtitle={header.subtitle} title={header.title} />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <Faq groups={groups} />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

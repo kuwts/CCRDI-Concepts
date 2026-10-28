@@ -1,0 +1,221 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import { markdownify } from "@/utils/textConverter";
+import { animDelay } from "@/utils/animDelay";
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import SectionTitle from "@/components/SectionTitle.astro";
+import Clients from "@/components/Clients.astro";
+import ReviewCarousel from '@/components/ReviewCarousel.astro';
+import Facts from '@/components/Facts.astro';
+
+const home = await getEntry('homepage', 'index');
+const { testimonials } = home!.data;
+
+const srvc = await getEntry('services', 'index');
+const { header, items } = srvc!.data;
+
+const about = await getEntry('about', 'index');
+const { clients, facts } = about!.data;
+
+const clientLogos = (await getCollection('clients')).map((c) => c.data);
+const reviews = (await getCollection('testimonials')).map((t) => t.data);
+---
+
+<Base title="Services">
+  <PageHeader
+    subtitle={header.subtitle}
+    title={header.title}
+    align="center"
+    colClass="text-balance [&_h1]:leading-relaxed!"
+  />
+
+  <!-- Intro -->
+  <section class="pb-20 md:pb-25 -mt-24 sm:-mt-28">
+    <div class="container">
+      <SectionTitle subtitle={clients.subtitle ?? ''} background="dark" class="pt-20 sm:pt-24" />
+      <Clients items={clientLogos} columnCount={5} class="mt-16" />
+    </div>
+  </section>
+  
+  <!-- Facts -->
+  <Facts facts={facts} />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-11 mx-auto -mb-10">
+          <div
+            class="flex flex-col gap-2"
+            data-stacked-deck
+            data-stacked-drama
+            style={{
+              '--numcards': items.length,
+              '--stacked-top-offset': '0px',
+            }}
+          >
+            {
+              items.map((item, i) => {
+                const cardIndex = i + 1;
+                const image = (
+                  <AstroImage
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    class={`h-full w-full aspect-video lg:aspect-9/12 object-cover bg-white/3 ${i % 2 === 0 ? 'max-lg:-mt-10' : ''}`}
+                  />
+                );
+                const content = (
+                  <div class={i % 2 === 0 ? 'lg:ps-12 max-lg:mt-10' : 'lg:pe-12 lg:ps-8'}>
+                    <AstroImage
+                      src={item.icon}
+                      alt={item.title}
+                      class="size-10 mb-6"
+                    />
+                    <h3 class="mb-4 font-semibold text-3xl">{item.title}</h3>
+                    <div class="lg:max-w-xl pb-10">
+                      <p class="mb-7 text-balance">{item.info}</p>
+                      <ul class="grid grid-cols-2 gap-x-2 gap-y-2.5 font-medium text-sm">
+                        {item.sub_services.map((li) => <li>{li}</li>)}
+                      </ul>
+                      <span class="my-5 inline-block tracking-[-3px]">———</span>
+                      <p>{item.meta}</p>
+                    </div>
+                  </div>
+                );
+                return (
+                  <div
+                    data-stacked-card
+                    class="text-white lg:sticky top-10 mb-10"
+                    style={{
+                      '--index': cardIndex,
+                      zIndex: cardIndex,
+                      paddingTop: `calc(${cardIndex} * var(--stacked-top-offset))`,
+                    }}
+                  >
+                    <div
+                      data-stacked-content
+                      class="min-h-0 origin-[50%_0%] p-10 pb-0"
+                      style={`background: ${item.color ?? '#001213'}`}
+                    >
+                      <div class="row items-end leading-0">
+                        {i % 2 === 0 ? (
+                          <>
+                            <div class="lg:col-4">{image}</div>
+                            <div class="lg:col-8 leading-snug">{content}</div>
+                          </>
+                        ) : (
+                          <>
+                            <div class="lg:col-8 leading-snug">{content}</div>
+                            <div class="lg:col-4">{image}</div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews + clients -->
+  <section class="bg-light py-20 md:py-25">
+    <div class="container">
+      <SectionTitle
+        subtitle={testimonials.subtitle ?? ''}
+        title={testimonials.title ?? ''}
+      />
+    </div>
+    <ReviewCarousel items={reviews} testimonials={testimonials} />
+  </section>
+</Base>
+
+<script>
+  (() => {
+    const deck = document.querySelector<HTMLElement>("[data-stacked-deck]");
+    if (!deck) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const cards = Array.from(
+      deck.querySelectorAll<HTMLElement>("[data-stacked-card]")
+    );
+
+    const contents = Array.from(
+      deck.querySelectorAll<HTMLElement>("[data-stacked-content]")
+    );
+
+    const START_AT = 0.6;
+    const END_SCALE = 0.9;
+
+    let frame = 0;
+
+    const clamp = (value: number, min: number, max: number): number =>
+      Math.min(max, Math.max(min, value));
+
+    const easeOutCubic = (t: number): number =>
+      1 - Math.pow(1 - t, 3);
+
+    const update = (): void => {
+      frame = 0;
+
+      if (window.matchMedia("(max-width: 1023px)").matches) {
+        contents.forEach((content) => {
+          if (content) content.style.transform = "";
+        });
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const startY = viewportHeight * START_AT;
+
+      cards.forEach((card, i) => {
+        const content = contents[i];
+        const nextCard = cards[i + 1];
+
+        if (!content) return;
+
+        if (!nextCard) {
+          content.style.transform = "";
+          return;
+        }
+
+        const nextRect = nextCard.getBoundingClientRect();
+
+        // Sticky top value (e.g. Tailwind's top-10 = 40px)
+        const stickyTop = Number.parseFloat(getComputedStyle(card).top) || 0;
+
+        let progress =
+          (startY - nextRect.top) / (startY - stickyTop);
+
+        progress = clamp(progress, 0, 1);
+        progress = easeOutCubic(progress);
+
+        const scale = 1 - (1 - END_SCALE) * progress;
+
+        if (progress <= 0) {
+          content.style.transform = "";
+        } else {
+          content.style.transform = `scale(${scale})`;
+        }
+      });
+    };
+
+    const onScroll = (): void => {
+      if (!frame) {
+        frame = window.requestAnimationFrame(update);
+      }
+    };
+
+    update();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  })();
+</script>

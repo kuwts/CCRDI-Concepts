@@ -1,0 +1,107 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import PortfolioCard from '@/components/PortfolioCard.astro';
+import { getProjects } from '@/lib/content';
+
+const projects = await getProjects();
+const initial_load = 4;
+---
+
+<Base title="Portfolio">
+  <PageHeader subtitle="Work we do" title="Our Portfolio" dot />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-11 mx-auto">
+          <div class="masonry relative" data-masonry>
+            {
+              projects.map((p, i) => (
+                <div
+                  class:list={['masonry-item mb-7.5 xl:mb-20 w-full', i >= initial_load && 'hidden']}
+                  data-masonry-item
+                >
+                  <PortfolioCard
+                    href={`/portfolio/${p.id}`}
+                    title={p.data.title}
+                    category={p.data.category}
+                    color={p.data.color}
+                    image={p.data.image}
+                    class="has-anim"
+                  />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="has-anim text-center" data-load-more-wrap>
+        <button type="button" data-load-more class="btn-circle btn-circle-white m-1 cursor-pointer">+</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const masonry = document.querySelector<HTMLElement>('[data-masonry]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-load-more]');
+  const wrap = document.querySelector<HTMLElement>('[data-load-more-wrap]');
+  if (masonry && btn && wrap) {
+
+  const all = Array.from(masonry.querySelectorAll<HTMLElement>('[data-masonry-item]'));
+  const next_load = 4;
+
+  const visible = () => all.filter((el) => !el.classList.contains('hidden'));
+
+  const layout = () => {
+    const items = visible();
+    if (!items.length) return;
+    const cols = window.innerWidth >= 768 ? 2 : 1;
+    const gap = window.innerWidth >= 991 ? 100 : 50;
+    const colW = (masonry.offsetWidth - gap * (cols - 1)) / cols;
+    const heights = new Array(cols).fill(0);
+
+    items.forEach((item) => {
+      const ci = heights.indexOf(Math.min(...heights));
+      item.style.position = 'absolute';
+      item.style.width = `${colW}px`;
+      item.style.left = `${ci * (colW + gap)}px`;
+      item.style.top = `${heights[ci]}px`;
+      heights[ci] += item.offsetHeight + gap;
+    });
+
+    masonry.style.height = `${Math.max(...heights)}px`;
+  };
+
+  const loadMore = () => {
+    let shown = 0;
+    for (const el of all) {
+      if (!el.classList.contains('hidden')) shown++;
+    }
+    let added = 0;
+    for (const el of all) {
+      if (el.classList.contains('hidden') && added < next_load) {
+        el.classList.remove('hidden');
+        added++;
+      }
+    }
+    layout();
+
+    if (visible().length >= all.length) {
+      wrap.style.display = 'none';
+    }
+  };
+
+  btn.addEventListener('click', loadMore);
+  window.addEventListener('resize', layout);
+  new ResizeObserver(layout).observe(masonry);
+  layout();
+
+  masonry.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+    if (img.complete) return;
+    img.addEventListener('load', () => requestAnimationFrame(layout));
+  });
+  }
+</script>

@@ -1,0 +1,204 @@
+---
+import { getEntry } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import Button from '@/components/Button.astro';
+import Faq from '@/components/Faq.astro';
+import { animDelay } from '@/utils/animDelay';
+
+const pricing = await getEntry('pricing', 'index');
+const { header, plans, faq } = pricing!.data;
+
+const faqEntry = await getEntry('faq', 'index');
+const groups = faqEntry!.data.groups;
+---
+
+<Base title="Pricing">
+  <PageHeader subtitle={header.subtitle} title={header.title} />
+
+  <!-- Pricing plans -->
+  <section class="bg-white text-dark py-20 md:py-25">
+    <div class="container">
+      <!-- Toggle -->
+      <div class="flex justify-center mb-14">
+        <div class="flex items-center gap-3 relative font-medium">
+          <span id="toggle-label-monthly" class="text-sm font-semibold text-dark transition-colors duration-300">Monthly</span>
+          <button
+            id="pricing-toggle"
+            class="h-7 w-13 cursor-pointer rounded-full bg-dark transition-colors duration-300 after:absolute after:inset-0"
+            aria-label="Toggle monthly/yearly pricing"
+          >
+            <strong class="relative inline-block h-full w-full">
+              <span class="absolute top-1/2 left-1 h-5.5 w-5.5 -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-300"></span>
+            </strong>
+          </button>
+          <span id="toggle-label-yearly" class="text-sm text-dark/70 transition-colors duration-300">Yearly</span>
+          <span class="rounded-full bg-dark/5 border border-dark/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-dark">Save 20%</span>
+        </div>
+      </div>
+
+      <div class="row justify-center items-stretch">
+        {
+          plans.map((plan, i) => (
+            <div
+              class:list={[
+                'xl:col-4 lg:col-5 md:col-6 has-anim fade flex',
+                animDelay[i],
+                i > 0 && 'mt-4 pt-2 md:mt-0 md:pt-0',
+                i === 2 && 'xl:mt-0 xl:pt-0',
+              ]}
+            >
+              <div
+                class:list={[
+                  'relative p-10 max-md:p-7.5 max-sm:p-5 w-full flex flex-col',
+                  plan.featured ? 'bg-dark text-white' : 'border border-black/10',
+                ]}
+              >
+                {
+                  plan.featured && (
+                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-4 py-1 text-xs font-semibold uppercase tracking-wider text-dark shadow-lg">
+                      Most Popular
+                    </span>
+                  )
+                }
+
+                <h5 class="font-medium" style={plan.featured ? '' : 'color:#555'}>{plan.name}</h5>
+
+                <div class="my-6">
+                  <span
+                    class="pricing-price text-4xl font-bold inline-block"
+                    data-monthly={plan.price}
+                    data-annual={plan.priceAnnual}
+                    data-monthly-value={plan.price.replace(/[$,]/g, '')}
+                    data-annual-value={plan.priceAnnual.replace(/[$,]/g, '')}
+                    style={[plan.featured ? '' : 'color:var(--color-dark)']}
+                  >
+                    {plan.price}
+                  </span>
+                  <span
+                    class="pricing-cadence text-sm inline-block"
+                    data-monthly={plan.cadence}
+                    data-annual={plan.cadenceAnnual}
+                  >
+                    {plan.cadence}
+                  </span>
+                </div>
+                <Button
+                  href={plan.cta.href}
+                  label={plan.cta.label}
+                  variant={plan.featured ? 'white' : 'black'}
+                  block
+                  class="mb-6"
+                />
+
+                <div class:list={['content grow', plan.featured && 'content-dark text-light']}>
+                  <p>{plan.description}</p>
+                  <h6>{plan.feature_title}</h6>
+                  <ul class="pricing-features-list">
+                    {plan.features.map((f) => (
+                      <li class="flex items-start gap-2.5">
+                        <svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00b75f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-white pt-4 pb-25 max-md:pb-20">
+    <div class="container">
+      <div class="row justify-center mb-4">
+        <div class="col-12">
+          <SectionTitle subtitle={faq.subtitle} title={faq.title} class="has-anim fade" />
+        </div>
+      </div>
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <Faq groups={groups} />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  function easeOutQuad(t: number): number {
+    return t * (2 - t);
+  }
+
+  function formatPrice(n: number): string {
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  function animateValue(el: HTMLElement, to: number, duration: number): void {
+    const from = parseFloat(el.dataset.currentValue ?? el.dataset.monthlyValue ?? '0');
+    const start = performance.now();
+
+    function tick(now: number): void {
+      const progress = Math.min((now - start) / duration, 1);
+      const current = from + (to - from) * easeOutQuad(progress);
+      el.textContent = formatPrice(current);
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.dataset.currentValue = String(to);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const toggle = document.getElementById('pricing-toggle');
+  const knob = toggle?.querySelector('span');
+  const labelMonthly = document.getElementById('toggle-label-monthly');
+  const labelYearly = document.getElementById('toggle-label-yearly');
+  const prices = document.querySelectorAll<HTMLElement>('.pricing-price');
+  const cadences = document.querySelectorAll<HTMLElement>('.pricing-cadence');
+
+  prices.forEach((el) => {
+    el.dataset.currentValue = el.dataset.monthlyValue ?? '0';
+  });
+
+  let isYearly = false;
+
+  toggle?.addEventListener('click', () => {
+    isYearly = !isYearly;
+
+    if (knob) {
+      knob.style.transform = isYearly ? 'translateX(1.375rem)' : 'translateX(0)';
+    }
+
+    if (labelMonthly) {
+      labelMonthly.className = `text-sm font-medium transition-colors duration-300 ${isYearly ? 'text-dark/70 ' : 'text-dark font-semibold'}`;
+    }
+    if (labelYearly) {
+      labelYearly.className = `text-sm font-medium transition-colors duration-300 ${isYearly ? 'text-dark font-semibold' : 'text-dark/70'}`;
+    }
+
+    cadences.forEach((el) => {
+      el.textContent = isYearly ? (el.dataset.annual ?? '') : (el.dataset.monthly ?? '');
+    });
+
+    prices.forEach((el) => {
+      const target = parseFloat(isYearly ? (el.dataset.annualValue ?? '0') : (el.dataset.monthlyValue ?? '0'));
+      animateValue(el, target, 400);
+    });
+  });
+</script>
+
+<style>
+  .pricing-features-list li::after {
+    display: none !important;
+  }
+  .pricing-features-list li {
+    padding-left: 0 !important;
+  }
+</style>

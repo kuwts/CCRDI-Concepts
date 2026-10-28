@@ -1,0 +1,194 @@
+---
+import { Font } from 'astro:assets';
+
+import config from '@/config/site.config.json';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ScrollProgress from '@/components/ScrollProgress.astro';
+import DeviceSizeIndicator from "@/components/helper/DeviceSizeIndicator.astro";
+import GradualBlur from '@/components/ui/GradualBlur';
+
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { seo, favicon } = config;
+const {
+  title,
+  description = seo.description,
+  image = seo.image,
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${seo.title}` : seo.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={seo.keywords} />
+    <meta name="author" content={seo.author} />
+    <link rel="icon" type="image/png" href={favicon} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <Font cssVariable="--font-space-grotesk" preload />
+    <!-- scroll-reveal content is hidden until JS marks it visible; without JS, show it -->
+    <noscript>
+      <style>
+        .has-anim {
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+    <slot name="head" />
+  </head>
+  <body>
+    <ScrollProgress />
+    <DeviceSizeIndicator />
+    <Header />
+    <main><slot /></main>
+    <Footer />
+
+    <GradualBlur
+      client:idle
+      target="page"
+      position="bottom"
+      height="6rem"
+      strength={2}
+      divCount={5}
+      curve="bezier"
+      exponential
+      opacity={1}
+    />
+
+    <script>
+      // ── Scroll reveal animations ──────────────────────────────────
+      const animated = document.querySelectorAll<HTMLElement>('.has-anim');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -15% 0px' },
+        );
+        animated.forEach((el) => io.observe(el));
+      } else {
+        animated.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // ── Header hide-on-scroll-down ────────────────────────────────
+      const header = document.getElementById('site-header');
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (header) {
+          if (y > 300 && y > lastScroll) header.classList.add('-translate-y-full');
+          else header.classList.remove('-translate-y-full');
+
+          if (y > 100) header.classList.add('sticky-pinned');
+          else header.classList.remove('sticky-pinned');
+        }
+        lastScroll = y;
+      });
+
+      // ── Scroll progress / back-to-top ─────────────────────────────
+      const sp = document.querySelector<HTMLElement>('[data-scroll-progress]');
+      const path = sp?.querySelector('path');
+      if (sp && path) {
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = `${len} ${len}`;
+        path.style.strokeDashoffset = `${len}`;
+        const update = () => {
+          const scrolled = window.scrollY;
+          const height =
+            document.documentElement.scrollHeight - window.innerHeight;
+          path.style.strokeDashoffset = `${len - (scrolled * len) / (height || 1)}`;
+          sp.classList.toggle('is-active', scrolled > 50);
+        };
+        window.addEventListener('scroll', update);
+        update();
+        sp.addEventListener('click', () =>
+          window.scrollTo({ top: 0, behavior: 'smooth' }),
+        );
+      }
+
+      // ── Mobile drawer ─────────────────────────────────────────────
+      const drawer = document.getElementById('mobile-drawer');
+      const overlay = document.querySelector('[data-menu-overlay]');
+      const openMenu = () => {
+        drawer?.classList.remove('translate-x-full');
+        overlay?.classList.remove('invisible', 'opacity-0');
+        document.body.style.overflow = 'hidden';
+      };
+      const closeMenu = () => {
+        drawer?.classList.add('translate-x-full');
+        overlay?.classList.add('invisible', 'opacity-0');
+        document.body.style.overflow = '';
+      };
+      document
+        .querySelector('[data-menu-open]')
+        ?.addEventListener('click', openMenu);
+      document
+        .querySelector('[data-menu-close]')
+        ?.addEventListener('click', closeMenu);
+      overlay?.addEventListener('click', closeMenu);
+      // close when a real link inside the drawer is tapped
+      drawer?.querySelectorAll('a[href]').forEach((a) => {
+        if (!a.hasAttribute('target')) a.addEventListener('click', closeMenu);
+      });
+      // close on Escape
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      // ── Mobile dropdown accordions ────────────────────────────────
+      const toggles = document.querySelectorAll('[data-dropdown-toggle]');
+      toggles.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const sub = btn.parentElement?.querySelector<HTMLElement>('[data-submenu]');
+          const caret = btn.querySelector('[data-caret]');
+          const open = sub && sub.style.maxHeight && sub.style.maxHeight !== '0px';
+          // close all
+          toggles.forEach((other) => {
+            const oSub = other.parentElement?.querySelector<HTMLElement>('[data-submenu]');
+            if (oSub) oSub.style.maxHeight = '0px';
+            other.querySelector('[data-caret]')?.classList.remove('rotate-180');
+          });
+          // open clicked (if it was closed)
+          if (sub && !open) {
+            sub.style.maxHeight = sub.scrollHeight + 'px';
+            caret?.classList.add('rotate-180');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

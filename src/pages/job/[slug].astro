@@ -1,0 +1,176 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import LineLink from '@/components/LineLink.astro';
+import Button from '@/components/Button.astro';
+
+export async function getStaticPaths() {
+  const jobs = await getCollection('jobs');
+  return jobs.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, meta, apply_label, apply_title } = entry.data;
+const { Content } = await render(entry);
+
+// Submissions go to Netlify Forms (form name "job-application", shared by every job
+// page; the hidden "position" field records which job). Where they're emailed is set
+// per site in the Netlify dashboard: Forms > Submission notifications.
+
+const fieldBase =
+  'mb-[30px] w-full px-[15px] border border-[#ced4da] bg-white text-[#495057] rounded-none transition-colors duration-200 focus:outline-none focus:shadow-none focus:border-primary';
+const fieldClass = `${fieldBase} h-12`;
+const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
+---
+
+<Base title={title}>
+  <!-- Header -->
+  <section class="bg-light py-20 md:py-25">
+    <div class="container">
+      <div class="row justify-center items-end">
+        <div class="lg:col-7">
+          <p class="has-anim fade mb-5 font-medium text-dark/60">{meta}</p>
+          <h3 class="text-dark has-anim fade delay-100 font-medium text-3xl">{title}</h3>
+        </div>
+        <div class="lg:col-3 lg:text-right mt-4 lg:mt-0 has-anim fade delay-200">
+          <LineLink href="#apply-job-wrap" label={apply_label} tone="dark" icon="down" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <section class="bg-white py-20 md:py-25">
+    <div class="container has-anim fade delay-150">
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <div class="content text-dark">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply -->
+  <div id="apply-job-wrap" class="bg-light py-20 md:py-25">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <h4 class="text-dark has-anim fade font-semibold">{apply_title}</h4>
+
+          <form
+            name="job-application"
+            method="POST"
+            enctype="multipart/form-data"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            class="mt-5"
+            id="job-apply-form"
+          >
+            <input type="hidden" name="form-name" value="job-application" />
+            <input type="hidden" name="subject" value={`Job application: ${title}`} />
+            <input type="hidden" name="position" value={title} />
+            <!-- spam honeypot: hidden from people; Netlify rejects submissions that fill it -->
+            <p class="hidden">
+              <label>Don’t fill this out if you’re human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+            </p>
+            <div class="row">
+              <div class="col-12 has-anim fade">
+                <label for="apply-cv" class="text-dark mb-1 block">Resume/CV <span class="text-red-600">*</span></label>
+                <input id="apply-cv" type="file" name="cv" accept=".pdf,.doc,.docx" class={`${fieldClass} pt-2.5`} required />
+              </div>
+              <div class="col-12 has-anim fade">
+                <label for="apply-name" class="text-dark mb-1 block">Full Name <span class="text-red-600">*</span></label>
+                <input id="apply-name" type="text" name="name" class={fieldClass} placeholder="ex: Jack Barker" required />
+              </div>
+              <div class="col-12 has-anim fade">
+                <label for="apply-email" class="text-dark mb-1 block">Email Address <span class="text-red-600">*</span></label>
+                <input id="apply-email" type="email" name="email" class={fieldClass} placeholder="ex: hello@example.com" required />
+              </div>
+              <div class="col-12 md:col-6 has-anim fade">
+                <label for="apply-phone" class="text-dark mb-1 block">Phone <span class="text-red-600">*</span></label>
+                <input id="apply-phone" type="tel" name="phone" class={fieldClass} placeholder="ex: +88 0956 268 *" required />
+              </div>
+              <div class="col-12 md:col-6 has-anim fade">
+                <label for="apply-company" class="text-dark mb-1 block">Current company</label>
+                <input id="apply-company" type="text" name="company" class={fieldClass} placeholder="Current company" />
+              </div>
+              <div class="col-12 has-anim fade">
+                <label for="apply-cover" class="text-dark mb-1 block">Cover letter <span class="text-red-600">*</span></label>
+                <textarea
+                  id="apply-cover"
+                  name="cover_letter"
+                  class={textareaClass}
+                  rows="1"
+                  placeholder="Add a cover letter or anything else you want to share."
+                  required></textarea>
+              </div>
+              <div class="col-12 has-anim fade">
+                <Button type="submit" label="Submit Application" variant="black" />
+                <div class="status empty:hidden py-2 px-3 text-white font-medium text-sm mt-4" role="status" aria-live="polite"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Netlify Forms AJAX submission with a file: send FormData to "/" and let the
+  // browser set the multipart Content-Type. Netlify caps a submission at 8 MB
+  // (one file per field) and times out uploads after 30 seconds.
+  const MAX_BYTES = 8 * 1024 * 1024;
+
+  const form = document.getElementById('job-apply-form') as HTMLFormElement | null;
+  if (form) {
+    const submitBtn = form.querySelector<HTMLButtonElement>("button[type='submit']");
+    const submitBtnHTML = submitBtn?.innerHTML;
+    const status = form.querySelector<HTMLElement>('.status');
+
+    const showStatus = (ok: boolean, text: string) => {
+      if (!status) return;
+      status.style.backgroundColor = ok ? '#17a34a' : '#dc2625';
+      status.textContent = text;
+    };
+    const resetButton = () => {
+      if (!submitBtn) return;
+      if (submitBtnHTML) submitBtn.innerHTML = submitBtnHTML;
+      submitBtn.disabled = false;
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (status) status.textContent = '';
+
+      const data = new FormData(form);
+      const cv = data.get('cv');
+      // leave a little room for the text fields within the 8 MB request limit
+      if (cv instanceof File && cv.size > MAX_BYTES - 256 * 1024) {
+        showStatus(false, 'Your CV file is too large. Please upload a file under 7.5 MB.');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        const span = submitBtn.querySelector('span');
+        if (span) span.textContent = 'Sending..';
+      }
+
+      fetch('/', { method: 'POST', body: data })
+        .then((response) => {
+          // only a 2xx from Netlify counts as sent
+          if (!response.ok) throw new Error(`Form submission failed (${response.status})`);
+          showStatus(true, 'Application sent successfully!');
+          form.reset();
+        })
+        .catch(() => {
+          showStatus(false, "Sorry, your application couldn't be sent. Please try again in a moment.");
+        })
+        .finally(resetButton);
+    });
+  }
+</script>

@@ -1,0 +1,160 @@
+---
+import { Icon } from 'astro-icon/components';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import DropdownNav from '@/components/menu/DropdownNav';
+
+import menu from '@/config/menu.json';
+import site from '@/config/site.config.json';
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (url: string) =>
+  url !== '#' && pathname === url.replace(/\/$/, '');
+const inSection = (item: (typeof menu.main)[number]) =>
+  isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
+---
+<header
+  id="site-header"
+  class="group/header bg-dark sticky top-0 left-0 z-9992 w-full transition-transform duration-500 will-change-transform"
+  style="transition-timing-function:cubic-bezier(.2,1,.2,1)"
+>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <nav class="flex items-center justify-between py-4 lg:py-5 group-[.sticky-pinned]/header:py-2 transition-all duration-300">
+          <!-- logo -->
+          <a href="/" title={site.logo.alt} class="inline-block shrink-0">
+            <AstroImage
+              src={site.logo.src}
+              alt={site.logo.alt}
+              width={site.logo.width}
+              height={site.logo.height}
+              class="w-25 lg:w-27.5 h-auto"
+            />
+          </a>
+
+          <!-- desktop nav -->
+          <DropdownNav client:load items={menu.main} currentPath={pathname} />
+
+          <!-- desktop buy now -->
+          <div class="hidden shrink-0 lg:block">
+            <a
+              href={site.buyNow.url}
+              class="btn btn-sm btn-white"
+              data-text={site.buyNow.label}
+              target="_blank"
+              rel="nofollow"
+            >
+              <span>{site.buyNow.label}</span>
+            </a>
+          </div>
+
+          <!-- mobile toggler -->
+          <button
+            type="button"
+            data-menu-open
+            aria-label="Open menu"
+            class="text-white transition-opacity hover:opacity-70 lg:hidden cursor-pointer p-1"
+          >
+            <Icon name="hugeicons:menu-11" class="text-[30px]" />
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- mobile drawer overlay -->
+<div
+  data-menu-overlay
+  class="invisible fixed inset-0 z-9998 bg-dark/70 opacity-0 backdrop-blur-[2px] transition-all duration-300 lg:hidden"
+>
+</div>
+
+<!-- mobile drawer -->
+<aside
+  id="mobile-drawer"
+  class="bg-dark fixed top-0 right-0 z-9999 flex h-screen w-75 max-w-[85vw] translate-x-full flex-col p-7.5 shadow-2xl shadow-black/50 transition-transform duration-500 lg:hidden"
+  style="transition-timing-function:cubic-bezier(.2,1,.2,1)"
+>
+  <div class="mb-4 flex items-center justify-between">
+    <a href="/" title={site.logo.alt}>
+      <AstroImage src={site.logo.src} alt={site.logo.alt} class="w-20" width={site.logo.width} height={40} />
+    </a>
+    <button
+      type="button"
+      data-menu-close
+      aria-label="Close menu"
+      class="flex items-center gap-1 text-[14px] tracking-wider text-white/80 uppercase transition-opacity hover:opacity-60 cursor-pointer p-1"
+    >
+      <Icon name="hugeicons:cancel-01" class="text-[18px]" /> Close
+    </button>
+  </div>
+
+  <ul class="-mr-2 flex-1 overflow-y-auto pr-2 scrollbar-hidden">
+    {
+      menu.main.map((item) =>
+        item.children ? (
+          <li class="border-b border-white/5">
+            <button
+              type="button"
+              data-dropdown-toggle
+              class:list={[
+                'flex w-full items-center justify-between py-3.5 text-[16px] font-medium transition-colors cursor-pointer',
+                inSection(item) ? 'text-white' : 'text-[#eee] hover:text-white',
+              ]}
+            >
+              {item.name}
+              <Icon
+                name="hugeicons:arrow-down-01"
+                class="transition-transform duration-300"
+                data-caret
+              />
+            </button>
+            <ul
+              data-submenu
+              class="max-h-0 overflow-hidden border-l border-white/5 pl-4 transition-[max-height] duration-300 ease-out"
+            >
+              {item.children.map((child) => (
+                <li class="last:mb-2">
+                  <a
+                    href={child.url}
+                    class:list={[
+                      'block py-2 text-[14px] font-medium transition-colors',
+                      isActive(child.url)
+                        ? 'text-white'
+                        : 'text-white/70 hover:text-white',
+                    ]}
+                  >
+                    {child.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ) : (
+          <li class="border-b border-white/5">
+            <a
+              href={item.url}
+              class:list={[
+                'block py-3.5 text-[16px] font-medium transition-colors',
+                isActive(item.url) ? 'text-white' : 'text-[#eee] hover:text-white',
+              ]}
+            >
+              {item.name}
+            </a>
+          </li>
+        ),
+      )
+    }
+  </ul>
+
+  <a
+    href={site.buyNow.url}
+    class="btn btn-white mt-6 block w-full"
+    data-text={site.buyNow.label}
+    target="_blank"
+    rel="nofollow"
+  >
+    <span>{site.buyNow.label}</span>
+  </a>
+</aside>

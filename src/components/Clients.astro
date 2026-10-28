@@ -1,0 +1,181 @@
+---
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+interface ClientLogo {
+  name: string;
+  logo: string;
+  /** a random repeat added only to even out column lengths */
+  pad?: boolean;
+}
+interface Props {
+  items: ClientLogo[];
+  columnCount?: number;
+  class?: string;
+}
+const { items, columnCount = 5, class: className = '' } = Astro.props;
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function distributeLogos(allLogos: ClientLogo[], columns: number): ClientLogo[][] {
+  const shuffled = shuffleArray(allLogos);
+  const cols: ClientLogo[][] = Array.from({ length: columns }, () => []);
+
+  shuffled.forEach((logo, index) => {
+    cols[index % columns].push(logo);
+  });
+
+  const maxLength = Math.max(...cols.map((col) => col.length));
+  cols.forEach((col) => {
+    while (col.length < maxLength) {
+      col.push({ ...shuffled[Math.floor(Math.random() * shuffled.length)], pad: true });
+    }
+  });
+
+  return cols;
+}
+
+const logoColumns = distributeLogos(items, columnCount);
+---
+
+<div class:list={['container xl:max-w-275 has-anim fade', className]} data-logo-carousel>
+  <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+    {
+      logoColumns.map((col, colIndex) => (
+        <div
+          class="logo-col relative h-9 w-[calc(38%-0.5rem)] sm:w-[calc(25%-0.5rem)] overflow-hidden lg:w-auto lg:flex-1"
+          data-column={colIndex}
+        >
+          <div class="logo-stack relative h-full w-full">
+            {col.map((logo, logoIndex) => (
+              <div
+                class:list={[
+                  'logo-slot absolute inset-0 flex items-center justify-center pointer-events-none',
+                  logoIndex === 0 && 'active',
+                ]}
+                data-logo-index={logoIndex}
+                data-pad={logo.pad ? '' : undefined}
+              >
+                <AstroImage
+                  src={logo.logo}
+                  alt={logo.name}
+                  loading="lazy"
+                  class="h-9 w-auto max-w-[80%]"
+                  width={120}
+                  height={36}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .logo-slot {
+    opacity: 0;
+    transform: translateY(10%);
+    filter: blur(8px);
+    transition:
+      opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .logo-slot.active {
+    opacity: 1;
+    transform: translateY(0%);
+    filter: blur(0px);
+    pointer-events: auto;
+  }
+
+  .logo-slot.exit {
+    opacity: 0;
+    transform: translateY(-20%);
+    filter: blur(6px);
+    transition:
+      opacity 0.3s ease-in,
+      transform 0.3s ease-in,
+      filter 0.3s ease-in;
+  }
+
+  /* reduced motion: no cycling; each column lists its logos so every client shows once */
+  @media (prefers-reduced-motion: reduce) {
+    .logo-col,
+    .logo-stack {
+      height: auto;
+    }
+    .logo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .logo-slot {
+      position: static;
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+      pointer-events: auto;
+    }
+    .logo-slot[data-pad] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const cycleInterval = 2000;
+  const columnDelay = 250;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // one independent timer per logo wall, so several can share a page
+  document.querySelectorAll<HTMLElement>('[data-logo-carousel]').forEach((root) => {
+    if (reduceMotion) return;
+
+    let currentTime = 0;
+    const previousIndex: Record<number, number> = {};
+    const columns = root.querySelectorAll<HTMLElement>('[data-column]');
+
+    function updateCarousel() {
+      columns.forEach((col, colIndex) => {
+        const slots = col.querySelectorAll('.logo-slot');
+        const logosCount = slots.length;
+        if (logosCount === 0) return;
+
+        const adjustedTime = (currentTime + colIndex * columnDelay) % (cycleInterval * logosCount);
+        const targetIndex = Math.floor(adjustedTime / cycleInterval);
+        const prevIdx = previousIndex[colIndex];
+
+        if (prevIdx !== undefined && prevIdx !== targetIndex) {
+          const prevSlot = slots[prevIdx];
+          if (prevSlot) {
+            prevSlot.classList.remove('active');
+            prevSlot.classList.add('exit');
+            setTimeout(() => {
+              prevSlot.classList.remove('exit');
+            }, 300);
+          }
+        }
+
+        if (prevIdx !== targetIndex) {
+          slots[targetIndex].classList.add('active');
+        }
+
+        previousIndex[colIndex] = targetIndex;
+      });
+
+      currentTime += 100;
+    }
+
+    setInterval(updateCarousel, 100);
+  });
+</script>

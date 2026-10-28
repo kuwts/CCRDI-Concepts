@@ -1,0 +1,173 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import { formatDate } from '@/utils/formatDate';
+import { getPosts } from '@/lib/content';
+import { animDelay } from '@/utils/animDelay';
+import AstroImage from "@/components/helper/AstroImage.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content } = await render(entry);
+
+const related = (await getPosts()).filter((p) => p.id !== entry.id).slice(0, 3);
+
+const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([, hashes, text]) => ({
+  level: hashes.length,
+  id: text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, ''),
+  text,
+}));
+---
+
+<Base title={data.title} description={data.description} image={data.image}>
+  <section class="page-header pt-20 pb-16 text-muted">
+    <div class="container -mt-1.5">
+      <div class="row justify-center">
+        <div class="lg:col-10 text-center">
+          <p class="has-anim fade mb-5 text-sm">
+            {data.category} <span class="mx-2 inline-block">━</span> {formatDate(data.date)}
+          </p>
+          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white leading-snug text-balance">
+            {data.title}
+          </h1>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12 -mb-12 has-anim delay-200">
+        <AstroImage
+          src={data.image}
+          alt={data.title}
+          class="h-auto w-full bg-white/3"
+        />
+      </div>
+    </div>
+  </div>
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <div class="row justify-center pt-5">
+        <div class="lg:col-3 order-0 lg:order-1">
+          <div class="max-lg:mb-10 sticky top-24">
+            <button
+              id="toc-toggle"
+              class="flex items-center justify-between w-full mb-5 text-dark lg:text-dark/50 max-lg:cursor-pointer lg:cursor-default max-lg:border max-lg:border-dashed max-lg:border-dark/10 max-lg:p-3"
+              aria-expanded="false"
+            >
+              <span>Table of Contents</span>
+              <svg class="w-4 h-4 lg:hidden transition-transform" data-arrow viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            {
+              tocItems.length > 0 && (
+                <ul class="space-y-2 max-h-0 lg:max-h-[55dvh] overflow-hidden transition-all duration-300 ease-in-out lg:overflow-y-auto max-lg:ps-10" id="toc-list">
+                  {tocItems.map((item) => (
+                    <li>
+                      <a
+                        href={`#${item.id}`}
+                        class:list={[
+                          'text-dark/80 hover:text-black transition-colors text-sm font-medium',
+                          item.level === 3 && 'pl-4 text-[13px]',
+                          '[&.active]:text-primary [&.active]:font-semibold',
+                        ]}
+                      >
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+          </div>
+        </div>
+        <div class="lg:col-8 order-1 lg:order-0">
+          <div class="content prose max-w-full text-dark pr-0 lg:pr-10 [&>p:first-of-type]:text-[22px] [&>p:first-of-type]:leading-relaxed [&_img]:my-6">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related -->
+  <section class="bg-white pb-25 max-md:pb-20">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <div class="border-t border-black/5 pt-25 max-md:pt-20"></div>
+          <p class="text-dark has-anim fade font-medium">Related Posts</p>
+        </div>
+        {
+          related.map((post, i) => (
+            <div
+              class:list={[
+                'lg:col-4 md:col-6',
+                i === 2 && 'hidden lg:block',
+              ]}
+            >
+              <BlogCard
+                post={post}
+                class:list={['has-anim fade', animDelay[i]]}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<script>
+  const tocToggle = document.getElementById('toc-toggle');
+  const tocList = document.getElementById('toc-list');
+
+  function resetInlineMaxHeight() {
+    if (window.innerWidth >= 992) tocList?.style.removeProperty('max-height');
+  }
+
+  if (tocToggle && tocList) {
+    if (window.innerWidth < 992) tocList.style.maxHeight = '0';
+    tocToggle.addEventListener('click', () => {
+      if (window.innerWidth >= 992) return;
+      const expanded = tocToggle.getAttribute('aria-expanded') === 'true';
+      tocToggle.setAttribute('aria-expanded', String(!expanded));
+      if (expanded) {
+        tocList.style.maxHeight = '0';
+      } else {
+        tocList.style.maxHeight = tocList.scrollHeight + 'px';
+      }
+      const arrow = tocToggle.querySelector('[data-arrow]');
+      if (arrow) arrow.classList.toggle('rotate-180');
+    });
+    window.addEventListener('resize', resetInlineMaxHeight);
+  }
+
+  const tocLinks = document.querySelectorAll<HTMLAnchorElement>('#toc-list a');
+  const headings = [...document.querySelectorAll('.content h2, .content h3')];
+  if (tocLinks.length && headings.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${entry.target.id}`));
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -60% 0px' },
+    );
+    headings.forEach((h) => observer.observe(h));
+  }
+</script>

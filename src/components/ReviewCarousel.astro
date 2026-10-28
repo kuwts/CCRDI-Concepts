@@ -1,0 +1,337 @@
+---
+import { Icon } from 'astro-icon/components';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import AstroVideo from '@/components/helper/AstroVideo.astro';
+
+interface Testimonial {
+  review: string;
+  author: string;
+  role?: string;
+  company?: string;
+  rating?: number;
+  date?: string;
+  social?: string;
+  media?: string;
+}
+interface Props {
+  items: Testimonial[];
+  light?: boolean;
+  testimonials: {
+    total_rating?: string;
+    total_reviews?: string;
+    top_companies?: {
+      name: string;
+      logo: string;
+    }[];
+  };
+}
+const { items, light = false, testimonials } = Astro.props;
+
+const isVideo = (src?: string) => !!src && /\.(mp4|webm|mov|ogv)$/i.test(src);
+
+const videoModules = import.meta.glob<{ default: string }>(
+  '/src/assets/**/*.{mp4,webm,ogv,ogg,mov}'
+);
+
+const resolveVideo = async (path: string | undefined): Promise<string> => {
+  if (!path) return '';
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const candidates = [
+    `/src/assets${normalized}`,
+    `/src/assets/images${normalized}`,
+    `/src${normalized}`,
+  ];
+  for (const candidate of candidates) {
+    if (videoModules[candidate]) {
+      const mod = await videoModules[candidate]();
+      return mod.default;
+    }
+  }
+  return path;
+};
+
+const resolvedMediaMap = new Map<string, string>();
+for (const t of items) {
+  if (t.media && isVideo(t.media) && !resolvedMediaMap.has(t.media)) {
+    resolvedMediaMap.set(t.media, await resolveVideo(t.media));
+  }
+}
+
+const getResolvedMedia = (media: string | undefined): string => {
+  if (!media) return '';
+  return resolvedMediaMap.get(media) ?? media;
+};
+
+// duplicate a short list so loop mode has enough slides (mirrors PortfolioCarousel)
+// const slides = items.length < 6 ? [...items, ...items] : items;
+const slides = items;
+const ctrl = light ? 'text-white' : 'text-dark';
+---
+
+<!-- per-instance root (no transform, so the fixed popup inside still covers the viewport) -->
+<div data-review-root>
+<div class="review-carousel relative has-anim fade" data-total={items.length}>
+  <div class="overflow-clip">
+    <div class="container">
+      <div class="swiper overflow-visible!">
+        <div class="swiper-wrapper cursor-grab">
+          <!-- Info card -->
+          <div class="swiper-slide h-auto! px-3">
+            <div class="group relative h-full min-h-90 overflow-hidden bg-white">
+              <div class="relative z-10 flex h-full flex-col items-center justify-center p-6 md:p-7">
+                <p class="text-8xl font-bold text-black/40 sm:mt-auto">{testimonials?.total_rating}</p>
+                <div class="flex gap-0.5 text-lg text-amber-400 my-3">
+                  {Array.from({ length: 5 }).map(() => (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
+                  ))}
+                </div>
+                <p class="text-dark font-medium">{testimonials?.total_reviews}</p>
+                
+                <div class="hidden sm:flex mt-auto gap-4">
+                  {testimonials?.top_companies?.map((c) => (
+                    <AstroImage
+                      src={`/${c.logo}`}
+                      alt={c.name}
+                      width={120}
+                      height={24}
+                      loading="lazy"
+                      class="h-6 object-contain invert-100 max-w-full"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          {slides.map((t) => (
+            <div class="swiper-slide h-auto! px-3">
+              {isVideo(t.media) ? (
+                /* ── video card ── */
+                <div class="group relative h-full min-h-90 overflow-hidden bg-dark">
+                  <!-- started by the script below, unless the visitor prefers reduced motion -->
+                  <AstroVideo
+                    src={t.media}
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    class="absolute inset-0 size-full object-cover"
+                    data-review-autoplay
+                  />
+                  <div class="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/60"></div>
+
+                  <div class="relative z-10 flex h-full flex-col justify-between p-6 md:p-7 text-white">
+                    <div class="flex items-start justify-between">
+                      <div>
+                        <p class="text-lg font-semibold leading-tight">{t.author}</p>
+                        {t.company && <p class="mt-0.5 text-sm text-white">{t.company}</p>}
+                      </div>
+                      {t.social && (
+                        <a
+                          href={t.social}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${t.author} on X`}
+                          class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/15 backdrop-blur-sm transition hover:bg-white/25"
+                        >
+                          <Icon name="hugeicons:new-twitter" class="size-4" />
+                        </a>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      class="mx-auto flex size-12 items-center justify-center rounded-full bg-white text-dark shadow-lg transition-transform duration-300 hover:scale-110 cursor-pointer"
+                      data-review-play
+                      data-src={getResolvedMedia(t.media)}
+                      aria-label="Play video testimonial"
+                    >
+                      <Icon name="hugeicons:play" class="ml-0.5 size-5" />
+                    </button>
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex gap-0.5 text-lg text-amber-400">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span class={i < (t.rating ?? 5) ? '' : 'text-white/30'}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
+                          </span>
+                        ))}
+                      </div>
+                      {t.date && <span class="text-sm font-medium text-white/70">{t.date}</span>}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* ── image and text card ── */
+                <div class="flex h-full min-h-90 flex-col bg-white p-6 md:p-7">
+                  <p class="mb-6 flex-1 sm:text-xl leading-relaxed text-dark">
+                    {t.review}
+                  </p>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <AstroImage
+                        src={`/${t.media}`}
+                        alt={t.author}
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        class="size-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p class="font-semibold text-dark leading-tight">{t.author}</p>
+                        {(t.role || t.company) && (
+                          <p class="mt-0.5 text-sm text-dark/50">{t.role ?? t.company}</p>
+                        )}
+                      </div>
+                    </div>
+                    {t.social && (
+                      <a
+                        href={t.social}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${t.author} on X`}
+                        class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-black/5 text-dark transition hover:bg-black/10"
+                      >
+                        <Icon name="hugeicons:new-twitter" class="size-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- pagination dots -->
+    <div class:list={['mt-12 -mb-2 flex items-center justify-center', ctrl]}>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- video popup (outside has-anim to keep position:fixed working) -->
+<div
+  class="pointer-events-none fixed top-0 left-0 h-screen w-screen z-9999999 flex items-center justify-center bg-dark/90 p-6 opacity-0 transition-opacity duration-300"
+  data-review-modal
+  aria-hidden="true"
+>
+  <button
+    type="button"
+    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:rotate-90 hover:bg-primary cursor-pointer"
+    data-review-close
+    aria-label="Close video"
+  >
+    <Icon name="hugeicons:cancel-01" class="size-4 transition group-hover:scale-130" />
+  </button>
+  <video
+    class="max-h-[85vh] max-w-[90vw] rounded-lg"
+    controls
+    playsinline
+    data-review-modal-video
+  ></video>
+</div>
+</div>
+
+<style is:global>
+  .review-carousel .swiper-slide {
+    height: auto;
+  }
+  .review-carousel .swiper-pagination {
+    --swiper-pagination-bullet-inactive-color: currentColor;
+    --swiper-pagination-color: currentColor;
+    --swiper-pagination-bullet-inactive-opacity: 0.3;
+    --swiper-pagination-bullet-opacity: 1;
+  }
+</style>
+
+<script>
+  import Swiper from 'swiper';
+  import { Pagination, FreeMode, Mousewheel } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/pagination';
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-review-root]').forEach((root) => {
+    const el = root.querySelector<HTMLElement>('.review-carousel .swiper');
+    if (!el) return;
+
+    // muted background videos on video cards: autoplay only without reduced motion
+    // (the play button still opens the full video either way)
+    if (!reduceMotion) {
+      root.querySelectorAll<HTMLVideoElement>('[data-review-autoplay]').forEach((v) => {
+        v.play().catch(() => {});
+      });
+    }
+
+    new Swiper(el, {
+      modules: [Pagination, FreeMode, Mousewheel],
+      slidesPerView: 1,
+      spaceBetween: 0,
+      speed: 600,
+      loop: false,
+      loopAdditionalSlides: 2,
+      freeMode: { enabled: true, sticky: false },
+      mousewheel: { forceToAxis: true, releaseOnEdges: true },
+      breakpoints: {
+        0: { slidesPerView: 1.1 },
+        375: { slidesPerView: 1.5 },
+        768: { slidesPerView: 2.3 },
+        1024: { slidesPerView: 2.6 },
+        1280: { slidesPerView: 3.5 },
+      },
+      pagination: {
+        el: root.querySelector<HTMLElement>('.swiper-pagination'),
+        clickable: true,
+        dynamicBullets: true,
+      },
+    });
+
+    // ── video popup ──
+    const modal = root.querySelector<HTMLElement>('[data-review-modal]');
+    const modalVideo = root.querySelector<HTMLVideoElement>('[data-review-modal-video]');
+    const closeBtn = root.querySelector<HTMLElement>('[data-review-close]');
+
+    if (modal && modalVideo && closeBtn) {
+      let isOpen = false;
+      const openModal = (src: string) => {
+        isOpen = true;
+        modalVideo.src = src;
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        modalVideo.currentTime = 0;
+        modalVideo.play().catch(() => {});
+      };
+      const closeModal = () => {
+        // only the open instance reacts (Escape reaches every instance)
+        if (!isOpen) return;
+        isOpen = false;
+        modalVideo.src = '';
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        modalVideo.pause();
+        document.body.style.overflow = '';
+      };
+
+      root.querySelectorAll<HTMLElement>('[data-review-play]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const src = btn.dataset.src;
+          if (src) openModal(src);
+        });
+      });
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    }
+  });
+</script>

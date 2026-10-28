@@ -1,0 +1,63 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import { getPosts } from '@/lib/content';
+
+const posts = await getPosts();
+const initial = 4;
+const step = 4;
+---
+
+<Base title="Blog">
+  <PageHeader subtitle="Latest news" title="Our Blog Posts" dot />
+
+  <section class="bg-white md:pt-17.5 md:pb-25 pt-12.5 pb-20">
+    <div class="container">
+      <div class="row justify-center" id="blog-grid">
+        {
+          posts.map((post, i) => (
+            <div id={`post-${i}`} class:list={['lg:col-11', i >= initial && 'hidden']}>
+              <BlogCard
+                horizontal
+                post={post}
+                class="has-anim"
+              />
+            </div>
+          ))
+        }
+        <div class="lg:col-11">
+          <div class="has-anim text-center mt-16" data-load-more-wrap hidden={posts.length <= initial}>
+            <button
+              type="button"
+              data-load-more
+              data-total={posts.length}
+              data-step={step}
+              data-next={initial}
+              class="btn-circle btn-circle-white m-1 cursor-pointer"
+            >+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-load-more]');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const total = Number(btn.dataset.total);
+      const step = Number(btn.dataset.step);
+      let next = Number(btn.dataset.next);
+      const end = Math.min(next + step, total);
+      for (let i = next; i < end; i++) {
+        const el = document.getElementById(`post-${i}`);
+        if (el) el.classList.remove('hidden');
+      }
+      next = end;
+      btn.dataset.next = String(next);
+      if (next >= total) btn.closest('[data-load-more-wrap]')?.classList.add('hidden');
+    });
+  }
+</script>

@@ -1,0 +1,55 @@
+{
+  "main": [
+    { "name": "Home", "url": "/" },
+    { "name": "About", "url": "/about" },
+    {
+      "name": "Portfolio",
+      "url": "#",
+      "children": [
+        { "name": "Portfolio", "url": "/portfolio" },
+        { "name": "Portfolio Details", "url": "/portfolio/spearmint" }
+      ]
+    },
+    {
+      "name": "Blog",
+      "url": "#",
+      "children": [
+        { "name": "Blog", "url": "/blog" },
+        { "name": "Blog Horizontal", "url": "/blog-horizontal" },
+        { "name": "Blog Details", "url": "/blog/minimal-developer-workspace-design-principles" }
+      ]
+    },
+    {
+      "name": "Pages",
+      "url": "#",
+      "children": [
+        { "name": "Services", "url": "/services" },
+        { "name": "Our Team", "url": "/team" },
+        { "name": "Pricing Plans", "url": "/pricing" },
+        { "name": "Job Details", "url": "/job/senior-product-designer-growth" },
+        { "name": "FAQ", "url": "/faq" },
+        { "name": "Privacy & Policy", "url": "/privacy" },
+        { "name": "Style Guide", "url": "/style-guide" }
+      ]
+    },
+    { "name": "Contact", "url": "/contact" }
+  ],
+  "footer": {
+    "col1": [
+      { "name": "About", "url": "/about" },
+      { "name": "Services", "url": "/services" },
+      { "name": "Portfolio", "url": "/portfolio" },
+      { "name": "Our blog", "url": "/blogs-1-col" }
+    ],
+    "col2": [
+      { "name": "Our team", "url": "/team" },
+      { "name": "Pricing plans", "url": "/pricing" },
+      { "name": "FAQ", "url": "/faq" }
+    ],
+    "col3": [
+      { "name": "Contact", "url": "/contact" },
+      { "name": "Privacy & policy", "url": "/privacy" },
+      { "name": "Style Guide", "url": "/style-guide" }
+    ]
+  }
+}

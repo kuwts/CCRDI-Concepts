@@ -1,0 +1,52 @@
+[
+  {
+    "id": 0,
+    "review": "",
+    "author": "Margarita Univel",
+    "role": "CEO",
+    "company": "Belbon Inc.",
+    "rating": 5,
+    "social": "https://x.com/",
+    "media": "images/testimonials/video-01.mp4"
+  },
+  {
+    "id": 1,
+    "review": "After using obicol my business skyrocketed! I wish I would have it first. It is worth much more than I paid.",
+    "author": "Callie Sheit",
+    "role": "Product Lead",
+    "company": "Brex Studio.",
+    "rating": 5,
+    "social": "https://x.com/",
+    "media": "images/testimonials/01.png"
+  },
+  {
+    "id": 2,
+    "review": "I don't always clop, but I do it for this template, obicol is the most valuable theme we have EVER purchased.",
+    "author": "Sallyann Veniia",
+    "role": "Art Director",
+    "company": "Alex Studio.",
+    "rating": 5,
+    "social": "https://x.com/",
+    "media": "images/testimonials/02.png"
+  },
+  {
+    "id": 3,
+    "review": "",
+    "author": "Abil Barker",
+    "role": "UI Designer",
+    "company": "Abil Software Inc.",
+    "rating": 5,
+    "social": "https://x.com/",
+    "media": "images/testimonials/video-02.mp4"
+  },
+  {
+    "id": 4,
+    "review": "Support was fast and the design is flawless. Obicol saved us weeks of work and our clients keep asking who built the site.",
+    "author": "Devon Marsh",
+    "role": "Marketing Head",
+    "company": "Novara Labs.",
+    "rating": 5,
+    "social": "https://x.com/",
+    "media": "images/testimonials/03.png"
+  }
+]

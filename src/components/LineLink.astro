@@ -1,0 +1,49 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  label: string;
+  href: string;
+  /** Color treatment for the label text. */
+  tone?: 'primary' | 'white' | 'dark';
+  /** Trailing icon. */
+  icon?: 'arrow' | 'down' | 'none';
+  target?: string;
+  rel?: string;
+  class?: string;
+}
+
+const {
+  label,
+  href,
+  tone = 'primary',
+  icon = 'none',
+  target,
+  rel,
+  class: className = '',
+} = Astro.props;
+
+const toneClass =
+  tone === 'white'
+    ? 'text-white hover:text-white'
+    : tone === 'dark'
+      ? 'text-dark hover:text-dark'
+      : 'text-primary';
+
+const iconName =
+  icon === 'arrow'
+    ? 'hugeicons:arrow-up-right-01'
+    : icon === 'down'
+      ? 'hugeicons:arrow-down-01'
+      : null;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  class:list={['line-link', toneClass, className]}
+>
+  {label}
+  {iconName && <Icon name={iconName} class="text-[1.25em]" />}
+</a>

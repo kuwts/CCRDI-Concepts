@@ -1,0 +1,92 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import Button from '@/components/Button.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import { animDelay } from '@/utils/animDelay';
+import { getJobs } from '@/lib/content';
+
+const teamEntry = await getEntry('team', 'index');
+const { header, cta, open_positions } = teamEntry!.data;
+const members = (await getCollection('teamMembers')).map((m) => m.data);
+
+const allJobs = await getJobs();
+const groups = [...new Set(allJobs.map((j) => j.data.category))].map(
+  (category) => ({
+    category,
+    jobs: allJobs.filter((j) => j.data.category === category),
+  }),
+);
+---
+
+<Base title="Our Team">
+  <PageHeader subtitle={header.subtitle} title={header.title} dot />
+
+  <!-- Team grid -->
+  <section class="bg-white py-20 md:py-25">
+    <div class="container -mt-8.75">
+      <div class="row">
+        {
+          members.map((m, i) => (
+            <div class="xl:col-3 lg:col-4 col-6">
+              <div class:list={['has-anim fade mt-8.75', animDelay[i % 4]]}>
+                <div class="relative overflow-hidden">
+                  <AstroImage src={m.image} alt={m.name} loading="lazy" class="h-auto max-w-full bg-gray-100" />
+                </div>
+                <div class="mt-5">
+                  <h4 class="text-dark text-xl font-semibold">{m.name}</h4>
+                  <p class="mt-1 text-dark/50">{m.role}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+        <div class="col-12 mt-8 pt-4 has-anim fade text-center">
+          <Button href={cta.href} label={cta.label} variant="black" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open positions -->
+  <section id="open-positions" class="bg-light py-20 md:py-25">
+    <div class="container">
+      <SectionTitle
+        subtitle={open_positions.subtitle}
+        title={open_positions.title}
+      />
+      <div>
+        {
+          groups.map((group, gi) => (
+            <div
+              class:list={[
+                'row justify-center not-first:pt-8 has-anim fade',
+                gi > 0 && 'mt-5',
+              ]}
+            >
+              <div class="md:col-4 mb-4 md:mb-0">
+                <h3 class="text-dark font-medium text-3xl">{group.category}</h3>
+              </div>
+              <div class="lg:col-7 md:col-8">
+                <div class="pl-0 md:pl-5">
+                  {group.jobs.map((job) => (
+                    <a
+                      href={`/job/${job.id}`}
+                      class="text-dark relative z-1 block border-b last:border-b-0 border-[#eae9e9] py-5 first:border-t after:pointer-events-none after:absolute after:bottom-0 after:-left-3.75 after:z-[-1] after:h-0 after:w-[calc(100%+30px)] after:bg-[#f1f1f1] after:transition-all after:duration-300 after:content-[''] hover:after:top-0 hover:after:bottom-auto hover:after:h-full"
+                    >
+                      <h4 class="mb-2.5 text-2xl font-medium">{job.data.title}</h4>
+                      <span class="text-[#666]">{job.data.location}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>

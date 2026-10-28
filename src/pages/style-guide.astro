@@ -1,0 +1,157 @@
+---
+import { getEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import LineLink from '@/components/LineLink.astro';
+import Faq from '@/components/Faq.astro';
+
+import { YouTube, Vimeo, LinkPreview, MastodonPost } from 'astro-embed';
+
+const faqEntry = await getEntry('faq', 'index');
+const accordionGroup = [{ title: 'Accordion', items: faqEntry!.data.groups[0].items }];
+
+const hr = 'border-0 border-t border-black/10 my-16';
+---
+
+<Base title="Style Guide">
+  <PageHeader subtitle="Typography" title="Style Guide 👋" />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container has-anim fade delay-150">
+      <div class="row justify-center">
+        <!-- Text styles -->
+        <div class="lg:col-10">
+          <div class="content">
+            <h2 class="h5 text-muted">Text styles</h2>
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+            <h4>Heading 4</h4>
+            <h5>Heading 5</h5>
+            <h6>Heading 6</h6>
+          </div>
+        </div>
+
+        <div class="lg:col-10"><hr class={hr} /></div>
+
+        <!-- Typeface -->
+        <div class="lg:col-10">
+          <div class="content">
+            <h2 class="h5 text-muted">Typeface</h2>
+            <h3 class="font-primary text-dark">Space Grotesk (Google Font)</h3>
+          </div>
+        </div>
+
+        <div class="lg:col-10"><hr class={hr} /></div>
+
+        <!-- Paragraph & lists -->
+        <div class="lg:col-10">
+          <div class="content">
+            <h2 class="h5 text-muted">Paragraph</h2>
+            <p>
+              Lorem ipsum dolor sit amet, cohnsectetur adipiscing elit. Purus,
+              donec nunc eros, ullamcorper id feugiat quisque aliquam sagittis.
+              Sem turpis sed viverra massa gravida pharetra. Non dui dolor
+              potenti eu dignissim fusce. Ultrices amet, in curabitur a arcu a
+              lectus morbi id. Iaculis sed interdum lacus.
+            </p>
+            <p>
+              pretium, aliquam sit. Praesent elementum magna amet, tincidunt
+              eros, nibh in leo. Malesuada purus, lacus, at aliquam suspendisse
+              tempus. Quis tempus amet, velit nascetur sollicitudin.
+            </p>
+            <h2 class="h5 text-muted">List</h2>
+            <ul>
+              <li>List item 01</li>
+              <li>List item 02</li>
+              <li>List item 03</li>
+            </ul>
+            <ol>
+              <li>List item 01</li>
+              <li>List item 02</li>
+              <li>List item 03</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="lg:col-10"><hr class={hr} /></div>
+
+        <!-- Buttons & links -->
+        <div class="lg:col-10">
+          <div class="content">
+            <h2 class="h5 text-muted">Buttons &amp; Links</h2>
+          </div>
+
+          <a class="btn btn-dark m-1" href="#!" data-text="Button Dark"><span>Button Dark</span></a>
+          <a class="btn btn-black m-1" href="#!" data-text="Button Black"><span>Button Black</span></a>
+          <a class="btn btn-light m-1" href="#!" data-text="Button Light"><span>Button Light</span></a>
+          <span class="bg-dark m-1 inline-block p-3">
+            <a class="btn btn-white" href="#!" data-text="Button White"><span>Button White</span></a>
+          </span>
+
+          <br />
+
+          <span class="bg-dark m-1 inline-block p-3">
+            <LineLink href="#!" label="Line Link Primary" class="mx-2 my-1" />
+            <LineLink href="#!" label="Line Link White" tone="white" class="mx-2 my-1" />
+            <LineLink href="#!" label="Line Link with Icon" icon="arrow" class="mx-2 my-1" />
+          </span>
+          <LineLink href="#!" label="Line Link Dark" tone="dark" class="m-1 mx-2" />
+
+          <br />
+
+          <a class="btn-circle btn-circle-white m-1" href="#!">+</a>
+          <span class="bg-dark m-1 inline-block p-3">
+            <a class="btn-circle btn-circle-black" href="#!">
+              <Icon name="hugeicons:arrow-right-01" class="text-[20px]" />
+            </a>
+          </span>
+        </div>
+
+        <div class="lg:col-10"><hr class={hr} /></div>
+
+        <!-- Accordion -->
+        <div class="lg:col-10">
+          <Faq groups={accordionGroup} />
+        </div>
+
+        <div class="lg:col-10"><hr class={hr} /></div>
+
+        <!-- Astro Embed Components -->
+        <div class="lg:col-10">
+          <div class="content mb-8">
+            <h2 class="h5 text-muted">Astro Embed Components</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-lg font-semibold text-dark mb-4">Link Preview</h3>
+              <div class="w-full [&>article]:w-full!">
+                <LinkPreview id="https://astro.build/blog/welcome-world/" />
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-dark mb-4">Mastodon Post</h3>
+              <div class="w-full">
+                <MastodonPost id="https://m.webtoo.ls/@astro/116794757802067006" />
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-dark mb-4">YouTube Embed</h3>
+              <div class="overflow-hidden [&_iframe]:w-full [&_iframe]:aspect-video">
+                <YouTube id="https://youtu.be/IlU-zDU6aQ0" />
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-dark mb-4">Vimeo Embed</h3>
+              <div class="overflow-hidden [&_iframe]:w-full [&_iframe]:aspect-video">
+                <Vimeo id="https://vimeo.com/32001208" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

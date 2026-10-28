@@ -1,0 +1,69 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+interface FaqGroup {
+  title: string;
+  items: FaqItem[];
+}
+interface Props {
+  groups: FaqGroup[];
+}
+const { groups } = Astro.props;
+---
+
+<style>
+  .faq-answer-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+  }
+  .faq-item.is-open .faq-answer-wrapper {
+    grid-template-rows: 1fr;
+  }
+  .faq-answer-wrapper > * {
+    overflow: hidden;
+  }
+  .faq-item.is-open .faq-icon {
+    transform: rotate(45deg);
+  }
+</style>
+
+<div>
+  {groups.map((group, gi) => (
+    <div class:list={[gi > 0 && 'not-first:mt-10']}>
+      <h5 class="text-dark text-lg font-medium has-anim fade mb-4">{group.title}</h5>
+      <div class="space-y-2.5">
+        {group.items.map((item) => (
+          <div class="faq-item has-anim fade">
+            <button class="faq-summary bg-white border border-dark/10 flex w-full cursor-pointer items-center justify-between py-4 px-7 text-[18px] font-semibold text-dark text-left">
+              {item.question}
+              <span class="faq-icon shrink-0 text-2xl leading-none transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="bg-[#fbfdff] text-dark">
+                <div class="content border border-t-0 border-black/12.5 p-6" set:html={item.answer} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return;
+    const btn = e.target.closest('.faq-summary');
+    if (!btn) return;
+    const item = btn.closest('.faq-item');
+    if (!item) return;
+    const isOpen = item.classList.contains('is-open');
+    document.querySelectorAll('.faq-item.is-open').forEach((el) => el.classList.remove('is-open'));
+    if (!isOpen) item.classList.add('is-open');
+  });
+</script>

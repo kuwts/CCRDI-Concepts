@@ -1,0 +1,10 @@
+[
+  { "id": 0, "name": "Riddo Graham", "role": "Ower & Founder", "image": "/images/team/03.jpg" },
+  { "id": 1, "name": "Luis Fransisco", "role": "Chief Product Maneger", "image": "/images/team/01.jpg" },
+  { "id": 2, "name": "Hena Linton", "role": "Product Designer", "image": "/images/team/02.jpg" },
+  { "id": 3, "name": "Joshuwa Delgado", "role": "Web Developer", "image": "/images/team/04.jpg" },
+  { "id": 4, "name": "Rubaik Jakson", "role": "Markating Head", "image": "/images/team/05.jpg" },
+  { "id": 5, "name": "Alentrona Shimla", "role": "UI Artist", "image": "/images/team/06.jpg" },
+  { "id": 6, "name": "Jason Moyer", "role": "Business Consultant", "image": "/images/team/07.jpg" },
+  { "id": 7, "name": "Luke Jones", "role": "Graphic Designer", "image": "/images/team/08.jpg" }
+]

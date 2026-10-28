@@ -1,0 +1,34 @@
+---
+interface Props {
+  subtitle: string;
+  title: string;
+  align?: 'left' | 'center';
+  dot?: boolean;
+  colClass?: string;
+}
+
+const {
+  subtitle,
+  title,
+  align = 'left',
+  dot = false,
+  colClass = 'lg:col-10',
+} = Astro.props;
+---
+
+<section class="page-header pt-24 sm:pt-28 pb-28 sm:pb-32 text-muted">
+  <div class="container -mt-1.5">
+    <div class="row justify-center">
+      <div class:list={[colClass, align === 'center' ? 'text-center' : '']}>
+        <p class="has-anim fade mb-5 font-medium">{subtitle}</p>
+        <h1
+          class:list={[
+            'has-anim fade delay-100 font-medium text-white text-3xl sm:text-4xl leading-snug',
+            dot ? 'section-title-dot' : '',
+          ]}
+          set:html={title}
+        />
+      </div>
+    </div>
+  </div>
+</section>

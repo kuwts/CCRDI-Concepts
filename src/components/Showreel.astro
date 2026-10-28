@@ -1,0 +1,236 @@
+---
+import { Icon } from 'astro-icon/components';
+import AstroVideo from '@/components/helper/AstroVideo.astro';
+
+interface Props {
+  src: string;
+  poster?: string;
+  class?: string;
+}
+
+const { src, poster, class: className } = Astro.props;
+---
+
+<!-- per-instance root; the script moves the cursor and overlay to <body> -->
+<div data-showreel-root>
+<div class:list={['relative cursor-none', className]} data-showreel>
+  <AstroVideo
+    src={src}
+    poster={poster}
+    loop
+    muted
+    playsinline
+    preload="metadata"
+    class="block w-full h-auto aspect-video"
+    data-showreel-video
+  />
+
+  <!-- custom hover cursor -->
+  <div
+    class="pointer-events-none fixed top-0 left-0 z-9999999 flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 font-medium text-white will-change-transform"
+    data-showreel-cursor
+    aria-hidden="true"
+  >
+    <Icon name="hugeicons:play" class="size-[1.1em]" />
+    <span>Play</span>
+  </div>
+</div>
+
+<!-- Showreel fullscreen overlay -->
+<div
+  class="pointer-events-none fixed inset-0 z-9999999 flex items-center justify-center bg-dark/90 p-8 opacity-0 transition-opacity duration-500"
+  data-showreel-overlay
+  aria-hidden="true"
+>
+  <button
+    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-[background,transform] duration-200 hover:rotate-90 hover:bg-primary cursor-pointer"
+    type="button"
+    data-showreel-close
+    aria-label="Close video"
+  >
+    <Icon name="hugeicons:cancel-01" class="inline-block size-4 transition-all duration-200 group-hover:rotate-90" />
+  </button>
+  <div
+    class="flex max-h-[85vh] max-w-[90vw] items-center justify-center"
+    data-showreel-stage
+  >
+  </div>
+</div>
+</div>
+
+<script>
+  // reduced motion: no inline autoplay (poster only) and no zoom animation;
+  // the video still plays when the visitor clicks it
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-showreel-root]').forEach((root) => {
+    const reel = root.querySelector<HTMLElement>('[data-showreel]');
+    const video = root.querySelector<HTMLVideoElement>('[data-showreel-video]');
+    const cursor = root.querySelector<HTMLElement>('[data-showreel-cursor]');
+    const overlay = root.querySelector<HTMLElement>('[data-showreel-overlay]');
+    const stage = root.querySelector<HTMLElement>('[data-showreel-stage]');
+    const closeBtn = root.querySelector<HTMLElement>('[data-showreel-close]');
+
+    if (reel && video && cursor && overlay && stage && closeBtn) {
+      const dock = video.parentElement as HTMLElement;
+      let isOpen = false;
+      let placeholder: HTMLElement | null = null;
+
+      document.body.appendChild(cursor);
+      document.body.appendChild(overlay);
+
+      // autoplay only while >= 40% of the reel is visible; otherwise pause
+      // and restore the poster frame
+      const VISIBLE = 0.4;
+      if (!reduceMotion) new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (isOpen) continue;
+            if (e.intersectionRatio >= VISIBLE) {
+              if (video.paused) video.play().catch(() => {});
+            } else if (!video.paused) {
+              video.pause();
+              video.load(); // reset to show the poster again
+            }
+          }
+        },
+        { threshold: [0, VISIBLE] },
+      ).observe(reel);
+
+      // --- custom hover cursor (transform/opacity driven from JS) ---
+      cursor.style.opacity = '0';
+      cursor.style.transform = 'translate(-50%, -50%) scale(0)';
+      cursor.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+      const showCursor = (on: boolean) => {
+        cursor.style.opacity = on ? '1' : '0';
+        cursor.style.transform = `translate(-50%, -50%) scale(${on ? 1 : 0})`;
+      };
+
+      // remember the last viewport pointer position; scrolling fires no
+      // mousemove, so the reel can slide out from (or back under) a stationary
+      // pointer and strand the cursor
+      let px = -1;
+      let py = -1;
+      reel.addEventListener('mousemove', (e) => {
+        px = e.clientX;
+        py = e.clientY;
+        cursor.style.left = `${px}px`;
+        cursor.style.top = `${py}px`;
+        if (!isOpen) showCursor(true);
+      });
+      reel.addEventListener('mouseleave', () => showCursor(false));
+      // re-test whether the (stationary) pointer is still over the reel on scroll
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (isOpen || px < 0) return;
+          showCursor(reel.contains(document.elementFromPoint(px, py)));
+        },
+        { passive: true },
+      );
+
+      // --- FLIP scale animation between two parents ---
+      const flip = (move: () => void) => {
+        if (reduceMotion) {
+          move();
+          return;
+        }
+        const first = video.getBoundingClientRect();
+        video.style.transition = 'none';
+        video.style.transform = '';
+        move();
+        const last = video.getBoundingClientRect();
+        const dx = first.left - last.left;
+        const dy = first.top - last.top;
+        const sx = first.width / last.width;
+        const sy = first.height / last.height;
+        video.style.transformOrigin = 'top left';
+        video.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+        void video.getBoundingClientRect(); // force reflow
+        video.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        video.style.transform = '';
+      };
+
+      const STAGE_CLS = ['max-w-[90vw]', 'max-h-[85vh]', 'w-auto', 'cursor-default'];
+      const DOCK_CLS = ['w-full', 'aspect-video'];
+      const showOverlay = (on: boolean) => {
+        overlay.style.opacity = on ? '1' : '0';
+        overlay.style.pointerEvents = on ? 'auto' : 'none';
+        overlay.setAttribute('aria-hidden', String(!on));
+      };
+
+      const open = () => {
+        if (isOpen) return;
+        isOpen = true;
+        showCursor(false);
+        showOverlay(true);
+        flip(() => {
+          // hold the inline slot so content below doesn't jump up
+          const r = video.getBoundingClientRect();
+          placeholder = document.createElement('div');
+          placeholder.style.width = `${r.width}px`;
+          placeholder.style.height = `${r.height}px`;
+          dock.appendChild(placeholder);
+          stage.appendChild(video);
+          video.classList.remove(...DOCK_CLS);
+          video.classList.add(...STAGE_CLS);
+        });
+        video.muted = false;
+        video.controls = false;
+        video.currentTime = 0;
+        video.play();
+        document.body.style.overflow = 'hidden';
+      };
+
+      const close = () => {
+        if (!isOpen) return;
+        isOpen = false;
+        video.controls = false;
+        // lift the video above the (still-fading) overlay during the shrink so
+        // the backdrop never paints over it
+        video.style.position = 'relative';
+        video.style.zIndex = '9999999';
+        overlay.style.zIndex = '9999998';
+        showOverlay(false);
+        flip(() => {
+          placeholder?.remove();
+          placeholder = null;
+          dock.appendChild(video);
+          video.classList.remove(...STAGE_CLS);
+          video.classList.add(...DOCK_CLS);
+        });
+        const done = () => {
+          video.style.position = '';
+          video.style.zIndex = '';
+          overlay.style.zIndex = '';
+          video.removeEventListener('transitionend', done);
+        };
+        video.muted = true;
+        if (reduceMotion) {
+          // no shrink transition to wait for; back to the paused poster
+          done();
+          video.pause();
+          video.load();
+        } else {
+          video.addEventListener('transitionend', done);
+          video.play();
+        }
+        document.body.style.overflow = '';
+      };
+
+      video.addEventListener('click', () => {
+        if (!isOpen) open();
+      });
+      // block right-click context menu (no Save video as…)
+      video.addEventListener('contextmenu', (e) => e.preventDefault());
+      closeBtn.addEventListener('click', close);
+      // outside click (overlay backdrop, not the video) restores
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay || e.target === stage) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+    }
+  });
+</script>

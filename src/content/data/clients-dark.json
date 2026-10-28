@@ -1,0 +1,12 @@
+[
+  { "id": 0, "name": "CloudTech", "logo": "images/clients/01-dark.svg" },
+  { "id": 1, "name": "Clandestine", "logo": "images/clients/02-dark.svg" },
+  { "id": 2, "name": "Catalog", "logo": "images/clients/03-dark.svg" },
+  { "id": 3, "name": "Boltshift", "logo": "images/clients/04-dark.svg" },
+  { "id": 4, "name": "AlphaWave", "logo": "images/clients/05-dark.svg" },
+  { "id": 5, "name": "3Portals", "logo": "images/clients/06-dark.svg" },
+  { "id": 6, "name": "Codecraft", "logo": "images/clients/07-dark.svg" },
+  { "id": 7, "name": "Command+R", "logo": "images/clients/08-dark.svg" },
+  { "id": 8, "name": "Constellation", "logo": "images/clients/09-dark.svg" },
+  { "id": 9, "name": "Couperative", "logo": "images/clients/10-dark.svg" }
+]

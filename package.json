@@ -1,0 +1,49 @@
+{
+  "name": "obicol-astro",
+  "license": "UNLICENSED",
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier -w ./src",
+    "format:check": "prettier -c ./src"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/react": "^6.0.2",
+    "@astrojs/sitemap": "^3.7.3",
+    "@iconify-json/hugeicons": "^1.2.32",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.0",
+    "astro-embed": "^0.13.1",
+    "astro-icon": "^1.1.5",
+    "marked": "^18.0.9",
+    "motion": "^13.0.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "swiper": "^14.1.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/typography": "^0.5.20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwind-bootstrap-grid": "^7.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.1"
+  },
+  "overrides": {
+    "vite": "^8.2.1"
+  }
+}

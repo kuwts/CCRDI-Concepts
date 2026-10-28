@@ -1,0 +1,91 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string | undefined;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: "eager" | "lazy" | null | undefined;
+  decoding?: "async" | "auto" | "sync" | null | undefined;
+  format?: "auto" | "avif" | "jpeg" | "png" | "svg" | "webp";
+  class?: string;
+  style?: Record<string, string>;
+  widths?: number[];
+  sizes?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  loading,
+  decoding,
+  class: className,
+  format,
+  style,
+  widths,
+  sizes,
+} = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/**/*.{jpeg,jpg,png,gif,svg}'
+);
+
+const resolveImage = (path: string | undefined): string | null => {
+  if (!path) return null;
+
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+
+  const candidates = [
+    `/src/assets${normalized}`,
+    `/src/assets/images${normalized}`,
+    `/src${normalized}`,
+  ];
+
+  for (const candidate of candidates) {
+    if (images[candidate]) return candidate;
+  }
+
+  return null;
+};
+
+const resolvedSrc = resolveImage(src);
+let imgMeta: ImageMetadata | null = null;
+if (resolvedSrc && images[resolvedSrc]) {
+  const mod = await images[resolvedSrc]();
+  imgMeta = mod.default;
+}
+
+const imgWidth = width ?? imgMeta?.width ?? 800;
+const imgHeight = height ?? imgMeta?.height ?? 600;
+---
+
+{resolvedSrc && images[resolvedSrc] ? (
+  <Image
+    src={images[resolvedSrc]()}
+    alt={alt}
+    width={imgWidth}
+    height={imgHeight}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    format={format}
+    style={style}
+    widths={widths}
+    sizes={sizes}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    width={imgWidth}
+    height={imgHeight}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    style={style}
+  />
+)}

@@ -1,0 +1,176 @@
+---
+import { getEntry } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import LineLink from '@/components/LineLink.astro';
+import Button from '@/components/Button.astro';
+
+const contact = await getEntry('contact', 'index');
+const { header, intro, email, phone, address, form } = contact!.data;
+// Submissions go to Netlify Forms (form name "contact"). Where they're emailed is
+// set per site in the Netlify dashboard: Forms > Submission notifications.
+const fieldBase = 'mb-[30px] w-full px-[15px] border border-dark/30 bg-white text-dark font-medium transition-colors duration-200 focus:outline-none focus:shadow-none focus:border-primary';
+const fieldClass = `${fieldBase} h-12`;
+const selectClass = `${fieldClass} select-icon cursor-pointer`;
+const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
+---
+
+<Base title="Contact">
+  <PageHeader subtitle={header.subtitle} title={header.title} colClass="lg:col-10" />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="xl:col-11">
+          <div class="row justify-center">
+            <!-- Info -->
+            <div class="lg:col-5 mb-5 lg:mb-0">
+              <div class="pr-0 lg:pr-4">
+                <h4 class="text-dark has-anim fade mb-3 text-xl">{intro.title}</h4>
+                <p class="has-anim fade text-balance">{intro.text}</p>
+
+                <div class="mt-8 has-anim fade delay-100">
+                  <p class="mb-2 text-xs font-medium uppercase">{email.label}</p>
+                  <p>
+                    <LineLink href={`mailto:${email.value}`} label={email.value} tone="dark" />
+                  </p>
+                </div>
+                <div class="mt-8 has-anim fade delay-200">
+                  <p class="mb-2 text-xs font-medium uppercase">{phone.label}</p>
+                  <p>
+                    <LineLink href={`tel:${phone.value.replace(/\s/g, '')}`} label={phone.value} tone="dark" />
+                  </p>
+                </div>
+                <div class="mt-8 has-anim fade delay-300">
+                  <p class="mb-2 text-xs font-medium uppercase">{address.label}</p>
+                  {address.lines.map((l) => <p>{l}</p>)}
+                </div>
+              </div>
+            </div>
+
+            <!-- Form -->
+            <div class="lg:col-7 max-lg:mt-8">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                id="contact-form"
+              >
+                <input type="hidden" name="form-name" value="contact" />
+                <input type="hidden" name="subject" value="Message from Obicol Astro!" />
+                <!-- spam honeypot: hidden from people; Netlify rejects submissions that fill it -->
+                <p class="hidden">
+                  <label>Don’t fill this out if you’re human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+                </p>
+                <div class="row">
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <input type="text" name="name" class={fieldClass} placeholder="Your Name *" required />
+                  </div>
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <input type="email" name="email" class={fieldClass} placeholder="Your Email *" required />
+                  </div>
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <input type="tel" name="phone" class={fieldClass} placeholder="Your Phone *" required />
+                  </div>
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <input type="text" name="company" class={fieldClass} placeholder="Company" />
+                  </div>
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <select name="project_type" class={selectClass}>
+                      <option value="" disabled selected>Type of Project</option>
+                      {form.project_types.map((o) => <option value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div class="col-12 md:col-6 has-anim fade">
+                    <select name="budget" class={selectClass}>
+                      <option value="" disabled selected>Your Budget</option>
+                      {form.budgets.map((o) => <option value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div class="col-12 has-anim fade">
+                    <textarea name="message" class={textareaClass} rows="1" placeholder="Message *" required></textarea>
+                  </div>
+                  <div class="col-12 has-anim fade">
+                    <Button type="submit" label="Submit" variant="black" />
+                    <div class="status empty:hidden py-2 px-3 text-white font-medium text-sm mt-4" role="status" aria-live="polite"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const setupFormSubmit = () => {
+    const contactFormRef = document.getElementById("contact-form") as HTMLFormElement | null;
+
+    if (contactFormRef !== null) {
+      if (contactFormRef.dataset.initialized === "true") return;
+      contactFormRef.dataset.initialized = "true";
+
+      const submitBtnRef = contactFormRef.querySelector("button[type='submit']") as HTMLButtonElement | null;
+      const submitBtnTextRef = submitBtnRef?.innerHTML;
+      const statusRef = contactFormRef.querySelector(".status") as HTMLElement | null;
+
+      const showStatus = (ok: boolean, text: string) => {
+        if (!statusRef) return;
+        statusRef.style.backgroundColor = ok ? "#17a34a" : "#dc2625";
+        statusRef.textContent = text;
+      };
+      const resetButton = () => {
+        if (!submitBtnRef) return;
+        if (submitBtnTextRef) submitBtnRef.innerHTML = submitBtnTextRef;
+        submitBtnRef.disabled = false;
+      };
+
+      const formHandler = (e: Event): void => {
+        e.preventDefault();
+
+        if (statusRef) statusRef.textContent = "";
+        if (submitBtnRef) {
+          submitBtnRef.disabled = true;
+          const btnSpan = submitBtnRef.querySelector("span");
+          if (btnSpan) {
+            btnSpan.innerHTML = "Sending..";
+          } else {
+            submitBtnRef.innerHTML = "Sending..";
+          }
+        }
+
+        // Netlify Forms AJAX submission: URL-encoded body (JSON isn't supported),
+        // posted to "/"; form-name and the honeypot travel with the form fields.
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(new FormData(contactFormRef) as unknown as Record<string, string>).toString(),
+        })
+          .then((response) => {
+            // only a 2xx from Netlify counts as sent
+            if (!response.ok) throw new Error(`Form submission failed (${response.status})`);
+            showStatus(true, "Message sent successfully!");
+            contactFormRef.reset();
+          })
+          .catch(() => {
+            showStatus(false, "Sorry, your message couldn't be sent. Please try again in a moment.");
+          })
+          .finally(resetButton);
+      };
+
+      contactFormRef.addEventListener("submit", formHandler);
+    }
+  };
+
+  document.addEventListener('astro:page-load', setupFormSubmit);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupFormSubmit);
+  } else {
+    setupFormSubmit();
+  }
+</script>
+

@@ -1,0 +1,46 @@
+---
+interface Props {
+  subtitle?: string;
+  title?: string;
+  background?: 'light' | 'dark';
+  align?: 'left' | 'center';
+  dot?: boolean;
+  marginClass?: string;
+  class?: string;
+}
+
+const {
+  subtitle,
+  title,
+  background = 'light',
+  align = 'center',
+  dot = true,
+  marginClass = 'mb-14',
+  class: className = '',
+} = Astro.props;
+
+const titleColor = background === 'dark' ? 'text-white' : 'text-dark';
+const subTitleColor = background === 'dark' ? 'text-[#bbb]' : 'text-dark/50';
+---
+
+<div
+  class:list={[
+    '-mt-1.75',
+    marginClass,
+    align === 'center' ? 'text-center' : '',
+    className,
+  ]}
+>
+  {subtitle && <p class:list={['mb-2 font-medium has-anim', subTitleColor]}>{subtitle}</p>}
+  {title &&
+    <h2
+      class:list={[
+        'text-3xl font-semibold md:text-4xl has-anim delay-50 text-balance',
+        titleColor,
+        dot ? 'section-title-dot' : '',
+      ]}
+    >
+      {title}
+    </h2>
+  }
+</div>

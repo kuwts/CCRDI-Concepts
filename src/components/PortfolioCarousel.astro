@@ -1,0 +1,128 @@
+---
+import PortfolioCard from '@/components/PortfolioCard.astro';
+
+interface Project {
+  slug: string;
+  title: string;
+  category: string;
+  color: string;
+  carouselImage?: string;
+  image: string;
+}
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+// short lists are doubled so loop mode has enough slides; the counter still
+// reports the real number of projects
+const slideItems = projects.length < 8 ? [...projects, ...projects] : projects;
+const total = String(projects.length).padStart(2, '0');
+const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider text-black uppercase transition hover:opacity-60';
+---
+
+<div class="portfolio-carousel-fluid" data-total={projects.length}>
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      {
+        slideItems.map((p) => (
+          <div class="swiper-slide">
+            <PortfolioCard
+              variant="carousel"
+              href={`/portfolio/${p.slug}`}
+              image={p.carouselImage ?? p.image}
+              title={p.title}
+              category={p.category}
+              color={p.color}
+              titleClass="text-[30px] lg:text-[38px]"
+              class="mx-3.75 lg:mx-7.5 xl:mx-10 aspect-160/119 object-cover"
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="mt-4 text-center">
+    <button type="button" class:list={['pf-prev', btn]}>Prev</button>
+    <button type="button" class:list={['pf-next', btn]}>Next</button>
+  </div>
+
+  <div class="swipeCarousel-control pointer-events-none relative h-9.5">
+    <div class="pf-progress swiper-pagination"></div>
+    <div
+      class="absolute top-[calc(50%+5px)] left-[calc(50%-200px)] leading-none font-semibold text-black max-[575px]:left-[calc(50%-140px)]"
+      data-active
+    >
+      01
+    </div>
+    <div
+      class="absolute top-[calc(50%+5px)] right-[calc(50%-200px)] leading-none font-semibold text-black max-[575px]:right-[calc(50%-140px)]"
+    >
+      {total}
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .portfolio-carousel-fluid {
+    --swiper-pagination-color: var(--color-dark);
+    --swiper-pagination-progressbar-bg-color: rgba(200, 200, 200, 0.4);
+  }
+  .portfolio-carousel-fluid .swiper-pagination-progressbar {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 5px !important;
+    left: calc(50% - 165px) !important;
+    width: 330px !important;
+    height: 3px !important;
+  }
+  @media (max-width: 575px) {
+    .portfolio-carousel-fluid .swiper-pagination-progressbar {
+      left: calc(50% - 100px) !important;
+      width: 200px !important;
+    }
+  }
+</style>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+
+  document.querySelectorAll<HTMLElement>('.portfolio-carousel-fluid').forEach((root) => {
+    const el = root.querySelector<HTMLElement>('.swiper');
+    if (!el) return;
+
+    const active = root.querySelector<HTMLElement>('[data-active]');
+    const totalReal = Number(root.dataset.total) || 1;
+    const progressEl = root.querySelector<HTMLElement>('.pf-progress');
+    const nextEl = root.querySelector<HTMLElement>('.pf-next');
+    const prevEl = root.querySelector<HTMLElement>('.pf-prev');
+
+    new Swiper(el, {
+      modules: [Navigation, Pagination, Mousewheel, FreeMode],
+      slidesPerView: 2,
+      spaceBetween: 0,
+      speed: 600,
+      loop: true,
+      loopAdditionalSlides: 3,
+      centeredSlides: true,
+      freeMode: { enabled: true, sticky: false },
+      mousewheel: { forceToAxis: true, sensitivity: 1, releaseOnEdges: true },
+      breakpoints: {
+        0: { slidesPerView: 1 },
+        640: { slidesPerView: 2 },
+      },
+      pagination: progressEl ? { el: progressEl, type: 'progressbar' } : false,
+      navigation: nextEl && prevEl ? { nextEl, prevEl } : false,
+      on: {
+        slideChange(sw) {
+          if (active && typeof sw.realIndex === 'number')
+            active.textContent = String((sw.realIndex % totalReal) + 1).padStart(2, '0');
+        },
+      },
+    });
+  });
+</script>

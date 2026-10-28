@@ -1,0 +1,72 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import { getPosts } from '@/lib/content';
+import { animDelay } from '@/utils/animDelay';
+
+const posts = await getPosts();
+const initial = 4;
+const step = 4;
+---
+
+<Base title="Blog">
+  <PageHeader subtitle="Latest news" title="Our Blog Posts" dot />
+
+  <section class="bg-white pt-17.5 pb-25 max-md:pt-12.5 max-md:pb-20">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-11 mx-auto">
+          <div class="row" id="blog-grid">
+            {
+              posts.map((post, i) => (
+                <div
+                  id={`post-${i}`}
+                  class:list={[
+                    i === 0 ? 'col-12' : 'lg:col-4 md:col-6',
+                    'has-anim',
+                    'fade',
+                    animDelay[i % 3],
+                    i >= initial && 'hidden',
+                  ]}
+                >
+                  <BlogCard horizontal={i === 0} post={post} />
+                </div>
+              ))
+            }
+          </div>
+
+          <div class="has-anim text-center mt-16" data-load-more-wrap hidden={posts.length <= initial}>
+            <button
+              type="button"
+              data-load-more
+              data-total={posts.length}
+              data-step={step}
+              data-next={initial}
+              class="btn-circle btn-circle-white m-1 cursor-pointer"
+            >+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-load-more]');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const total = Number(btn.dataset.total);
+      const step = Number(btn.dataset.step);
+      let next = Number(btn.dataset.next);
+      const end = Math.min(next + step, total);
+      for (let i = next; i < end; i++) {
+        const el = document.getElementById(`post-${i}`);
+        if (el) el.classList.remove('hidden');
+      }
+      next = end;
+      btn.dataset.next = String(next);
+      if (next >= total) btn.closest('[data-load-more-wrap]')?.classList.add('hidden');
+    });
+  }
+</script>

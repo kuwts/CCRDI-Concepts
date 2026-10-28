@@ -1,0 +1,84 @@
+---
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+interface Props {
+  images: string[];
+}
+const { images } = Astro.props;
+
+const items = [...images, ...images];
+const duration = 20;
+---
+
+<div class="team-group-carousel marquee overflow-hidden">
+  <div class="marquee-track flex" data-marquee-track data-duration={duration}>
+    {
+      items.map((src, i) => (
+        <div
+          class="shrink-0"
+          data-duplicate={i >= images.length ? '' : undefined}
+          aria-hidden={i >= images.length ? 'true' : undefined}
+        >
+          <div class="team-group-image has-anim inline-block overflow-hidden text-center mx-4">
+            <AstroImage
+              src={src}
+              alt="team"
+              loading="lazy"
+              class="max-w-100 bg-gray-100"
+            />
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* reduced motion: no marquee; one set of photos the visitor can scroll by hand */
+  @media (prefers-reduced-motion: reduce) {
+    .team-group-carousel {
+      overflow-x: auto;
+    }
+    .team-group-carousel [data-duplicate] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-marquee-track]').forEach((track) => {
+    if (reduceMotion) return;
+
+    const duration = Number(track.dataset.duration) || 5;
+    let oneSet = 0;
+    let pos = 0;
+    let prev = 0;
+
+    const setOffset = () => {
+      oneSet = track.scrollWidth / 2;
+    };
+
+    const loop = (now: number) => {
+      const dt = prev ? (now - prev) / 1000 : 0;
+      prev = now;
+      if (oneSet > 0) {
+        const pxPerSec = oneSet / duration;
+        pos -= pxPerSec * dt;
+        if (pos <= -oneSet) pos += oneSet;
+        track.style.transform = `translateX(${pos}px)`;
+      }
+      requestAnimationFrame(loop);
+    };
+
+    const ro = new ResizeObserver(setOffset);
+    ro.observe(track);
+    window.addEventListener('resize', setOffset);
+    requestAnimationFrame((t) => {
+      setOffset();
+      prev = t;
+      loop(t);
+    });
+  });
+</script>

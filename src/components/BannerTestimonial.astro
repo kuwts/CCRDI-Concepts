@@ -1,0 +1,68 @@
+---
+import { Icon } from 'astro-icon/components';
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+interface Props {
+  proof: {
+    label: string;
+    avatars: {
+      image: string;
+      name: string;
+      role: string;
+      social: { icon: string; url: string };
+    }[];
+  },
+  class: string
+}
+
+const { proof, class: className } = Astro.props;
+if (!proof) return;
+const { avatars, label } = proof;
+---
+
+<div class={`mt-10 flex items-center max-lg:justify-center gap-x-4 ${className}`}>
+  <div class="flex">
+    {
+      avatars.map((a, i) => (
+        <div
+          class:list={[
+            'group/av relative z-10 block transition-transform hover:z-30',
+            i > 0 && '-ml-4',
+          ]}
+        >
+          <AstroImage
+            src={a.image}
+            alt={a.name}
+            width={48}
+            height={48}
+            loading="lazy"
+            class="size-10 sm:size-12 rounded-full object-cover border border-[#74484a] cursor-pointer group-hover/av:border-white/80 transition-all bg-gray-100"
+          />
+
+          <div class="invisible absolute bottom-full left-1/2 z-20 w-max max-w-[16rem] -translate-x-1/2 pb-4 text-left opacity-0 transition-all duration-300 group-hover/av:visible group-hover/av:opacity-100">
+            <div class="relative bg-white text-dark px-4 py-3 shadow-xl">
+              <div class="flex items-start gap-4">
+                <div>
+                  <p class="font-medium">{a.name}</p>
+                  <p class="mt-0.5 text-xs">{a.role}</p>
+                </div>
+                <a
+                  href={a.social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${a.name} on LinkedIn`}
+                  class="ml-auto shrink-0 transition hover:opacity-70 mt-0.5"
+                >
+                  <Icon name={a.social.icon} class="size-5" />
+                </a>
+              </div>
+              <span class="absolute left-1/2 top-full size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" />
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="max-w-28 text-sm leading-snug text-muted text-start">{label}</p>
+</div>

@@ -1,0 +1,106 @@
+---
+interface Props {
+  src: string | undefined;
+  poster?: string;
+  class?: string;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  playsinline?: boolean;
+  preload?: "auto" | "metadata" | "none";
+  width?: number;
+  height?: number;
+  [key: string]: unknown;
+}
+
+const {
+  src,
+  poster,
+  class: className,
+  autoplay = false,
+  loop = false,
+  muted = false,
+  controls = false,
+  playsinline = false,
+  preload = "metadata",
+  width,
+  height,
+  ...rest
+} = Astro.props;
+
+const videoModules = import.meta.glob<{ default: string }>(
+  '/src/assets/**/*.{mp4,webm,ogv,ogg,mov}'
+);
+const imageModules = import.meta.glob<{ default: string | { src: string } }>(
+  '/src/assets/**/*.{jpeg,jpg,png,gif,svg}'
+);
+
+const resolveFromGlob = async (
+  path: string | undefined,
+  glob: Record<string, () => Promise<{ default: string | { src: string } }>>,
+): Promise<string | null> => {
+  if (!path) return null;
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const candidates = [
+    `/src/assets${normalized}`,
+    `/src/assets/images${normalized}`,
+    `/src${normalized}`,
+  ];
+  for (const candidate of candidates) {
+    if (glob[candidate]) {
+      const mod = await glob[candidate]();
+      return typeof mod.default === 'string' ? mod.default : mod.default.src;
+    }
+  }
+  return null;
+};
+
+const resolvedSrc = await resolveFromGlob(src, videoModules);
+const resolvedPoster = await resolveFromGlob(poster, imageModules);
+const posterUrl = resolvedPoster ?? (poster as string) ?? "";
+
+const MIME: Record<string, string> = {
+  mp4: 'video/mp4',
+  webm: 'video/webm',
+  ogv: 'video/ogg',
+  ogg: 'video/ogg',
+  mov: 'video/quicktime',
+};
+
+const ext = src?.split('.').pop()?.toLowerCase() ?? '';
+const type = MIME[ext] ?? `video/${ext}`;
+---
+
+{resolvedSrc ? (
+  <video
+    class={className}
+    poster={posterUrl || undefined}
+    autoplay={autoplay}
+    loop={loop}
+    muted={muted}
+    controls={controls}
+    playsinline={playsinline}
+    preload={preload}
+    width={width}
+    height={height}
+    {...rest}
+  >
+    <source src={resolvedSrc} type={type} />
+  </video>
+) : (
+  <video
+    class={className}
+    src={src}
+    poster={posterUrl || undefined}
+    autoplay={autoplay}
+    loop={loop}
+    muted={muted}
+    controls={controls}
+    playsinline={playsinline}
+    preload={preload}
+    width={width}
+    height={height}
+    {...rest}
+  />
+)}

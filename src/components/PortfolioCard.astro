@@ -1,0 +1,97 @@
+---
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  category: string;
+  color: string;
+  image: string;
+  variant?: 'grid' | 'carousel';
+  titleClass?: string;
+  class?: string;
+}
+
+const {
+  href,
+  title,
+  category,
+  color,
+  image,
+  variant = 'grid',
+  titleClass = 'text-[30px]',
+  class: className = '',
+} = Astro.props;
+
+const ease = '[transition-timing-function:cubic-bezier(.2,1,.2,1)]';
+---
+
+<div class:list={['group relative block overflow-hidden', className]}>
+  <span class="relative block overflow-hidden">
+    <AstroImage
+      src={image}
+      alt={title}
+      loading="lazy"
+      class:list={[
+        'h-auto w-full max-w-full transition-transform duration-700 group-hover:scale-[1.2] bg-gray-100',
+        ease,
+      ]}
+    />
+    <span
+      class="absolute inset-0 z-2 opacity-0 transition-opacity duration-300 group-hover:opacity-95"
+      style={`background-color:${color}`}></span>
+    <!-- touch devices: titles are always shown, so darken the image behind them -->
+    <span
+      class:list={[
+        'absolute inset-0 z-2 hidden touch:block',
+        variant === 'carousel' ? 'bg-black/40' : 'bg-linear-to-t from-black/70 via-black/10 to-transparent',
+      ]}></span>
+  </span>
+
+  {
+    variant === 'carousel' ? (
+      <div class="absolute inset-0 z-3 flex items-center justify-center p-5 text-center">
+        <div>
+          <h3
+            class:list={[
+              'mb-3 translate-y-15 font-bold text-white opacity-0 transition-all delay-0 duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:delay-200 touch:translate-y-0 touch:opacity-100',
+              titleClass,
+              ease,
+            ]}
+          >
+            <a href={href} class="text-white underline decoration-transparent underline-offset-5 decoration-3 hover:decoration-white transition-all duration-300">
+              {title}
+            </a>
+          </h3>
+          <span class="block text-[15px] text-white translate-y-15 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 group-hover:delay-200 touch:translate-y-0 touch:opacity-100">
+            {category}
+          </span>
+        </div>
+      </div>
+    ) : (
+      <div class="absolute inset-x-0 bottom-0 z-3 p-8 md:p-12">
+        <div class="overflow-hidden">
+          <span
+            class:list={[
+              'mb-2 block translate-y-[calc(-100%-15px)] text-[15px] text-white/80 transition-transform duration-700 group-hover:translate-y-0 touch:translate-y-0',
+              ease,
+            ]}
+          >
+            {category}
+          </span>
+          <h3
+            class:list={[
+              'mb-0 translate-y-full font-bold text-white transition-transform duration-700 group-hover:translate-y-0 touch:translate-y-0',
+              titleClass,
+              ease,
+            ]}
+          >
+            <a href={href} class="text-white underline decoration-transparent underline-offset-4 decoration-2 hover:decoration-white transition-all duration-300">
+              {title}
+            </a>
+          </h3>
+        </div>
+      </div>
+    )
+  }
+</div>

@@ -1,0 +1,125 @@
+---
+import AstroImage from '@/components/helper/AstroImage.astro';
+import { markdownify } from "@/utils/textConverter";
+import { animDelay } from '@/utils/animDelay';
+import CounterUp from '@/components/CounterUp';
+
+interface Props {
+  facts: any;
+}
+
+const { facts } = Astro.props;
+---
+
+<section class="pb-20 md:pb-25 text-muted">
+  <div class="container">
+    <div class="grid grid-cols-12 gap-6">
+
+      <!-- Intro -->
+      <div class="col-span-12 xl:col-span-8 order-0">
+        <div class="bg-white/3 h-full has-anim fade flex max-md:flex-col">
+
+          <AstroImage
+            src={facts.image}
+            alt="about stats"
+            width={1394}
+            height={1128}
+            class="w-auto md:max-h-75 max-md:w-full bg-white/3"
+          />
+
+          <div
+            class="text-white p-8 md:p-10 flex flex-col gap-4 [&>strong]:block [&>strong]:text-xl [&>em]:text-4xl [&>em]:not-italic [&>em]:mb-auto max-lg:text-[15px]"
+            set:html={markdownify(facts.title)}
+          />
+
+        </div>
+      </div>
+
+      <!-- Philosophy -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-4 order-1">
+        <div class="bg-white/3 p-8 md:p-10 h-full has-anim fade delay-100 flex flex-col justify-between">
+
+          <div>
+            <span class="uppercase tracking-widest text-xs">
+              {facts.philosophy.label}
+            </span>
+
+            <p class="mt-6 text-white">
+              {facts.philosophy.title}
+            </p>
+          </div>
+
+          <p class="mt-8 text-white/70 leading-relaxed text-balance">
+            {facts.philosophy.description}
+          </p>
+
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="col-span-12 xl:col-span-6 order-3 xl:order-2">
+        <div class="h-full grid grid-cols-12 gap-6">
+          <div class="bg-white/3 p-8 md:p-10 has-anim fade delay-200 col-span-12 md:col-span-7 lg:col-span-8 xl:col-span-12 max-xl:flex flex-col">
+
+            <span class="uppercase tracking-widest text-xs text-white/80">
+              {facts.hero.label}
+            </span>
+
+            <p class="mt-5 text-3xl md:text-5xl font-semibold text-white mb-auto">
+              <CounterUp client:visible={{ rootMargin: '200px' }} value={facts.hero.value} />
+            </p>
+
+            <p class="mt-6 max-w-sm text-white/70 text-balance">
+              {facts.hero.description}
+            </p>
+
+          </div>
+
+          <!-- Bottom Stats -->
+          <div class="grid grid-cols-12 gap-6 col-span-12 md:col-span-5 lg:col-span-4 xl:col-span-12">
+            {facts.stats.map((stat: any, i: number) => (
+              <div class="col-span-6 md:col-span-12 xl:col-span-4 max-md:last:col-span-12">
+                <div
+                  class:list={[
+                    "bg-white/3 h-full py-8 px-8 md:px-4 md:text-center has-anim fade grid md:place-content-center",
+                    animDelay[i],
+                  ]}
+                >
+                  <p class="text-white text-3xl font-semibold">
+                    <CounterUp client:visible={{ rootMargin: '200px' }} value={stat.value} />
+                  </p>
+
+                  <p class="mt-2 text-white/60">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact -->
+      <div class="col-span-12 md:col-span-6 order-2 xl:order-3">
+        <div class="bg-white/3 p-10 h-full has-anim fade delay-400 flex flex-col justify-between">
+
+          <div>
+            <span class="uppercase tracking-widest text-xs">
+              {facts.impact.label}
+            </span>
+
+            <p class="mt-5 text-3xl md:text-5xl font-semibold text-white">
+              <CounterUp client:visible={{ rootMargin: '200px' }} value={facts.impact.value} />
+            </p>
+          </div>
+
+          <p class="mt-6 max-w-sm text-white/70 text-balance">
+            {facts.impact.description}
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
