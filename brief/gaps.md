@@ -91,7 +91,18 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
         ethical issues that would negate them from consideration."
       - "Nominating Award-Winners": "After the list of companies has been refined, market
         insights are integrated with AI results."
-- [ ] Award winners directory URL
+- [ ] **Confirm the award winners directory link.** "Find a Trusted Business" (header and
+      homepage hero) now goes to https://ccaward.com/award-winners/, the official Consumer
+      Choice Award winners directory (Canada and USA), linked as "Award Winners" in
+      ccaward.com's navigation; opens in a new tab. The Canada-only directory is
+      https://ccaward.com/award-winners/canada/ if the client prefers it.
+- [ ] **Confirm the footer social links.** They are Consumer Choice Award's official accounts,
+      as linked from ccaward.com's header and footer (CCC has no accounts of its own yet):
+      Facebook https://www.facebook.com/consumerchoiceaward/, Instagram
+      https://www.instagram.com/consumerchoiceaward/, LinkedIn
+      https://www.linkedin.com/company/consumer-choice-award/, X https://twitter.com/Consumer_CA,
+      YouTube https://www.youtube.com/@ConsumerChoiceAward. Placeholder (#) social links are
+      now hidden automatically.
 - [ ] Privacy policy text
 - [ ] Accessibility Statement text
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
@@ -145,11 +156,12 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Header and footer logo: temporary text wordmark "Consumer Choice Canada"
   (images/placeholders/logo-wordmark.svg) until [CLIENT TO PROVIDE: CCC logo]
 - Favicon set and share image: still the theme's files until supplied
-- Header button "Find a Trusted Business": link [CLIENT TO PROVIDE: award winners directory URL]
-- Footer email: [CLIENT TO PROVIDE: email]
+- Header button "Find a Trusted Business": ccaward.com award winners directory, pending
+  confirmation (see Still needed)
+- Footer email: [CLIENT TO PROVIDE: email] (shown as text, not a link, until it's a real address)
 - Footer phone: [CLIENT TO PROVIDE: phone]
 - Footer address: [CLIENT TO PROVIDE: address]
-- Footer social links (Facebook, X, Instagram, LinkedIn): [CLIENT TO PROVIDE: social URLs]
+- Footer social links: Consumer Choice Award's accounts, pending confirmation (see Still needed)
 - Footer brand links: [CLIENT TO PROVIDE: Consumer Choice Award URL],
   [CLIENT TO PROVIDE: Consumer Choice Marketing URL], [CLIENT TO PROVIDE: CCRDI URL]
 - Anniversary seal (hero and footer): 1987, pending confirmation (see Still needed)

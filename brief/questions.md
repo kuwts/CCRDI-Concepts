@@ -27,3 +27,13 @@ the meantime (the safest reasonable one); none of them is hard to undo.
    messages ("Recognizing businesses that earn consumer trust", "Helping award-winning
    businesses tell their story and grow"); CCRDI uses its §7 hero heading "Data That Builds
    Better Businesses". OK as headings?
+9. **Social links in structured data.** The footer now links to Consumer Choice Award's official
+   social accounts (from ccaward.com). The homepage's Organization structured data lists the
+   site's social links as `sameAs`, so search engines are told those are Consumer Choice
+   Canada's profiles. Keep that, or leave them out of `sameAs` until CCC has its own accounts?
+10. **Winners directory scope.** "Find a Trusted Business" goes to the full directory
+    (https://ccaward.com/award-winners/, Canada and USA). Use the Canada-only page instead?
+11. **Truncated instruction.** The last request ended at "Footer"; it was read as the audit's
+    footer email fix (a placeholder is now plain text, not a broken mailto: link). Say if
+    something else was meant.
+

@@ -37,7 +37,7 @@ const gridPosts = otherPosts.slice(0, 3);
               {banner.title}<span class="text-primary" aria-hidden="true">.</span>
             </h1>
             <div class="flex max-sm:flex-col items-center max-lg:justify-center gap-x-8 gap-y-5 sm:gap-x-10 has-anim fade delay-150">
-              <Button href={banner.primary_cta.href} label={banner.primary_cta.label} class="max-sm:w-full" />
+              <Button href={banner.primary_cta.href} label={banner.primary_cta.label} target={banner.primary_cta.target} class="max-sm:w-full" />
               <LineLink
                 href={banner.secondary_cta.href}
                 label={banner.secondary_cta.label}

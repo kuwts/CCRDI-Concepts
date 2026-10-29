@@ -32,8 +32,13 @@ const { logo } = site.brand;
 
       <div class="lg:col-5 md:col-5 mb-12 md:mb-0 has-anim fade">
         <p class="mb-6 max-w-md text-[15px] leading-relaxed">{footer.description}</p>
+        {/* a real address is a mailto: link; a placeholder is plain text */}
         <p class="mb-6 font-light text-xl sm:text-2xl">
-          <LineLink href={`mailto:${footer.email}`} label={footer.email} />
+          {footer.email.includes('@') ? (
+            <LineLink href={`mailto:${footer.email}`} label={footer.email} />
+          ) : (
+            <span class="text-white">{footer.email}</span>
+          )}
         </p>
         <p>{footer.phone}</p>
         <p>{footer.address_line_1}</p>
@@ -84,9 +89,10 @@ const { logo } = site.brand;
             </p>
           </div>
           <div class="lg:col-6 order-0 lg:order-1 max-lg:mb-4">
+            {/* only real links; placeholder (#) entries are hidden rather than left dead */}
             <ul class="flex flex-wrap gap-x-4 sm:gap-x-7">
-              {social.map((s) => (
-                <li><a href={s.url} class={linkClass}>{s.name}</a></li>
+              {social.filter((s) => /^https?:\/\//.test(s.url)).map((s) => (
+                <li><a href={s.url} class={linkClass} target="_blank" rel="noopener">{s.name}</a></li>
               ))}
             </ul>
           </div>

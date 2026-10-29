@@ -1,6 +1,7 @@
 [
-  { "name": "Facebook", "url": "#!" },
-  { "name": "Twitter", "url": "#!" },
-  { "name": "Instagram", "url": "#!" },
-  { "name": "Linkedin", "url": "#!" }
+  { "name": "Facebook", "url": "https://www.facebook.com/consumerchoiceaward/" },
+  { "name": "Instagram", "url": "https://www.instagram.com/consumerchoiceaward/" },
+  { "name": "LinkedIn", "url": "https://www.linkedin.com/company/consumer-choice-award/" },
+  { "name": "X", "url": "https://twitter.com/Consumer_CA" },
+  { "name": "YouTube", "url": "https://www.youtube.com/@ConsumerChoiceAward" }
 ]
