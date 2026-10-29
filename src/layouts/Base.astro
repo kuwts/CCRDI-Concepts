@@ -1,6 +1,5 @@
 ---
 import config from '@/config/site.config.json';
-import social from '@/config/social.json';
 import { absoluteImageURL } from '@/lib/seo';
 import type { Seo } from '@/types/shared';
 import Header from '@/components/Header.astro';
@@ -71,9 +70,12 @@ const brandVars =
   `--brand-font-heading:'${brand.font.heading.name}',${brand.font.heading.fallback};` +
   `--brand-font-body:'${brand.font.body.name}',${brand.font.body.fallback};`;
 
-// Organization structured data, on the homepage only (as Google recommends)
+// Organization structured data, on the homepage only (as Google recommends).
+// No `sameAs`: the footer's social links are Consumer Choice Award's accounts, not
+// CCC's own profiles (add CCC's profile URLs here when it has them; brief/gaps.md).
+// Placeholder contact details are left out rather than published as data.
 const isHome = Astro.url.pathname === '/';
-const sameAs = social.map((s) => s.url).filter((url) => /^https?:\/\//.test(url));
+const real = (v: string) => (v && !v.includes('CLIENT TO PROVIDE') ? v : undefined);
 const organization = isHome
   ? {
       '@context': 'https://schema.org',
@@ -82,10 +84,9 @@ const organization = isHome
       url: new URL('/', site).href,
       logo: await absoluteImageURL(brand.logo.src, site),
       description: siteSeo.description,
-      email: footer.email,
-      telephone: footer.phone,
-      address: [footer.address_line_1, footer.address_line_2].filter(Boolean).join(', '),
-      ...(sameAs.length ? { sameAs } : {}),
+      email: real(footer.email),
+      telephone: real(footer.phone),
+      address: real([footer.address_line_1, footer.address_line_2].filter(Boolean).join(', ')),
     }
   : null;
 ---

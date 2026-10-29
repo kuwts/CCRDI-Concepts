@@ -27,7 +27,8 @@ the meantime (the safest reasonable one); none of them is hard to undo.
    messages ("Recognizing businesses that earn consumer trust", "Helping award-winning
    businesses tell their story and grow"); CCRDI uses its §7 hero heading "Data That Builds
    Better Businesses". OK as headings?
-9. **Social links in structured data.** The footer now links to Consumer Choice Award's official
+9. **Social links in structured data.** *Answered: removed from the structured data, kept as
+   footer links (gaps.md).* The footer now links to Consumer Choice Award's official
    social accounts (from ccaward.com). The homepage's Organization structured data lists the
    site's social links as `sameAs`, so search engines are told those are Consumer Choice
    Canada's profiles. Keep that, or leave them out of `sameAs` until CCC has its own accounts?

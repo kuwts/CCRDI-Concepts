@@ -135,6 +135,12 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       https://www.linkedin.com/company/consumer-choice-award/, X https://twitter.com/Consumer_CA,
       YouTube https://www.youtube.com/@ConsumerChoiceAward. Placeholder (#) social links are
       now hidden automatically.
+- [ ] **CCC's own social profiles.** The homepage's Organization structured data has no
+      `sameAs` (the list that tells search engines which social profiles belong to the
+      organization), because the footer accounts above are Consumer Choice Award's, not
+      Consumer Choice Canada's. Add CCC's own profile URLs as `sameAs` in `Base.astro` when the
+      client has them. The structured data also leaves out the email, phone and address until
+      they're real (placeholders are not published as data).
 - [ ] Privacy policy text
 - [ ] Accessibility Statement text
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
