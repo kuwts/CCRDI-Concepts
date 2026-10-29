@@ -42,3 +42,14 @@ the meantime (the safest reasonable one); none of them is hard to undo.
     so every canonical URL, `og:url`, share image URL, the XML sitemap and robots.txt point to
     example.com. What is the live domain for the Consumer Choice Canada site? It is not guessed;
     it stays as it is until you confirm it (audit.md, Broken #2).
+13. **More Consumer Choice Marketing copy (for the client).** The Consumer Choice Marketing page
+    is the thinnest on the site: framework sections 1 to 13 give it only a core message, a
+    one-liner, a relationship line and a tagline, and its service list ("Digital marketing",
+    "Content", "Brand amplification", "Reputation") comes from the draft notes and is still
+    unconfirmed. To fill the page out, please supply:
+    - **Services:** what Consumer Choice Marketing offers award winners, with a short
+      description of each
+    - **Approach:** how it works with a business, from recognition to campaign
+    - **Results:** outcomes it can point to (real figures or examples only, with permission
+      to publish them)
+    - **Testimonials:** quotes from businesses it has worked with, to replace the placeholders
