@@ -247,6 +247,35 @@ export const anniversary = defineCollection({
   }),
 });
 
+/* ── For Businesses page ──────────────────────────────────────────── */
+export const businesses = defineCollection({
+  loader: singleton('businesses'),
+  schema: z.object({
+    seo: seoSchema,
+    title: z.string(),
+    // audiences (WorkProcess) with its contact strip
+    audiences: z.object({
+      title: z.string(),
+      steps: z.array(z.object({ heading: z.string(), text: z.string() })),
+      cta: z.object({ title: z.string(), button: linkSchema }),
+    }),
+    // brand cards (BlogCard plain items)
+    brands: z.object({
+      title: z.string(),
+      items: z.array(
+        z.object({
+          title: z.string(),
+          description: z.string(),
+          category: z.string().optional(),
+          image: z.string().optional(),
+          image_alt: z.string().optional(),
+          href: z.string(),
+        }),
+      ),
+    }),
+  }),
+});
+
 /* ── Services page ─────────────────────────────────────────────────── */
 export const services = defineCollection({
   loader: singleton('services'),

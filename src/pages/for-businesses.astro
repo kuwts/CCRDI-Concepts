@@ -1,0 +1,39 @@
+---
+// For Businesses: a Services-overview page composed from the theme's own sections
+// (PageHeader, WorkProcess, the homepage news cards); plan in brief/page-plans.md
+import { getEntry } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import WorkProcess from '@/components/WorkProcess.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import { animDelay } from '@/utils/animDelay';
+
+const entry = await getEntry('businesses', 'index');
+const { title, audiences, brands } = entry!.data;
+// plain card items: the date line is left empty (these aren't news posts)
+const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }));
+---
+
+<Base title={title} seo={entry!.data.seo}>
+  <PageHeader subtitle="" title={title} />
+
+  <!-- Audiences + contact path -->
+  <WorkProcess subtitle="" title={audiences.title} steps={audiences.steps} cta={audiences.cta} columns={3} class="-mt-24 sm:-mt-28" />
+  {/* negative top margin: follows the page header directly, as on the Services page */}
+
+  <!-- Consumer Choice Marketing and CCRDI -->
+  <section class="bg-white py-20 md:py-25">
+    <div class="container">
+      <SectionTitle title={brands.title} />
+      <div class="row">
+        {cards.map((item, i) => (
+          <div class:list={['md:col-6 has-anim', animDelay[i]]}>
+            <BlogCard item={item} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

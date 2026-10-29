@@ -14,29 +14,32 @@ interface Props {
   steps: Step[];
   cta: {
     title: string;
-    /** a plain path is decorative; `{ src, alt }` describes the photo */
-    images: (string | { src: string; alt?: string })[];
+    /** a plain path is decorative; `{ src, alt }` describes the photo; empty = no photos */
+    images?: (string | { src: string; alt?: string })[];
     button: {
       label: string;
       href: string;
     };
   };
+  /** cards per row from lg (default 4) */
+  columns?: 3 | 4;
+  class?: string;
 }
-const { subtitle, title, steps, cta } = Astro.props;
+const { subtitle, title, steps, cta, columns = 4, class: className = '' } = Astro.props;
 const symbols = ['✳', '✺', '✲', '❋'];
-const stripImages = cta.images.map((img) =>
+const stripImages = (cta.images ?? []).map((img) =>
   typeof img === 'string' ? { src: img, alt: '' } : { src: img.src, alt: img.alt ?? '' },
 );
 ---
 
-<section class="overflow-hidden py-20 md:py-25">
+<section class:list={['overflow-hidden py-20 md:py-25', className]}>
   <div class="container">
     <SectionTitle subtitle={subtitle} title={title} background="dark" />
     
     <div class="row -mt-6">
       {
         steps.map((step, i) => (
-          <div class:list={['lg:col-3 sm:col-6 has-anim mt-6', animDelay[i]]}>
+          <div class:list={[columns === 3 ? 'lg:col-4' : 'lg:col-3', 'sm:col-6 has-anim mt-6', animDelay[i]]}>
             <div class:list={
               ['h-full flex flex-col bg-white/5 mx-auto text-white px-8 py-8 overflow-clip relative', i == 0 ? 'active' : '']
             }>
@@ -53,11 +56,11 @@ const stripImages = cta.images.map((img) =>
 
     <div class="flex max-md:flex-col flex-wrap items-center mt-8 border-t border-white/5 pt-8">
       <div class="flex max-md:flex-col items-center gap-4 has-anim delay-100 max-md:text-center">
-        <div class="flex">
+        {stripImages.length > 0 && <div class="flex">
           {stripImages.map((img, i) => (
             <AstroImage src={`/${img.src}`} alt={img.alt} class:list={['max-h-10 rounded-full', i > 0 ? '-ms-2' : '']} width={40} height={40} />
           ))}
-        </div>
+        </div>}
         <p class="text-white text-balance">{cta.title}</p>
       </div>
       <div class="md:ms-auto max-md:mt-6 has-anim delay-200">
