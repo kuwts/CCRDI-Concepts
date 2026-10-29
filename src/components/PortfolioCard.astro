@@ -28,7 +28,7 @@ const {
   imageAlt = '',
   tone = 'white',
   variant = 'grid',
-  titleClass = 'text-[30px]',
+  titleClass = 'text-h3',
   as: Heading = 'h3',
   class: className = '',
 } = Astro.props;
@@ -68,7 +68,7 @@ const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
         <div>
           <Heading
             class:list={[
-              'mb-3 translate-y-15 font-bold opacity-0 transition-all delay-0 duration-300 group-hover:opacity-100 group-hover:delay-200 group-focus-within:opacity-100 touch:translate-y-0 touch:opacity-100 break-words',
+              'mb-3 translate-y-15 opacity-0 transition-all delay-0 duration-300 group-hover:opacity-100 group-hover:delay-200 group-focus-within:opacity-100 touch:translate-y-0 touch:opacity-100 break-words',
               reveal,
               titleClass,
               ease,
@@ -98,7 +98,7 @@ const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
           </span>
           <Heading
             class:list={[
-              'mb-0 translate-y-full font-bold text-white transition-transform duration-700 touch:translate-y-0 break-words',
+              'mb-0 translate-y-full text-white transition-transform duration-700 touch:translate-y-0 break-words',
               reveal,
               titleClass,
               ease,

@@ -32,12 +32,12 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
           <div class="lg:col-8">
             <div class="lg:grid grid-cols-12 sticky top-22">
               <div class="lg:col-span-3 max-lg:mb-4">
-                <p class="text-sm text-dark block lg:table-caption has-anim fade">{intro.section_title}</p>
+                <p class="text-eyebrow uppercase text-gold-text block lg:table-caption has-anim fade">{intro.section_title}</p>
               </div>
               <div class="lg:col-span-9 space-y-8">
                 <div class="space-y-5">
-                  <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-black has-anim fade">{intro.title}</h2>
-                  <p class="text-dark leading-relaxed max-w-xl text-balance has-anim fade delay-100">{intro.description}</p>
+                  <h2 class="text-statement text-dark has-anim fade">{intro.title}</h2>
+                  <p class="text-body text-text max-w-measure has-anim fade delay-100">{intro.description}</p>
                 </div>
                 <div class="flex flex-col items-start gap-2.5 pt-2">
                   {intro.info.map((item, i) => (

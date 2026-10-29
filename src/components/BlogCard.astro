@@ -47,7 +47,7 @@ const meta = post
   ? [formatDate(post.data.date), readingTime(post.body ?? '')]
   : [item?.date ?? ''];
 
-const headingClass = 'text-balance leading-snug font-bold text-dark underline decoration-transparent transition group-hover/img:text-black group-hover/img:decoration-dark/70 break-words';
+const headingClass = 'text-dark underline decoration-transparent transition group-hover/img:text-black group-hover/img:decoration-dark/70 break-words';
 // wraps when the label is wider than the card (long taglines)
 const chipClass = 'text-[13px] sm:text-xs tracking-wider text-dark/80 uppercase bg-dark/5 px-2 py-1 inline-block w-fit max-w-full';
 // posts are clamped to 2 lines; plain items (approved copy) are shown in full
@@ -83,7 +83,7 @@ const clamp = post ? 'line-clamp-2' : '';
         <div class="lg:col-6">
           <div class="mt-6 sm:mt-8 lg:mt-0 text-dark lg:h-full p-0 lg:p-6 lg:flex flex-col">
             {category && <span class:list={['mb-6', chipClass]}>{category}</span>}
-            <Heading class:list={['text-xl sm:text-[30px]', headingClass]}>
+            <Heading class:list={['text-statement', headingClass]}>
               {title}
             </Heading>
             <p class:list={['my-6 text-[15px]', clamp]}>{description}</p>
@@ -110,7 +110,7 @@ const clamp = post ? 'line-clamp-2' : '';
         </a>
         <div class="mt-6 text-dark h-full">
           {category && <span class:list={['mb-4', chipClass]}>{category}</span>}
-          <Heading class:list={['text-xl sm:text-[24px]', clamp, headingClass]}>
+          <Heading class:list={['text-h3', clamp, headingClass]}>
             {title}
           </Heading>
           <p class:list={['mt-3 mb-6 text-[15px]', clamp]}>{description}</p>

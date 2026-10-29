@@ -33,8 +33,8 @@ const gridPosts = otherPosts.slice(0, 3);
         <div class="row md:justify-center">
           <div class="xl:col-6 lg:col-7 md:col-10">
             <p class="mb-4 font-medium has-anim fade">{banner.subtitle}</p>
-            <h1 class="mb-8 leading-tight font-medium text-3xl sm:text-5xl md:text-[56px] has-anim fade delay-100">
-              {banner.title}<span class="text-primary" aria-hidden="true">.</span>
+            <h1 class="mb-8 text-display has-anim fade delay-100">
+              {banner.title}
             </h1>
             <div class="flex max-sm:flex-col items-center max-lg:justify-center gap-x-8 gap-y-5 sm:gap-x-10 has-anim fade delay-150">
               <Button href={banner.primary_cta.href} label={banner.primary_cta.label} target={banner.primary_cta.target} class="max-sm:w-full" />
@@ -48,7 +48,7 @@ const gridPosts = otherPosts.slice(0, 3);
           </div>
 
           <div class="xl:col-4 lg:col-5 md:col-10 has-anim fade delay-100 mt-8 lg:mt-13">
-            <p class="lg:text-xl mb-8 leading-relaxed max-lg:text-balance has-anim fade delay-100">{banner.lead}</p>
+            <p class="text-lead mb-8 has-anim fade delay-100">{banner.lead}</p>
             <BannerTestimonial class="has-anim fade delay-150" proof={banner.social_proof} />
           </div>
         </div>
@@ -92,17 +92,17 @@ const gridPosts = otherPosts.slice(0, 3);
         <div class="lg:col-8">
           <div class="lg:grid grid-cols-12 sticky top-22">
             <div class="lg:col-span-3 max-lg:mb-4">
-              <p class="text-sm text-dark block lg:table-caption has-anim fade">
+              <p class="text-eyebrow uppercase text-gold-text block lg:table-caption has-anim fade">
                 {intro.section_title}
               </p>
             </div>
             
             <div class="lg:col-span-9 space-y-8">
               <div class="space-y-5">
-                <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-black has-anim fade">
+                <h2 class="text-statement text-dark has-anim fade">
                   {intro.title}
                 </h2>
-                <p class="text-dark leading-relaxed max-w-xl text-balance has-anim fade delay-100">
+                <p class="text-body text-text max-w-measure has-anim fade delay-100">
                   {intro.description}
                 </p>
               </div>

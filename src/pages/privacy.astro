@@ -18,14 +18,14 @@ const { Content } = await render(entry!);
       <div class="row justify-center">
         <div class="lg:col-10">
           <!-- body headings are ## / ###; they keep the 22px / 18px sizes of the old ### / #### -->
-          <div class="content prose max-w-full text-dark pr-0 lg:pr-10 [&_img]:my-6 [&_h2]:text-[22px]! [&_h2]:leading-[1.6]! [&_h3]:text-[18px]! [&_h3]:leading-[1.5]!">
+          <div class="content prose max-w-full text-text pr-0 lg:pr-10 [&_img]:my-6">
             <Content />
           </div>
 
           {
             data.cta && (
               <div class="mt-16 has-anim fade text-center">
-                <h2 class="text-dark font-semibold">{data.cta_heading}</h2>
+                <h2 class="text-dark text-h3">{data.cta_heading}</h2>
                 <Button href={data.cta.href} label={data.cta.label} variant="black" class="my-5" />
                 {data.cta_note && (
                   <small class="block text-dark/70">{data.cta_note}</small>

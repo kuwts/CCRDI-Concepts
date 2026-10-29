@@ -62,6 +62,39 @@
   --duration-slow: 700ms; /* scroll reveals and image zoom */
   --reveal-distance: 12px; /* scroll reveal rise */
   --zoom-image: 1.04; /* image hover zoom, linked cards only */
+
+  /* Type scale (brief/ui-proposal.md): about 1.25 between steps, fluid between phone
+     and desktop. Each size carries its line height and letter-spacing. */
+  --text-display: clamp(2.25rem, 1.6rem + 2.6vw, 4rem); /* 36 → 64: homepage hero H1 */
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.015em;
+  --text-h1: clamp(2rem, 1.6rem + 1.6vw, 3rem); /* 32 → 48: interior page H1s */
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.015em;
+  --text-h2: clamp(1.875rem, 1.5rem + 1.5vw, 2.75rem); /* 30 → 44: section titles */
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.015em;
+  --text-statement: clamp(1.75rem, 1.45rem + 1.1vw, 2.25rem); /* 28 → 36: sentence-length headings */
+  --text-statement--line-height: 1.25;
+  --text-statement--letter-spacing: -0.01em;
+  --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem); /* 20 → 28: card and sub-section titles */
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); /* 17 → 20: intro paragraphs */
+  --text-lead--line-height: 1.6;
+  --text-body: 1.0625rem; /* 17: reading paragraphs */
+  --text-body--line-height: 1.65;
+  --text-eyebrow: 0.8125rem; /* 13: short labels above headings, uppercase */
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.08em;
+  --text-eyebrow--font-weight: 500;
+  --leading-display: 1.1;
+  --leading-heading: 1.2;
+  --leading-body: 1.65;
+  --tracking-display: -0.015em;
+  --container-measure: 34em; /* `max-w-measure`: about 65 characters (`ch` is a "0", wider than average text) */
+  /* Two heading weights in the serif: titles 500, card and sub-section titles 600 */
+  --heading-weight: 500;
+  --subheading-weight: 600;
 }
 
 /* One section rhythm for every page: the padding steps up with the screen width. */
@@ -132,6 +165,16 @@
   h5,
   h6 {
     font-family: var(--font-heading);
+    font-weight: var(--subheading-weight);
+    text-wrap: balance;
+  }
+  h1,
+  h2 {
+    font-weight: var(--heading-weight);
+  }
+  p,
+  li {
+    text-wrap: pretty;
   }
 }
 
@@ -523,23 +566,27 @@
     margin-bottom: 15px;
   }
   & :is(h1, h2, h3, h4, h5, h6) {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    font-weight: var(--subheading-weight);
+    line-height: var(--leading-heading);
     color: var(--color-dark);
     scroll-margin-top: 70px;
   }
   & h2 {
-    font-size: 26px;
+    font-size: var(--text-h3);
+    font-weight: var(--heading-weight);
   }
   & h3 {
-    font-size: 22px;
+    font-size: 1.25rem;
   }
   & h4 {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
-  & p {
-    line-height: 1.7;
+  & :is(p, li) {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    max-width: var(--container-measure);
   }
   & img {
     max-width: 100%;

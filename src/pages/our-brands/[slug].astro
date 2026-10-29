@@ -39,7 +39,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
       <div class="row justify-center">
         <div class="lg:col-12 text-center">
           <p class="has-anim fade mb-5 font-medium">{data.eyebrow}</p>
-          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white break-words">
+          <h1 class="text-h1 has-anim fade delay-100 text-white break-words">
             {data.title}
           </h1>
           <span class="mx-auto mt-6 block h-1 w-16 rounded-full bg-(--accent) has-anim fade delay-150" aria-hidden="true"></span>
@@ -99,7 +99,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
         <!-- Body -->
         <div class="lg:col-7">
           <div
-            class="content prose max-w-full pl-0 lg:pl-5 [&_img]:my-5 [&_p]:text-[18px] [&_p]:leading-relaxed [&_li]:text-[18px] [&_h2]:text-[22px]! [&_h2]:leading-[1.6]! [&_h3]:text-[18px]! [&_ul_li]:after:bg-(--accent)!"
+            class="content prose max-w-full pl-0 lg:pl-5 text-text [&_img]:my-5 [&_ul_li]:after:bg-(--accent)!"
           >
             <Content />
           </div>
@@ -121,12 +121,12 @@ const external = (href: string) => /^https?:\/\//.test(href);
           <div class="lg:col-8">
             <div class="lg:grid grid-cols-12 sticky top-22">
               <div class="lg:col-span-3 max-lg:mb-4">
-                <p class="text-sm text-dark block lg:table-caption has-anim fade">{stack.section_title}</p>
+                <p class="text-eyebrow uppercase text-gold-text block lg:table-caption has-anim fade">{stack.section_title}</p>
               </div>
               <div class="lg:col-span-9 space-y-8">
                 <div class="space-y-5">
-                  <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-black has-anim fade">{stack.title}</h2>
-                  {stack.description && <p class="text-dark leading-relaxed max-w-xl text-balance has-anim fade delay-100">{stack.description}</p>}
+                  <h2 class="text-statement text-dark has-anim fade">{stack.title}</h2>
+                  {stack.description && <p class="text-body text-text max-w-measure has-anim fade delay-100">{stack.description}</p>}
                 </div>
                 {stack.info.length > 0 && (
                   <div class="flex flex-col items-start gap-2.5 pt-2">

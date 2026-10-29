@@ -14,7 +14,7 @@ const {
   title,
   background = 'light',
   align = 'center',
-  dot = true,
+  dot = false,
   marginClass = 'mb-12 lg:mb-16',
   class: className = '',
 } = Astro.props;
@@ -22,7 +22,8 @@ const {
 // no decorative dot after a title that already ends in punctuation (e.g. a full sentence)
 const showDot = dot && !/[.!?:]$/.test((title ?? '').trim());
 const titleColor = background === 'dark' ? 'text-white' : 'text-dark';
-const subTitleColor = background === 'dark' ? 'text-white/70' : 'text-dark/70';
+// eyebrow: Heritage Gold on navy (6.95:1), dark gold on light (5.31:1 white, 4.92:1 ivory)
+const subTitleColor = background === 'dark' ? 'text-primary' : 'text-gold-text';
 ---
 
 <div
@@ -33,11 +34,11 @@ const subTitleColor = background === 'dark' ? 'text-white/70' : 'text-dark/70';
     className,
   ]}
 >
-  {subtitle && <p class:list={['mb-2 font-medium has-anim', subTitleColor]}>{subtitle}</p>}
+  {subtitle && <p class:list={['mb-3 text-eyebrow uppercase has-anim', subTitleColor]}>{subtitle}</p>}
   {title &&
     <h2
       class:list={[
-        'text-3xl font-semibold md:text-4xl has-anim delay-50 text-balance',
+        'text-h2 has-anim delay-50',
         titleColor,
         showDot ? 'section-title-dot' : '',
         showDot && background !== 'dark' ? '[--dot-color:var(--color-gold-text)]' : '',

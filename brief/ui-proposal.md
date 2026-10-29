@@ -1,9 +1,24 @@
 # UI proposal: a calmer, more premium finish
 
-**Status:** proposal, waiting for approval. Branch `ui-proposal`. Only the spacing and
-interaction changes are applied, and only on the homepage, behind
-`<html data-ui="proposal">`. The typography and image changes are proposed below but not
-applied. `ccc-site-build` is unchanged.
+**Status:** approved, including typography and images. Applied site-wide on the
+`ui-proposal` branch in four stages, each committed: spacing, interactions, typography,
+images. The homepage-only preview flag (`data-ui="proposal"`) has been removed.
+`ccc-site-build` is unchanged until the merge is approved.
+
+**Decisions:**
+1. Section titles stay centred.
+2. The gold full stop after headings is dropped everywhere.
+3. The Who We Serve card gap is 96px.
+
+**Refinements made while applying it** (the same scale and weights, two extra steps):
+- **Interior page H1s** use their own step, 32 → 48px (`--text-h1`). The 36 → 64px display
+  size is kept for the homepage hero only, since 64px is too large for a page title like
+  "Privacy Policy".
+- **Sentence-length headings** use a "statement" step, 28 → 36px (`--text-statement`). These
+  are the homepage intro's lead message, the For Businesses intro, the CCRDI credibility
+  message and the featured news headline. At 44px they would run to about seven lines.
+- **The measure is `34em`, not `65ch`.** In Inter, `ch` is the width of a "0", so 65ch came out
+  at about 78 characters; 34em is about 65 to 68.
 
 **Scope:** spacing, typography, image treatment and micro-interactions only. No layout,
 section order, component or copy changes. The brief still applies:
@@ -113,7 +128,7 @@ one easing curve (`--ease-theme`) is kept for every movement, as the skill requi
 | **Fluid type scale,** ratio about 1.25. Display/H1 36 → 64px. H2 30 → 44px. Card and H3 titles 20 → 28px, always smaller than H2. Lead 20px. Body 17px for reading paragraphs (UI text stays 15 to 16px). Small 14px. Eyebrow 13px. | New `--text-display`, `--text-h2`, `--text-h3`, `--text-lead`, `--text-body`, `--text-eyebrow` (with `clamp()`) | A clear hierarchy that scales smoothly between phone and desktop; brand card titles stop competing with section headings. |
 | **Line heights:** display 1.1, headings 1.2, body 1.65. Fixes the brand card titles (38px at 1.6). | New `--leading-display`, `--leading-heading`, `--leading-body` | Tight display lines look set, not typed. Open body lines aid reading. |
 | **Letter-spacing:** −0.015em at 36px and up; normal below. One rule for all H1s and H2s. | New `--tracking-display` | Large serif text looks loose at default spacing; one rule removes the inconsistency. |
-| **Line length:** paragraphs capped at 65 characters. | New `--measure` 65ch (`max-w-measure`) | Keeps the About paragraph (72) in the comfortable range. |
+| **Line length:** paragraphs capped at 65 characters. | New `--container-measure` 34em (`max-w-measure`; about 65 characters) | Keeps the About paragraph (72) in the comfortable range. |
 | **One eyebrow style:** 13px, medium, uppercase, 0.08em tracking. Gold text on light backgrounds (4.92:1 on ivory, 5.31:1 on white), Heritage Gold on navy (6.95:1). Applies to short labels ("About", "Our Brands"). The hero tagline stays in sentence case, since it's a full sentence. | `--text-eyebrow`, existing `--color-gold-text` / `--color-primary` | Labels work like signage and tie the gold accent into every section. |
 | **Body text colour:** paragraphs on light backgrounds use design.md's text colour `#1F2933` (`text-text`) instead of navy; headings stay navy. | Existing `--color-text` | Matches design.md; a slightly softer body colour lets navy headings lead. Still 14.7:1 on white. |
 | **Wrapping:** `text-wrap: balance` on headings, `pretty` on paragraphs (where supported) | none | No single-word last lines. |
