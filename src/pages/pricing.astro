@@ -7,6 +7,7 @@ import SectionTitle from '@/components/SectionTitle.astro';
 import Button from '@/components/Button.astro';
 import Faq from '@/components/Faq.astro';
 import { animDelay } from '@/utils/animDelay';
+import config from '@/config/site.config.json';
 
 const pricing = await getEntry('pricing', 'index');
 const { header, plans, faq } = pricing!.data;
@@ -15,7 +16,7 @@ const faqEntry = await getEntry('faq', 'index');
 const groups = faqEntry!.data.groups;
 ---
 
-<Base title="Pricing">
+<Base title="Pricing" seo={pricing!.data.seo}>
   <PageHeader subtitle={header.subtitle} title={header.title} />
 
   <!-- Pricing plans -->
@@ -27,15 +28,19 @@ const groups = faqEntry!.data.groups;
           <span id="toggle-label-monthly" class="text-sm font-semibold text-dark transition-colors duration-300">Monthly</span>
           <button
             id="pricing-toggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            aria-label="Yearly billing"
+            data-locale={config.locale.format}
             class="h-7 w-13 cursor-pointer rounded-full bg-dark transition-colors duration-300 after:absolute after:inset-0"
-            aria-label="Toggle monthly/yearly pricing"
           >
             <strong class="relative inline-block h-full w-full">
-              <span class="absolute top-1/2 left-1 h-5.5 w-5.5 -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-300"></span>
+              <span class="absolute top-1/2 left-1 h-5.5 w-5.5 -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-300 ease-theme"></span>
             </strong>
           </button>
           <span id="toggle-label-yearly" class="text-sm text-dark/70 transition-colors duration-300">Yearly</span>
-          <span class="rounded-full bg-dark/5 border border-dark/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-dark">Save 20%</span>
+          <span class="rounded-full bg-dark/5 border border-dark/10 px-2.5 py-0.5 text-[13px] sm:text-[11px] font-semibold uppercase tracking-wider text-dark">Save 20%</span>
         </div>
       </div>
 
@@ -58,22 +63,19 @@ const groups = faqEntry!.data.groups;
               >
                 {
                   plan.featured && (
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-4 py-1 text-xs font-semibold uppercase tracking-wider text-dark shadow-lg">
+                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-4 py-1 text-[13px] sm:text-xs font-semibold uppercase tracking-wider text-dark shadow-lg">
                       Most Popular
                     </span>
                   )
                 }
 
-                <h5 class="font-medium" style={plan.featured ? '' : 'color:#555'}>{plan.name}</h5>
+                <h2 class:list={['font-medium', !plan.featured && 'text-mutedDark']}>{plan.name}</h2>
 
                 <div class="my-6">
                   <span
-                    class="pricing-price text-4xl font-bold inline-block"
+                    class:list={['pricing-price text-4xl font-bold inline-block', !plan.featured && 'text-dark']}
                     data-monthly={plan.price}
                     data-annual={plan.priceAnnual}
-                    data-monthly-value={plan.price.replace(/[$,]/g, '')}
-                    data-annual-value={plan.priceAnnual.replace(/[$,]/g, '')}
-                    style={[plan.featured ? '' : 'color:var(--color-dark)']}
                   >
                     {plan.price}
                   </span>
@@ -95,11 +97,11 @@ const groups = faqEntry!.data.groups;
 
                 <div class:list={['content grow', plan.featured && 'content-dark text-light']}>
                   <p>{plan.description}</p>
-                  <h6>{plan.feature_title}</h6>
+                  <h3 class="[font-size:inherit]!">{plan.feature_title}</h3>
                   <ul class="pricing-features-list">
                     {plan.features.map((f) => (
                       <li class="flex items-start gap-2.5">
-                        <svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00b75f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <svg aria-hidden="true" class="shrink-0 mt-0.5 text-primary" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         <span>{f}</span>
                       </li>
                     ))}
@@ -114,7 +116,7 @@ const groups = faqEntry!.data.groups;
   </section>
 
   <!-- FAQ -->
-  <section class="bg-white pt-4 pb-25 max-md:pb-20">
+  <section class="bg-white pt-4 pb-20 md:pb-25">
     <div class="container">
       <div class="row justify-center mb-4">
         <div class="col-12">
@@ -123,7 +125,7 @@ const groups = faqEntry!.data.groups;
       </div>
       <div class="row justify-center">
         <div class="lg:col-10">
-          <Faq groups={groups} />
+          <Faq groups={groups} headingLevel="h3" />
         </div>
       </div>
     </div>
@@ -131,28 +133,57 @@ const groups = faqEntry!.data.groups;
 </Base>
 
 <script>
-  function easeOutQuad(t: number): number {
-    return t * (2 - t);
+  // Prices count to the new value when both are numbers ("$3,500", "€49",
+  // "9.99 kr"), keeping the content's symbol, decimals and separators. Anything
+  // else ("Custom", "Free") is swapped as written. No count with reduced motion.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const locale = document.getElementById('pricing-toggle')?.dataset.locale ?? 'en-US';
+
+  interface Price {
+    prefix: string;
+    suffix: string;
+    value: number;
+    decimals: number;
+    grouping: boolean;
   }
 
-  function formatPrice(n: number): string {
-    return '$' + Math.round(n).toLocaleString('en-US');
+  function parsePrice(text: string): Price | null {
+    const m = text.match(/^([^\d]*)([\d.,]+)(.*)$/);
+    if (!m) return null;
+    const value = parseFloat(m[2].replace(/,/g, ''));
+    if (isNaN(value)) return null;
+    return {
+      prefix: m[1],
+      suffix: m[3],
+      value,
+      decimals: m[2].split('.')[1]?.length || 0,
+      grouping: m[2].includes(','),
+    };
   }
 
-  function animateValue(el: HTMLElement, to: number, duration: number): void {
-    const from = parseFloat(el.dataset.currentValue ?? el.dataset.monthlyValue ?? '0');
-    const start = performance.now();
-
-    function tick(now: number): void {
-      const progress = Math.min((now - start) / duration, 1);
-      const current = from + (to - from) * easeOutQuad(progress);
-      el.textContent = formatPrice(current);
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        el.dataset.currentValue = String(to);
-      }
+  function animatePrice(el: HTMLElement, fromText: string, toText: string, duration: number): void {
+    const from = parsePrice(fromText);
+    const to = parsePrice(toText);
+    if (!from || !to || reduceMotion) {
+      el.textContent = toText;
+      return;
     }
+    const format = (n: number) =>
+      to.prefix +
+      n.toLocaleString(locale, {
+        minimumFractionDigits: to.decimals,
+        maximumFractionDigits: to.decimals,
+        useGrouping: to.grouping,
+      }) +
+      to.suffix;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = p * (2 - p);
+      el.textContent = p < 1 ? format(from.value + (to.value - from.value) * eased) : toText;
+      if (p < 1) requestAnimationFrame(tick);
+    };
     requestAnimationFrame(tick);
   }
 
@@ -163,14 +194,11 @@ const groups = faqEntry!.data.groups;
   const prices = document.querySelectorAll<HTMLElement>('.pricing-price');
   const cadences = document.querySelectorAll<HTMLElement>('.pricing-cadence');
 
-  prices.forEach((el) => {
-    el.dataset.currentValue = el.dataset.monthlyValue ?? '0';
-  });
-
   let isYearly = false;
 
   toggle?.addEventListener('click', () => {
     isYearly = !isYearly;
+    toggle?.setAttribute('aria-checked', String(isYearly));
 
     if (knob) {
       knob.style.transform = isYearly ? 'translateX(1.375rem)' : 'translateX(0)';
@@ -188,8 +216,9 @@ const groups = faqEntry!.data.groups;
     });
 
     prices.forEach((el) => {
-      const target = parseFloat(isYearly ? (el.dataset.annualValue ?? '0') : (el.dataset.monthlyValue ?? '0'));
-      animateValue(el, target, 400);
+      const from = (isYearly ? el.dataset.monthly : el.dataset.annual) ?? '';
+      const to = (isYearly ? el.dataset.annual : el.dataset.monthly) ?? '';
+      animatePrice(el, from, to, 400);
     });
   });
 </script>

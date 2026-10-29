@@ -1,7 +1,5 @@
 ---
 import { getEntry, getCollection } from 'astro:content';
-import { animDelay } from '@/utils/animDelay';
-import { markdownify } from "@/utils/textConverter";
 
 import Base from '@/layouts/Base.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
@@ -12,6 +10,7 @@ import TeamGroupCarousel from '@/components/TeamGroupCarousel.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import Clients from '@/components/Clients.astro';
 import Facts from '@/components/Facts.astro';
+import TeamGrid from '@/components/TeamGrid.astro';
 
 const home = await getEntry('homepage', 'index');
 const { testimonials } = home!.data;
@@ -19,12 +18,13 @@ const { testimonials } = home!.data;
 const about = await getEntry('about', 'index');
 const { header, clients, facts, team_group, team } = about!.data;
 
-const clientLogos = (await getCollection('clients')).map((c) => c.data);
-const reviews = (await getCollection('testimonials')).map((t) => t.data);
-const members = (await getCollection('teamMembers')).map((m) => m.data);
+// page content first; the shared collections only when the page doesn't set its own
+const clientLogos = clients.logos ?? (await getCollection('clients')).map((c) => c.data);
+const reviews = testimonials.items;
+const members = team.members ?? (await getCollection('teamMembers')).map((m) => m.data);
 ---
 
-<Base title="About">
+<Base title="About" seo={about!.data.seo}>
   <PageHeader subtitle={header.subtitle} title={header.title} colClass="max-sm:[&_br]:hidden lg:col-10" />
 
   <!-- Intro -->
@@ -33,7 +33,7 @@ const members = (await getCollection('teamMembers')).map((m) => m.data);
       <div class="has-anim">
         <AstroImage
           src={header.image}
-          alt="about"
+          alt={header.image_alt}
           width={1672}
           height={818}
           class="h-auto max-w-full w-full bg-white/3"
@@ -77,21 +77,7 @@ const members = (await getCollection('teamMembers')).map((m) => m.data);
         </div>
       </div>
       <div class="row">
-        {
-          members.map((m, i) => (
-            <div class="xl:col-3 lg:col-4 col-6">
-              <div class:list={['has-anim fade mt-8.75', animDelay[i % 4]]}>
-                <div class="relative overflow-hidden">
-                  <AstroImage src={m.image} alt={m.name} loading="lazy" class="h-auto max-w-full bg-gray-100" />
-                </div>
-                <div class="mt-5">
-                  <h4 class="text-dark text-xl font-semibold">{m.name}</h4>
-                  <p class="mt-1 text-dark/50">{m.role}</p>
-                </div>
-              </div>
-            </div>
-          ))
-        }
+        <TeamGrid members={members} />
         <div class="col-12 mt-16 has-anim fade text-center">
           <Button href={team.cta.href} label={team.cta.label} variant="black" />
         </div>

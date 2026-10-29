@@ -8,6 +8,13 @@ export const linkSchema = z.object({
 });
 export type Link = z.infer<typeof linkSchema>;
 
+/** A form field's visible label and placeholder (either can be empty). */
+export const fieldSchema = z.object({
+  label: z.string(),
+  placeholder: z.string().default(''),
+});
+export type Field = z.infer<typeof fieldSchema>;
+
 /** A small section subtitle + heading pair. */
 export const sectionHeadingSchema = z.object({
   subtitle: z.string().optional(),
@@ -22,3 +29,17 @@ export const sectionHeadingSchema = z.object({
   ).optional(),
 });
 export type SectionHeading = z.infer<typeof sectionHeadingSchema>;
+
+/**
+ * Optional per-page SEO overrides. Anything left out falls back to the page's
+ * own title / description / image, then to `seo` in site.config.json.
+ * `image` is a social share image path (src/assets or public), ideally 1200×630.
+ */
+export const seoSchema = z
+  .object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: z.string().optional(),
+  })
+  .optional();
+export type Seo = z.infer<typeof seoSchema>;

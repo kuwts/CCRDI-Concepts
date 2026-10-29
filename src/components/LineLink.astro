@@ -32,18 +32,18 @@ const toneClass =
 
 const iconName =
   icon === 'arrow'
-    ? 'hugeicons:arrow-up-right-01'
+    ? 'lucide:arrow-up-right'
     : icon === 'down'
-      ? 'hugeicons:arrow-down-01'
+      ? 'lucide:arrow-down'
       : null;
 ---
 
 <a
   href={href}
   target={target}
-  rel={rel}
+  rel={rel ?? (target === '_blank' ? 'noopener' : undefined)}
   class:list={['line-link', toneClass, className]}
 >
   {label}
-  {iconName && <Icon name={iconName} class="text-[1.25em]" />}
+  {iconName && <Icon name={iconName} class="text-[1.25em]" aria-hidden="true" />}
 </a>

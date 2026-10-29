@@ -1,0 +1,290 @@
+---
+// Desktop navigation (≥ lg). Items with children open a shared white panel that
+// slides sideways to follow the active item; its height animates between menus
+// and the links fade up in a stagger. Opens on hover, and on click / Enter /
+// Space for the parent buttons; Esc, clicking outside or tabbing away closes it.
+
+interface NavChild {
+  name: string;
+  url: string;
+}
+interface NavItem {
+  name: string;
+  url: string;
+  children?: NavChild[];
+}
+interface Props {
+  items: NavItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+
+const strip = currentPath.replace(/\/$/, '') || '/';
+const isActive = (u: string) => u !== '#' && strip === u.replace(/\/$/, '');
+const inSection = (item: NavItem) => isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
+
+const linkClass =
+  'flex items-center gap-0.5 px-4 xl:px-5.5 py-5 text-[15px] leading-none font-medium whitespace-nowrap cursor-pointer transition-colors duration-200 group-data-dimmed/nav:text-white/50 data-current:text-white! hover:text-white';
+---
+
+<div class="group/nav relative mx-auto hidden lg:block" data-dropnav>
+  <ul class="flex items-center">
+    {
+      items.map((item, i) => (
+        <li class="relative" data-nav-item={i}>
+          {item.children ? (
+            <button
+              type="button"
+              class:list={[linkClass, inSection(item) ? 'text-white' : 'text-white/95']}
+              aria-expanded="false"
+              aria-controls={`dropnav-menu-${i}`}
+              data-nav-trigger={i}
+            >
+              {item.name}
+              <svg
+                class="h-4 w-4 transition-transform duration-200"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+          ) : (
+            <a
+              href={item.url}
+              class:list={[linkClass, inSection(item) ? 'text-white' : 'text-white/95']}
+              aria-current={isActive(item.url) ? 'page' : undefined}
+              data-nav-trigger={i}
+            >
+              {item.name}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- x follows the active item (slides between items); the inner panel fades and rises -->
+  <div class="pointer-events-none absolute top-full left-0 z-10" data-nav-track>
+    <div data-nav-panel>
+      <div class="-mb-px flex justify-center" aria-hidden="true">
+        <div class="h-0 w-0 border-x-8 border-b-8 border-x-transparent border-b-white"></div>
+      </div>
+      <div class="group/ddmenu min-w-48 overflow-hidden bg-white shadow-2xl shadow-black/30" style="height:0" data-nav-box>
+        {
+          items.map(
+            (item, i) =>
+              item.children && (
+                <ul id={`dropnav-menu-${i}`} hidden data-nav-menu={i}>
+                  {item.children.map((child, ci, arr) => (
+                    <li class="nav-child" style={`--i:${ci}`}>
+                      <a
+                        href={child.url}
+                        class:list={[
+                          'block whitespace-nowrap px-5 py-2 text-[14px] font-medium transition-colors duration-200',
+                          ci === 0 && 'pt-4',
+                          ci === arr.length - 1 && 'pb-4',
+                          isActive(child.url)
+                            ? 'text-black'
+                            : 'text-dark group-hover/ddmenu:text-black/50 hover:text-black! focus-visible:text-black!',
+                        ]}
+                        aria-current={isActive(child.url) ? 'page' : undefined}
+                      >
+                        {child.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ),
+          )
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  [data-nav-track] {
+    transition: transform 0.5s var(--ease-theme);
+  }
+  [data-nav-track].no-slide {
+    transition: none;
+  }
+  /* Centered on the track's x with `translate` only. (Tailwind's translate
+     utilities also set `translate`, and `transform` stacks on top of it, so
+     mixing the two would shift the panel by another half its width.) */
+  [data-nav-panel] {
+    opacity: 0;
+    translate: -50% 4px;
+    transition:
+      opacity 0.15s var(--ease-theme),
+      translate 0.15s var(--ease-theme);
+  }
+  [data-dropnav][data-open] [data-nav-panel] {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  [data-dropnav][data-open] [data-nav-track] {
+    pointer-events: auto;
+  }
+  [data-nav-box] {
+    transition: height 0.25s var(--ease-theme);
+  }
+  .nav-child {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  [data-nav-menu].is-shown .nav-child {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.15s ease-out,
+      transform 0.15s ease-out;
+    transition-delay: calc(0.2s + var(--i) * 0.04s);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav-track],
+    [data-nav-panel],
+    [data-nav-box],
+    [data-nav-menu].is-shown .nav-child {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-dropnav]').forEach((nav) => {
+    const track = nav.querySelector<HTMLElement>('[data-nav-track]')!;
+    const box = nav.querySelector<HTMLElement>('[data-nav-box]')!;
+    const triggers = [...nav.querySelectorAll<HTMLElement>('[data-nav-trigger]')];
+    const menus = new Map(
+      [...nav.querySelectorAll<HTMLElement>('[data-nav-menu]')].map((m) => [m.dataset.navMenu!, m]),
+    );
+    let active: string | null = null;
+    let pinned = false; // opened by click/keyboard: stays open when the pointer leaves
+    let leaveTimer = 0;
+
+    const moveTo = (i: string, slide: boolean) => {
+      const item = nav.querySelector<HTMLElement>(`[data-nav-item="${i}"]`);
+      if (!item) return;
+      const x = item.offsetLeft + item.offsetWidth / 2;
+      track.classList.toggle('no-slide', !slide);
+      track.style.transform = `translateX(${x}px)`;
+      if (!slide) void track.offsetWidth;
+      track.classList.remove('no-slide');
+    };
+
+    const setCurrent = (i: string | null) => {
+      triggers.forEach((t) => {
+        const on = t.dataset.navTrigger === i;
+        t.toggleAttribute('data-current', on);
+        if (t.tagName === 'BUTTON') t.setAttribute('aria-expanded', String(on && menus.has(i!)));
+      });
+    };
+
+    const open = (i: string) => {
+      clearTimeout(leaveTimer);
+      const menu = menus.get(i);
+      const wasOpen = nav.hasAttribute('data-open');
+      active = i;
+      setCurrent(i);
+      nav.setAttribute('data-dimmed', '');
+      if (!menu) {
+        // a plain link: other items dim, the panel goes away
+        nav.removeAttribute('data-open');
+        box.style.height = '0px';
+        return;
+      }
+      if (wasOpen && menu.classList.contains('is-shown')) return;
+      nav.setAttribute('data-open', '');
+      moveTo(i, wasOpen);
+      menus.forEach((m) => {
+        m.hidden = m !== menu;
+        m.classList.remove('is-shown');
+      });
+      void menu.offsetWidth; // restart the link stagger
+      menu.classList.add('is-shown');
+      box.style.height = `${menu.scrollHeight}px`;
+    };
+
+    const close = () => {
+      active = null;
+      pinned = false;
+      setCurrent(null);
+      nav.removeAttribute('data-open');
+      nav.removeAttribute('data-dimmed');
+      box.style.height = '0px';
+      menus.forEach((m) => m.classList.remove('is-shown'));
+    };
+
+    triggers.forEach((t) => {
+      const i = t.dataset.navTrigger!;
+      t.parentElement!.addEventListener('mouseenter', () => open(i));
+      if (t.tagName === 'BUTTON') {
+        t.addEventListener('click', () => {
+          if (active === i && pinned) {
+            close();
+            return;
+          }
+          pinned = true;
+          open(i);
+        });
+      }
+    });
+
+    nav.addEventListener('mouseleave', () => {
+      if (pinned) return;
+      clearTimeout(leaveTimer);
+      leaveTimer = window.setTimeout(close, 5);
+    });
+    // The panel comes after all the top-level items in the page, so Tab is routed
+    // through the open menu: trigger → its links → the next top-level item.
+    nav.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement;
+      const trigger = active !== null ? nav.querySelector<HTMLElement>(`[data-nav-trigger="${active}"]`) : null;
+      const menu = active !== null ? menus.get(active) : undefined;
+      const links = menu && !menu.hidden ? [...menu.querySelectorAll<HTMLElement>('a[href]')] : [];
+
+      if (e.key === 'Escape' && active !== null) {
+        close();
+        trigger?.focus();
+        return;
+      }
+      if (e.key === 'ArrowDown' && target.matches('button[data-nav-trigger]')) {
+        e.preventDefault();
+        pinned = true;
+        open(target.dataset.navTrigger!);
+        menus.get(target.dataset.navTrigger!)?.querySelector<HTMLElement>('a[href]')?.focus();
+        return;
+      }
+      if (e.key !== 'Tab' || !links.length) return;
+      if (!e.shiftKey && target === trigger) {
+        e.preventDefault();
+        links[0].focus();
+      } else if (!e.shiftKey && target === links[links.length - 1]) {
+        e.preventDefault();
+        const next = triggers[triggers.indexOf(trigger!) + 1];
+        close();
+        (next ?? trigger)?.focus();
+      } else if (e.shiftKey && target === links[0]) {
+        e.preventDefault();
+        trigger?.focus();
+      }
+    });
+    nav.addEventListener('focusout', (e) => {
+      if (!nav.contains(e.relatedTarget as Node)) close();
+    });
+    document.addEventListener('click', (e) => {
+      if (active !== null && !nav.contains(e.target as Node)) close();
+    });
+    window.addEventListener('resize', () => {
+      if (active !== null && menus.has(active)) moveTo(active, false);
+    });
+  });
+</script>

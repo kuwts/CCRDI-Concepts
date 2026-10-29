@@ -1,58 +1,133 @@
 ---
-import { Font } from 'astro:assets';
-
 import config from '@/config/site.config.json';
+import social from '@/config/social.json';
+import { absoluteImageURL } from '@/lib/seo';
+import type { Seo } from '@/types/shared';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ScrollProgress from '@/components/ScrollProgress.astro';
 import DeviceSizeIndicator from "@/components/helper/DeviceSizeIndicator.astro";
-import GradualBlur from '@/components/ui/GradualBlur';
+import GradualBlur from '@/components/GradualBlur.astro';
 
+// brand fonts, self-hosted (site.config.json → brand.font names these families)
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/inter';
 import '@/styles/global.css';
 
 interface Props {
+  /** The page's own title (e.g. "About", a post title); shown as "{title} | {brand.name}". */
   title?: string;
+  /** The page's own description (e.g. a post's summary). */
   description?: string;
+  /** The page's own share image path (src/assets or public), ideally 1200×630. */
   image?: string;
+  /** SEO overrides from the page's content entry (its `seo` front-matter block). */
+  seo?: Seo;
   noindex?: boolean;
+  /** Canonical URL or path; defaults to this page's own URL. */
+  canonical?: string;
+  /** og:type */
+  type?: 'website' | 'article';
 }
 
-const { seo, favicon } = config;
+const { seo: siteSeo, brand, footer } = config;
 const {
   title,
-  description = seo.description,
-  image = seo.image,
+  description,
+  image,
+  seo,
   noindex = false,
+  canonical,
+  type = 'website',
 } = Astro.props;
 
-const pageTitle = title ? `${title} | ${seo.title}` : seo.title;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// SEO for any page, most specific first; empty strings count as unset:
+//   1. `seo` prop: the page's content entry (`seo:` in its front matter)
+//   2. site.config.json → seo.pages["/path"]: for pages with no content entry
+//   3. the page's own title / description / image props
+//   4. site defaults (seo.title, seo.description, seo.image)
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const pathSeo = (siteSeo.pages as Record<string, Seo>)[path];
+
+const site = Astro.site ?? new URL(config.baseURL);
+const resolvedTitle = seo?.title || pathSeo?.title || title;
+const pageTitle = resolvedTitle ? `${resolvedTitle} | ${brand.name}` : siteSeo.title;
+const pageDescription =
+  seo?.description || pathSeo?.description || description || siteSeo.description;
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, site).href;
+const imageURL = await absoluteImageURL(
+  seo?.image || pathSeo?.image || image || siteSeo.image,
+  site,
+);
+
+// favicon set from site.config.json → brand.favicon (public/ paths; empty = skipped)
+const favicon = brand.favicon;
+
+// brand colors from site.config.json → --brand-* (mapped to Tailwind tokens in global.css)
+const brandVars =
+  Object.entries(brand.colors)
+    .map(([name, value]) => `--brand-${name}:${value};`)
+    .join('') +
+  `--brand-font-heading:'${brand.font.heading.name}',${brand.font.heading.fallback};` +
+  `--brand-font-body:'${brand.font.body.name}',${brand.font.body.fallback};`;
+
+// Organization structured data, on the homepage only (as Google recommends)
+const isHome = Astro.url.pathname === '/';
+const sameAs = social.map((s) => s.url).filter((url) => /^https?:\/\//.test(url));
+const organization = isHome
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: brand.name,
+      url: new URL('/', site).href,
+      logo: await absoluteImageURL(brand.logo.src, site),
+      description: siteSeo.description,
+      email: footer.email,
+      telephone: footer.phone,
+      address: [footer.address_line_1, footer.address_line_2].filter(Boolean).join(', '),
+      ...(sameAs.length ? { sameAs } : {}),
+    }
+  : null;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={config.locale.lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
-    <meta name="keywords" content={seo.keywords} />
-    <meta name="author" content={seo.author} />
-    <link rel="icon" type="image/png" href={favicon} />
-    <link rel="canonical" href={canonical} />
+    <meta name="description" content={pageDescription} />
+    {siteSeo.author && <meta name="author" content={siteSeo.author} />}
+    {favicon.png32 && <link rel="icon" type="image/png" sizes="32x32" href={favicon.png32} />}
+    {favicon.svg && <link rel="icon" type="image/svg+xml" href={favicon.svg} />}
+    {favicon.appleTouch && <link rel="apple-touch-icon" sizes="180x180" href={favicon.appleTouch} />}
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content={brand.colors.dark} />
+    <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex" />}
 
+    <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:type" content="website" />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content={type} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={imageURL} />
 
-    <Font cssVariable="--font-space-grotesk" preload />
+    {
+      organization && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(organization).replace(/</g, '\\u003c')}
+        />
+      )
+    }
+
+    <Fragment set:html={`<style>:root{${brandVars}}</style>`} />
     <!-- scroll-reveal content is hidden until JS marks it visible; without JS, show it -->
     <noscript>
       <style>
@@ -66,14 +141,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body>
+    <a
+      href="#main"
+      class="sr-only-focusable fixed top-3 left-3 z-99999 bg-white px-5 py-3 font-medium text-dark"
+    >
+      Skip to content
+    </a>
     <ScrollProgress />
     <DeviceSizeIndicator />
     <Header />
-    <main><slot /></main>
+    <main id="main" tabindex="-1" class="outline-none"><slot /></main>
     <Footer />
 
     <GradualBlur
-      client:idle
       target="page"
       position="bottom"
       height="6rem"
@@ -81,7 +161,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       divCount={5}
       curve="bezier"
       exponential
-      opacity={1}
     />
 
     <script>
@@ -104,20 +183,31 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         animated.forEach((el) => el.classList.add('is-visible'));
       }
 
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       // ── Header hide-on-scroll-down ────────────────────────────────
+      // (stays visible while something inside it has keyboard focus)
       const header = document.getElementById('site-header');
       let lastScroll = 0;
-      window.addEventListener('scroll', () => {
+      let headerFrame = 0;
+      const updateHeader = () => {
+        headerFrame = 0;
         const y = window.scrollY;
         if (header) {
-          if (y > 300 && y > lastScroll) header.classList.add('-translate-y-full');
-          else header.classList.remove('-translate-y-full');
-
-          if (y > 100) header.classList.add('sticky-pinned');
-          else header.classList.remove('sticky-pinned');
+          const hide = y > 300 && y > lastScroll && !header.contains(document.activeElement);
+          header.classList.toggle('-translate-y-full', hide);
+          header.classList.toggle('sticky-pinned', y > 100);
         }
         lastScroll = y;
-      });
+      };
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!headerFrame) headerFrame = requestAnimationFrame(updateHeader);
+        },
+        { passive: true },
+      );
+      header?.addEventListener('focusin', () => header.classList.remove('-translate-y-full'));
 
       // ── Scroll progress / back-to-top ─────────────────────────────
       const sp = document.querySelector<HTMLElement>('[data-scroll-progress]');
@@ -126,36 +216,61 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         const len = path.getTotalLength();
         path.style.strokeDasharray = `${len} ${len}`;
         path.style.strokeDashoffset = `${len}`;
+        let frame = 0;
         const update = () => {
+          frame = 0;
           const scrolled = window.scrollY;
           const height =
             document.documentElement.scrollHeight - window.innerHeight;
           path.style.strokeDashoffset = `${len - (scrolled * len) / (height || 1)}`;
           sp.classList.toggle('is-active', scrolled > 50);
         };
-        window.addEventListener('scroll', update);
-        update();
-        sp.addEventListener('click', () =>
-          window.scrollTo({ top: 0, behavior: 'smooth' }),
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!frame) frame = requestAnimationFrame(update);
+          },
+          { passive: true },
         );
+        update();
+        sp.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+          document.getElementById('main')?.focus({ preventScroll: true });
+        });
       }
 
       // ── Mobile drawer ─────────────────────────────────────────────
+      // Closed: `inert` + invisible, so its links can't be tabbed to. Open: focus
+      // moves into it and Tab stays inside until it's closed.
       const drawer = document.getElementById('mobile-drawer');
       const overlay = document.querySelector('[data-menu-overlay]');
+      const opener = document.querySelector<HTMLElement>('[data-menu-open]');
+      let menuOpen = false;
       const openMenu = () => {
-        drawer?.classList.remove('translate-x-full');
+        if (!drawer) return;
+        menuOpen = true;
+        drawer.inert = false;
+        drawer.classList.remove('translate-x-full', 'invisible');
         overlay?.classList.remove('invisible', 'opacity-0');
+        opener?.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
+        drawer.querySelector<HTMLElement>('[data-menu-close]')?.focus();
       };
       const closeMenu = () => {
-        drawer?.classList.add('translate-x-full');
+        if (!drawer || !menuOpen) return;
+        menuOpen = false;
+        drawer.inert = true;
+        drawer.classList.add('translate-x-full');
         overlay?.classList.add('invisible', 'opacity-0');
+        opener?.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        opener?.focus();
       };
-      document
-        .querySelector('[data-menu-open]')
-        ?.addEventListener('click', openMenu);
+      // hide the drawer (and its shadow) once the slide-out finishes
+      drawer?.addEventListener('transitionend', (e) => {
+        if (e.target === drawer && !menuOpen) drawer.classList.add('invisible');
+      });
+      opener?.addEventListener('click', openMenu);
       document
         .querySelector('[data-menu-close]')
         ?.addEventListener('click', closeMenu);
@@ -164,29 +279,45 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       drawer?.querySelectorAll('a[href]').forEach((a) => {
         if (!a.hasAttribute('target')) a.addEventListener('click', closeMenu);
       });
-      // close on Escape
       window.addEventListener('keydown', (e) => {
+        if (!menuOpen || !drawer) return;
         if (e.key === 'Escape') closeMenu();
+        // keep Tab inside the open drawer
+        if (e.key === 'Tab') {
+          const focusable = [...drawer.querySelectorAll<HTMLElement>('a[href], button')].filter(
+            (el) => el.offsetParent !== null,
+          );
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last?.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first?.focus();
+          }
+        }
+      });
+      // close if the screen grows past the mobile breakpoint
+      window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+        if (e.matches) closeMenu();
       });
 
       // ── Mobile dropdown accordions ────────────────────────────────
-      const toggles = document.querySelectorAll('[data-dropdown-toggle]');
+      const toggles = document.querySelectorAll<HTMLElement>('[data-dropdown-toggle]');
+      const setSub = (btn: HTMLElement, open: boolean) => {
+        const sub = btn.parentElement?.querySelector<HTMLElement>('[data-submenu]');
+        btn.setAttribute('aria-expanded', String(open));
+        btn.querySelector('[data-caret]')?.classList.toggle('rotate-180', open);
+        if (!sub) return;
+        sub.inert = !open;
+        sub.style.maxHeight = open ? sub.scrollHeight + 'px' : '0px';
+      };
       toggles.forEach((btn) => {
         btn.addEventListener('click', () => {
-          const sub = btn.parentElement?.querySelector<HTMLElement>('[data-submenu]');
-          const caret = btn.querySelector('[data-caret]');
-          const open = sub && sub.style.maxHeight && sub.style.maxHeight !== '0px';
-          // close all
-          toggles.forEach((other) => {
-            const oSub = other.parentElement?.querySelector<HTMLElement>('[data-submenu]');
-            if (oSub) oSub.style.maxHeight = '0px';
-            other.querySelector('[data-caret]')?.classList.remove('rotate-180');
-          });
-          // open clicked (if it was closed)
-          if (sub && !open) {
-            sub.style.maxHeight = sub.scrollHeight + 'px';
-            caret?.classList.add('rotate-180');
-          }
+          const open = btn.getAttribute('aria-expanded') === 'true';
+          toggles.forEach((other) => setSub(other, false));
+          if (!open) setSub(btn, true);
         });
       });
     </script>

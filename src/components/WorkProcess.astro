@@ -2,7 +2,7 @@
 import { animDelay } from '@/utils/animDelay';
 import SectionTitle from '@/components/SectionTitle.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
-import Button from "./Button.astro";
+import LineLink from '@/components/LineLink.astro';
 
 interface Step {
   heading: string;
@@ -14,7 +14,8 @@ interface Props {
   steps: Step[];
   cta: {
     title: string;
-    images: string[];
+    /** a plain path is decorative; `{ src, alt }` describes the photo */
+    images: (string | { src: string; alt?: string })[];
     button: {
       label: string;
       href: string;
@@ -23,9 +24,12 @@ interface Props {
 }
 const { subtitle, title, steps, cta } = Astro.props;
 const symbols = ['✳', '✺', '✲', '❋'];
+const stripImages = cta.images.map((img) =>
+  typeof img === 'string' ? { src: img, alt: '' } : { src: img.src, alt: img.alt ?? '' },
+);
 ---
 
-<section class="overflow-hidden py-25 max-md:py-20">
+<section class="overflow-hidden py-20 md:py-25">
   <div class="container">
     <SectionTitle subtitle={subtitle} title={title} background="dark" />
     
@@ -36,7 +40,7 @@ const symbols = ['✳', '✺', '✲', '❋'];
             <div class:list={
               ['h-full flex flex-col bg-white/5 mx-auto text-white px-8 py-8 overflow-clip relative', i == 0 ? 'active' : '']
             }>
-              <span class="text-6xl">{symbols[i % symbols.length]}</span>
+              <span class="text-6xl" aria-hidden="true">{symbols[i % symbols.length]}</span>
               <h3 class="mt-4 mb-24 md:mb-40 text-xl font-medium leading-[1.1]">{step.heading}</h3>
               <p class="relative text-balance -mb-0.75 leading-relaxed mt-auto opacity-80">
                 {step.text}
@@ -50,14 +54,14 @@ const symbols = ['✳', '✺', '✲', '❋'];
     <div class="flex max-md:flex-col flex-wrap items-center mt-8 border-t border-white/5 pt-8">
       <div class="flex max-md:flex-col items-center gap-4 has-anim delay-100 max-md:text-center">
         <div class="flex">
-          {cta.images.map((img, i) => (
-            <AstroImage src={`/${img}`} alt="" class:list={['max-h-10 rounded-full', i > 0 ? '-ms-2' : '']} width={40} height={40} />
+          {stripImages.map((img, i) => (
+            <AstroImage src={`/${img.src}`} alt={img.alt} class:list={['max-h-10 rounded-full', i > 0 ? '-ms-2' : '']} width={40} height={40} />
           ))}
         </div>
         <p class="text-white text-balance">{cta.title}</p>
       </div>
       <div class="md:ms-auto max-md:mt-6 has-anim delay-200">
-        <Button href={cta.button.href} label={cta.button.label} class="btn btn-sm btn-white" />
+        <LineLink href={cta.button.href} label={cta.button.label} tone="white" icon="arrow" />
       </div>
     </div>
   </div>

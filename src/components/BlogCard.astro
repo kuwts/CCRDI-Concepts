@@ -5,48 +5,73 @@ import { readingTime } from '@/utils/readingTime';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import { Icon } from "astro-icon/components";
 
+/** A card without a blog post behind it (e.g. a homepage news item); the date is shown as written. */
+interface CardItem {
+  title: string;
+  description: string;
+  date: string;
+  category?: string;
+  image?: string;
+  imageAlt?: string;
+  href: string;
+}
+
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post?: CollectionEntry<'blog'>;
+  item?: CardItem;
   horizontal?: boolean;
   category?: string;
+  /** Heading level for the title: `h2` on listing pages, `h3` under a section heading (default). */
+  as?: 'h2' | 'h3' | 'h4';
   class?: string;
 }
 
 const {
   post,
+  item,
   horizontal = false,
   category: categoryOverride,
+  as: Heading = 'h3',
   class: className = '',
 } = Astro.props;
 
-const href = `/blog/${post.id}`;
-const { title, description, date, color } = post.data;
-const image = post.data.thumbnail ?? post.data.image;
-const category = categoryOverride ?? post.data.category;
-const readTime = readingTime(post.body ?? '');
+const href = post ? `/blog/${post.id}` : (item?.href ?? '#');
+const title = post?.data.title ?? item?.title ?? '';
+const description = post?.data.description ?? item?.description ?? '';
+const color = post?.data.color;
+const image = post ? (post.data.thumbnail ?? post.data.image) : item?.image;
+const imageAlt = item?.imageAlt ?? '';
+const category = categoryOverride ?? post?.data.category ?? item?.category;
+// "date — reading time" for posts; the date as written for plain items
+const meta = post
+  ? [formatDate(post.data.date), readingTime(post.body ?? '')]
+  : [item?.date ?? ''];
 
-const headingClass = 'text-balance leading-snug font-bold text-dark underline decoration-transparent transition group-hover/img:text-[#222] group-hover/img:decoration-[#444]';
+const headingClass = 'text-balance leading-snug font-bold text-dark underline decoration-transparent transition group-hover/img:text-black group-hover/img:decoration-dark/70 break-words';
+const chipClass = 'text-[13px] sm:text-xs tracking-wider text-dark/80 uppercase bg-dark/5 px-2 py-1 inline-block w-max';
 ---
 
 <article
   class:list={[
-    'relative mt-7.5 p-4 md:p-7',
+    'relative mt-7.5 p-4 md:p-7 rounded-card overflow-hidden',
     className,
   ]}
 >
+  {color && (
   <div
     class="pointer-events-none absolute inset-0 opacity-[0.05]"
     style={`background-color:${color}`}>
   </div>
+  )}
 
   {
     horizontal ? (
       <div class="group/img row justify-center">
         <div class="lg:col-6">
-          <a href={href} class="block overflow-hidden after:absolute after:inset-0">
+          <a href={href} aria-label={title} class="block overflow-hidden after:absolute after:inset-0">
             <AstroImage
               src={image}
-              alt={title}
+              alt={imageAlt}
               loading="lazy"
               class="w-full origin-right scale-[1.02] transition-all duration-300 group-hover/img:origin-left bg-gray-100"
             />
@@ -54,19 +79,17 @@ const headingClass = 'text-balance leading-snug font-bold text-dark underline de
         </div>
         <div class="lg:col-6">
           <div class="mt-6 sm:mt-8 lg:mt-0 text-dark lg:h-full p-0 lg:p-6 lg:flex flex-col">
-            <span class="mb-6 text-xs tracking-wider text-dark/80 uppercase bg-dark/5 px-2 py-1 inline-block w-max">
-              {category}
-            </span>
-            <h3 class:list={['text-xl sm:text-[30px]', headingClass]}>
+            {category && <span class:list={['mb-6', chipClass]}>{category}</span>}
+            <Heading class:list={['text-xl sm:text-[30px]', headingClass]}>
               {title}
-            </h3>
+            </Heading>
             <p class="my-6 text-[15px] line-clamp-2">{description}</p>
             <div class="mt-0 lg:mt-auto flex items-end justify-between">
               <p class="text-[14px]">
-                {formatDate(date)} <span class="mx-2">—</span> {readTime}
+                {meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
               </p>
-              <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1">
-                <Icon name="hugeicons:arrow-up-right-01" class="size-6" />
+              <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
+                <Icon name="lucide:arrow-up-right" class="size-6" />
               </span>
             </div>
           </div>
@@ -74,28 +97,26 @@ const headingClass = 'text-balance leading-snug font-bold text-dark underline de
       </div>
     ) : (
       <div class="group/img">
-        <a href={href} class="block overflow-hidden after:absolute after:inset-0">
+        <a href={href} aria-label={title} class="block overflow-hidden after:absolute after:inset-0">
           <AstroImage
             src={image}
-            alt={title}
+            alt={imageAlt}
             loading="lazy"
             class="w-full origin-right scale-[1.02] transition-all duration-300 group-hover/img:origin-left"
           />
         </a>
         <div class="mt-6 text-dark h-full">
-          <span class="mb-4 text-xs tracking-wider text-dark/80 uppercase bg-dark/5 px-2 py-1 inline-block w-max">
-            {category}
-          </span>
-          <h4 class:list={['text-xl sm:text-[24px] line-clamp-2', headingClass]}>
+          {category && <span class:list={['mb-4', chipClass]}>{category}</span>}
+          <Heading class:list={['text-xl sm:text-[24px] line-clamp-2', headingClass]}>
             {title}
-          </h4>
+          </Heading>
           <p class="mt-3 mb-6 text-[15px] line-clamp-2">{description}</p>
           <div class="mt-auto flex items-end justify-between">
             <p class="text-[14px]">
-              {formatDate(date)} <span class="mx-2">—</span> {readTime}
+              {meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
             </p>
-            <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1">
-              <Icon name="hugeicons:arrow-up-right-01" class="size-6" />
+            <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
+              <Icon name="lucide:arrow-up-right" class="size-6" />
             </span>
           </div>
         </div>

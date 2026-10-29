@@ -1,28 +1,34 @@
 ---
 import AstroImage from '@/components/helper/AstroImage.astro';
+import PauseButton from '@/components/PauseButton.astro';
 
+type GroupImage = string | { src: string; alt?: string };
 interface Props {
-  images: string[];
+  /** Image paths, or `{ src, alt }` to describe a photo (plain paths are decorative). */
+  images: GroupImage[];
 }
 const { images } = Astro.props;
 
-const items = [...images, ...images];
+const photos = images.map((img) => (typeof img === 'string' ? { src: img, alt: '' } : { src: img.src, alt: img.alt ?? '' }));
+const items = [...photos, ...photos];
 const duration = 20;
 ---
 
-<div class="team-group-carousel marquee overflow-hidden">
+{photos.length > 0 && (
+<div class="team-group-carousel marquee relative overflow-hidden" data-marquee>
+  <PauseButton label="photo strip" />
   <div class="marquee-track flex" data-marquee-track data-duration={duration}>
     {
-      items.map((src, i) => (
+      items.map((photo, i) => (
         <div
           class="shrink-0"
-          data-duplicate={i >= images.length ? '' : undefined}
-          aria-hidden={i >= images.length ? 'true' : undefined}
+          data-duplicate={i >= photos.length ? '' : undefined}
+          aria-hidden={i >= photos.length ? 'true' : undefined}
         >
           <div class="team-group-image has-anim inline-block overflow-hidden text-center mx-4">
             <AstroImage
-              src={src}
-              alt="team"
+              src={photo.src}
+              alt={photo.alt}
               loading="lazy"
               class="max-w-100 bg-gray-100"
             />
@@ -32,6 +38,7 @@ const duration = 20;
     }
   </div>
 </div>
+)}
 
 <style>
   /* reduced motion: no marquee; one set of photos the visitor can scroll by hand */
@@ -39,7 +46,8 @@ const duration = 20;
     .team-group-carousel {
       overflow-x: auto;
     }
-    .team-group-carousel [data-duplicate] {
+    .team-group-carousel [data-duplicate],
+    .team-group-carousel [data-pause-toggle] {
       display: none;
     }
   }
@@ -48,13 +56,21 @@ const duration = 20;
 <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  document.querySelectorAll<HTMLElement>('[data-marquee-track]').forEach((track) => {
-    if (reduceMotion) return;
+  // The strip only moves while it's on screen, the tab is visible, and it isn't
+  // paused (hover, keyboard focus inside it, or the pause button).
+  document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-marquee-track]');
+    if (!track || reduceMotion) return;
 
     const duration = Number(track.dataset.duration) || 5;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-pause-toggle]');
     let oneSet = 0;
     let pos = 0;
     let prev = 0;
+    let frame = 0;
+    let onScreen = false;
+    let hovered = false;
+    let paused = false;
 
     const setOffset = () => {
       oneSet = track.scrollWidth / 2;
@@ -69,16 +85,34 @@ const duration = 20;
         if (pos <= -oneSet) pos += oneSet;
         track.style.transform = `translateX(${pos}px)`;
       }
-      requestAnimationFrame(loop);
+      frame = requestAnimationFrame(loop);
     };
 
-    const ro = new ResizeObserver(setOffset);
-    ro.observe(track);
-    window.addEventListener('resize', setOffset);
-    requestAnimationFrame((t) => {
-      setOffset();
-      prev = t;
-      loop(t);
+    const sync = () => {
+      const run = onScreen && !hovered && !paused && !document.hidden;
+      if (run && !frame) {
+        prev = 0;
+        frame = requestAnimationFrame(loop);
+      } else if (!run && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    };
+
+    new ResizeObserver(setOffset).observe(track);
+    setOffset();
+    new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting;
+      sync();
+    }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+    root.addEventListener('mouseenter', () => { hovered = true; sync(); });
+    root.addEventListener('mouseleave', () => { hovered = false; sync(); });
+    toggle?.addEventListener('click', () => {
+      paused = !paused;
+      toggle.setAttribute('aria-pressed', String(paused));
+      toggle.textContent = `${paused ? 'Play' : 'Pause'} photo strip`;
+      sync();
     });
   });
 </script>

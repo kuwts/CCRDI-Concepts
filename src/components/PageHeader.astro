@@ -20,10 +20,10 @@ const {
   <div class="container -mt-1.5">
     <div class="row justify-center">
       <div class:list={[colClass, align === 'center' ? 'text-center' : '']}>
-        <p class="has-anim fade mb-5 font-medium">{subtitle}</p>
+        {subtitle && <p class="has-anim fade mb-5 font-medium">{subtitle}</p>}
         <h1
           class:list={[
-            'has-anim fade delay-100 font-medium text-white text-3xl sm:text-4xl leading-snug',
+            'has-anim fade delay-100 font-medium text-white text-3xl sm:text-4xl leading-snug break-words',
             dot ? 'section-title-dot' : '',
           ]}
           set:html={title}

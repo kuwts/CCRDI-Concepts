@@ -2,6 +2,8 @@
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import AstroVideo from '@/components/helper/AstroVideo.astro';
+import PauseButton from '@/components/PauseButton.astro';
+import { socialNetwork } from '@/utils/social';
 
 interface Testimonial {
   review: string;
@@ -62,30 +64,39 @@ const getResolvedMedia = (media: string | undefined): string => {
   return resolvedMediaMap.get(media) ?? media;
 };
 
-// duplicate a short list so loop mode has enough slides (mirrors PortfolioCarousel)
-// const slides = items.length < 6 ? [...items, ...items] : items;
 const slides = items;
 const ctrl = light ? 'text-white' : 'text-dark';
+// the summary card only shows when there's something to put on it
+const hasSummary = !!(testimonials?.total_rating || testimonials?.total_reviews || testimonials?.top_companies?.length);
+const hasVideo = items.some((t) => isVideo(t.media));
+const ratingLabel = (n: number) => `Rated ${n} out of 5`;
+// stars and the big number only for a real rating, so placeholder text never implies one
+const hasRating = /^\d+(\.\d+)?$/.test(testimonials?.total_rating ?? '');
 ---
 
 <!-- per-instance root (no transform, so the fixed popup inside still covers the viewport) -->
+{(hasSummary || slides.length > 0) && (
 <div data-review-root>
 <div class="review-carousel relative has-anim fade" data-total={items.length}>
+  {hasVideo && <PauseButton label="testimonial videos" class="top-2 left-1/2 -translate-x-1/2" />}
   <div class="overflow-clip">
     <div class="container">
       <div class="swiper overflow-visible!">
         <div class="swiper-wrapper cursor-grab">
-          <!-- Info card -->
+          {/* Info card */}
+          {hasSummary && (
           <div class="swiper-slide h-auto! px-3">
-            <div class="group relative h-full min-h-90 overflow-hidden bg-white">
+            <div class="group relative h-full min-h-90 overflow-hidden bg-white rounded-card">
               <div class="relative z-10 flex h-full flex-col items-center justify-center p-6 md:p-7">
-                <p class="text-8xl font-bold text-black/40 sm:mt-auto">{testimonials?.total_rating}</p>
-                <div class="flex gap-0.5 text-lg text-amber-400 my-3">
+                <p class:list={['font-bold text-black/40 sm:mt-auto', hasRating ? 'text-8xl' : 'text-xl text-center text-dark/70']}>{testimonials?.total_rating}</p>
+                {hasRating && (
+                <div class="flex gap-0.5 text-lg text-amber-400 my-3" role="img" aria-label={`${testimonials?.total_rating} out of 5`}>
                   {Array.from({ length: 5 }).map(() => (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
                   ))}
                 </div>
-                <p class="text-dark font-medium">{testimonials?.total_reviews}</p>
+                )}
+                <p class:list={['text-dark font-medium', !hasRating && 'mt-3 text-center']}>{testimonials?.total_reviews}</p>
                 
                 <div class="hidden sm:flex mt-auto gap-4">
                   {testimonials?.top_companies?.map((c) => (
@@ -102,19 +113,21 @@ const ctrl = light ? 'text-white' : 'text-dark';
               </div>
             </div>
           </div>
+          )}
           {slides.map((t) => (
             <div class="swiper-slide h-auto! px-3">
               {isVideo(t.media) ? (
                 /* ── video card ── */
-                <div class="group relative h-full min-h-90 overflow-hidden bg-dark">
-                  <!-- started by the script below, unless the visitor prefers reduced motion -->
+                <div class="group relative h-full min-h-90 overflow-hidden bg-dark rounded-card">
+                  {/* started by the script below, unless the visitor prefers reduced motion */}
                   <AstroVideo
                     src={t.media}
                     muted
                     loop
                     playsinline
-                    preload="metadata"
+                    preload="none"
                     class="absolute inset-0 size-full object-cover"
+                    aria-hidden="true"
                     data-review-autoplay
                   />
                   <div class="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/60"></div>
@@ -130,10 +143,10 @@ const ctrl = light ? 'text-white' : 'text-dark';
                           href={t.social}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label={`${t.author} on X`}
+                          aria-label={`${t.author} on ${socialNetwork(t.social).name}`}
                           class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/15 backdrop-blur-sm transition hover:bg-white/25"
                         >
-                          <Icon name="hugeicons:new-twitter" class="size-4" />
+                          <Icon name={socialNetwork(t.social).icon} class="size-4" aria-hidden="true" />
                         </a>
                       )}
                     </div>
@@ -143,16 +156,17 @@ const ctrl = light ? 'text-white' : 'text-dark';
                       class="mx-auto flex size-12 items-center justify-center rounded-full bg-white text-dark shadow-lg transition-transform duration-300 hover:scale-110 cursor-pointer"
                       data-review-play
                       data-src={getResolvedMedia(t.media)}
-                      aria-label="Play video testimonial"
+                      aria-label={`Play video testimonial from ${t.author}`}
+                      aria-haspopup="dialog"
                     >
-                      <Icon name="hugeicons:play" class="ml-0.5 size-5" />
+                      <Icon name="lucide:play" class="ml-0.5 size-5" aria-hidden="true" />
                     </button>
 
                     <div class="flex items-center justify-between">
-                      <div class="flex gap-0.5 text-lg text-amber-400">
+                      <div class="flex gap-0.5 text-lg text-amber-400" role="img" aria-label={ratingLabel(t.rating ?? 5)}>
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span class={i < (t.rating ?? 5) ? '' : 'text-white/30'}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" /></svg>
                           </span>
                         ))}
                       </div>
@@ -162,25 +176,27 @@ const ctrl = light ? 'text-white' : 'text-dark';
                 </div>
               ) : (
                 /* ── image and text card ── */
-                <div class="flex h-full min-h-90 flex-col bg-white p-6 md:p-7">
+                <div class="flex h-full min-h-90 flex-col bg-white p-6 md:p-7 rounded-card">
                   <p class="mb-6 flex-1 sm:text-xl leading-relaxed text-dark">
                     {t.review}
                   </p>
 
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                      <AstroImage
-                        src={`/${t.media}`}
-                        alt={t.author}
-                        width={48}
-                        height={48}
-                        loading="lazy"
-                        class="size-12 rounded-full object-cover"
-                      />
+                      {t.media && (
+                        <AstroImage
+                          src={t.media}
+                          alt=""
+                          width={48}
+                          height={48}
+                          loading="lazy"
+                          class="size-12 rounded-full object-cover"
+                        />
+                      )}
                       <div>
                         <p class="font-semibold text-dark leading-tight">{t.author}</p>
                         {(t.role || t.company) && (
-                          <p class="mt-0.5 text-sm text-dark/50">{t.role ?? t.company}</p>
+                          <p class="mt-0.5 text-sm text-dark/70">{t.role ?? t.company}</p>
                         )}
                       </div>
                     </div>
@@ -189,10 +205,10 @@ const ctrl = light ? 'text-white' : 'text-dark';
                         href={t.social}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`${t.author} on X`}
+                        aria-label={`${t.author} on ${socialNetwork(t.social).name}`}
                         class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-black/5 text-dark transition hover:bg-black/10"
                       >
-                        <Icon name="hugeicons:new-twitter" class="size-4" />
+                        <Icon name={socialNetwork(t.social).icon} class="size-4" aria-hidden="true" />
                       </a>
                     )}
                   </div>
@@ -204,7 +220,7 @@ const ctrl = light ? 'text-white' : 'text-dark';
       </div>
     </div>
 
-    <!-- pagination dots -->
+    {/* pagination dots */}
     <div class:list={['mt-12 -mb-2 flex items-center justify-center', ctrl]}>
       <div class="swiper-pagination"></div>
     </div>
@@ -212,19 +228,22 @@ const ctrl = light ? 'text-white' : 'text-dark';
 
 </div>
 
-<!-- video popup (outside has-anim to keep position:fixed working) -->
+{/* video popup (outside has-anim to keep position:fixed working); inert while closed */}
 <div
   class="pointer-events-none fixed top-0 left-0 h-screen w-screen z-9999999 flex items-center justify-center bg-dark/90 p-6 opacity-0 transition-opacity duration-300"
   data-review-modal
-  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Video testimonial"
+  inert
 >
   <button
     type="button"
-    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:rotate-90 hover:bg-primary cursor-pointer"
+    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:rotate-90 hover:bg-white/20 cursor-pointer"
     data-review-close
     aria-label="Close video"
   >
-    <Icon name="hugeicons:cancel-01" class="size-4 transition group-hover:scale-130" />
+    <Icon name="lucide:x" class="size-4 transition group-hover:scale-130" aria-hidden="true" />
   </button>
   <video
     class="max-h-[85vh] max-w-[90vw] rounded-lg"
@@ -234,6 +253,7 @@ const ctrl = light ? 'text-white' : 'text-dark';
   ></video>
 </div>
 </div>
+)}
 
 <style is:global>
   .review-carousel .swiper-slide {
@@ -259,12 +279,42 @@ const ctrl = light ? 'text-white' : 'text-dark';
     const el = root.querySelector<HTMLElement>('.review-carousel .swiper');
     if (!el) return;
 
-    // muted background videos on video cards: autoplay only without reduced motion
-    // (the play button still opens the full video either way)
-    if (!reduceMotion) {
-      root.querySelectorAll<HTMLVideoElement>('[data-review-autoplay]').forEach((v) => {
-        v.play().catch(() => {});
+    // Muted background videos on video cards: they only load and play while the
+    // carousel is on screen, the tab is visible and nothing pauses them (hover,
+    // keyboard focus inside the carousel, or the pause button). Never with
+    // reduced motion. The play button still opens the full video either way.
+    const cardVideos = [...root.querySelectorAll<HTMLVideoElement>('[data-review-autoplay]')];
+    const pauseToggle = root.querySelector<HTMLButtonElement>('[data-pause-toggle]');
+    if (!reduceMotion && cardVideos.length) {
+      const carousel = root.querySelector<HTMLElement>('.review-carousel')!;
+      let onScreen = false;
+      let hovered = false;
+      let focused = false;
+      let paused = false;
+      const sync = () => {
+        const run = onScreen && !hovered && !focused && !paused && !document.hidden;
+        cardVideos.forEach((v) => {
+          if (run && v.paused) v.play().catch(() => {});
+          else if (!run && !v.paused) v.pause();
+        });
+      };
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        sync();
+      }).observe(carousel);
+      document.addEventListener('visibilitychange', sync);
+      carousel.addEventListener('mouseenter', () => { hovered = true; sync(); });
+      carousel.addEventListener('mouseleave', () => { hovered = false; sync(); });
+      carousel.addEventListener('focusin', (e) => { focused = e.target !== pauseToggle; sync(); });
+      carousel.addEventListener('focusout', () => { focused = false; sync(); });
+      pauseToggle?.addEventListener('click', () => {
+        paused = !paused;
+        pauseToggle.setAttribute('aria-pressed', String(paused));
+        pauseToggle.textContent = `${paused ? 'Play' : 'Pause'} testimonial videos`;
+        sync();
       });
+    } else {
+      pauseToggle?.remove();
     }
 
     new Swiper(el, {
@@ -297,32 +347,37 @@ const ctrl = light ? 'text-white' : 'text-dark';
 
     if (modal && modalVideo && closeBtn) {
       let isOpen = false;
-      const openModal = (src: string) => {
+      let returnTo: HTMLElement | null = null;
+      const openModal = (src: string, trigger: HTMLElement) => {
         isOpen = true;
+        returnTo = trigger;
         modalVideo.src = src;
+        modal.inert = false;
         modal.style.opacity = '1';
         modal.style.pointerEvents = 'auto';
-        modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         modalVideo.currentTime = 0;
         modalVideo.play().catch(() => {});
+        closeBtn.focus();
       };
       const closeModal = () => {
         // only the open instance reacts (Escape reaches every instance)
         if (!isOpen) return;
         isOpen = false;
-        modalVideo.src = '';
+        modalVideo.pause();
+        modalVideo.removeAttribute('src');
+        modalVideo.load();
         modal.style.opacity = '0';
         modal.style.pointerEvents = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-        modalVideo.pause();
+        modal.inert = true;
         document.body.style.overflow = '';
+        returnTo?.focus();
       };
 
       root.querySelectorAll<HTMLElement>('[data-review-play]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const src = btn.dataset.src;
-          if (src) openModal(src);
+          if (src) openModal(src, btn);
         });
       });
       closeBtn.addEventListener('click', closeModal);
@@ -330,7 +385,13 @@ const ctrl = light ? 'text-white' : 'text-dark';
         if (e.target === modal) closeModal();
       });
       document.addEventListener('keydown', (e) => {
+        if (!isOpen) return;
         if (e.key === 'Escape') closeModal();
+        // Tab cycles between the close button and the video controls
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          (document.activeElement === closeBtn ? modalVideo : closeBtn).focus();
+        }
       });
     }
   });

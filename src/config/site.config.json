@@ -1,37 +1,95 @@
 {
   "baseURL": "https://example.com",
   "trailingSlash": false,
-  "favicon": "/images/favicon.png",
-  "logo": {
-    "src": "/images/logo.svg",
-    "alt": "Obicol",
-    "width": 110,
-    "height": 29
+  "locale": {
+    "lang": "en-CA",
+    "format": "en-CA"
+  },
+  "brand": {
+    "name": "Consumer Choice Canada",
+    "colors": {
+      "primary": "#D4A843",
+      "dark": "#0B2545",
+      "light": "#F8F6F1",
+      "muted": "#E4E7EB",
+      "mutedDark": "#52606D",
+      "navy700": "#13315C",
+      "goldText": "#8A6514",
+      "canadaRed": "#C8102E",
+      "surface": "#FFFFFF",
+      "text": "#1F2933",
+      "border": "#E4E7EB",
+      "award": "#D4A843",
+      "marketing": "#C2410C",
+      "research": "#0F766E"
+    },
+    "font": {
+      "heading": { "name": "Source Serif 4 Variable", "fallback": "serif" },
+      "body": { "name": "Inter Variable", "fallback": "sans-serif" }
+    },
+    "logo": {
+      "src": "/images/placeholders/logo-wordmark.svg",
+      "alt": "Consumer Choice Canada",
+      "width": 240,
+      "height": 29
+    },
+    "favicon": {
+      "svg": "/images/icons/favicon.svg",
+      "png32": "/images/icons/favicon-32.png",
+      "appleTouch": "/images/icons/apple-touch-icon.png",
+      "icon192": "/images/icons/icon-192.png",
+      "icon512": "/images/icons/icon-512.png",
+      "ico": {
+        "source": "/images/icons/icon-512.png",
+        "sizes": [
+          16,
+          32,
+          48
+        ]
+      }
+    }
   },
   "seo": {
-    "title": "Obicol - Agency & Portfolio Template",
-    "description": "Obicol is a world-class creative studio. We design & build world-class digital products that make an impact and connect people.",
-    "keywords": "agency, portfolio, creative studio, design, branding, astro template",
-    "author": "Platoltheme",
-    "image": "/images/ogimage.png"
+    "title": "Consumer Choice Canada",
+    "description": "Consumer Choice Canada brings together trusted recognition, marketing support, and consumer intelligence to strengthen confidence between Canadians and the businesses that serve them.",
+    "author": "",
+    "image": "/images/ogimage.png",
+    "pages": {
+      "/blog": {
+        "title": "",
+        "description": "",
+        "image": ""
+      },
+      "/blog-horizontal": {
+        "title": "",
+        "description": "",
+        "image": ""
+      },
+      "/portfolio": {
+        "title": "",
+        "description": "",
+        "image": ""
+      }
+    }
   },
   "author": {
-    "name": "Platoltheme",
-    "url": "https://example.com"
+    "name": "",
+    "url": ""
   },
   "footer": {
     "cta": {
-      "title": "Have an idea, tell us about it!",
+      "title": "Recognizing Excellence. Delivering Insight. Inspiring Confidence.",
       "url": "/contact",
       "label": "Contact Us"
     },
-    "email": "hello@example.com",
-    "phone": "+1 555 0123",
-    "address_line_1": "123 Example Street, Suite 456",
-    "address_line_2": "Fictitious City, FC 12345, USA"
+    "description": "Consumer Choice Canada brings together trusted recognition, marketing support, and consumer intelligence to strengthen confidence between Canadians and the businesses that serve them.",
+    "email": "[CLIENT TO PROVIDE: email]",
+    "phone": "[CLIENT TO PROVIDE: phone]",
+    "address_line_1": "[CLIENT TO PROVIDE: address]",
+    "address_line_2": ""
   },
-  "buyNow": {
-    "label": "Buy Now",
-    "url": "https://platoltheme.com/themes/obicol-astro"
+  "headerButton": {
+    "label": "Find a Trusted Business",
+    "url": "#"
   }
 }

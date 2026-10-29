@@ -1,0 +1,34 @@
+---
+// Team member cards (photo, name, role) as grid columns. Place inside a `row`.
+import AstroImage from '@/components/helper/AstroImage.astro';
+import { animDelay } from '@/utils/animDelay';
+
+interface Member {
+  name: string;
+  role: string;
+  image: string;
+}
+interface Props {
+  members: Member[];
+  /** Heading level for names: `h2` directly under the page title, `h3` under a section heading (default). */
+  as?: 'h2' | 'h3';
+}
+
+const { members, as: Heading = 'h3' } = Astro.props;
+---
+
+{
+  members.map((m, i) => (
+    <div class="xl:col-3 lg:col-4 col-6">
+      <div class:list={['has-anim fade mt-8.75', animDelay[i % 4]]}>
+        <div class="relative overflow-hidden">
+          <AstroImage src={m.image} alt="" loading="lazy" class="h-auto max-w-full bg-gray-100" />
+        </div>
+        <div class="mt-5">
+          <Heading class="text-dark text-xl font-semibold break-words">{m.name}</Heading>
+          <p class="mt-1 text-dark/70">{m.role}</p>
+        </div>
+      </div>
+    </div>
+  ))
+}

@@ -1,12 +1,13 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
 import LineLink from '@/components/LineLink.astro';
 import Button from '@/components/Button.astro';
+import { getJobs } from '@/lib/content';
 
 export async function getStaticPaths() {
-  const jobs = await getCollection('jobs');
+  const jobs = await getJobs();
   return jobs.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -14,24 +15,27 @@ const { entry } = Astro.props;
 const { title, meta, apply_label, apply_title } = entry.data;
 const { Content } = await render(entry);
 
+// The form's labels and messages are shared by every job page:
+// src/content/team/index.mdx → application_form.
+const team = await getEntry('team', 'index');
+const { fields, submit_label, sending_label, error_message, file_too_large } = team!.data.application_form;
+
 // Submissions go to Netlify Forms (form name "job-application", shared by every job
 // page; the hidden "position" field records which job). Where they're emailed is set
 // per site in the Netlify dashboard: Forms > Submission notifications.
-
-const fieldBase =
-  'mb-[30px] w-full px-[15px] border border-[#ced4da] bg-white text-[#495057] rounded-none transition-colors duration-200 focus:outline-none focus:shadow-none focus:border-primary';
-const fieldClass = `${fieldBase} h-12`;
-const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
+const fieldClass = 'field';
+const textareaClass = 'field field-textarea';
+const required = '<span class="text-error" aria-hidden="true">*</span>';
 ---
 
-<Base title={title}>
+<Base title={title} description={meta} seo={entry.data.seo}>
   <!-- Header -->
   <section class="bg-light py-20 md:py-25">
     <div class="container">
       <div class="row justify-center items-end">
         <div class="lg:col-7">
           <p class="has-anim fade mb-5 font-medium text-dark/60">{meta}</p>
-          <h3 class="text-dark has-anim fade delay-100 font-medium text-3xl">{title}</h3>
+          <h1 class="text-dark has-anim fade delay-100 font-medium text-3xl break-words">{title}</h1>
         </div>
         <div class="lg:col-3 lg:text-right mt-4 lg:mt-0 has-anim fade delay-200">
           <LineLink href="#apply-job-wrap" label={apply_label} tone="dark" icon="down" />
@@ -40,12 +44,12 @@ const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
     </div>
   </section>
 
-  <!-- Body -->
+  <!-- Body (its ## headings keep the 22px size job posts have always had) -->
   <section class="bg-white py-20 md:py-25">
     <div class="container has-anim fade delay-150">
       <div class="row justify-center">
         <div class="lg:col-10">
-          <div class="content text-dark">
+          <div class="content text-dark [&_h2]:text-[22px]!">
             <Content />
           </div>
         </div>
@@ -58,16 +62,20 @@ const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
     <div class="container">
       <div class="row justify-center">
         <div class="lg:col-10">
-          <h4 class="text-dark has-anim fade font-semibold">{apply_title}</h4>
+          <h2 class="text-dark has-anim fade font-semibold">{apply_title}</h2>
 
           <form
             name="job-application"
             method="POST"
+            action="/thank-you/application"
             enctype="multipart/form-data"
             data-netlify="true"
             netlify-honeypot="bot-field"
             class="mt-5"
             id="job-apply-form"
+            data-sending={sending_label}
+            data-error={error_message}
+            data-too-large={file_too_large}
           >
             <input type="hidden" name="form-name" value="job-application" />
             <input type="hidden" name="subject" value={`Job application: ${title}`} />
@@ -78,38 +86,38 @@ const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
             </p>
             <div class="row">
               <div class="col-12 has-anim fade">
-                <label for="apply-cv" class="text-dark mb-1 block">Resume/CV <span class="text-red-600">*</span></label>
+                <label for="apply-cv" class="field-label">{fields.cv.label} <Fragment set:html={required} /></label>
                 <input id="apply-cv" type="file" name="cv" accept=".pdf,.doc,.docx" class={`${fieldClass} pt-2.5`} required />
               </div>
               <div class="col-12 has-anim fade">
-                <label for="apply-name" class="text-dark mb-1 block">Full Name <span class="text-red-600">*</span></label>
-                <input id="apply-name" type="text" name="name" class={fieldClass} placeholder="ex: Jack Barker" required />
+                <label for="apply-name" class="field-label">{fields.name.label} <Fragment set:html={required} /></label>
+                <input id="apply-name" type="text" name="name" autocomplete="name" class={fieldClass} placeholder={fields.name.placeholder} required />
               </div>
               <div class="col-12 has-anim fade">
-                <label for="apply-email" class="text-dark mb-1 block">Email Address <span class="text-red-600">*</span></label>
-                <input id="apply-email" type="email" name="email" class={fieldClass} placeholder="ex: hello@example.com" required />
+                <label for="apply-email" class="field-label">{fields.email.label} <Fragment set:html={required} /></label>
+                <input id="apply-email" type="email" name="email" autocomplete="email" class={fieldClass} placeholder={fields.email.placeholder} required />
               </div>
               <div class="col-12 md:col-6 has-anim fade">
-                <label for="apply-phone" class="text-dark mb-1 block">Phone <span class="text-red-600">*</span></label>
-                <input id="apply-phone" type="tel" name="phone" class={fieldClass} placeholder="ex: +88 0956 268 *" required />
+                <label for="apply-phone" class="field-label">{fields.phone.label} <Fragment set:html={required} /></label>
+                <input id="apply-phone" type="tel" name="phone" autocomplete="tel" class={fieldClass} placeholder={fields.phone.placeholder} required />
               </div>
               <div class="col-12 md:col-6 has-anim fade">
-                <label for="apply-company" class="text-dark mb-1 block">Current company</label>
-                <input id="apply-company" type="text" name="company" class={fieldClass} placeholder="Current company" />
+                <label for="apply-company" class="field-label">{fields.company.label}</label>
+                <input id="apply-company" type="text" name="company" autocomplete="organization" class={fieldClass} placeholder={fields.company.placeholder} />
               </div>
               <div class="col-12 has-anim fade">
-                <label for="apply-cover" class="text-dark mb-1 block">Cover letter <span class="text-red-600">*</span></label>
+                <label for="apply-cover" class="field-label">{fields.cover_letter.label} <Fragment set:html={required} /></label>
                 <textarea
                   id="apply-cover"
                   name="cover_letter"
                   class={textareaClass}
                   rows="1"
-                  placeholder="Add a cover letter or anything else you want to share."
+                  placeholder={fields.cover_letter.placeholder}
                   required></textarea>
               </div>
               <div class="col-12 has-anim fade">
-                <Button type="submit" label="Submit Application" variant="black" />
-                <div class="status empty:hidden py-2 px-3 text-white font-medium text-sm mt-4" role="status" aria-live="polite"></div>
+                <Button type="submit" label={submit_label} variant="black" />
+                <div class="status empty:hidden py-2 px-3 bg-error text-white font-medium text-sm mt-4" role="status" aria-live="polite"></div>
               </div>
             </div>
           </form>
@@ -131,10 +139,8 @@ const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
     const submitBtnHTML = submitBtn?.innerHTML;
     const status = form.querySelector<HTMLElement>('.status');
 
-    const showStatus = (ok: boolean, text: string) => {
-      if (!status) return;
-      status.style.backgroundColor = ok ? '#17a34a' : '#dc2625';
-      status.textContent = text;
+    const showError = (text: string) => {
+      if (status) status.textContent = text;
     };
     const resetButton = () => {
       if (!submitBtn) return;
@@ -150,25 +156,25 @@ const textareaClass = `${fieldBase} min-h-[150px] pt-[15px]`;
       const cv = data.get('cv');
       // leave a little room for the text fields within the 8 MB request limit
       if (cv instanceof File && cv.size > MAX_BYTES - 256 * 1024) {
-        showStatus(false, 'Your CV file is too large. Please upload a file under 7.5 MB.');
+        showError(form.dataset.tooLarge ?? '');
         return;
       }
 
       if (submitBtn) {
         submitBtn.disabled = true;
         const span = submitBtn.querySelector('span');
-        if (span) span.textContent = 'Sending..';
+        if (span) span.textContent = form.dataset.sending ?? '';
       }
 
       fetch('/', { method: 'POST', body: data })
         .then((response) => {
-          // only a 2xx from Netlify counts as sent
+          // only a 2xx from Netlify counts as sent; then go to the thank-you page
+          // (the form's `action`, which is also where no-JS visitors land)
           if (!response.ok) throw new Error(`Form submission failed (${response.status})`);
-          showStatus(true, 'Application sent successfully!');
-          form.reset();
+          window.location.href = form.getAttribute('action') ?? '/thank-you/application';
         })
         .catch(() => {
-          showStatus(false, "Sorry, your application couldn't be sent. Please try again in a moment.");
+          showError(form.dataset.error ?? '');
         })
         .finally(resetButton);
     });

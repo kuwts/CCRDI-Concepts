@@ -3,8 +3,10 @@ import { z } from 'astro/zod';
 import { glob, file } from 'astro/loaders';
 
 import {
+  fieldSchema,
   linkSchema,
   sectionHeadingSchema,
+  seoSchema,
 } from '@/types/shared';
 
 const singleton = (folder: string) =>
@@ -14,6 +16,7 @@ const singleton = (folder: string) =>
 export const homepage = defineCollection({
   loader: singleton('homepage'),
   schema: z.object({
+    seo: seoSchema,
     banner: z.object({
       subtitle: z.string(),
       title: z.string(),
@@ -21,7 +24,12 @@ export const homepage = defineCollection({
       primary_cta: linkSchema,
       secondary_cta: linkSchema,
       image: z.string(),
-      video: z.string(),
+      // alt text for `image` when it's shown on its own (no video yet)
+      image_alt: z.string().default(''),
+      // empty = no video yet: the showreel shows `image` as a still
+      video: z.string().default(''),
+      // other formats of the same video (e.g. an .mp4 for browsers without .webm)
+      video_sources: z.array(z.string()).optional(),
       social_proof: z.object({
         label: z.string(),
         avatars: z.array(
@@ -29,7 +37,7 @@ export const homepage = defineCollection({
             image: z.string(),
             name: z.string(),
             role: z.string(),
-            social: z.object({ icon: z.string(), url: z.string() }),
+            social: z.object({ icon: z.string().optional(), url: z.string() }).optional(),
           }),
         ),
       }),
@@ -38,60 +46,204 @@ export const homepage = defineCollection({
       section_title: z.string(),
       title: z.string(),
       description: z.string(),
-      info: z.array(z.string())
+      info: z.array(z.string()),
+      // cards in the stack beside the intro (StackedServices)
+      items: z.array(
+        z.object({
+          icon: z.string(),
+          title: z.string(),
+          info: z.string(),
+          meta: z.string().optional(),
+          image: z.string().optional(),
+          image_alt: z.string().optional(),
+        }),
+      ),
     }),
-    projects: sectionHeadingSchema,
+    // carousel slides (PortfolioCarousel)
+    projects: sectionHeadingSchema.extend({
+      items: z.array(
+        z.object({
+          title: z.string(),
+          category: z.string(),
+          color: z.string(),
+          // text over the hover colour: dark for light colours (e.g. gold)
+          tone: z.enum(['white', 'dark']).optional(),
+          image: z.string(),
+          image_alt: z.string().optional(),
+          href: z.string(),
+        }),
+      ),
+    }),
     process: sectionHeadingSchema.extend({
       steps: z.array(z.object({heading: z.string(), text: z.string() })),
       cta: z.object({
         title: z.string(),
-        images: z.array(z.string()),
+        // a plain path is decorative; { src, alt } describes the photo
+        images: z.array(z.union([z.string(), z.object({ src: z.string(), alt: z.string().optional() })])),
         button: linkSchema
       }),
     }),
-    testimonials: sectionHeadingSchema,
-    clients: sectionHeadingSchema,
-    blog: sectionHeadingSchema,
+    testimonials: sectionHeadingSchema.extend({
+      items: z.array(
+        z.object({
+          review: z.string(),
+          author: z.string(),
+          role: z.string().optional(),
+          company: z.string().optional(),
+          media: z.string().optional(),
+        }),
+      ),
+      // logo wall under the testimonials (Clients)
+      logos: z.array(z.object({ name: z.string(), logo: z.string() })),
+    }),
+    clients: sectionHeadingSchema.optional(),
+    blog: sectionHeadingSchema.extend({
+      button: linkSchema.optional(),
+      // news cards (BlogCard); the first is shown large
+      items: z.array(
+        z.object({
+          title: z.string(),
+          description: z.string(),
+          date: z.string(),
+          category: z.string().optional(),
+          image: z.string().optional(),
+          image_alt: z.string().optional(),
+          href: z.string(),
+        }),
+      ),
+    }),
   }),
+});
+
+/* ── Shared page blocks ───────────────────────────────────────────── */
+// stats / about bento grid (Facts); used by About and Our Brands
+const factsSchema = z.object({
+  image: z.string(),
+  image_alt: z.string().default(''),
+  title: z.string(),
+
+  hero: z.object({
+    label: z.string(),
+    value: z.string(),
+    description: z.string(),
+  }),
+
+  philosophy: z.object({
+    label: z.string(),
+    title: z.string(),
+    description: z.string(),
+  }),
+
+  impact: z.object({
+    label: z.string(),
+    value: z.string(),
+    description: z.string(),
+  }),
+
+  stats: z.array(
+    z.object({
+      value: z.string(),
+      label: z.string(),
+    })
+  ),
+});
+
+// logo wall: light logos for a dark section (Clients)
+const logoWallSchema = z.object({
+  subtitle: z.string(),
+  logos: z.array(z.object({ name: z.string(), logo: z.string() })).optional(),
 });
 
 /* ── About page ────────────────────────────────────────────────────── */
 export const about = defineCollection({
   loader: singleton('about'),
   schema: z.object({
-    header: z.object({ subtitle: z.string(), title: z.string(), image: z.string() }),
-    clients: z.object({ subtitle: z.string() }),
-    facts: z.object({
-      image: z.string(),
+    seo: seoSchema,
+    header: z.object({
+      subtitle: z.string(),
       title: z.string(),
+      image: z.string(),
+      image_alt: z.string().default(''),
+    }),
+    clients: logoWallSchema,
+    facts: factsSchema,
+    // plain paths are decorative; use { src, alt } to describe a photo
+    team_group: z.object({
+      images: z.array(z.union([z.string(), z.object({ src: z.string(), alt: z.string().optional() })])),
+    }),
+    team: sectionHeadingSchema.extend({
+      cta: linkSchema,
+      // team cards on this page (TeamGrid); falls back to the shared team list
+      members: z.array(z.object({ name: z.string(), role: z.string(), image: z.string() })).optional(),
+    }),
+  }),
+});
 
-      hero: z.object({
-        label: z.string(),
-        value: z.string(),
-        description: z.string(),
-      }),
-
-      philosophy: z.object({
-        label: z.string(),
+/* ── Our Brands page ───────────────────────────────────────────────── */
+// built on the Services page layout: logo wall, bento grid, colour card deck
+export const brands = defineCollection({
+  loader: singleton('brands'),
+  schema: z.object({
+    seo: seoSchema,
+    header: z.object({ subtitle: z.string().default(''), title: z.string() }),
+    clients: logoWallSchema,
+    facts: factsSchema,
+    items: z.array(
+      z.object({
         title: z.string(),
-        description: z.string(),
+        tagline: z.string(),
+        image: z.string(),
+        image_alt: z.string().default(''),
+        // an icon-set name (e.g. lucide:award) or an image path
+        icon: z.string(),
+        info: z.array(z.string()),
+        // card background: a colour token, e.g. var(--color-award)
+        color: z.string(),
+        // text on the card: white (default) or dark for light colours
+        tone: z.enum(['white', 'dark']).default('white'),
+        sub_services: z.array(z.string()),
+        meta: z.array(z.string()),
+        link: linkSchema,
       }),
+    ),
+  }),
+});
 
-      impact: z.object({
-        label: z.string(),
-        value: z.string(),
-        description: z.string(),
-      }),
-
-      stats: z.array(
+/* ── 40 Years page ─────────────────────────────────────────────────── */
+// built on the case-study (Portfolio detail) layout: header, feature image, sidebar + MDX body,
+// closing row of cards
+export const anniversary = defineCollection({
+  loader: singleton('anniversary'),
+  schema: z.object({
+    seo: seoSchema,
+    eyebrow: z.string(),
+    title: z.string(),
+    // poster frame (also the share image); with `video`, the feature plays it muted and looping
+    image: z.string(),
+    image_alt: z.string().default(''),
+    video: z.string().default(''),
+    sidebar: z.object({
+      name: z.string(),
+      description: z.string(),
+      link: linkSchema.optional(),
+    }),
+    // confirmed facts only (sources in brief/gaps.md)
+    milestones: z.array(z.object({ title: z.string(), content: z.string() })),
+    family: z.object({ title: z.string(), items: z.array(z.string()) }),
+    next: z.object({
+      title: z.string(),
+      items: z.array(
         z.object({
-          value: z.string(),
-          label: z.string(),
-        })
+          title: z.string(),
+          category: z.string(),
+          color: z.string(),
+          tone: z.enum(['white', 'dark']).default('white'),
+          image: z.string(),
+          image_alt: z.string().default(''),
+          href: z.string(),
+        }),
       ),
     }),
-    team_group: z.object({ images: z.array(z.string()) }),
-    team: sectionHeadingSchema.extend({ cta: linkSchema }),
   }),
 });
 
@@ -99,6 +251,7 @@ export const about = defineCollection({
 export const services = defineCollection({
   loader: singleton('services'),
   schema: z.object({
+    seo: seoSchema,
     header: z.object({ subtitle: z.string(), title: z.string() }),
     items: z.array(
       z.object({
@@ -118,9 +271,27 @@ export const services = defineCollection({
 export const team = defineCollection({
   loader: singleton('team'),
   schema: z.object({
+    seo: seoSchema,
     header: z.object({ subtitle: z.string(), title: z.string() }),
     cta: linkSchema,
     open_positions: sectionHeadingSchema,
+    // shown when there are no open jobs (the section is hidden if left empty)
+    no_positions: z.string().optional(),
+    // labels and messages for the application form on every job page
+    application_form: z.object({
+      fields: z.object({
+        cv: fieldSchema,
+        name: fieldSchema,
+        email: fieldSchema,
+        phone: fieldSchema,
+        company: fieldSchema,
+        cover_letter: fieldSchema,
+      }),
+      submit_label: z.string(),
+      sending_label: z.string(),
+      error_message: z.string(),
+      file_too_large: z.string(),
+    }),
   }),
 });
 
@@ -128,6 +299,7 @@ export const team = defineCollection({
 export const jobs = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/jobs' }),
   schema: z.object({
+    seo: seoSchema,
     title: z.string(),
     location: z.string(),
     category: z.string(),
@@ -142,6 +314,7 @@ export const jobs = defineCollection({
 export const pricing = defineCollection({
   loader: singleton('pricing'),
   schema: z.object({
+    seo: seoSchema,
     header: z.object({ subtitle: z.string(), title: z.string() }),
     plans: z.array(
       z.object({
@@ -165,6 +338,7 @@ export const pricing = defineCollection({
 export const faq = defineCollection({
   loader: singleton('faq'),
   schema: z.object({
+    seo: seoSchema,
     header: z.object({ subtitle: z.string(), title: z.string() }),
     groups: z.array(
       z.object({
@@ -180,14 +354,27 @@ export const faq = defineCollection({
 export const contact = defineCollection({
   loader: singleton('contact'),
   schema: z.object({
+    seo: seoSchema,
     header: z.object({ subtitle: z.string(), title: z.string() }),
     intro: z.object({ title: z.string(), text: z.string() }),
     email: z.object({ label: z.string(), value: z.string() }),
     phone: z.object({ label: z.string(), value: z.string() }),
     address: z.object({ label: z.string(), lines: z.array(z.string()) }),
     form: z.object({
+      fields: z.object({
+        name: fieldSchema,
+        email: fieldSchema,
+        phone: fieldSchema,
+        company: fieldSchema,
+        project_type: fieldSchema,
+        budget: fieldSchema,
+        message: fieldSchema,
+      }),
       project_types: z.array(z.string()),
       budgets: z.array(z.string()),
+      submit_label: z.string(),
+      sending_label: z.string(),
+      error_message: z.string(),
     }),
   }),
 });
@@ -198,6 +385,7 @@ export const contact = defineCollection({
 export const pages = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/pages' }),
   schema: z.object({
+    seo: seoSchema,
     title: z.string(),
     description: z.string().optional(),
     subtitle: z.string().optional(),
@@ -209,10 +397,23 @@ export const pages = defineCollection({
   }),
 });
 
+/* ── Form thank-you pages (/thank-you/[slug], one per form) ────────── */
+export const thankYou = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/thank-you' }),
+  schema: z.object({
+    seo: seoSchema,
+    title: z.string(),
+    subtitle: z.string(),
+    heading: z.string(),
+    cta: linkSchema,
+  }),
+});
+
 /* ── Portfolio projects ────────────────────────────────────────────── */
 export const portfolio = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/portfolio' }),
   schema: z.object({
+    seo: seoSchema,
     title: z.string(),
     category: z.string(),
     color: z.string(),
@@ -239,6 +440,7 @@ export const portfolio = defineCollection({
 export const blog = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/blog' }),
   schema: z.object({
+    seo: seoSchema,
     title: z.string(),
     description: z.string(),
     category: z.string(),
@@ -248,6 +450,18 @@ export const blog = defineCollection({
     color: z.string().default('#0a11a8'),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+  }),
+});
+
+/* ── Listing page headers (blog, portfolio) ────────────────────────── */
+export const listings = defineCollection({
+  loader: file('./src/content/data/listings.json'),
+  schema: z.object({
+    id: z.string(),
+    subtitle: z.string(),
+    title: z.string(),
+    // accessible name for the "+" load-more button
+    load_more_label: z.string(),
   }),
 });
 

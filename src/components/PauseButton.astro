@@ -1,0 +1,26 @@
+---
+// Pause / play control for moving content (logo wall, marquee, autoplaying video).
+// Hidden until it gets keyboard focus, so it doesn't change the design; the
+// component that owns it listens for clicks and keeps `aria-pressed` in sync.
+// Needs a `relative` parent.
+interface Props {
+  /** What it pauses, e.g. "logo animation"; read as "Pause logo animation". */
+  label: string;
+  /** Position classes; default `top-2 left-2`. */
+  class?: string;
+}
+
+const { label, class: className = 'top-2 left-2' } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[
+    'sr-only-focusable absolute z-30 cursor-pointer bg-white px-4 py-2 text-sm font-medium text-dark shadow-lg',
+    className,
+  ]}
+  aria-pressed="false"
+  data-pause-toggle
+>
+  Pause {label}
+</button>

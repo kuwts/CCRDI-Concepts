@@ -14,7 +14,19 @@ address:
   lines: ["Fictitious City, FC 12345, USA", "123 Example Street, Suite 456"]
 
 form:
+  # label: read by screen readers (visually hidden); placeholder: the text shown in the field
+  fields:
+    name: { label: "Your name", placeholder: "Your Name *" }
+    email: { label: "Your email", placeholder: "Your Email *" }
+    phone: { label: "Your phone", placeholder: "Your Phone *" }
+    company: { label: "Company", placeholder: "Company" }
+    project_type: { label: "Type of project", placeholder: "Type of Project" }
+    budget: { label: "Your budget", placeholder: "Your Budget" }
+    message: { label: "Message", placeholder: "Message *" }
   project_types:
     ["Web/App UI Project", "Creative Branding", "Wordpress Website", "Static Website"]
   budgets: ["< 10,000", "10k-20k", "20k-30k", "> 30,000"]
+  submit_label: "Submit"
+  sending_label: "Sending.."
+  error_message: "Sorry, your message couldn't be sent. Please try again in a moment."
 ---

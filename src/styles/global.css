@@ -8,24 +8,68 @@
 /* Devices without hover (phones, tablets): show hover-only content by default */
 @custom-variant touch (@media (hover: none));
 
+/* Brand colors and font are set in src/config/site.config.json → brand.
+   Base.astro writes them to the --brand-* variables; the tokens below map
+   Tailwind's color/font utilities onto them. Don't put hex values here. */
 @theme {
-  --color-primary: #00b75f;
-  --color-light: #fafafa;
-  --color-dark: #001213;
-  --color-muted: #a3b2b3;
-  --color-mutedDark: #666666;
+  --color-primary: var(--brand-primary); /* Heritage Gold: accents on navy only */
+  --color-light: var(--brand-light); /* ivory alternate sections */
+  --color-dark: var(--brand-dark); /* navy: header, hero, footer, dark sections */
+  --color-muted: var(--brand-muted); /* light text on navy */
+  --color-mutedDark: var(--brand-mutedDark); /* captions and secondary copy on light */
 
-  --font-primary: var(--font-space-grotesk), sans-serif;
+  /* The rest of the CCC palette (site.config.json → brand.colors) */
+  --color-navy-700: var(--brand-navy700); /* hover states, secondary dark panels */
+  --color-gold: var(--brand-primary);
+  --color-gold-text: var(--brand-goldText); /* gold text or icons on light backgrounds */
+  --color-canada-red: var(--brand-canadaRed); /* rare accent only; never buttons */
+  --color-surface: var(--brand-surface);
+  --color-text: var(--brand-text); /* body text on light backgrounds */
+  --color-border: var(--brand-border);
+  --color-award: var(--brand-award);
+  --color-marketing: var(--brand-marketing);
+  --color-research: var(--brand-research);
+
+  /* Neutrals and fixed tints. Use these (or the white/black/dark opacity steps)
+     instead of one-off hex values. */
+  --color-line: var(--brand-border); /* hairline borders on light sections */
+  --color-fill: #f1f1f1; /* hover fills on light sections */
+  --color-error: #dc2625; /* form errors and required marks */
+  --color-shape: var(--brand-navy700); /* home hero dotted shape (BannerShape) */
+  --color-avatar-ring: var(--brand-primary); /* hero avatar border (BannerTestimonial) */
+
+  --font-primary: var(--brand-font-body);
+  --font-heading: var(--brand-font-heading);
+
+  /* Shape: card and button corners, subtle shadows (design.md) */
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --shadow-card: 0 1px 2px color-mix(in srgb, var(--brand-dark) 6%, transparent),
+    0 4px 16px color-mix(in srgb, var(--brand-dark) 6%, transparent);
+
+  /* The theme's one motion curve, for movement and hover effects (`ease-theme`). */
+  --ease-theme: cubic-bezier(0.2, 1, 0.2, 1);
 }
 
 @layer base {
   ::selection {
-    background: #008645;
+    background: var(--color-navy-700);
     color: #fff;
   }
 
   html {
     scroll-behavior: smooth;
+    @media (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Keyboard focus ring, everywhere: gold ring with a navy inner ring, so it
+     shows on both navy and light backgrounds. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-dark);
   }
 
   body {
@@ -37,32 +81,55 @@
     color: var(--color-dark);
     background-color: var(--color-dark);
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
 }
 
+/* Scroll reveal. Only opacity and transform are animated, so content that hasn't
+   been revealed yet is still read by screen readers, found by find-in-page and
+   printed. */
 @utility has-anim {
   opacity: 0;
-  visibility: hidden;
   transition-property: transform, opacity;
   transition-duration: 0.4s;
-  transition-timing-function: ease-out;
+  transition-timing-function: var(--ease-theme);
   transform: translateY(25px) scale(0.99);
   &.fade {
     transform: translateY(8px) scale(1);
   }
+  /* fade and scale in place (the anniversary seal) */
+  &.pop {
+    transform: scale(0.9);
+    transition-duration: 0.9s;
+  }
   &.is-visible {
     opacity: 1;
-    visibility: visible;
     transform: translateY(0) scale(1);
   }
 
-  /* No reveal motion for users who ask for reduced motion */
+  /* No reveal motion for users who ask for reduced motion, and none in print */
   @media (prefers-reduced-motion: reduce) {
     &,
-    &.fade {
+    &.fade,
+    &.pop {
       opacity: 1;
-      visibility: visible;
       transform: none;
       transition: none;
+    }
+  }
+  @media print {
+    &,
+    &.fade,
+    &.pop {
+      opacity: 1;
+      transform: none;
     }
   }
 
@@ -99,7 +166,7 @@
     bottom: 0;
     z-index: -1;
     background-color: color-mix(in srgb, var(--color-primary) 80%, transparent);
-    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    transition: 0.4s var(--ease-theme);
     pointer-events: none;
   }
   &::before {
@@ -108,11 +175,11 @@
     transition: 0s;
     background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
-  &:hover::before {
+  &:is(:hover, :focus-visible)::before {
     width: 0;
-    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    transition: 0.4s var(--ease-theme);
   }
-  &:hover::after {
+  &:is(:hover, :focus-visible)::after {
     width: 100%;
     right: auto;
     left: 0;
@@ -120,68 +187,123 @@
   }
 }
 
+/* Buttons. The label wraps onto more lines when there isn't room (the button
+   grows taller instead of overflowing). */
 @utility btn {
   --btn-h: 50px;
+  --btn-px: 30px;
   position: relative;
-  display: inline-block;
-  height: var(--btn-h);
-  line-height: var(--btn-h);
-  padding: 0 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-h);
+  padding: 0.6em var(--btn-px);
   font-size: 15px;
   font-weight: 500;
+  line-height: 1.25;
   text-align: center;
-  white-space: nowrap;
   vertical-align: middle;
   border: 0;
-  border-radius: 0;
+  border-radius: var(--radius-btn);
   overflow: hidden;
   z-index: 1;
   cursor: pointer;
   @media (max-width: 575px) {
     --btn-h: 42px;
-    padding: 0 22px;
+    --btn-px: 22px;
   }
   & span {
-    display: inline-block;
-    height: var(--btn-h);
-    line-height: var(--btn-h);
+    display: block;
     transition:
-      transform 0.65s cubic-bezier(0.2, 1, 0.3, 1),
+      transform 0.65s var(--ease-theme),
       opacity 0.2s;
   }
   &::after {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    line-height: var(--btn-h);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--btn-px);
     content: attr(data-text);
     z-index: 2;
     opacity: 0;
     pointer-events: none;
     transform: scale(0.95) translateY(12px);
     transition:
-      transform 0.65s cubic-bezier(0.2, 1, 0.3, 1),
+      transform 0.65s var(--ease-theme),
       opacity 0.2s;
   }
-  &:hover span {
+  &:is(:hover, :focus-visible) span {
     opacity: 0;
     transform: scale(0.95) translateY(-12px);
   }
-  &:hover::after {
+  &:is(:hover, :focus-visible)::after {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
+/* Gold-outline buttons. The border is drawn by ::before (so the theme's overflow
+   clip doesn't hide it) together with a slow sheen that sweeps across it once on
+   hover or keyboard focus. `btn-white` is for navy backgrounds (Heritage Gold
+   border, 6.95:1 on navy); `btn-black` is for light ones (dark gold border,
+   5.31:1 on white, 4.92:1 on ivory). */
+@utility btn-gold-ring {
+  background: transparent;
+  &::before {
+    position: absolute;
+    inset: 0;
+    content: '';
+    z-index: 0;
+    padding: 1.5px;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(115deg, transparent 38%, var(--btn-sheen) 50%, transparent 62%) 100% 0 / 300% 100% no-repeat,
+      var(--btn-border);
+    /* keep only the 1.5px ring */
+    -webkit-mask:
+      linear-gradient(black 0 0) content-box,
+      linear-gradient(black 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(black 0 0) content-box exclude,
+      linear-gradient(black 0 0);
+  }
+  /* a slow, even sweep: ease-theme front-loads the motion, so it would flash past */
+  &:is(:hover, :focus-visible)::before {
+    background-position: 0 0, 0 0;
+    transition: background-position 1.6s ease-in-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &:is(:hover, :focus-visible)::before {
+      background-position: 100% 0, 0 0;
+      transition: none;
+    }
+  }
+}
 @utility btn-white {
-  background: #fff;
-  color: #000;
+  @apply btn-gold-ring;
+  --btn-border: var(--color-primary);
+  --btn-sheen: color-mix(in srgb, var(--color-light) 95%, transparent);
+  color: var(--color-white);
   font-weight: 600;
+  transition: background-color 0.3s var(--ease-theme);
+  &:is(:hover, :focus-visible) {
+    background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
+  }
 }
 @utility btn-black {
-  background: #000;
-  color: #fff;
+  @apply btn-gold-ring;
+  --btn-border: var(--color-gold-text);
+  --btn-sheen: color-mix(in srgb, var(--color-primary) 90%, var(--color-white));
+  color: var(--color-dark);
+  font-weight: 600;
+  transition: background-color 0.3s var(--ease-theme);
+  &:is(:hover, :focus-visible) {
+    background-color: color-mix(in srgb, var(--color-dark) 5%, transparent);
+  }
 }
 @utility btn-dark {
   background: var(--color-dark);
@@ -193,10 +315,10 @@
 }
 @utility btn-sm {
   --btn-h: 42px;
-  padding: 0 23px;
+  --btn-px: 23px;
   font-size: 14px;
   @media (max-width: 575px) {
-    padding: 0 18px;
+    --btn-px: 18px;
   }
 }
 
@@ -209,7 +331,8 @@
   border: 2px solid;
   border-radius: 100%;
   font-size: 28px;
-  transition: 0.3s ease;
+  cursor: pointer;
+  transition: 0.3s var(--ease-theme);
   @media (max-width: 991px) {
     height: 70px;
     width: 70px;
@@ -239,7 +362,7 @@
   
   .section-title-dot::after {
     content: '.';
-    color: var(--color-primary);
+    color: var(--dot-color, var(--color-primary));
   }
 
   .scroll-progress {
@@ -300,9 +423,58 @@
   }
 
   .swiper-wrapper {
-    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    transition-timing-function: var(--ease-theme) !important;
   }
 
+  /* Visually hidden until focused (skip link, keyboard-only controls). */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* Shared form fields (contact and job application forms). */
+@utility field {
+  display: block;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 0 15px;
+  border: 1px solid color-mix(in srgb, var(--color-dark) 30%, transparent);
+  border-radius: 0;
+  background-color: #fff;
+  color: var(--color-dark);
+  font-weight: 500;
+  transition: border-color 0.2s;
+  &:not(textarea) {
+    height: 48px;
+  }
+  &::placeholder {
+    color: color-mix(in srgb, var(--color-dark) 65%, transparent);
+  }
+  &:focus {
+    border-color: var(--color-dark);
+    outline: none;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-dark);
+    outline-offset: 2px;
+  }
+}
+@utility field-textarea {
+  min-height: 150px;
+  padding-top: 15px;
+}
+@utility field-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-dark);
 }
 
 @utility content {
@@ -336,7 +508,7 @@
     height: auto;
   }
   & a:not(.btn) {
-    color: #333;
+    color: color-mix(in srgb, var(--color-dark) 80%, transparent);
     text-decoration: underline;
   }
   & a:not(.btn):hover {
@@ -359,7 +531,7 @@
     content: '';
     height: 5px;
     width: 5px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     left: 0;
     top: 10px;
     transform: rotate(-45deg);
@@ -382,12 +554,12 @@
   blockquote {
     padding: 0;
     padding-top: 70px;
-    border: 1px dashed #eee;
+    border: 1px dashed var(--color-line);
     text-align: center;
     text-wrap: balance;
     font-size: 22px;
     font-style: normal;
-    color: #343a40;
+    color: color-mix(in srgb, var(--color-dark) 85%, transparent);
     line-height: 1.7;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='currentColor' viewBox='0 0 16 16'%3E%3Cpath d='M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z'%3E%3C/path%3E%3Cpath d='M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -402,10 +574,10 @@
 
 @utility content-dark {
   && :is(h1, h2, h3, h4, h5, h6) {
-    color: #ddd;
+    color: rgb(255 255 255 / 0.85);
   }
   && a:not(.btn) {
-    color: #ddd;
+    color: rgb(255 255 255 / 0.85);
   }
   && a:not(.btn):hover {
     color: #fff;
@@ -427,7 +599,7 @@
 
   &:has(option:disabled:checked),
   &:has(option[value=""]:checked) {
-    color: #888;
+    color: color-mix(in srgb, var(--color-dark) 65%, transparent);
   }
 
   & option {

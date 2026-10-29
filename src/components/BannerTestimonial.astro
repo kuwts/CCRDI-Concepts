@@ -1,6 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
+import { socialNetwork } from '@/utils/social';
 
 interface Props {
   proof: {
@@ -9,13 +10,13 @@ interface Props {
       image: string;
       name: string;
       role: string;
-      social: { icon: string; url: string };
+      social?: { icon?: string; url: string };
     }[];
-  },
-  class: string
+  };
+  class?: string;
 }
 
-const { proof, class: className } = Astro.props;
+const { proof, class: className = '' } = Astro.props;
 if (!proof) return;
 const { avatars, label } = proof;
 ---
@@ -26,7 +27,7 @@ const { avatars, label } = proof;
       avatars.map((a, i) => (
         <div
           class:list={[
-            'group/av relative z-10 block transition-transform hover:z-30',
+            'group/av relative z-10 block transition-transform hover:z-30 focus-within:z-30',
             i > 0 && '-ml-4',
           ]}
         >
@@ -36,27 +37,30 @@ const { avatars, label } = proof;
             width={48}
             height={48}
             loading="lazy"
-            class="size-10 sm:size-12 rounded-full object-cover border border-[#74484a] cursor-pointer group-hover/av:border-white/80 transition-all bg-gray-100"
+            class="size-10 sm:size-12 rounded-full object-cover border border-avatar-ring cursor-pointer group-hover/av:border-white/80 group-focus-within/av:border-white/80 transition-all bg-gray-100"
           />
 
-          <div class="invisible absolute bottom-full left-1/2 z-20 w-max max-w-[16rem] -translate-x-1/2 pb-4 text-left opacity-0 transition-all duration-300 group-hover/av:visible group-hover/av:opacity-100">
+          <!-- tooltip: on hover, or when its link has keyboard focus -->
+          <div class="pointer-events-none absolute bottom-full left-1/2 z-20 w-max max-w-[16rem] -translate-x-1/2 pb-4 text-left opacity-0 transition-all duration-300 group-hover/av:pointer-events-auto group-hover/av:opacity-100 group-focus-within/av:pointer-events-auto group-focus-within/av:opacity-100">
             <div class="relative bg-white text-dark px-4 py-3 shadow-xl">
               <div class="flex items-start gap-4">
                 <div>
                   <p class="font-medium">{a.name}</p>
                   <p class="mt-0.5 text-xs">{a.role}</p>
                 </div>
+                {a.social?.url && (
                 <a
                   href={a.social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${a.name} on LinkedIn`}
+                  aria-label={`${a.name} on ${socialNetwork(a.social.url).name}`}
                   class="ml-auto shrink-0 transition hover:opacity-70 mt-0.5"
                 >
-                  <Icon name={a.social.icon} class="size-5" />
+                  <Icon name={a.social.icon || socialNetwork(a.social.url).icon} class="size-5" aria-hidden="true" />
                 </a>
+                )}
               </div>
-              <span class="absolute left-1/2 top-full size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" />
+              <span class="absolute left-1/2 top-full size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" aria-hidden="true" />
             </div>
           </div>
         </div>

@@ -1,50 +1,63 @@
 ---
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
-import DropdownNav from '@/components/menu/DropdownNav';
+import DropdownNav from '@/components/menu/DropdownNav.astro';
 
-import menu from '@/config/menu.json';
+import menuConfig from '@/config/menu.json';
 import site from '@/config/site.config.json';
+
+// typed so menus without dropdowns (no `children` anywhere) still check
+interface MenuItem {
+  name: string;
+  url: string;
+  children?: { name: string; url: string }[];
+}
+const menu: { main: MenuItem[] } = menuConfig;
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (url: string) =>
   url !== '#' && pathname === url.replace(/\/$/, '');
-const inSection = (item: (typeof menu.main)[number]) =>
+const inSection = (item: MenuItem) =>
   isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
+
+// header button: the site's main action (site.config.json → headerButton)
+const { headerButton } = site;
+const external = /^https?:\/\//.test(headerButton.url);
+const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 ---
 <header
   id="site-header"
   class="group/header bg-dark sticky top-0 left-0 z-9992 w-full transition-transform duration-500 will-change-transform"
-  style="transition-timing-function:cubic-bezier(.2,1,.2,1)"
+  style="transition-timing-function:var(--ease-theme)"
 >
   <div class="container">
     <div class="row">
       <div class="col-12">
         <nav class="flex items-center justify-between py-4 lg:py-5 group-[.sticky-pinned]/header:py-2 transition-all duration-300">
           <!-- logo -->
-          <a href="/" title={site.logo.alt} class="inline-block shrink-0">
+          <a href="/" title={site.brand.logo.alt} class="inline-block shrink-0">
             <AstroImage
-              src={site.logo.src}
-              alt={site.logo.alt}
-              width={site.logo.width}
-              height={site.logo.height}
+              src={site.brand.logo.src}
+              alt={site.brand.logo.alt}
+              width={site.brand.logo.width}
+              height={site.brand.logo.height}
+              loading="eager"
               class="w-25 lg:w-27.5 h-auto"
             />
           </a>
 
           <!-- desktop nav -->
-          <DropdownNav client:load items={menu.main} currentPath={pathname} />
+          <DropdownNav items={menu.main} currentPath={pathname} />
 
-          <!-- desktop buy now -->
+          <!-- desktop header button -->
           <div class="hidden shrink-0 lg:block">
             <a
-              href={site.buyNow.url}
+              href={headerButton.url}
               class="btn btn-sm btn-white"
-              data-text={site.buyNow.label}
-              target="_blank"
-              rel="nofollow"
+              data-text={headerButton.label}
+              {...extAttrs}
             >
-              <span>{site.buyNow.label}</span>
+              <span>{headerButton.label}</span>
             </a>
           </div>
 
@@ -53,9 +66,11 @@ const inSection = (item: (typeof menu.main)[number]) =>
             type="button"
             data-menu-open
             aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-drawer"
             class="text-white transition-opacity hover:opacity-70 lg:hidden cursor-pointer p-1"
           >
-            <Icon name="hugeicons:menu-11" class="text-[30px]" />
+            <Icon name="lucide:menu" class="text-[30px]" aria-hidden="true" />
           </button>
         </nav>
       </div>
@@ -73,12 +88,14 @@ const inSection = (item: (typeof menu.main)[number]) =>
 <!-- mobile drawer -->
 <aside
   id="mobile-drawer"
-  class="bg-dark fixed top-0 right-0 z-9999 flex h-screen w-75 max-w-[85vw] translate-x-full flex-col p-7.5 shadow-2xl shadow-black/50 transition-transform duration-500 lg:hidden"
-  style="transition-timing-function:cubic-bezier(.2,1,.2,1)"
+  aria-label="Menu"
+  inert
+  class="bg-dark invisible fixed top-0 right-0 z-9999 flex h-screen w-75 max-w-[85vw] translate-x-full flex-col p-7.5 shadow-2xl shadow-black/50 transition-transform duration-500 lg:hidden"
+  style="transition-timing-function:var(--ease-theme)"
 >
   <div class="mb-4 flex items-center justify-between">
-    <a href="/" title={site.logo.alt}>
-      <AstroImage src={site.logo.src} alt={site.logo.alt} class="w-20" width={site.logo.width} height={40} />
+    <a href="/" title={site.brand.logo.alt}>
+      <AstroImage src={site.brand.logo.src} alt={site.brand.logo.alt} class="w-20" width={site.brand.logo.width} height={40} loading="eager" />
     </a>
     <button
       type="button"
@@ -86,7 +103,7 @@ const inSection = (item: (typeof menu.main)[number]) =>
       aria-label="Close menu"
       class="flex items-center gap-1 text-[14px] tracking-wider text-white/80 uppercase transition-opacity hover:opacity-60 cursor-pointer p-1"
     >
-      <Icon name="hugeicons:cancel-01" class="text-[18px]" /> Close
+      <Icon name="lucide:x" class="text-[18px]" aria-hidden="true" /> Close
     </button>
   </div>
 
@@ -98,26 +115,30 @@ const inSection = (item: (typeof menu.main)[number]) =>
             <button
               type="button"
               data-dropdown-toggle
+              aria-expanded="false"
               class:list={[
                 'flex w-full items-center justify-between py-3.5 text-[16px] font-medium transition-colors cursor-pointer',
-                inSection(item) ? 'text-white' : 'text-[#eee] hover:text-white',
+                inSection(item) ? 'text-white' : 'text-white/95 hover:text-white',
               ]}
             >
               {item.name}
               <Icon
-                name="hugeicons:arrow-down-01"
+                name="lucide:chevron-down"
                 class="transition-transform duration-300"
                 data-caret
+                aria-hidden="true"
               />
             </button>
             <ul
               data-submenu
+              inert
               class="max-h-0 overflow-hidden border-l border-white/5 pl-4 transition-[max-height] duration-300 ease-out"
             >
               {item.children.map((child) => (
                 <li class="last:mb-2">
                   <a
                     href={child.url}
+                    aria-current={isActive(child.url) ? 'page' : undefined}
                     class:list={[
                       'block py-2 text-[14px] font-medium transition-colors',
                       isActive(child.url)
@@ -135,9 +156,10 @@ const inSection = (item: (typeof menu.main)[number]) =>
           <li class="border-b border-white/5">
             <a
               href={item.url}
+              aria-current={isActive(item.url) ? 'page' : undefined}
               class:list={[
                 'block py-3.5 text-[16px] font-medium transition-colors',
-                isActive(item.url) ? 'text-white' : 'text-[#eee] hover:text-white',
+                isActive(item.url) ? 'text-white' : 'text-white/95 hover:text-white',
               ]}
             >
               {item.name}
@@ -149,12 +171,11 @@ const inSection = (item: (typeof menu.main)[number]) =>
   </ul>
 
   <a
-    href={site.buyNow.url}
-    class="btn btn-white mt-6 block w-full"
-    data-text={site.buyNow.label}
-    target="_blank"
-    rel="nofollow"
+    href={headerButton.url}
+    class="btn btn-white mt-6 flex w-full"
+    data-text={headerButton.label}
+    {...extAttrs}
   >
-    <span>{site.buyNow.label}</span>
+    <span>{headerButton.label}</span>
   </a>
 </aside>

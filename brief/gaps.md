@@ -1,0 +1,227 @@
+# Content still needed from the client
+
+Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
+"Covered" means the framework or content.md now supplies the copy.
+
+## Covered by the framework
+- [x] Positioning statement, brand purpose, mission, vision (framework §3; matches content.md)
+- [x] Messaging pillars (framework §4)
+- [x] Brand descriptions for Our Brands: role and core message (§2), one-liners (§5),
+      taglines (§9), relationship lines (§12), CCRDI positioning, mission, vision, taglines (§6)
+      and services (§7)
+- [x] One-line descriptions for Media & Partners: CCC and CCRDI (§12)
+- [x] Audience messages, including Industry Associations (§8)
+- [x] SEO descriptions: site default = CCC one-line description (§12, 183 characters, cut off
+      in search results after about 160); homepage = lead message (§13, 143 characters);
+      About = About paragraph 1 (§5, 168 characters); Our Brands = first sentence of About
+      paragraph 2 (§5, 128 characters: "Our organization brings together Consumer Choice Award,
+      Consumer Choice Marketing, and Consumer Choice Research, Data & Insights.")
+
+## Still needed
+- [ ] **Consumer Choice Award logo in vector (SVG, EPS or PDF) or high resolution (at least
+      1000 px, transparent PNG).** The only public copy on ccaward.com is 255 x 300 px.
+- [ ] Logos for all four brands (SVG), including a light CCC logo for the navy header.
+      Our Brands uses the real Consumer Choice Award logo from ccaward.com (a 255 x 300 PNG;
+      a larger or vector copy is needed) and temporary text wordmarks in each brand's colour
+      for Consumer Choice Canada, Consumer Choice Marketing and CCRDI. The CCRDI wordmark uses a
+      lighter tint of the research teal (#338B84, 3.79:1 on navy; the design teal #0F766E is
+      2.81:1), and the Marketing wordmark a slightly lighter orange (#C44713, 3.12:1 on navy;
+      the design orange #C2410C is 2.97:1).
+- [ ] Existing brand colours and fonts, if any (palette may change to match the award logo;
+      the Consumer Choice Award logo is red and gold)
+- [ ] **Confirm the founding year 1987**, now on the anniversary seal (hero and footer). Sources:
+      ccaward.com header, "Recognizing and celebrating business excellence since 1987."
+      (https://www.ccaward.com); Consumer Choice Award press release boilerplate, "Consumer
+      Choice Award has been recognizing and promoting business excellence in North America
+      since 1987." (ACCESS Newswire, August 6, 2025:
+      https://natlawreview.com/press-releases/announcing-2025-halton-region-consumer-choice-award-winners).
+      Note: 1987 is the Award's founding year; the seal also names Consumer Choice Canada.
+- [ ] Stats: winners to date, categories, cities or regions covered (About page)
+- [ ] **Confirm the Our Brands stat tiles** (public facts; the short labels are ours):
+      - "1987" / "Year Consumer Choice Award began": "since 1987" (sources above)
+      - "40+" / "Years recognizing top North American businesses": ccaward.com footer,
+        "recognizing top North American businesses for over 40 years." (https://www.ccaward.com)
+      - "1" / "Winner per category": ccaward.com, "there is only one winner in your
+        category." (https://www.ccaward.com)
+- [ ] Leadership/team names, titles, photos
+- [ ] Testimonials from past award winners, with permission
+- [ ] **Confirm the 40 Years sidebar milestones** (public facts, word for word; the short labels
+      "Coast to coast" and the years are ours, approved by the project owner). Source for all
+      three: Consumer Choice Award blog, "40 Years of Recognizing the Businesses Canadians Count
+      On" by Sumi Saleh, Communications Manager (https://ccaward.com/blog/40-years-of-recognizing-the-businesses-canadians-count-on/):
+      - "1987": "CCA launched in Montréal in 1987, with early operations also in Ottawa."
+      - "Coast to coast": "What began in those two cities has grown into recognition for
+        businesses in communities from coast to coast."
+      - "2027": "CCA's 40th anniversary year" (the post: "As we begin recognizing our 2027
+        winners, … throughout CCA's 40th anniversary year.")
+- [ ] More milestones by year for the 40 Years timeline: the sidebar shows only the three
+      confirmed facts above; more can be added when the client provides them (no dates or
+      milestones are invented)
+- [ ] Contact details (email, phone, address), form destination email, social links
+- [ ] URLs for the Consumer Choice Award, Consumer Choice Marketing, and CCRDI sites.
+      **Confirm the Our Brands card links:**
+      - Consumer Choice Award: "Visit Website" → https://www.ccaward.com (opens in a new tab)
+      - Consumer Choice Marketing: "Contact Us" → /contact (no official website found)
+      - CCRDI: "Contact Us" → /contact (no official website found; ccaward.com mentions
+        "CCRDI powered by IsuCorp." without a link)
+      "Visit Website" is a new interface label, not in content.md.
+- [ ] **Confirm the Consumer Choice Marketing service list** on Our Brands: "Digital
+      marketing", "Content", "Brand amplification", "Reputation". It comes from the
+      framework's draft notes (after section 13), which are otherwise not used on the site.
+- [ ] **Confirm the Consumer Choice Award list** on the Our Brands card: the four process
+      headings from https://www.ccaward.com, word for word, with the text each one heads there:
+      - "Category Selection": "CCA identifies the business categories that matter most to
+        today’s consumer."
+      - "Populating Categories": "CCRDI powered by IsuCorp. gathers all businesses within a
+        geographic Territory to establish a complete universe of accounts within a Business
+        Category."
+      - "Qualifying Relevant Companies": "The Universe of Accounts provided by CCRDI is further
+        vetted by Consumer Choice Award to ensure that all companies provided have no legal or
+        ethical issues that would negate them from consideration."
+      - "Nominating Award-Winners": "After the list of companies has been refined, market
+        insights are integrated with AI results."
+- [ ] Award winners directory URL
+- [ ] Privacy policy text
+- [ ] Accessibility Statement text
+- [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
+- [ ] Favicon set and a 1200 x 630 social share image
+- [ ] SEO descriptions for 40 Years, For Businesses, Media & Partners, Contact,
+      Privacy Policy, Accessibility Statement
+- [ ] Page eyebrow or intro line for each interior page (or confirm none)
+- [ ] Contact page intro, form placeholders, sending and error messages, thank-you page
+      heading, body and button
+- [ ] 404 body text (only "Page not found / Return Home" is supplied)
+- [ ] Media & Partners: media contact, logo-download files, news items
+
+## Approvals and open questions
+- [ ] Superlative claims ("Canada's leading", "most trusted", "Canada's Trusted Consumer
+      Authority"): used in the framework's final copy (§3, §5); still needs explicit sign-off
+- [ ] Interface labels in content.md (navigation, buttons, section labels, 404, form fields)
+- [ ] Page URLs: /our-brands, /40-years, /for-businesses, /media, /accessibility
+- [x] ISUCORP: approved by the project owner for the Our Brands CCRDI card (framework §7).
+      Not used on the homepage.
+- [ ] **Research partner wording:** ccaward.com says "CCRDI powered by IsuCorp.", while
+      recent Consumer Choice Award winner announcements found in search credit Advanced
+      Symbolics International (ASI), and older ones Léger Marketing. Confirm which partner
+      CCRDI and the Award should name.
+- [ ] Seal wording "40 Years of Trust" (from design.md; part of the §10 headline)
+- [ ] Homepage strip uses "Celebrating 40 Years of Trust", the first half of the §10 headline
+      (approved by the project owner)
+- [ ] Theme interface text kept for function and accessibility: "Prev", "Next", "Play",
+      "Play showreel", "Pause ..." controls, "Skip to content", "Close", "Copyright"
+- [ ] **Design decision for client approval (adjusts design.md):** buttons are gold-outline
+      instead of solid navy or gold fills, with a slow sheen across the border on hover and
+      keyboard focus (off with reduced motion). The border uses Heritage Gold #D4A843 on navy
+      (6.95:1) and the darker gold #8A6514 on light backgrounds (5.31:1 on white, 4.92:1 on
+      ivory). Solid gold fills are removed everywhere except the Consumer Choice Award division
+      colour; text selection is now navy. Gold stays as an accent: the anniversary seal, button
+      borders, focus rings, link underlines, the footer "Contact Us" link, heading dots, pillar
+      icons and hero avatar rings.
+- [ ] **Design decision for client approval:** the anniversary seal sits on the edge between
+      the hero and the showreel, like a stamp, instead of inside the hero.
+- [ ] AODA: does it apply (Ontario organization with 50+ employees)? The site already targets
+      WCAG 2.1 AA, which exceeds the AODA's WCAG 2.0 AA.
+- [ ] **Possible future section for client approval:** a "Looking Ahead" section on 40 Years
+      using the framework's §11 list ("Potential opportunities include:" + the 8 items), framed
+      as future direction, never as current services. Not used for now (the project owner chose
+      to leave §11 out); the heading "Looking Ahead" would be new copy.
+- [ ] Terms page: is one needed? (Listed earlier with privacy text; not in the sitemap.)
+
+## Placeholder register
+Every placeholder on the site. Each one must be replaced before launch.
+
+### Site-wide (header and footer)
+- Header and footer logo: temporary text wordmark "Consumer Choice Canada"
+  (images/placeholders/logo-wordmark.svg) until [CLIENT TO PROVIDE: CCC logo]
+- Favicon set and share image: still the theme's files until supplied
+- Header button "Find a Trusted Business": link [CLIENT TO PROVIDE: award winners directory URL]
+- Footer email: [CLIENT TO PROVIDE: email]
+- Footer phone: [CLIENT TO PROVIDE: phone]
+- Footer address: [CLIENT TO PROVIDE: address]
+- Footer social links (Facebook, X, Instagram, LinkedIn): [CLIENT TO PROVIDE: social URLs]
+- Footer brand links: [CLIENT TO PROVIDE: Consumer Choice Award URL],
+  [CLIENT TO PROVIDE: Consumer Choice Marketing URL], [CLIENT TO PROVIDE: CCRDI URL]
+- Anniversary seal (hero and footer): 1987, pending confirmation (see Still needed)
+
+### Placeholder photos and video
+All photos and the showreel video on the homepage are free-licence placeholders (Unsplash and
+Pexels), listed with their sources and licences in /brief/placeholder-media.md. **Every one
+must be replaced with the client's photography before launch.** Their alt text was written to
+describe the placeholder photos (not from the copy sources) and is a placeholder too: it must
+be rewritten for the client's photos.
+- [ ] Showreel: [CLIENT TO PROVIDE: 40th anniversary video] (placeholder: Toronto skyline
+      from Lake Ontario, with its poster frame)
+- [ ] Pillar card photos (Trust, Recognition, Intelligence, Growth)
+- [ ] Family of Brands slide photos (Award, Marketing, Research, Data & Insights)
+- [ ] Who We Serve strip: 3 thumbnails next to "Celebrating 40 Years of Trust"
+- [ ] News card photos (4)
+- [ ] About: header photo, intro tile photo, 6 marquee photos (Canadian places, no
+      identifiable faces, so nothing reads as CCC staff)
+- [ ] Our Brands: intro tile photo; the three brand cards reuse the homepage brand photos
+- [ ] 40 Years: feature video (fireworks, Pexels; location not stated) and its poster, and the
+      body photo (Old Port of Montréal); the three brand cards reuse the homepage brand photos.
+      A Canadian anniversary video from the client would suit the feature best.
+- [ ] Alt text for all of the above
+
+### Homepage
+1. Hero
+   - Button link: [CLIENT TO PROVIDE: award winners directory URL]
+   - Social proof line: [CLIENT TO PROVIDE: social proof line]
+   - 3 avatars: [CLIENT TO PROVIDE: name], [CLIENT TO PROVIDE: role], generic silhouettes
+2. Showreel: placeholder video and poster (see above)
+3. Pillar cards: placeholder photos (see above)
+4. Family of Brands carousel: placeholder photos (see above)
+5. Who We Serve strip: placeholder thumbnails (see above)
+6. Testimonials
+   - Heading: [CLIENT TO PROVIDE: testimonials heading]
+   - Summary card: [CLIENT TO PROVIDE: average rating], [CLIENT TO PROVIDE: number of reviews],
+     2 logos [CLIENT TO PROVIDE: award winner logo]
+   - 5 cards: [CLIENT TO PROVIDE: client testimonial], [CLIENT TO PROVIDE: name],
+     [CLIENT TO PROVIDE: business name], generic silhouette
+   - Logo wall: 5 logos [CLIENT TO PROVIDE: award winner or partner logo]
+7. News
+   - Heading: [CLIENT TO PROVIDE: news section heading]
+   - 4 cards: [CLIENT TO PROVIDE: news headline], [CLIENT TO PROVIDE: news summary],
+     [CLIENT TO PROVIDE: date], [CLIENT TO PROVIDE: news category], placeholder photos
+     (see above)
+
+### About page
+1. Page header: no eyebrow line (H1 "About Consumer Choice Canada"); header photo is a
+   placeholder (see above)
+2. Logo wall: heading [CLIENT TO PROVIDE: logo wall heading]; 5 logos
+   [CLIENT TO PROVIDE: award winner or partner logo]
+3. Facts: intro tile photo is a placeholder (see above); 3 stat tiles:
+   [CLIENT TO PROVIDE: winners to date], [CLIENT TO PROVIDE: categories],
+   [CLIENT TO PROVIDE: cities or regions covered], each with [CLIENT TO PROVIDE: stat label]
+4. Marquee: 6 placeholder photos (see above)
+5. Testimonials: the same placeholders as the homepage (heading, summary card, 5 cards)
+6. Leadership: heading [CLIENT TO PROVIDE: leadership section heading]; 4 cards with
+   [CLIENT TO PROVIDE: name], [CLIENT TO PROVIDE: title] and generic silhouettes; the
+   theme's careers link ("See Open Positions") is replaced by "Read Our Story" → /40-years
+
+### Our Brands page
+1. Page header: H1 "Our Brands", no eyebrow
+2. Logo wall ("Family of Brands"): real Consumer Choice Award logo; temporary text
+   wordmarks for Consumer Choice Canada, Consumer Choice Marketing and CCRDI
+3. Facts: intro tile photo is a placeholder; stat tiles use public facts pending
+   confirmation (see Still needed)
+4. Brand cards: Award list from ccaward.com's process headings, pending confirmation;
+   Marketing list from the draft notes, pending confirmation; card photos and links
+   pending confirmation (see above)
+5. Testimonials: the same placeholders as the homepage. Never use or write quotes from real
+   people unless the client supplies them.
+
+### 40 Years page
+1. Header: eyebrow "40 Years"; H1 "Celebrating 40 Years of Trust" and body heading "Building
+   the Next Generation of Consumer Confidence" (the two halves of the §10 headline, approved)
+2. Feature video, poster and body photo: placeholders (see above)
+3. Sidebar: anniversary seal (1987, pending confirmation); "Visit Website" → ccaward.com
+   (pending confirmation, as on Our Brands); three confirmed milestones (see Still needed);
+   list heading "Our Brands"
+4. Family of Brands slider (the homepage component): reuses the homepage brand photos; links to
+   /our-brands
+
+## Pre-launch
+- [ ] No [CLIENT TO PROVIDE: ...] text, [FOUNDING YEAR], placeholder images, placeholder
+      photos or placeholder video remain on the live site (see the Pre-launch check in
+      CLAUDE.md and /brief/placeholder-media.md).

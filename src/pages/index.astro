@@ -1,5 +1,5 @@
 ---
-import { getEntry, getCollection } from 'astro:content';
+import { getEntry } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
@@ -14,28 +14,18 @@ import StackedServices from '@/components/StackedServices.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import Clients from '@/components/Clients.astro';
 import BlogCard from '@/components/BlogCard.astro';
-import { getFeaturedProjects, getPosts } from '@/lib/content';
+import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 import { animDelay } from '@/utils/animDelay';
 
+// every section reads its copy (and placeholders) from the homepage entry
 const home = await getEntry('homepage', 'index');
 const { banner, intro, projects, process, testimonials, blog } = home!.data;
 
-const servicesEntry = await getEntry('services', 'index');
-const services = servicesEntry!.data.items.map((s) => ({ ...s }));
-
-const featuredProjects = (await getFeaturedProjects()).map((p) => ({
-  slug: p.id,
-  ...p.data,
-}));
-const posts = await getPosts();
-const featuredPost = posts.find((p) => p.data.featured) ?? posts[0];
-const gridPosts = posts.filter((p) => p.id !== featuredPost.id).slice(0, 3);
-
-const clientLogosDark = (await getCollection('clientsDark')).map((c) => c.data);
-const reviews = (await getCollection('testimonials')).map((t) => t.data);
+const [featuredPost, ...otherPosts] = blog.items.map((n) => ({ ...n, imageAlt: n.image_alt }));
+const gridPosts = otherPosts.slice(0, 3);
 ---
 
-<Base>
+<Base seo={home!.data.seo}>
   <!-- Banner -->
   <section class="relative">
     <div class="relative z-10 pt-20 lg:pt-25 pb-25 lg:pb-35 text-white">
@@ -44,10 +34,10 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
           <div class="xl:col-6 lg:col-7 md:col-10">
             <p class="mb-4 font-medium has-anim fade">{banner.subtitle}</p>
             <h1 class="mb-8 leading-tight font-medium text-3xl sm:text-5xl md:text-[56px] has-anim fade delay-100">
-              {banner.title}<span class="text-primary">.</span>
+              {banner.title}<span class="text-primary" aria-hidden="true">.</span>
             </h1>
-            <div class="flex items-center max-lg:justify-center gap-x-8 sm:gap-x-10 has-anim fade delay-150">
-              <Button href={banner.primary_cta.href} label={banner.primary_cta.label} />
+            <div class="flex max-sm:flex-col items-center max-lg:justify-center gap-x-8 gap-y-5 sm:gap-x-10 has-anim fade delay-150">
+              <Button href={banner.primary_cta.href} label={banner.primary_cta.label} class="max-sm:w-full" />
               <LineLink
                 href={banner.secondary_cta.href}
                 label={banner.secondary_cta.label}
@@ -65,11 +55,28 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
       </div>
     </div>
 
+    <!-- 40th anniversary seal: a stamp on the edge between the hero and the showreel,
+         lined up with the hero's right column; only the seal itself takes clicks -->
+    <div class="pointer-events-none relative z-20 container">
+      <div class="row md:justify-center">
+        <div class="col-12 md:col-10 lg:col-12 xl:col-10 flex h-0 items-start justify-end">
+          <div class="-translate-y-1/2">
+            <div class="has-anim pop">
+              <AnniversarySeal
+                href="/40-years"
+                class="pointer-events-auto size-24 sm:size-32 lg:size-44 focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--color-dark),0_0_0_7px_var(--color-primary)] [&>svg]:drop-shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="relative z-10 -mb-12 has-anim fade">
       <div class="container">
         <div class="row">
           <div class="col-12">
-            <Showreel src={banner.video} poster={banner.image} />
+            <Showreel src={banner.video} sources={banner.video_sources} poster={banner.image} posterAlt={banner.image_alt} />
           </div>
         </div>
       </div>
@@ -78,7 +85,7 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
     <BannerShape />
   </section>
 
-  <section class="bg-gray-100 pt-20 md:pt-25">
+  <section class="bg-light pt-20 md:pt-25">
     <div class="container">
       <div class="row mt-12">
 
@@ -103,8 +110,7 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
               <div class="flex flex-col items-start gap-2.5 pt-2">
                 {intro.info.map((item, i) => (
                   <p
-                    class="inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim"
-                    style={`transition-delay: ${i * 75}ms`}
+                    class:list={['inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim', animDelay[i]]}
                   >
                     {item}
                   </p>
@@ -115,57 +121,63 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
         </div>
 
         <div class="lg:col-4 max-lg:mt-16">
-          <StackedServices services={services} />
+          <StackedServices services={intro.items.map((c) => ({ ...c, imageAlt: c.image_alt }))} />
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Selected projects carousel -->
-  <section class="bg-gray-100 py-25 max-md:py-20">
-    <div class="container">
-      <SectionTitle subtitle={projects.subtitle} title={projects.title} />
-    </div>
-    <PortfolioCarousel projects={featuredProjects} />
-  </section>
+  <!-- Family of brands carousel -->
+  {projects.items.length > 0 && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <SectionTitle subtitle={projects.subtitle} title={projects.title} />
+      </div>
+      <PortfolioCarousel projects={projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }))} />
+    </section>
+  )}
 
   <!-- Work process -->
   <WorkProcess subtitle={process.subtitle ?? ''} title={process.title} steps={process.steps} cta={process.cta} />
 
   <!-- Testimonials -->
-  <section class="bg-gray-100 py-25 max-md:py-20">
+  <section class="bg-light py-20 md:py-25">
     <div class="container">
       <SectionTitle
         subtitle={testimonials.subtitle ?? ''}
         title={testimonials.title ?? ''}
       />
     </div>
-    <ReviewCarousel items={reviews} testimonials={testimonials} />
-    <Clients items={clientLogosDark} columnCount={5} class="mt-16" />
+    <ReviewCarousel items={testimonials.items} testimonials={testimonials} />
+    <Clients items={testimonials.logos} columnCount={5} class="mt-16" />
   </section>
 
-  <!-- Blog -->
-  <section class="bg-white py-25 max-md:py-20">
-    <div class="container">
-      <SectionTitle subtitle={blog.subtitle} title={blog.title} />
+  <!-- Blog (hidden when there are no posts) -->
+  {featuredPost && (
+    <section class="bg-white py-20 md:py-25">
+      <div class="container">
+        <SectionTitle subtitle={blog.subtitle} title={blog.title} />
 
-      <div class="row">
-        <div class="lg:col-12 has-anim">
-          <BlogCard horizontal post={featuredPost} category="Featured" />
+        <div class="row">
+          <div class="lg:col-12 has-anim">
+            <BlogCard horizontal item={featuredPost} />
+          </div>
+          {
+            gridPosts.map((post, i) => (
+              <div class:list={['lg:col-4 md:col-6 has-anim', animDelay[i]]}>
+                <BlogCard item={post} />
+              </div>
+            ))
+          }
         </div>
-        {
-          gridPosts.map((post, i) => (
-            <div class:list={['lg:col-4 md:col-6 has-anim', animDelay[i]]}>
-              <BlogCard post={post} />
-            </div>
-          ))
-        }
-      </div>
 
-      <div class="text-center">
-        <Button href="/blog" label="View all posts" class="btn btn-dark mt-12 has-anim fade delay-100" />
+        {blog.button && (
+          <div class="mt-12 text-center has-anim fade delay-100">
+            <LineLink href={blog.button.href} label={blog.button.label} tone="dark" icon="arrow" />
+          </div>
+        )}
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 </Base>

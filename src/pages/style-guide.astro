@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import site from '@/config/site.config.json';
 import { Icon } from 'astro-icon/components';
 
 import Base from '@/layouts/Base.astro';
@@ -15,7 +16,7 @@ const accordionGroup = [{ title: 'Accordion', items: faqEntry!.data.groups[0].it
 const hr = 'border-0 border-t border-black/10 my-16';
 ---
 
-<Base title="Style Guide">
+<Base title="Style Guide" noindex>
   <PageHeader subtitle="Typography" title="Style Guide 👋" />
 
   <section class="bg-white py-20 md:py-25">
@@ -40,7 +41,7 @@ const hr = 'border-0 border-t border-black/10 my-16';
         <div class="lg:col-10">
           <div class="content">
             <h2 class="h5 text-muted">Typeface</h2>
-            <h3 class="font-primary text-dark">Space Grotesk (Google Font)</h3>
+            <h3 class="font-primary text-dark">{site.brand.font.body.name}</h3>
           </div>
         </div>
 
@@ -105,7 +106,7 @@ const hr = 'border-0 border-t border-black/10 my-16';
           <a class="btn-circle btn-circle-white m-1" href="#!">+</a>
           <span class="bg-dark m-1 inline-block p-3">
             <a class="btn-circle btn-circle-black" href="#!">
-              <Icon name="hugeicons:arrow-right-01" class="text-[20px]" />
+              <Icon name="lucide:arrow-right" class="text-[20px]" />
             </a>
           </span>
         </div>

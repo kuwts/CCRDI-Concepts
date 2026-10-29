@@ -12,6 +12,7 @@ interface Props {
   format?: "auto" | "avif" | "jpeg" | "png" | "svg" | "webp";
   class?: string;
   style?: Record<string, string>;
+  /** srcset widths; defaults to 400 / 800 / 1200 / 1600 (up to the rendered width) for raster images */
   widths?: number[];
   sizes?: string;
 }
@@ -31,7 +32,7 @@ const {
 } = Astro.props;
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/**/*.{jpeg,jpg,png,gif,svg}'
+  '/src/assets/**/*.{jpeg,jpg,png,gif,webp,avif,svg}'
 );
 
 const resolveImage = (path: string | undefined): string | null => {
@@ -59,11 +60,26 @@ if (resolvedSrc && images[resolvedSrc]) {
   imgMeta = mod.default;
 }
 
-const imgWidth = width ?? imgMeta?.width ?? 800;
-const imgHeight = height ?? imgMeta?.height ?? 600;
+// only one side given: work out the other from the image's own proportions, so it isn't
+// cropped or stretched
+const ratio = imgMeta ? imgMeta.width / imgMeta.height : undefined;
+const imgWidth = width ?? (height && ratio ? Math.round(height * ratio) : (imgMeta?.width ?? 800));
+const imgHeight = height ?? (width && ratio ? Math.round(width / ratio) : (imgMeta?.height ?? 600));
+
+// Responsive by default: raster images wider than 400px get a srcset (never wider
+// than the width they render at) so phones don't download full-size files.
+const DEFAULT_WIDTHS = [400, 800, 1200, 1600];
+const isRaster = !!imgMeta && imgMeta.format !== 'svg';
+const autoWidths =
+  !widths && isRaster && imgWidth > DEFAULT_WIDTHS[0]
+    ? [...DEFAULT_WIDTHS.filter((w) => w < imgWidth), imgWidth]
+    : undefined;
+const srcWidths = widths ?? autoWidths;
+const srcSizes = sizes ?? (srcWidths ? `(min-width: ${imgWidth}px) ${imgWidth}px, 100vw` : undefined);
 ---
 
-{resolvedSrc && images[resolvedSrc] ? (
+{/* nothing to show: render nothing rather than a broken image */}
+{src && (resolvedSrc && images[resolvedSrc] ? (
   <Image
     src={images[resolvedSrc]()}
     alt={alt}
@@ -74,8 +90,8 @@ const imgHeight = height ?? imgMeta?.height ?? 600;
     class={className}
     format={format}
     style={style}
-    widths={widths}
-    sizes={sizes}
+    widths={srcWidths}
+    sizes={srcSizes}
   />
 ) : (
   <img
@@ -88,4 +104,4 @@ const imgHeight = height ?? imgMeta?.height ?? 600;
     class={className}
     style={style}
   />
-)}
+))}

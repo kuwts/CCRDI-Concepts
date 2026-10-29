@@ -1,0 +1,14 @@
+[
+  {
+    "id": "blog",
+    "subtitle": "Latest news",
+    "title": "Our Blog Posts",
+    "load_more_label": "Load more posts"
+  },
+  {
+    "id": "portfolio",
+    "subtitle": "Work we do",
+    "title": "Our Portfolio",
+    "load_more_label": "Load more projects"
+  }
+]

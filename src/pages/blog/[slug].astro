@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
 import BlogCard from '@/components/BlogCard.astro';
@@ -9,7 +9,7 @@ import { animDelay } from '@/utils/animDelay';
 import AstroImage from "@/components/helper/AstroImage.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getPosts();
   return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -26,13 +26,13 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
 }));
 ---
 
-<Base title={data.title} description={data.description} image={data.image}>
+<Base title={data.title} description={data.description} image={data.image} seo={data.seo} type="article">
   <section class="page-header pt-20 pb-16 text-muted">
     <div class="container -mt-1.5">
       <div class="row justify-center">
         <div class="lg:col-10 text-center">
           <p class="has-anim fade mb-5 text-sm">
-            {data.category} <span class="mx-2 inline-block">━</span> {formatDate(data.date)}
+            {data.category} <span class="mx-2 inline-block" aria-hidden="true">━</span> {formatDate(data.date)}
           </p>
           <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white leading-snug text-balance">
             {data.title}
@@ -48,7 +48,8 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
       <div class="col-12 -mb-12 has-anim delay-200">
         <AstroImage
           src={data.image}
-          alt={data.title}
+          alt=""
+          loading="eager"
           class="h-auto w-full bg-white/3"
         />
       </div>
@@ -58,42 +59,44 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
   <section class="bg-white py-20 md:py-25">
     <div class="container">
       <div class="row justify-center pt-5">
-        <div class="lg:col-3 order-0 lg:order-1">
+        {/* table of contents: only when the post has ## / ### headings */}
+        {tocItems.length > 0 && (
+        <nav class="lg:col-3 order-0 lg:order-1" aria-labelledby="toc-toggle">
           <div class="max-lg:mb-10 sticky top-24">
             <button
               id="toc-toggle"
-              class="flex items-center justify-between w-full mb-5 text-dark lg:text-dark/50 max-lg:cursor-pointer lg:cursor-default max-lg:border max-lg:border-dashed max-lg:border-dark/10 max-lg:p-3"
+              type="button"
+              class="flex items-center justify-between w-full mb-5 text-dark lg:text-dark/70 max-lg:cursor-pointer lg:cursor-default max-lg:border max-lg:border-dashed max-lg:border-dark/10 max-lg:p-3"
               aria-expanded="false"
+              aria-controls="toc-list"
             >
               <span>Table of Contents</span>
-              <svg class="w-4 h-4 lg:hidden transition-transform" data-arrow viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="w-4 h-4 lg:hidden transition-transform" data-arrow viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="m6 9 6 6 6-6" />
               </svg>
             </button>
-            {
-              tocItems.length > 0 && (
-                <ul class="space-y-2 max-h-0 lg:max-h-[55dvh] overflow-hidden transition-all duration-300 ease-in-out lg:overflow-y-auto max-lg:ps-10" id="toc-list">
-                  {tocItems.map((item) => (
-                    <li>
-                      <a
-                        href={`#${item.id}`}
-                        class:list={[
-                          'text-dark/80 hover:text-black transition-colors text-sm font-medium',
-                          item.level === 3 && 'pl-4 text-[13px]',
-                          '[&.active]:text-primary [&.active]:font-semibold',
-                        ]}
-                      >
-                        {item.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )
-            }
+            <!-- links are blocks with py-1 (a 26px+ tap target); no list gap keeps the old rhythm -->
+            <ul class="max-h-0 lg:max-h-[55dvh] overflow-hidden transition-all duration-300 ease-theme lg:overflow-y-auto max-lg:ps-10" id="toc-list">
+              {tocItems.map((item) => (
+                <li>
+                  <a
+                    href={`#${item.id}`}
+                    class:list={[
+                      'block py-1 text-dark/80 hover:text-black transition-colors text-sm font-medium',
+                      item.level === 3 && 'pl-4 text-[13px]',
+                      '[&.active]:text-primary [&.active]:font-semibold',
+                    ]}
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </nav>
+        )}
         <div class="lg:col-8 order-1 lg:order-0">
-          <div class="content prose max-w-full text-dark pr-0 lg:pr-10 [&>p:first-of-type]:text-[22px] [&>p:first-of-type]:leading-relaxed [&_img]:my-6">
+          <div class="content prose max-w-full text-dark pr-0 lg:pr-10 break-words [&>p:first-of-type]:text-[22px] [&>p:first-of-type]:leading-relaxed [&_img]:my-6">
             <Content />
           </div>
         </div>
@@ -101,13 +104,14 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
     </div>
   </section>
 
-  <!-- Related -->
-  <section class="bg-white pb-25 max-md:pb-20">
+  <!-- Related (hidden when there are no other posts) -->
+  {related.length > 0 && (
+  <section class="bg-white pb-20 md:pb-25">
     <div class="container">
       <div class="row">
         <div class="col-12 mb-4">
           <div class="border-t border-black/5 pt-25 max-md:pt-20"></div>
-          <p class="text-dark has-anim fade font-medium">Related Posts</p>
+          <h2 class="text-dark has-anim fade font-medium">Related Posts</h2>
         </div>
         {
           related.map((post, i) => (
@@ -127,6 +131,7 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
       </div>
     </div>
   </section>
+  )}
 
 </Base>
 
@@ -134,25 +139,28 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
   const tocToggle = document.getElementById('toc-toggle');
   const tocList = document.getElementById('toc-list');
 
-  function resetInlineMaxHeight() {
-    if (window.innerWidth >= 992) tocList?.style.removeProperty('max-height');
-  }
+  // Below lg the list collapses behind the toggle (inert while closed); from lg
+  // it's always open and the toggle is just its label.
+  const desktop = window.matchMedia('(min-width: 1024px)');
+  const syncToc = () => {
+    if (!tocToggle || !tocList) return;
+    const open = desktop.matches || tocToggle.getAttribute('aria-expanded') === 'true';
+    if (desktop.matches) tocList.style.removeProperty('max-height');
+    else tocList.style.maxHeight = open ? tocList.scrollHeight + 'px' : '0';
+    tocList.inert = !open;
+    tocToggle.toggleAttribute('aria-disabled', desktop.matches);
+  };
 
   if (tocToggle && tocList) {
-    if (window.innerWidth < 992) tocList.style.maxHeight = '0';
+    syncToc();
     tocToggle.addEventListener('click', () => {
-      if (window.innerWidth >= 992) return;
+      if (desktop.matches) return;
       const expanded = tocToggle.getAttribute('aria-expanded') === 'true';
       tocToggle.setAttribute('aria-expanded', String(!expanded));
-      if (expanded) {
-        tocList.style.maxHeight = '0';
-      } else {
-        tocList.style.maxHeight = tocList.scrollHeight + 'px';
-      }
-      const arrow = tocToggle.querySelector('[data-arrow]');
-      if (arrow) arrow.classList.toggle('rotate-180');
+      tocToggle.querySelector('[data-arrow]')?.classList.toggle('rotate-180', !expanded);
+      syncToc();
     });
-    window.addEventListener('resize', resetInlineMaxHeight);
+    desktop.addEventListener('change', syncToc);
   }
 
   const tocLinks = document.querySelectorAll<HTMLAnchorElement>('#toc-list a');

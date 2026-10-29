@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
 import LineLink from '@/components/LineLink.astro';
@@ -9,7 +9,7 @@ import { getProjects } from '@/lib/content';
 import { animDelay } from '@/utils/animDelay';
 
 export async function getStaticPaths() {
-  const items = await getCollection('portfolio');
+  const items = await getProjects();
   return items.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -22,13 +22,18 @@ const others = (await getProjects())
   .slice(0, 3);
 ---
 
-<Base title={data.title} image={data.carouselImage ?? data.image}>
+<Base
+  title={data.title}
+  description={data.client.description}
+  image={data.carouselImage ?? data.image}
+  seo={data.seo}
+>
   <section class="page-header pt-20 pb-16 text-muted">
     <div class="container -mt-1.5">
       <div class="row justify-center">
         <div class="lg:col-12 text-center">
           <p class="has-anim fade mb-5 font-medium">Case Study</p>
-          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white">
+          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white break-words">
             {data.title}
           </h1>
         </div>
@@ -79,7 +84,7 @@ const others = (await getProjects())
           <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(data.otherInfo.length + 1) * 100}ms`}>
             <p class="text-lg font-medium text-black mb-3">Services we provided</p>
             <ul class="space-y-1.5">
-              {data.services.map((s) => <li>~ {s}</li>)}
+              {data.services.map((s) => <li><span aria-hidden="true">~ </span>{s}</li>)}
             </ul>
           </div>
         </div>
@@ -87,7 +92,7 @@ const others = (await getProjects())
         <!-- Body -->
         <div class="lg:col-7">
           <div
-            class="content prose max-w-full pl-0 lg:pl-5 [&_img]:my-5 [&_p]:text-[18px] [&_p]:leading-relaxed"
+            class="content prose max-w-full pl-0 lg:pl-5 [&_img]:my-5 [&_p]:text-[18px] [&_p]:leading-relaxed [&_h2]:text-[22px]! [&_h2]:leading-[1.6]!"
           >
             <Content />
           </div>
@@ -96,13 +101,14 @@ const others = (await getProjects())
     </div>
   </section>
 
-  <!-- What's next -->
-  <section class="bg-white pb-25 max-md:pb-20">
+  <!-- What's next (hidden when there are no other projects) -->
+  {others.length > 0 && (
+  <section class="bg-white pb-20 md:pb-25">
     <div class="container">
       <div class="row justify-between items-center">
         <div class="col-12 mb-10">
           <div class="border-t border-black/5 pt-25 pb-0 max-md:pt-20"></div>
-          <p class="text-dark has-anim fade font-medium">What’s next?</p>
+          <h2 class="text-dark has-anim fade font-medium">What’s next?</h2>
         </div>
         {
           others.map((p, i) => (
@@ -126,4 +132,5 @@ const others = (await getProjects())
       </div>
     </div>
   </section>
+  )}
 </Base>

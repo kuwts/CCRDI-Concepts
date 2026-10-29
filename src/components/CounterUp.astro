@@ -1,0 +1,95 @@
+---
+// Animated stat number. The final value is what's rendered, so it's correct
+// without JavaScript and with reduced motion. Shortly before it scrolls into view
+// the number drops to 60% of its value, then counts up linearly over 1.5s.
+import config from '@/config/site.config.json';
+
+interface Props {
+  value: string;
+  class?: string;
+}
+
+const { value, class: className = '' } = Astro.props;
+
+const match = value.match(/([^\d]*)([\d.,]+)([^\d]*)/);
+const numberStr = match?.[2] ?? value;
+const numValue = parseFloat(numberStr.replace(/,/g, ''));
+// A bare four-digit year (e.g. "2023") is shown as-is; counting it up reads oddly.
+const isYear = /^\d{4}$/.test(value.trim()) && numValue >= 1900 && numValue <= 2100;
+const isNumber = !isNaN(numValue) && match !== null && !isYear;
+---
+
+{
+  isNumber ? (
+    <span
+      class={className}
+      data-counter
+      data-prefix={match![1]}
+      data-suffix={match![3]}
+      data-value={numValue}
+      data-decimals={numberStr.split('.')[1]?.length || 0}
+      data-grouping={numberStr.includes(',') ? '' : undefined}
+      data-locale={config.locale.format}
+    >
+      {value}
+    </span>
+  ) : (
+    <span class={className}>{value}</span>
+  )
+}
+
+<script>
+  const DURATION = 1500;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const counters = document.querySelectorAll<HTMLElement>('[data-counter]:not([data-counter-ready])');
+  if (!reduceMotion && counters.length) {
+    const render = (el: HTMLElement, n: number) => {
+      const decimals = Number(el.dataset.decimals);
+      el.textContent = `${el.dataset.prefix}${n.toLocaleString(el.dataset.locale, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+        useGrouping: el.dataset.grouping !== undefined,
+      })}${el.dataset.suffix}`;
+    };
+    const run = (el: HTMLElement) => {
+      const to = Number(el.dataset.value);
+      const from = to * 0.6;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min((now - start) / DURATION, 1);
+        render(el, from + (to - from) * p);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    // 200px before it's visible: drop to the start value; once in view: count up
+    const prepare = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          prepare.unobserve(el);
+          render(el, Number(el.dataset.value) * 0.6);
+          start.observe(el);
+        }
+      },
+      { rootMargin: '200px' },
+    );
+    const start = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          start.unobserve(e.target);
+          run(e.target as HTMLElement);
+        }
+      },
+      { rootMargin: '-50px' },
+    );
+    counters.forEach((el) => {
+      el.dataset.counterReady = '';
+      prepare.observe(el);
+    });
+  }
+</script>

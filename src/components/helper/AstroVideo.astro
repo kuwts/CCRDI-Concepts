@@ -1,7 +1,14 @@
 ---
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+
 interface Props {
   src: string | undefined;
+  /** Extra versions of the same video in other formats (e.g. an .mp4 next to a .webm), tried in order after `src`. */
+  sources?: string[];
   poster?: string;
+  /** Largest width the poster image is resized to. */
+  posterWidth?: number;
   class?: string;
   autoplay?: boolean;
   loop?: boolean;
@@ -16,7 +23,9 @@ interface Props {
 
 const {
   src,
+  sources = [],
   poster,
+  posterWidth = 1600,
   class: className,
   autoplay = false,
   loop = false,
@@ -32,33 +41,34 @@ const {
 const videoModules = import.meta.glob<{ default: string }>(
   '/src/assets/**/*.{mp4,webm,ogv,ogg,mov}'
 );
-const imageModules = import.meta.glob<{ default: string | { src: string } }>(
-  '/src/assets/**/*.{jpeg,jpg,png,gif,svg}'
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/**/*.{jpeg,jpg,png,gif,webp,avif,svg}'
 );
 
-const resolveFromGlob = async (
-  path: string | undefined,
-  glob: Record<string, () => Promise<{ default: string | { src: string } }>>,
-): Promise<string | null> => {
-  if (!path) return null;
+const candidatesFor = (path: string) => {
   const normalized = path.startsWith('/') ? path : `/${path}`;
-  const candidates = [
-    `/src/assets${normalized}`,
-    `/src/assets/images${normalized}`,
-    `/src${normalized}`,
-  ];
-  for (const candidate of candidates) {
-    if (glob[candidate]) {
-      const mod = await glob[candidate]();
-      return typeof mod.default === 'string' ? mod.default : mod.default.src;
-    }
-  }
-  return null;
+  return [`/src/assets${normalized}`, `/src/assets/images${normalized}`, `/src${normalized}`];
 };
 
-const resolvedSrc = await resolveFromGlob(src, videoModules);
-const resolvedPoster = await resolveFromGlob(poster, imageModules);
-const posterUrl = resolvedPoster ?? (poster as string) ?? "";
+const resolveVideo = async (path: string): Promise<string> => {
+  for (const candidate of candidatesFor(path)) {
+    if (videoModules[candidate]) return (await videoModules[candidate]()).default;
+  }
+  return path;
+};
+
+// posters in src/assets are optimized (resized, WebP); other paths are used as-is
+const resolvePoster = async (path: string | undefined): Promise<string> => {
+  if (!path) return '';
+  for (const candidate of candidatesFor(path)) {
+    if (!imageModules[candidate]) continue;
+    const meta = (await imageModules[candidate]()).default;
+    if (meta.format === 'svg') return meta.src;
+    const img = await getImage({ src: meta, width: Math.min(meta.width, posterWidth), format: 'webp' });
+    return img.src;
+  }
+  return path;
+};
 
 const MIME: Record<string, string> = {
   mp4: 'video/mp4',
@@ -67,12 +77,18 @@ const MIME: Record<string, string> = {
   ogg: 'video/ogg',
   mov: 'video/quicktime',
 };
+const typeOf = (path: string) => {
+  const ext = path.split('.').pop()?.toLowerCase() ?? '';
+  return MIME[ext] ?? `video/${ext}`;
+};
 
-const ext = src?.split('.').pop()?.toLowerCase() ?? '';
-const type = MIME[ext] ?? `video/${ext}`;
+const allSources = await Promise.all(
+  [src, ...sources].filter((s): s is string => !!s).map(async (s) => ({ src: await resolveVideo(s), type: typeOf(s) })),
+);
+const posterUrl = await resolvePoster(poster);
 ---
 
-{resolvedSrc ? (
+{allSources.length > 0 && (
   <video
     class={className}
     poster={posterUrl || undefined}
@@ -86,21 +102,6 @@ const type = MIME[ext] ?? `video/${ext}`;
     height={height}
     {...rest}
   >
-    <source src={resolvedSrc} type={type} />
+    {allSources.map((s) => <source src={s.src} type={s.type} />)}
   </video>
-) : (
-  <video
-    class={className}
-    src={src}
-    poster={posterUrl || undefined}
-    autoplay={autoplay}
-    loop={loop}
-    muted={muted}
-    controls={controls}
-    playsinline={playsinline}
-    preload={preload}
-    width={width}
-    height={height}
-    {...rest}
-  />
 )}

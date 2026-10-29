@@ -2,9 +2,9 @@
 
 A reference to every component and page template in this Astro theme, and a guide to which pieces fit which kinds of sites.
 
-**Stack:** Astro 7, Tailwind CSS 4 (with `tailwind-bootstrap-grid` for `row` / `col-*`), React 19 islands, `motion` (Framer Motion), Swiper 14, `astro-icon` (Hugeicons), `astro-embed`.
-**Look:** dark base (`--color-dark: #001213`) with white and light-gray content bands, green accent (`--color-primary: #00b75f`), Space Grotesk, square corners throughout.
-**Content:** page copy lives in `src/content/*/index.mdx` front matter; repeatable data lives in `src/content/data/*.json` and the `blog`, `portfolio`, `jobs` and `pages` collections. Schemas are in [src/types/collections.ts](src/types/collections.ts).
+**Stack:** Astro 7, Tailwind CSS 4 (with `tailwind-bootstrap-grid` for `row` / `col-*`, and `@tailwindcss/typography` for `prose` on long-form pages), Swiper 14 (the two carousels only), `astro-icon` (Hugeicons), `astro-embed`. No UI framework: every interactive piece is an `.astro` component with a small vanilla script, so pages ship almost no JavaScript.
+**Look:** dark base (`dark` #001213) with white and light-gray content bands, green accent (`primary` #00b75f), Space Grotesk, square corners throughout. All brand settings live in `site.config.json`; see [Rebranding](#rebranding).
+**Content:** page copy lives in `src/content/*/index.mdx` front matter; repeatable data lives in `src/content/data/*.json` and the `blog`, `portfolio`, `jobs`, `pages` and `thankYou` collections. Schemas are in [src/types/collections.ts](src/types/collections.ts). To collect copy from a client, send them [CONTENT_TEMPLATE.md](CONTENT_TEMPLATE.md), organized to match this catalog's page types and sections.
 
 ---
 
@@ -15,7 +15,9 @@ A reference to every component and page template in this Astro theme, and a guid
 3. [Component quick reference](#component-quick-reference)
 4. [Components in detail](#components-in-detail)
 5. [Page templates](#page-templates)
-6. [Best uses by site type](#best-uses-by-site-type)
+6. [Rebranding](#rebranding)
+7. [SEO](#seo)
+8. [Best uses by site type](#best-uses-by-site-type)
 
 ---
 
@@ -33,6 +35,8 @@ A reference to every component and page template in this Astro theme, and a guid
 
 **Multiple copies:** every component works when used more than once on the same page; each copy runs its own script.
 
+**Accessibility baseline:** every interactive piece works with a keyboard (visible `:focus-visible` ring, Esc closes menus and dialogs, focus moves into dialogs and back out), closed panels are `inert`, decorative images and glyphs are hidden from screen readers, moving content pauses (see below), and text colors meet WCAG AA contrast on the theme's backgrounds. Keep these when adding components.
+
 ---
 
 ## Shared animation systems
@@ -41,13 +45,15 @@ These are defined once and reused across many components. Component entries refe
 
 | Name | Where it's defined | What it does |
 | --- | --- | --- |
-| **Scroll reveal** (`has-anim`) | `@utility has-anim` in [src/styles/global.css](src/styles/global.css); observer in [src/layouts/Base.astro](src/layouts/Base.astro) | Element starts hidden, 25px lower and at 99% scale, then fades and rises in when it enters the viewport (IntersectionObserver, bottom margin −15%). Runs once. |
+| **Scroll reveal** (`has-anim`) | `@utility has-anim` in [src/styles/global.css](src/styles/global.css); observer in [src/layouts/Base.astro](src/layouts/Base.astro) | Element starts transparent, 25px lower and at 99% scale, then fades and rises in when it enters the viewport (IntersectionObserver, bottom margin −15%). Runs once. Only `opacity`/`transform` change, so unrevealed content is still read by screen readers, found by find-in-page and printed. |
 | **Scroll reveal, fade** (`has-anim fade`) | same | Gentler version: only an 8px rise, no scale. |
 | **Stagger** (`delay-*`, `animDelay[i]`) | [src/utils/animDelay.ts](src/utils/animDelay.ts) | Adds 0–500ms transition delays by item index. All delays are switched off below the `md` breakpoint. |
-| **Button text roll** (`btn`) | `@utility btn` in global.css | On hover the label slides up and fades out while a copy (from `data-text`) rises in from below. |
-| **Line-link wipe** (`line-link`) | `@utility line-link` in global.css | A faint underline shrinks away, then a solid green underline draws in from the left after 0.3s. |
+| **Motion curve** (`ease-theme`) | `--ease-theme` in the `@theme` block of global.css | The theme's one easing curve, `cubic-bezier(.2,1,.2,1)`, for every movement and hover effect (reveals, buttons, links, menus, carousels, the showreel zoom). Use `ease-theme` / `var(--ease-theme)`; plain `ease-out` only for small opacity fades. |
+| **Button text roll** (`btn`) | `@utility btn` in global.css | On hover or keyboard focus the label slides up and fades out while a copy (from `data-text`) rises in from below. Long labels wrap and the button grows taller instead of overflowing. |
+| **Line-link wipe** (`line-link`) | `@utility line-link` in global.css | On hover or keyboard focus a faint underline shrinks away, then a solid green underline draws in from the left after 0.3s. |
+| **Pause control** (`PauseButton`) | [src/components/PauseButton.astro](src/components/PauseButton.astro) | Moving content (logo wall, team marquee, autoplaying videos) only moves while it's on screen and the tab is visible, pauses on hover, and has a "Pause …" button that appears when it gets keyboard focus (WCAG 2.2.2). |
 
-> **Reduced motion and no JavaScript:** with "reduce motion" turned on, `has-anim` content appears in place with no movement. Without JavaScript, a `<noscript>` style in Base.astro shows it. `StackedServices`, the Services page's card deck, `TeamGroupCarousel`, `Clients`, `Showreel`, `CounterUp` and `ReviewCarousel`'s video cards also respect reduced motion (details in each entry). Hover effects and slider transitions still animate.
+> **Reduced motion and no JavaScript:** with "reduce motion" turned on, `has-anim` content appears in place with no movement, and smooth scrolling is off. Without JavaScript, a `<noscript>` style in Base.astro shows it. `StackedServices`, the Services page's card deck, `TeamGroupCarousel`, `Clients`, `Showreel`, `CounterUp`, `DropdownNav`, `Faq`, the pricing count and `ReviewCarousel`'s video cards also respect reduced motion (details in each entry). Hover effects and slider transitions still animate.
 
 ---
 
@@ -56,19 +62,19 @@ These are defined once and reused across many components. Component entries refe
 | Component | Purpose | Weight | Used on |
 | --- | --- | --- | --- |
 | [Header](#header) | Navigation bar + mobile drawer | Medium | All pages |
-| [DropdownNav](#dropdownnav) | Desktop dropdown menus (React) | Light | All pages (via Header) |
+| [DropdownNav](#dropdownnav) | Desktop dropdown menus | Light | All pages (via Header) |
 | [Footer](#footer) | Footer CTA, contact, links | Medium | All pages |
 | [ScrollProgress](#scrollprogress) | Back-to-top with progress ring | Light | All pages |
-| [GradualBlur](#gradualblur) | Blur fade at the bottom edge of the screen (React) | Light | All pages |
+| [GradualBlur](#gradualblur) | Blur fade at the bottom edge of the screen (CSS only) | Light | All pages |
 | [DeviceSizeIndicator](#devicesizeindicator) | Breakpoint badge (dev only) | — | All pages (dev only) |
-| [PageHeader](#pageheader) | Inner-page hero / title band | Light | 11 pages |
+| [PageHeader](#pageheader) | Inner-page hero / title band | Light | 12 page templates |
 | [BannerShape](#bannershape) | Decorative hero background shape | Light | Home |
 | [BannerTestimonial](#bannertestimonial) | Hero social proof (avatar stack) | Light | Home |
 | [Showreel](#showreel) | Hero video with fullscreen player | Heavy | Home |
 | [StackedServices](#stackedservices) | Services / features as sticky stacking cards | Heavy | Home |
 | [WorkProcess](#workprocess) | Process steps + CTA strip | Medium | Home |
 | [Facts](#facts) | Stats / about bento grid | Heavy | About, Services |
-| [CounterUp](#counterup) | Animated number (React) | Light | About, Services (via Facts) |
+| [CounterUp](#counterup) | Animated number | Light | About, Services (via Facts) |
 | [Clients](#clients) | Logo wall with cycling logos | Medium | Home, About, Services |
 | [ReviewCarousel](#reviewcarousel) | Testimonials slider (text + video) | Heavy | Home, About, Services |
 | [TeamGroupCarousel](#teamgroupcarousel) | Team photo marquee | Medium | About |
@@ -79,6 +85,10 @@ These are defined once and reused across many components. Component entries refe
 | [Button](#button) | Primary button / link button | Light | Most pages |
 | [LineLink](#linelink) | Text link with animated underline | Light | Home, Contact, Job, Portfolio detail, Style Guide, Footer |
 | [Faq](#faq) | Accordion (FAQ) | Light | FAQ, Pricing, Style Guide |
+| [TeamGrid](#teamgrid) | Team member cards | Light | About, Team |
+| [LoadMore](#loadmore) | "+" load-more button | Light | Blog, Blog Horizontal, Portfolio |
+| [PauseButton](#pausebutton) | Keyboard pause control for moving content | — | Inside Clients, TeamGroupCarousel, ReviewCarousel, Showreel |
+| [AnniversarySeal](#anniversaryseal) | CCC 40th anniversary seal (SVG) | Light | Home (hero), Footer (all pages) |
 | [AstroImage](#astroimage) | Image helper | — | Everywhere |
 | [AstroVideo](#astrovideo) | Video helper | — | Home, About, Services (via Showreel / ReviewCarousel) |
 
@@ -91,42 +101,45 @@ These are defined once and reused across many components. Component entries refe
 #### Base layout
 
 - **File:** [src/layouts/Base.astro](src/layouts/Base.astro)
-- **For:** the page shell. Every page uses it. It renders `<head>` SEO/OG tags, then `ScrollProgress`, `DeviceSizeIndicator`, `Header`, `<main><slot/></main>`, `Footer`, and a page-level `GradualBlur`.
-- **Props:** `title?` (shown as `"{title} | {seo.title}"`), `description?`, `image?` (OG image), `noindex?`. Also a named `head` slot.
-- **Animations:** holds the global scripts for scroll reveal, header hide/shrink on scroll, scroll-progress ring, mobile drawer and mobile submenu accordions.
+- **For:** the page shell. Every page uses it. It renders `<head>` SEO/OG tags, then a "Skip to content" link (visible on keyboard focus), `ScrollProgress`, `DeviceSizeIndicator`, `Header`, `<main id="main">`, `Footer`, and a page-level `GradualBlur`.
+- **Props:** `title?` (shown as `"{title} | {brand.name}"`; omit for the site default `seo.title`), `description?`, `image?` (social share image), `noindex?`, `canonical?` (defaults to the page's own URL), `type?` (`website` | `article`). Also a named `head` slot. See [SEO](#seo).
+- **Also outputs:** `<html lang>` from `site.config.json` → `locale.lang`, the brand color variables, the brand font, the favicon set (SVG, 32×32 PNG, Apple touch icon), the web manifest link, `theme-color`, `<meta name="author">` (only when `seo.author` is set), and Organization JSON-LD on the homepage.
+- **Animations:** holds the global scripts for scroll reveal, header hide/shrink on scroll (passive, once per frame; the header stays visible while it has keyboard focus), scroll-progress ring, mobile drawer and mobile submenu accordions.
 - **Visual weight:** n/a (wrapper).
 
 #### Header
 
 - **File:** [src/components/Header.astro](src/components/Header.astro)
-- **For:** navigation. A sticky dark top bar with logo, desktop menu, "Buy Now" button and a hamburger; below `lg` a slide-in drawer.
-- **Props:** none. Reads `menu.main` from [src/config/menu.json](src/config/menu.json) and `logo` / `buyNow` from [src/config/site.config.json](src/config/site.config.json).
-- **Variants:** desktop (≥ `lg`, uses `DropdownNav`) and mobile drawer (< `lg`, submenus become accordions). Active page and active section are highlighted automatically.
-- **Animations:** hides when you scroll down past 300px and comes back when you scroll up; padding shrinks after 100px; drawer slides in from the right over a blurred dim overlay; mobile submenus open with a height animation and the caret rotates; "Buy Now" uses the button text roll.
+- **For:** navigation. A sticky dark top bar with logo, desktop menu, a header button and a hamburger; below `lg` a slide-in drawer.
+- **Props:** none. Reads `menu.main` from [src/config/menu.json](src/config/menu.json) and `logo` / `headerButton` from [src/config/site.config.json](src/config/site.config.json).
+- **Variants:** desktop (≥ `lg`, uses `DropdownNav`) and mobile drawer (< `lg`, submenus become accordions). Active page and active section are highlighted automatically (`aria-current="page"` on the current link).
+- **Animations:** hides when you scroll down past 300px and comes back when you scroll up; padding shrinks after 100px; drawer slides in from the right over a blurred dim overlay; mobile submenus open with a height animation and the caret rotates; the header button uses the button text roll.
+- **Accessibility:** the logo loads eagerly. The hamburger has `aria-expanded` / `aria-controls`. The closed drawer is `inert` and hidden, so its links can't be tabbed to; opening it moves focus to "Close", Tab stays inside it, Esc or the overlay closes it and focus returns to the hamburger. Closed accordions are `inert` too.
 - **Visual weight:** Medium.
 - **Used on:** all pages (via Base).
-- **Notes:** the "Buy Now" button links to the theme store. Rename or repoint it through `buyNow` in site config.
+- **Notes:** the header button is the site's main action: `headerButton` (`label`, `url`; default "Contact Us" → `/contact`). Full `http(s)` URLs open in a new tab.
 
 #### DropdownNav
 
-- **File:** [src/components/menu/DropdownNav.tsx](src/components/menu/DropdownNav.tsx) (React, `client:load`)
+- **File:** [src/components/menu/DropdownNav.astro](src/components/menu/DropdownNav.astro) (vanilla script, no framework)
 - **For:** desktop dropdown menus.
 - **Props:** `items: { name, url, children?: { name, url }[] }[]`, `currentPath: string`.
-- **Animations (motion):** a single white panel with a pointer arrow springs sideways to follow the hovered item; its height animates between menus of different lengths; child links fade up with a 40ms stagger; the other top-level items dim to 50%.
+- **Animations:** a single white panel with a pointer arrow slides sideways to follow the hovered item; its height animates between menus of different lengths; child links fade up with a 40ms stagger; the other top-level items dim to 50%. Reduced motion: no animation.
+- **Keyboard and touch:** items with children are buttons (`aria-expanded`, `aria-controls`). Hover opens a menu; click, Enter, Space or Arrow Down open it and keep it open. Tab goes from the button into its links, and from the last link on to the next item. Esc closes and returns focus to the button; clicking outside or tabbing away closes it.
 - **Visual weight:** Light.
 - **Used on:** all pages (inside Header).
-- **Notes:** opens on hover only. There is no keyboard or click handling for opening submenus on desktop.
+- **Notes:** a parent item's `url` isn't used (it's a button); give it `"#"` in `menu.json`.
 
 #### Footer
 
 - **File:** [src/components/Footer.astro](src/components/Footer.astro)
 - **For:** footer CTA, contact details, link columns, social links and copyright.
 - **Props:** none. Reads `footer`, `logo`, `author` from site config; `menu.footer.col1–col3`; [src/config/social.json](src/config/social.json).
-- **Layout:** large "Have an idea…" heading with a green arrow link → email (as a LineLink) + phone + two address lines → three link columns → copyright + social links → oversized logo watermark at 5% opacity bleeding off the bottom.
+- **Layout:** large "Have an idea…" heading (`h2`) with a green arrow link → email (as a LineLink) + phone + two address lines → three link columns → copyright + social links → oversized logo watermark at 5% opacity bleeding off the bottom (hidden from screen readers).
 - **Animations:** scroll reveal (fade) with small staggers; line-link wipe on the email; underline fade on links.
 - **Visual weight:** Medium.
 - **Used on:** all pages (via Base).
-- **Notes:** the "Our blog" link points to `/blogs-1-col`, which doesn't exist (should be `/blog`). The copyright line reads "Developed by Platoltheme".
+- **Notes:** links have 28px tap targets. The copyright line reads "Copyright © {year} {brand.name}."; set `author.name` (and optionally `author.url`) in site config to add "Developed by …".
 
 #### ScrollProgress
 
@@ -139,11 +152,11 @@ These are defined once and reused across many components. Component entries refe
 
 #### GradualBlur
 
-- **File:** [src/components/ui/GradualBlur.tsx](src/components/ui/GradualBlur.tsx) (React)
-- **For:** a stepped backdrop blur along an edge. Base uses it as a fixed blur strip at the bottom of the viewport (`client:idle`, `target="page"`, 6rem, strength 2, 5 layers, bezier curve, exponential).
-- **Props:** `position` (`top|bottom|left|right`), `strength`, `height`, `width`, `divCount`, `exponential`, `zIndex`, `animated` (`true|false|'scroll'`), `duration`, `easing`, `opacity`, `curve` (`linear|bezier|ease-in|ease-out|ease-in-out`), `responsive` with `mobile/tablet/desktop` `Height`/`Width`, `target` (`parent|page`), `hoverIntensity`, `onAnimationComplete`, `className`, `style`, `children`. `gpuOptimized` is declared but not used.
+- **File:** [src/components/GradualBlur.astro](src/components/GradualBlur.astro) (CSS only; the layers are worked out at build time)
+- **For:** a stepped backdrop blur along an edge. Base uses it as a fixed blur strip at the bottom of the viewport (`target="page"`, 6rem, strength 2, 5 layers, bezier curve, exponential).
+- **Props:** `position` (`top|bottom|left|right`), `strength`, `height`, `width`, `divCount`, `exponential`, `curve` (`linear|bezier|ease-in|ease-out|ease-in-out`), `opacity`, `zIndex`, `target` (`parent|page`), `preset`, `class`.
 - **Variants (`preset`):** `top`, `bottom`, `left`, `right`, `subtle`, `intense`, `smooth`, `sharp`, `header`, `footer`, `sidebar`, `page-header`, `page-footer`.
-- **Animations:** static by default. Optional: fade in when scrolled into view (`animated="scroll"`), stronger blur on hover (`hoverIntensity`).
+- **Animations:** none (static).
 - **Visual weight:** Light to the eye. Note that a full-width fixed `backdrop-filter` has a GPU cost on low-end phones.
 - **Used on:** all pages (via Base).
 
@@ -162,14 +175,14 @@ These are defined once and reused across many components. Component entries refe
 - **Props:** `subtitle: string`, `title: string` (rendered as HTML, so `<br/>` and emoji work), `align?: 'left' | 'center'` (default `left`), `dot?: boolean` (adds a green period; default `false`), `colClass?: string` (default `lg:col-10`).
 - **Animations:** scroll reveal (fade); heading delayed 100ms.
 - **Visual weight:** Light.
-- **Used on:** About, Services, Team, Pricing, Contact, FAQ, Privacy, Style Guide, Blog, Blog Horizontal, Portfolio.
-- **Notes:** the heading is the page's `<h1>`, so don't add another `<h1>` on pages that use it.
+- **Used on:** About, Services, Team, Pricing, Contact, FAQ, Privacy, Style Guide, Blog, Blog Horizontal, Portfolio, Thank-you.
+- **Notes:** the heading is the page's `<h1>`, so don't add another `<h1>` on pages that use it. Section headings below it start at `h2`. Long words break instead of overflowing.
 
 #### BannerShape
 
 - **File:** [src/components/BannerShape.astro](src/components/BannerShape.astro)
 - **For:** a decorative scatter-dot blob behind the home hero (absolute, behind content, 20% opacity, 30% on mobile).
-- **Props:** none. The color is fixed by a class (`text-[#332D2B]`), even though the comment mentions `currentColor`.
+- **Props:** none. The color comes from the `shape` token in global.css (`--color-shape`), via `currentColor`. Hidden from screen readers.
 - **Animations:** none.
 - **Visual weight:** Light.
 - **Used on:** Home.
@@ -179,21 +192,22 @@ These are defined once and reused across many components. Component entries refe
 
 - **File:** [src/components/BannerTestimonial.astro](src/components/BannerTestimonial.astro)
 - **For:** social proof in a hero, e.g. "Loved by 550+ Founders" next to overlapping round avatars.
-- **Props:** `proof: { label, avatars: { image, name, role, social: { icon, url } }[] }`, `class: string` (required by the type).
-- **Animations:** hovering an avatar raises it, lightens its border and fades in a white tooltip card with name, role and a social icon link.
+- **Props:** `proof: { label, avatars: { image, name, role, social: { icon, url } }[] }`, `class?`.
+- **Animations:** hovering an avatar (or tabbing to its social link) raises it, lightens its border and fades in a white tooltip card with name, role and a social icon link.
 - **Visual weight:** Light.
 - **Used on:** Home.
-- **Notes:** each social link's `aria-label` says "on LinkedIn" whatever the icon is.
+- **Notes:** the link's label names the network from its URL ("Sarah Lindgren on X"); `social.icon` is optional and defaults to that network's icon. The avatar border uses the `avatar-ring` token.
 
 #### Showreel
 
 - **File:** [src/components/Showreel.astro](src/components/Showreel.astro)
 - **For:** a full-width hero video that expands into a fullscreen player.
-- **Props:** `src: string` (video path), `poster?: string`, `class?: string`.
-- **Animations:** autoplays muted and looping while at least 40% visible, then pauses and resets to the poster. Over the video the system cursor is hidden and a green "▶ Play" pill follows the mouse. Click → the video FLIP-animates into a dark fullscreen overlay with sound. Close with ×, the backdrop or Esc → FLIP back. Right-click is blocked. With reduced motion: no inline autoplay (the poster shows) and no zoom animation; clicking still opens the player, and closing returns to the poster.
+- **Props:** `src: string` (video path), `sources?: string[]` (other formats of the same video, e.g. an `.mp4` fallback for a `.webm`), `poster?: string` (resized and served as WebP), `class?: string`.
+- **Animations:** autoplays muted and looping while at least 40% visible and the tab is visible, then pauses and resets to the poster. Over the video the system cursor is hidden and a green "▶ Play" pill (dark text) follows the mouse. Click → the video FLIP-animates into a dark fullscreen overlay with sound. Close with ×, the backdrop or Esc → FLIP back. With reduced motion: no inline autoplay (the poster shows) and no zoom animation; clicking still opens the player, and closing returns to the poster.
+- **Keyboard:** a "Play showreel" button appears on focus and opens the player; the player is a dialog (`inert` while closed) with focus on ×, and focus returns to the button on close. A "Pause showreel" button (shown on focus) stops the inline loop.
 - **Visual weight:** Heavy.
 - **Used on:** Home.
-- **Notes:** uses `cursor-none`; on touch screens there is no hover cursor, but tapping still opens the player.
+- **Notes:** uses `cursor-none`; on touch screens there is no hover cursor, but tapping still opens the player. Right-click works as normal. Keep the files small: the demo reel is 720p, about 2 MB per format.
 
 ### Content sections
 
@@ -201,21 +215,21 @@ These are defined once and reused across many components. Component entries refe
 
 - **File:** [src/components/StackedServices.astro](src/components/StackedServices.astro)
 - **For:** services or features shown as cards that stick and pile up as you scroll.
-- **Props:** `services: { icon, title, info, meta?, image? }[]`, `withDramaEffect?: boolean` (default `true`), `stackOffset?: number` (px between stacked edges, default `5`), `paneGap?: string | false` (Tailwind gap class, default `gap-2`), `scrollRunway?: string` (extra scroll space after the last card, default `'0px'`), `className?: string`.
+- **Props:** `services: { icon, title, info, meta?, image? }[]`, `withDramaEffect?: boolean` (default `true`), `stackOffset?: number` (px between stacked edges, default `5`), `paneGap?: string | false` (Tailwind gap class, default `gap-2`), `scrollRunway?: string` (extra scroll space after the last card, default `'0px'`), `class?: string`.
 - **Card design:** a background photo with a frosted dark glass panel (`backdrop-blur-2xl`) holding a 01/02/… index, an icon, title, text and meta line.
 - **Variants:** with or without the "drama" effect (scaling).
 - **Animations:** cards are `position: sticky` and pile on top of one another; with the drama effect, covered cards shrink step by step, driven by scroll in `requestAnimationFrame`; inner panels use scroll reveal. Respects `prefers-reduced-motion`.
 - **Visual weight:** Heavy.
 - **Used on:** Home (right-hand column of the intro section).
-- **Notes:** takes `className`, not `class`. Sticky `top` values assume the header height. Give every card an `image`, or the card will be blank.
+- **Notes:** sticky `top` values assume the header height. A card without an `image` shows on the dark background. The photo and icon are decorative (`alt=""`); the title carries the meaning.
 
 #### WorkProcess
 
 - **File:** [src/components/WorkProcess.astro](src/components/WorkProcess.astro)
 - **For:** a "how we work" section: four numbered steps followed by a CTA strip.
 - **Props:** `subtitle: string`, `title: string`, `steps: { heading, text }[]`, `cta: { title, images: string[], button: { label, href } }`.
-- **Layout:** a complete dark `<section>`: a centered SectionTitle, four tall translucent cards with decorative glyphs (✳ ✺ ✲ ❋), then a divider and a strip with an avatar stack, a line of text and a small white Button.
-- **Animations:** scroll reveal with per-card stagger; button text roll.
+- **Layout:** a complete dark `<section>`: a centered SectionTitle, four tall translucent cards with decorative glyphs (✳ ✺ ✲ ❋, hidden from screen readers), then a divider and a strip with an avatar stack, a line of text and a white `LineLink` with an arrow (the page's main `Button` stays in the hero).
+- **Animations:** scroll reveal with per-card stagger; line-link wipe.
 - **Visual weight:** Medium.
 - **Used on:** Home.
 - **Notes:** the layout is built for four steps (four columns); more steps wrap onto a new row, and the four glyphs repeat in order. Dark background only.
@@ -224,7 +238,7 @@ These are defined once and reused across many components. Component entries refe
 
 - **File:** [src/components/Facts.astro](src/components/Facts.astro)
 - **For:** a stats / "about us in numbers" bento grid.
-- **Props:** `facts` (typed `any`). Expected shape (from the `about` collection): `image`, `title` (markdown: `_x_` renders as a large glyph, `**x**` as a heading), `hero { label, value, description }`, `philosophy { label, title, description }`, `impact { label, value, description }`, `stats: { value, label }[]`.
+- **Props:** `facts`: the `facts` block of the `about` entry (typed from the collection): `image`, `image_alt` (empty = decorative), `title` (markdown: `_x_` renders as a large glyph, `**x**` as a heading), `hero { label, value, description }`, `philosophy { label, title, description }`, `impact { label, value, description }`, `stats: { value, label }[]`.
 - **Layout:** an image + intro tile, a philosophy quote tile, a big-number tile, three small stat tiles and a big impact-number tile, all translucent on dark. Tiles reorder across breakpoints.
 - **Animations:** scroll reveal (fade) with staggered delays; every number counts up with `CounterUp`.
 - **Visual weight:** Heavy.
@@ -235,11 +249,12 @@ These are defined once and reused across many components. Component entries refe
 
 - **File:** [src/components/Faq.astro](src/components/Faq.astro)
 - **For:** an FAQ accordion, grouped under subheadings.
-- **Props:** `groups: { title, items: { question, answer }[] }[]`. `answer` is an HTML string.
-- **Animations:** answers open with a smooth height transition (`grid-template-rows` 0fr → 1fr) and the + icon rotates into ×; opening one item closes every other item on the page; each item uses scroll reveal (fade).
+- **Props:** `groups: { title, items: { question, answer }[] }[]` (`answer` is an HTML string), `headingLevel?: 'h2' | 'h3'` for the group titles (default `h2`; use `h3` under a section heading, as on Pricing).
+- **Animations:** answers open with a smooth height transition (`grid-template-rows` 0fr → 1fr) and the + icon rotates into ×; opening one item closes the others in the same accordion; each item uses scroll reveal (fade). Reduced motion: no transition.
+- **Accessibility:** toggles have `aria-expanded` / `aria-controls`; closed answers are `inert`, so links inside them can't be tabbed to.
 - **Visual weight:** Light.
 - **Used on:** FAQ, Pricing, Style Guide.
-- **Notes:** light background only. Answers are injected as raw HTML, so use trusted content only. There's no `aria-expanded` on the toggles.
+- **Notes:** light background only. Answers are injected as raw HTML, so use trusted content only. Renders nothing with no groups.
 
 ### Social proof and media
 
@@ -249,10 +264,10 @@ These are defined once and reused across many components. Component entries refe
 - **For:** a client / partner / sponsor logo wall.
 - **Props:** `items: { name, logo }[]`, `columnCount?: number` (default `5`), `class?: string`.
 - **Variants:** two data sets: [clients.json](src/content/data/clients.json) (light logos for dark backgrounds) and [clients-dark.json](src/content/data/clients-dark.json) (dark logos for light backgrounds).
-- **Animations:** each column shows one logo at a time and swaps every 2s, columns offset by 250ms. Incoming logos rise and de-blur with a springy ease; outgoing logos lift and blur out. The wrapper uses scroll reveal (fade). With reduced motion there's no cycling: each column lists its logos, so every client shows once.
+- **Animations:** each column shows one logo at a time and swaps every 2s, columns offset by 250ms. Incoming logos rise and de-blur (`ease-theme`); outgoing logos lift and blur out. The wrapper uses scroll reveal (fade). With reduced motion there's no cycling: each column lists its logos, so every client shows once.
 - **Visual weight:** Medium.
 - **Used on:** Home (dark logos on gray), About and Services (light logos on dark).
-- **Notes:** the order is shuffled at build time and short columns are padded with random repeats. With fewer logos than columns, lower `columnCount`. The timer runs every 100ms indefinitely.
+- **Notes:** the order is shuffled at build time and short columns are padded with random repeats (hidden from screen readers). There are never more columns than logos, and no logos means no wall. The cycling only runs while the wall is on screen and the tab is visible; it pauses on hover and has a "Pause logo animation" button on keyboard focus.
 
 #### ReviewCarousel
 
@@ -260,23 +275,25 @@ These are defined once and reused across many components. Component entries refe
 - **For:** testimonials. Text reviews and video reviews in one draggable slider.
 - **Props:** `items: { review, author, role?, company?, rating?, date?, social?, media? }[]`, `testimonials: { total_rating?, total_reviews?, top_companies?: { name, logo }[] }`, `light?: boolean` (white pagination dots for dark sections; default `false`).
 - **Slide types:**
-  - **Summary card** (always first): a big rating number, five stars, the review count and inverted company logos.
-  - **Video card** (when `media` ends in .mp4/.webm/.mov/.ogv): a muted, looping background video (started by script; not autoplayed with reduced motion) with name, company, X link, a play button, a star rating and a date.
-  - **Text card** (otherwise): the quote, a round avatar (`media`), name, role or company, and an X link.
+  - **Summary card** (first, when any of `total_rating`, `total_reviews` or `top_companies` is set): a big rating number, five stars, the review count and inverted company logos.
+  - **Video card** (when `media` ends in .mp4/.webm/.mov/.ogv): a muted, looping background video with name, company, social link, a play button, a star rating and a date.
+  - **Text card** (otherwise): the quote, a round avatar (`media`, optional), name, role or company, and a social link.
 - **Animations:** Swiper free-mode drag and mousewheel; 1.1 → 3.5 slides visible as the screen widens; dynamic pagination bullets; play button grows on hover; the video modal fades in; the close button rotates on hover.
+- **Video cards:** the background videos don't preload; they only play while the carousel is on screen and the tab is visible, pause on hover and keyboard focus, have a "Pause testimonial videos" button on focus, and never autoplay with reduced motion. Keep clips short and small (the demo ones are 720p, under 0.6 MB).
+- **Accessibility:** star ratings read as "Rated 5 out of 5"; the social link's icon and label follow its URL ("… on LinkedIn"); the video popup is a dialog (`inert` while closed, focus on ×, Esc closes, focus returns to the play button).
 - **Visual weight:** Heavy (autoplaying videos and a wide slider).
 - **Used on:** Home, About, Services.
-- **Notes:** each copy has its own video popup. The social icon and label are always X/Twitter. Text cards need `media` set to an avatar image. `date` is an optional field in `testimonials.json` and only video cards display it. The summary card always renders, even with empty data.
+- **Notes:** each copy has its own video popup. `date` is an optional field in `testimonials.json` and only video cards display it. Renders nothing with no items and no summary data.
 
 #### TeamGroupCarousel
 
 - **File:** [src/components/TeamGroupCarousel.astro](src/components/TeamGroupCarousel.astro)
 - **For:** a continuously scrolling strip of team or culture photos.
-- **Props:** `images: string[]`.
+- **Props:** `images: (string | { src, alt? })[]`: a plain path is a decorative photo (`alt=""`); use `{ src, alt }` to describe one.
 - **Animations:** an endless marquee (`requestAnimationFrame` translateX, one full pass every 20s); images use scroll reveal.
 - **Visual weight:** Medium.
 - **Used on:** About.
-- **Notes:** it doesn't pause on hover. With reduced motion it stops and becomes a single set of photos the visitor can scroll sideways. Every image has `alt="team"`; the duplicate set used for the loop is hidden from screen readers.
+- **Notes:** it only moves while on screen and the tab is visible, pauses on hover, and has a "Pause photo strip" button on keyboard focus. With reduced motion it stops and becomes a single set of photos the visitor can scroll sideways. The duplicate set used for the loop is hidden from screen readers.
 
 #### PortfolioCarousel
 
@@ -287,7 +304,7 @@ These are defined once and reused across many components. Component entries refe
 - **Animations:** free-mode drag and mousewheel, 600ms slide easing, a progress bar and a live counter; card hover effects (see PortfolioCard).
 - **Visual weight:** Heavy.
 - **Used on:** Home.
-- **Notes:** light background only (black controls). With fewer than 8 projects the slides are doubled so the loop works, but the counter still shows the real number of projects.
+- **Notes:** light background only (black controls). With fewer than 8 projects the slides are repeated until there are 8 so the loop works; the counter still shows the real number of projects, and the repeats are hidden from screen readers and skipped by Tab. Renders nothing with no projects.
 
 ### Cards
 
@@ -295,27 +312,27 @@ These are defined once and reused across many components. Component entries refe
 
 - **File:** [src/components/PortfolioCard.astro](src/components/PortfolioCard.astro)
 - **For:** a project tile.
-- **Props:** `href`, `title`, `category`, `color` (hover overlay color), `image`, `variant?: 'grid' | 'carousel'` (default `grid`), `titleClass?: string` (default `text-[30px]`), `class?: string`.
+- **Props:** `href`, `title`, `category`, `color` (hover overlay color), `image`, `variant?: 'grid' | 'carousel'` (default `grid`), `titleClass?: string` (default `text-[30px]`), `as?: 'h2' | 'h3' | 'h4'` (title heading level; default `h3`, `h2` on listing pages), `class?: string`.
 - **Variants:**
   - `grid`: category and title slide up into the bottom-left corner on hover.
   - `carousel`: category and title fade and rise into the center on hover, after a 200ms delay.
 - **Animations:** on hover, the image slowly zooms to 120% over 700ms and the project's color floods over it at 95%; the title link underlines.
 - **Visual weight:** Medium.
 - **Used on:** Home (via PortfolioCarousel), Portfolio (grid), Portfolio detail ("What's next").
-- **Notes:** on devices without hover (phones, tablets), the title and category show all the time over a darkening layer (a `touch:` variant defined in global.css). Only the title text is a link, not the whole card.
+- **Notes:** on devices without hover (phones, tablets), the title and category show all the time over a darkening layer (a `touch:` variant defined in global.css). The hover reveal also runs when the title link has keyboard focus. Only the title text is a link, not the whole card; the image is decorative (`alt=""`).
 
 #### BlogCard
 
 - **File:** [src/components/BlogCard.astro](src/components/BlogCard.astro)
 - **For:** a blog / news / article card.
-- **Props:** `post: CollectionEntry<'blog'>`, `horizontal?: boolean` (default `false`), `category?: string` (overrides the chip label, e.g. "Featured"), `class?: string`.
+- **Props:** `post: CollectionEntry<'blog'>`, `horizontal?: boolean` (default `false`), `category?: string` (overrides the chip label, e.g. "Featured"), `as?: 'h2' | 'h3' | 'h4'` (title heading level; default `h3`, `h2` on listing pages), `class?: string`.
 - **Variants:**
   - Vertical: image on top, then the category chip, title (2 lines), description (2 lines), "date — reading time" and an arrow.
   - Horizontal: image and text side by side from `lg`, with a larger title.
 - **Animations:** on hover, the image shifts slightly, the arrow nudges up-right and the title underlines. The whole card is clickable. The background is tinted with the post's `color` at 5%.
 - **Visual weight:** Medium.
 - **Used on:** Home, Blog, Blog Horizontal, Blog detail (related posts).
-- **Notes:** light background only. Uses `thumbnail`, falling back to `image`.
+- **Notes:** light background only. Uses `thumbnail`, falling back to `image`; with neither, the card shows without an image. The card link is named by the post title, so the image is `alt=""`. No category, no chip.
 
 ### Primitives
 
@@ -333,10 +350,11 @@ These are defined once and reused across many components. Component entries refe
 - **File:** [src/components/Button.astro](src/components/Button.astro)
 - **For:** the main button. It renders an `<a>` when `href` is set, otherwise a `<button>`.
 - **Props:** `label`, `href?`, `variant?: 'white' | 'black'` (default `white`), `type?: 'button' | 'submit'`, `block?: boolean` (full width), `target?`, `rel?`, `class?`.
-- **Extra styles (CSS only):** `btn-dark`, `btn-light` and `btn-sm` exist in global.css but aren't component variants. Home gets a dark button by passing `class="btn btn-dark"`. `btn-circle` with `btn-circle-white` / `btn-circle-black` is a separate round "+" button used for "load more".
-- **Animations:** button text roll.
+- **Extra styles (CSS only):** `btn-dark`, `btn-light` and `btn-sm` exist in global.css but aren't component variants. `btn-circle` with `btn-circle-white` / `btn-circle-black` is a separate round "+" button used by `LoadMore`.
+- **Animations:** button text roll (hover and keyboard focus). Long labels wrap onto more lines.
 - **Visual weight:** Light.
-- **Used on:** Home, About, Team, Pricing, Contact, Privacy, 404, Job detail, WorkProcess. Header and Style Guide use the raw `btn` classes.
+- **Used on:** Home (hero), About, Team, Pricing, Contact, Privacy, 404, Job detail, Thank-you. Header and Style Guide use the raw `btn` classes.
+- **Notes:** one `Button` per page for its main action; everything else is a `LineLink`. `target="_blank"` gets `rel="noopener"` unless you pass `rel`.
 
 #### LineLink
 
@@ -345,14 +363,14 @@ These are defined once and reused across many components. Component entries refe
 - **Props:** `label`, `href`, `tone?: 'primary' | 'white' | 'dark'` (default `primary`), `icon?: 'arrow' | 'down' | 'none'` (default `none`), `target?`, `rel?`, `class?`.
 - **Animations:** line-link wipe.
 - **Visual weight:** Light.
-- **Used on:** Home, Contact, Job detail, Portfolio detail, Style Guide, Footer (all pages).
+- **Used on:** Home (hero, WorkProcess, "View all posts"), Contact, Job detail, Portfolio detail, Style Guide, Footer (all pages).
 
 #### CounterUp
 
-- **File:** [src/components/CounterUp.tsx](src/components/CounterUp.tsx) (React, `client:visible`)
+- **File:** [src/components/CounterUp.astro](src/components/CounterUp.astro) (vanilla script)
 - **For:** animated stat numbers.
-- **Props:** `value: string` (prefix + number + suffix, e.g. `"110+"`, `"97%"`, `"$7B"`), `className?`.
-- **Animations:** once visible, counts linearly from 60% of the value to the value over 1.5s. Values without a number are shown as they are. The final value is what's rendered in the HTML, so it shows without JavaScript and with reduced motion (no count). Facts hydrates it 200px before it scrolls into view so the count can start from 60%.
+- **Props:** `value: string` (prefix + number + suffix, e.g. `"110+"`, `"97%"`, `"$7B"`), `class?`.
+- **Animations:** 200px before it scrolls into view the number drops to 60% of its value, then once visible it counts linearly to the value over 1.5s. Values without a number are shown as they are. The final value is what's rendered in the HTML, so it shows without JavaScript and with reduced motion (no count). Numbers are formatted in `locale.format` from site config.
 - **Visual weight:** Light.
 - **Used on:** About, Services (inside Facts).
 - **Notes:** keeps the value's decimals and thousands separators (`"1,200"` stays `1,200`). A bare four-digit year (1900–2100, e.g. `"2023"`) is shown without counting.
@@ -362,16 +380,82 @@ These are defined once and reused across many components. Component entries refe
 #### AstroImage
 
 - **File:** [src/components/helper/AstroImage.astro](src/components/helper/AstroImage.astro)
-- **For:** every image in the theme. It resolves a plain string path against `src/assets` (trying `/src/assets{path}`, `/src/assets/images{path}`, `/src{path}`) so Astro can optimize it, and falls back to a plain `<img>`.
+- **For:** every image in the theme. It resolves a plain string path against `src/assets` (trying `/src/assets{path}`, `/src/assets/images{path}`, `/src{path}`; jpg, png, gif, webp, avif, svg) so Astro can optimize it, and falls back to a plain `<img>` (e.g. for `public/` paths).
 - **Props:** `src`, `alt`, `width?`, `height?`, `loading?`, `decoding?`, `format?`, `class?`, `style?`, `widths?`, `sizes?`.
+- **Responsive by default:** raster images wider than 400px get a `srcset` of 400 / 800 / 1200 / 1600 (never wider than the width they render at) and `sizes="(min-width: {width}px) {width}px, 100vw"`. Pass `widths` / `sizes` to override.
+- **Notes:** an empty `src` renders nothing (no broken image). Use `alt=""` for decorative images and `loading="eager"` for images at the top of the page.
 - **Used on:** almost every page and component, and inside portfolio MDX files.
 
 #### AstroVideo
 
 - **File:** [src/components/helper/AstroVideo.astro](src/components/helper/AstroVideo.astro)
-- **For:** video, with the same path resolution for the file and its poster. Sets the MIME type from the file extension.
-- **Props:** `src`, `poster?`, `class?`, `autoplay?`, `loop?`, `muted?`, `controls?`, `playsinline?`, `preload?` (default `metadata`), `width?`, `height?`, plus any other attributes.
+- **For:** video, with the same path resolution for the file and its poster. Sets each source's MIME type from its file extension.
+- **Props:** `src`, `sources?` (other formats of the same video, added as extra `<source>`s), `poster?` (in `src/assets`: resized to `posterWidth`, default 1600, and served as WebP), `posterWidth?`, `class?`, `autoplay?`, `loop?`, `muted?`, `controls?`, `playsinline?`, `preload?` (default `metadata`), `width?`, `height?`, plus any other attributes.
+- **Notes:** an empty `src` renders nothing.
 - **Used on:** Home, About, Services (via Showreel and ReviewCarousel).
+
+### New shared pieces
+
+#### TeamGrid
+
+- **File:** [src/components/TeamGrid.astro](src/components/TeamGrid.astro)
+- **For:** team member cards (photo, name, role) as grid columns; place it inside a `row`.
+- **Props:** `members: { name, role, image }[]`, `as?: 'h2' | 'h3'` (name heading level; default `h3`, `h2` when directly under the page title).
+- **Animations:** scroll reveal (fade) with a 4-column stagger.
+- **Visual weight:** Light.
+- **Used on:** About, Team.
+- **Notes:** photos are decorative (`alt=""`); the name follows each one.
+
+#### LoadMore
+
+- **File:** [src/components/LoadMore.astro](src/components/LoadMore.astro)
+- **For:** the round "+" load-more button under a list rendered in full with all but the first items hidden.
+- **Props:** `target` (id of the list), `total`, `initial`, `step?` (default 4), `label` (accessible name, e.g. "Load more posts"), `class?`.
+- **How it works:** list items carry `data-load-item`, hidden ones also the `hidden` class. Each click shows the next `step`, moves keyboard focus to the first new item's link and fires a `loadmore` event on the list (the Portfolio masonry re-flows on it). The button hides when everything is shown, and isn't rendered when `total <= initial`.
+- **Visual weight:** Light.
+- **Used on:** Blog, Blog Horizontal, Portfolio.
+
+#### PauseButton
+
+- **File:** [src/components/PauseButton.astro](src/components/PauseButton.astro)
+- **For:** a "Pause …" / "Play …" control for moving content, visually hidden until it gets keyboard focus (so the design doesn't change). Needs a `relative` parent; the owning component wires the click and `aria-pressed`.
+- **Props:** `label` (what it pauses, e.g. "logo animation"), `class?` (position classes; default `top-2 left-2`).
+- **Used on:** inside `Clients`, `TeamGroupCarousel`, `ReviewCarousel` and `Showreel`.
+
+#### AnniversarySeal
+
+- **File:** [src/components/ccc/AnniversarySeal.astro](src/components/ccc/AnniversarySeal.astro) (CCC project component)
+- **For:** the 40th anniversary seal: "Consumer Choice Canada" on the top arc, "40 / Years of Trust" in the centre, the founding year on the bottom arc (1987, pending client confirmation).
+- **Props:** `variant?: 'dark' | 'light'` (`dark` for navy backgrounds: a lighter navy disc; `light` for white or ivory ones: a navy disc; default `dark`), `href?` (wraps the seal in a link, e.g. `/40-years`), `class?` (size; default `size-32`).
+- **Accessibility:** an SVG with `role="img"` and a `<title>` ("40 Years of Trust, Consumer Choice Canada, 1987") that also names the link. Gold on navy only, so it passes contrast on any background.
+- **Animations:** none.
+- **Visual weight:** Light.
+- **Used on:** Home (a stamp on the edge between the hero and the showreel, right-aligned with the hero's right column; `size-24` → `lg:size-44`; one fade-and-scale in via `has-anim pop`; navy-and-gold double focus ring), Footer (CTA row).
+
+#### CCC changes to theme components
+
+Small props added in this project so components can take CCC content and placeholders:
+- `StackedServices`: `icon` takes an icon-set name (`lucide:award`) as well as an image path; optional `imageAlt` per card; the frosted panel is `bg-dark/75` (theme: `/60`) so white text keeps 4.5:1 over light photos.
+- `PortfolioCarousel` / `PortfolioCard`: each project can set `href` (default `/portfolio/{slug}`; `slug` is optional), `imageAlt`, and `tone: 'dark'` for navy text over a light hover colour (the Award gold). Touch devices keep white text over the darkened image.
+- `WorkProcess`: CTA strip `images` take `{ src, alt }` as well as a plain (decorative) path.
+- `BlogCard`: takes `item` (`{ title, description, date, category?, image?, imageAlt?, href }`, date shown as written) as an alternative to `post`.
+- `BannerTestimonial`: an avatar's `social` link is optional.
+- `ReviewCarousel`: the summary card shows stars and the large number only when `total_rating` is a number.
+- `Showreel`: with an empty `src` it shows `poster` as a still image (`posterAlt` for its alt text), without the player or its controls.
+- `SectionTitle`: the dot is dark gold (`gold-text`) on light backgrounds.
+- `Footer`: the CTA link is visible text; adds `footer.description` and the seal.
+- Buttons (`btn-white` on navy, `btn-black` on light): gold-outline, no fill. The ring is drawn by `::before` (utility `btn-gold-ring`, vars `--btn-border` / `--btn-sheen`) with a 1.6s sheen across it on hover and focus; no sheen with reduced motion. The theme's text roll (`::after`) is unchanged.
+- `Facts`: `hero.value` / `impact.value` may be empty (the tile becomes a label + statement text tile); empty `philosophy.description` is skipped; stat values that aren't numbers are set smaller (`text-lg`); from `md` the intro photo fills the tile's height (`object-cover`).
+- `PageHeader`: an empty `subtitle` renders no eyebrow line.
+- `Clients`: `logoHeight` (px, default 36) sets the logo row height; each logo keeps its proportions (it was forced into 120 × 36).
+- `AstroImage`: given only `width` or only `height`, it works out the other from the image's proportions instead of cropping.
+- `Facts`: the philosophy title is larger (`text-xl md:text-2xl`); a text (non-number) `hero` / `impact` value is set at the same size.
+- 40 Years (`/40-years`, content `src/content/anniversary`, MDX body): the case-study (Portfolio detail) layout as a single page: eyebrow + H1, the homepage `Showreel` as the feature (falls back to an image without `video`), sidebar (anniversary seal, Award link, confirmed milestones, Our Brands list) + body, and the homepage brand slider (`SectionTitle` + `PortfolioCarousel`) in place of the case study's "What's next?" cards.
+- Our Brands (`/our-brands`, content `src/content/brands`): the Services page layout (logo wall, `Facts`, colour card deck, testimonials) with a tagline line above each card title, `tone: dark` for light card colours, and a `LineLink` per card.
+- About page: `about.clients.logos` and `about.team.members` (content) replace the shared `clients` / `teamMembers` collections when set; testimonials come from `homepage.testimonials.items`.
+- `has-anim pop`: fade and scale in place (0.9 → 1 over 0.9s); off with reduced motion.
+- `Showreel`: play pill and keyboard Play button are navy with a gold border (no gold fill); close buttons hover to `white/20`.
+- Icons are Lucide (`lucide:*`); fonts are Source Serif 4 (headings) and Inter (body), self-hosted; colours come from `brand.colors` (see Rebranding).
 
 ---
 
@@ -412,12 +496,25 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | Blog detail | `/blog/[slug]` | Blog / news post | Page-title hero + feature image |
 | Privacy | `/privacy` | Legal / generic long-form page | Page-title hero (left) |
 | Style Guide | `/style-guide` | Internal design reference (not for launch) | Page-title hero (left) |
+| Thank-you (contact) | `/thank-you/contact` | Thank-you / form confirmation | Page-title hero (left) |
+| Thank-you (application) | `/thank-you/application` | Thank-you / form confirmation | Page-title hero (left) |
 | 404 | `/404` | Error page | Error hero |
 
-**Page types with no demo page:** service detail, events, locations / map. Closest matches:
-- **Service detail:** Portfolio detail (sidebar + long-form body) for the layout, plus one card from the Services showcase deck for the intro.
-- **Events:** nothing close. Team grid for speakers, Pricing for tickets, Faq for questions.
-- **Locations / map:** the Contact page's details column. There's no map component.
+**Page types with no demo page.** Projects often need page types the theme doesn't have. Build them from the closest pieces below, in the theme's styling.
+
+| New page type | Closest theme pages | Reuse | Build new |
+| --- | --- | --- | --- |
+| **Directory / item listing** (e.g. SaaS products) | Blog, Portfolio | `PageHeader`; grid and "+" load-more pattern from `blog/index.astro`; card pattern from `BlogCard` (image, category chip, title, 2-line summary, whole card clickable) | An item card component modelled on `BlogCard`; a content collection for the items (with `seo: seoSchema`) |
+| **Category pages** | Blog listing; Team's open positions (grouped by category) | Same listing template filtered by category, one route per category (`getStaticPaths`); category chips from `BlogCard` | Category data (a field on items, or its own collection) |
+| **Item / product detail** | Portfolio detail; Job detail | Page-title hero + feature image; sidebar facts (like `client` / `otherInfo` / `services`) + `.content` long-form body; "What's next" related cards; `LineLink` for the external website | Item-specific sidebar fields |
+| **Search / filters** | Blog listing | Form field classes and `select-icon` from the Contact page; pill tags from the home intro for active filters; the item card for results | Client-side filtering on the listing page (the site is static). No search component exists. Keep filtered views out of search (`noindex`) if they get their own URLs. |
+| **Submission form** (e.g. "Submit your product") | Contact, Job detail | Netlify Forms pattern (unique `name`, `form-name`, honeypot), field styles, the file-upload handling from the job form (8 MB limit), a thank-you page via the `thankYou` collection | The fields |
+| **Comparison** | Pricing | Plan-card layout, `Button` | A comparison table (none exists) |
+| **Service detail** | Portfolio detail | Sidebar + long-form body layout; one card from the Services showcase deck for the intro | — |
+| **Events** | Team, Pricing, FAQ | Team grid for speakers, Pricing for tickets, `Faq` | Date / venue block, agenda |
+| **Locations / map** | Contact | The Contact page's details column | A map component |
+
+New page types get SEO the same way as every other page; see [Adding SEO to a new page type](#adding-seo-to-a-new-page-type).
 
 ### Home — `/`
 
@@ -433,7 +530,9 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | 4 | Selected projects | `SectionTitle`, `PortfolioCarousel` | Gray |
 | 5 | Work process + CTA strip | `WorkProcess` | Dark |
 | 6 | Testimonials + client logos | `SectionTitle`, `ReviewCarousel`, `Clients` | Gray |
-| 7 | Blog: one featured horizontal post, 3-post grid, "View all posts" | `SectionTitle`, `BlogCard` (horizontal + vertical), `Button` | White |
+| 7 | Blog: one featured horizontal post, 3-post grid, "View all posts" (`blog.button`) | `SectionTitle`, `BlogCard` (horizontal + vertical), `LineLink` | White |
+
+> The hero `Button` is the page's one main action; the process CTA and "View all posts" are `LineLink`s. Sections with nothing to show (no featured projects, no posts) are left out.
 
 ### About — `/about`
 
@@ -449,7 +548,7 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | 4 | Stats bento grid | `Facts` | Dark |
 | 5 | Team photo marquee | `TeamGroupCarousel` | White |
 | 6 | Testimonials | `SectionTitle`, `ReviewCarousel` | Light |
-| 7 | Team grid (photo, name, role) + "See Open Positions" | `SectionTitle`, inline grid, `Button` (black) | White |
+| 7 | Team grid (photo, name, role) + "See Open Positions" | `SectionTitle`, `TeamGrid`, `Button` (black) | White |
 
 ### Services — `/services`
 
@@ -474,22 +573,22 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header (with dot) | `PageHeader` | Dark |
-| 2 | Team grid + CTA | Inline grid, `Button` (black) | White |
-| 3 | Open positions, grouped by category; rows link to job pages, with a gray fill sweeping up on hover (`#open-positions`) | `SectionTitle`, inline list | Light |
+| 2 | Team grid + CTA | `TeamGrid` (`as="h2"`), `Button` (black) | White |
+| 3 | Open positions, grouped by category; rows link to job pages, with a gray fill sweeping up on hover or keyboard focus (`#open-positions`). With no jobs it shows `no_positions`, or the section is left out if that's empty | `SectionTitle`, inline list | Light |
 
 ### Job detail — `/job/[slug]`
 
-[src/pages/job/[slug].astro](src/pages/job/[slug].astro) · content: `jobs` collection (MDX)
+[src/pages/job/[slug].astro](src/pages/job/[slug].astro) · content: `jobs` collection (MDX); form labels and messages from `team` → `application_form` (shared by every job)
 
 **Page type:** Careers: job posting · **Hero style:** Light split header
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
-| 1 | Job header: meta line, title, "apply" jump link | Inline + `LineLink` (down arrow) | Light |
-| 2 | Job description (MDX) | Inline `.content` | White |
+| 1 | Job header: meta line, title (`h1`), "apply" jump link | Inline + `LineLink` (down arrow) | Light |
+| 2 | Job description (MDX; its headings are `##`, shown at 22px) | Inline `.content` | White |
 | 3 | Application form: CV upload, name, email, phone, company, cover letter | Inline form + `Button` (submit) | Light |
 
-> **Netlify Forms**, form name `job-application` (shared by every job page). Hidden fields: `form-name`, `subject` ("Job application: {job title}", used as the notification email subject) and `position` (the job title). Spam protection: the `bot-field` honeypot. JavaScript sends the form as `FormData` to `/` so the CV (`cv` field, .pdf/.doc/.docx) is included. Files over 7.5 MB are refused before sending, because Netlify caps a submission at 8 MB. Success or failure shows under the button, and success appears only on a 2xx response from Netlify. Without JavaScript, the browser posts the form normally and Netlify shows its default success page.
+> **Netlify Forms**, form name `job-application` (shared by every job page). Hidden fields: `form-name`, `subject` ("Job application: {job title}", used as the notification email subject) and `position` (the job title). Spam protection: the `bot-field` honeypot. JavaScript sends the form as `FormData` to `/` so the CV (`cv` field, .pdf/.doc/.docx) is included. Files over 7.5 MB are refused before sending (`application_form.file_too_large`), because Netlify caps a submission at 8 MB. Fields have visible labels; required ones are marked with a red `*`. On a 2xx response from Netlify the visitor goes to `/thank-you/application`; any failure shows an error under the button. The form's `action` is also `/thank-you/application`, so visitors without JavaScript land there too.
 
 ### Pricing — `/pricing`
 
@@ -503,7 +602,7 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | 2 | Monthly/yearly toggle + 3 plan cards (featured card is dark with a "Most Popular" badge; check-mark feature list) | Inline + `Button` (block) | White |
 | 3 | FAQ | `SectionTitle`, `Faq` | White |
 
-> Toggle animation: the knob slides, labels swap weight, and prices count to the new value over 400ms. `formatPrice` hardcodes `$` and whole numbers. "Save 20%" and "Most Popular" are hardcoded text.
+> Toggle: a `role="switch"` button (`aria-checked`). The knob slides, labels swap weight, and prices count to the new value over 400ms, keeping the content's own symbol, decimals and separators (`$3,500`, `€49.50`, `9.99 kr`); prices that aren't numbers ("Custom", "Free") are swapped as written. No count with reduced motion. Plan names are `h2`; the feature title is an `h3` at body size. "Save 20%", "Most Popular" and "Monthly/Yearly" are hardcoded text.
 
 ### FAQ — `/faq`
 
@@ -525,22 +624,22 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header | `PageHeader` | Dark |
-| 2 | Left: intro, email, phone, address. Right: form (name, email, phone, company, project type, budget, message) | Inline + `LineLink` (dark), `Button` (submit) | White |
+| 2 | Left: intro (`h2`), email, phone, address. Right: form (name, email, phone, company, project type, budget, message) | Inline + `LineLink` (dark), `Button` (submit) | White |
 
-> **Netlify Forms**, form name `contact`. Hidden fields: `form-name` and `subject` ("Message from Obicol Astro!", hardcoded, used as the notification email subject). Spam protection: the `bot-field` honeypot. JavaScript sends the form URL-encoded to `/`. "Message sent successfully!" shows only on a 2xx response from Netlify; anything else shows an error. Without JavaScript, the browser posts the form normally and Netlify shows its default success page. "Project type" and "Budget" options come from content.
+> **Netlify Forms**, form name `contact`. Hidden fields: `form-name` and `subject` ("Message from {brand.name} website", used as the notification email subject). Spam protection: the `bot-field` honeypot. JavaScript sends the form URL-encoded to `/`. On a 2xx response from Netlify the visitor goes to `/thank-you/contact`; anything else shows an error under the button. The form's `action` is also `/thank-you/contact`, so visitors without JavaScript land there too. Every field has a `<label>` (visually hidden; the placeholder is the visible text). Labels, placeholders, the option lists, the submit label and the sending/error messages all come from `contact` → `form`. Both forms share the `field` style in global.css.
 >
 > **Netlify setup (per site):** turn on form detection (**Forms → Enable form detection**, then redeploy) and add email notifications (**Forms → Submission notifications**). Submissions only work on a Netlify deploy, not with `npm run dev` or `npm run preview`.
 
 ### Portfolio — `/portfolio`
 
-[src/pages/portfolio/index.astro](src/pages/portfolio/index.astro) · content: `portfolio`
+[src/pages/portfolio/index.astro](src/pages/portfolio/index.astro) · content: `portfolio`; page header and load-more label from `listings` (`src/content/data/listings.json`, id `portfolio`)
 
 **Page type:** Work / portfolio listing · **Hero style:** Page-title hero (left-aligned, green dot)
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header (with dot) | `PageHeader` | Dark |
-| 2 | 2-column masonry of project tiles (JS-positioned), 4 shown, "+" loads 4 more | `PortfolioCard` (grid), inline masonry, `btn-circle` | White |
+| 2 | 2-column masonry of project tiles (JS-positioned), 4 shown, "+" loads 4 more | `PortfolioCard` (grid, `as="h2"`), inline masonry, `LoadMore` | White |
 
 ### Portfolio detail (case study) — `/portfolio/[slug]`
 
@@ -552,30 +651,30 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | --- | --- | --- | --- |
 | 1 | "Case Study" header with H1 | Inline | Dark |
 | 2 | Hero image (overlaps the next section) | Inline `AstroImage` | Dark |
-| 3 | Sidebar (client, description, website link, other info, services) + case-study body | Inline + `LineLink`, MDX `.content` | White |
-| 4 | "What's next?": 3 other projects | `PortfolioCard` (grid) | White |
+| 3 | Sidebar (client, description, website link, other info, services) + case-study body (MDX headings are `##`, shown at 22px) | Inline + `LineLink`, MDX `.content prose` | White |
+| 4 | "What's next?" (`h2`): 3 other projects; left out when there are none | `PortfolioCard` (grid) | White |
 
 ### Blog — `/blog`
 
-[src/pages/blog/index.astro](src/pages/blog/index.astro) · content: `blog`
+[src/pages/blog/index.astro](src/pages/blog/index.astro) · content: `blog`; page header and load-more label from `listings` (id `blog`)
 
 **Page type:** Blog / news listing (grid) · **Hero style:** Page-title hero (left-aligned, green dot)
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header (with dot) | `PageHeader` | Dark |
-| 2 | Newest post full-width horizontal, then a 3-column grid; 4 shown, "+" loads 4 more | `BlogCard`, `btn-circle` | White |
+| 2 | Newest post full-width horizontal, then a 3-column grid; 4 shown, "+" loads 4 more | `BlogCard` (`as="h2"`), `LoadMore` | White |
 
 ### Blog Horizontal — `/blog-horizontal`
 
-[src/pages/blog-horizontal.astro](src/pages/blog-horizontal.astro) · content: `blog`
+[src/pages/blog-horizontal.astro](src/pages/blog-horizontal.astro) · content: `blog`; page header from `listings` (id `blog`)
 
 **Page type:** Blog / news listing (single-column list) · **Hero style:** Page-title hero (left-aligned, green dot)
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header (with dot) | `PageHeader` | Dark |
-| 2 | Single column of horizontal cards; 4 shown, "+" loads 4 more | `BlogCard` (horizontal), `btn-circle` | White |
+| 2 | Single column of horizontal cards; 4 shown, "+" loads 4 more | `BlogCard` (horizontal, `as="h2"`), `LoadMore` | White |
 
 ### Blog detail — `/blog/[slug]`
 
@@ -587,8 +686,8 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | --- | --- | --- | --- |
 | 1 | Post header: category — date, H1 | Inline | Dark |
 | 2 | Hero image (overlaps the next section) | Inline `AstroImage` | Dark |
-| 3 | Article body (large first paragraph) + sticky table of contents with scroll-spy highlighting; the TOC collapses into a toggle on mobile | Inline MDX `.content`, inline TOC | White |
-| 4 | Related posts (3) | `BlogCard` | White |
+| 3 | Article body (large first paragraph) + sticky table of contents with scroll-spy highlighting; the TOC collapses into a toggle on mobile (`aria-expanded`, `inert` while closed) and is left out when the post has no `##` / `###` headings | Inline MDX `.content prose`, inline TOC | White |
+| 4 | "Related Posts" (`h2`): 3 posts; left out when there are none | `BlogCard` | White |
 
 ### Privacy — `/privacy`
 
@@ -599,13 +698,13 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
 | 1 | Page header | `PageHeader` | Dark |
-| 2 | MDX body + optional CTA (heading, button, note) | Inline `.content`, `Button` (black) | White |
+| 2 | MDX body (headings `##` / `###`, shown at 22px / 18px) + optional CTA (heading, button, note) | Inline `.content prose`, `Button` (black) | White |
 
 ### Style Guide — `/style-guide`
 
 [src/pages/style-guide.astro](src/pages/style-guide.astro)
 
-**Page type:** Internal design reference; remove it from the menu before launch · **Hero style:** Page-title hero (left-aligned)
+**Page type:** Internal design reference; remove it from the menu before launch. It's `noindex` and left out of the sitemap · **Hero style:** Page-title hero (left-aligned)
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
@@ -615,6 +714,22 @@ The theme uses five hero styles. Only the homepage has a large hero.
 | 4 | Accordion | `Faq` | White |
 | 5 | Embeds: link preview, Mastodon post, YouTube, Vimeo | `astro-embed` | White |
 
+### Thank-you — `/thank-you/[slug]`
+
+[src/pages/thank-you/[slug].astro](src/pages/thank-you/[slug].astro) · content: `thankYou` collection, one MDX file per form in `src/content/thank-you/`: `contact.mdx` → `/thank-you/contact`, `application.mdx` → `/thank-you/application`
+
+**Page type:** Thank-you / form confirmation · **Hero style:** Page-title hero (left-aligned)
+
+| # | Section | Component(s) | Background |
+| --- | --- | --- | --- |
+| 1 | Page header (`subtitle`, `heading`) | `PageHeader` | Dark |
+| 2 | Confirmation and what happens next (MDX body) | Inline `.content` | White |
+| 3 | One main action (`cta`) | `Button` (black) | White |
+
+> **Demo copy:** both entries hold placeholder demo copy, written for the base theme. Replace it per project like any other demo content.
+>
+> **How it's wired:** each form's `action` points to its page, and the form's script redirects there after Netlify confirms the submission. The pages are `noindex` (via `Base`), filtered out of the sitemap in `astro.config.mjs`, and not linked from `menu.json`. To add a thank-you page for a new form, add an MDX file to `src/content/thank-you/` and point that form's `action` at `/thank-you/{file name}`.
+
 ### 404
 
 [src/pages/404.astro](src/pages/404.astro)
@@ -623,23 +738,183 @@ The theme uses five hero styles. Only the homepage has a large hero.
 
 | # | Section | Component(s) | Background |
 | --- | --- | --- | --- |
-| 1 | Large "404" (last digit mirrored), message, "Back to Home" | Inline + `Button` | Dark |
+| 1 | Large "404" (last digit mirrored, hidden from screen readers), message, "Back to Home"; uses the page-title hero spacing | Inline + `Button` | Dark |
 
 ### Patterns that exist only inline
 
 These are reusable in spirit but live inside page files. Extract them into components if you plan to reuse them:
 
-- **Team member grid:** duplicated in `about.astro` and `team.astro`.
 - **Pricing plan cards + billing toggle:** `pricing.astro`.
 - **Service showcase deck** (colored alternating cards): `services.astro`.
 - **Job openings list:** `team.astro`.
 - **Contact form** and **job application form:** `contact.astro`, `job/[slug].astro`.
 - **Detail-page header + overlapping hero image:** `blog/[slug].astro`, `portfolio/[slug].astro`.
 - **Table of contents with scroll-spy:** `blog/[slug].astro`.
-- **"+" load-more:** duplicated in `blog/index.astro`, `blog-horizontal.astro`, `portfolio/index.astro`.
 - **Home hero** (headline + CTAs + lead + social proof): `index.astro`.
 
 ---
+
+### Page dependencies and removing a page
+
+Several demo pages read content that belongs to another page. Check this table before removing a page, so you don't remove content another page still needs.
+
+| Page | Reads content from | Links to it elsewhere |
+| --- | --- | --- |
+| Home | `homepage`, `services` (items, for `StackedServices`), `portfolio` (featured), `blog`, `testimonials`, `clientsDark` | Logo, menu |
+| About | `about`, `homepage.testimonials` (heading, rating), `clients`, `testimonials`, `teamMembers` | Menu, footer, home hero secondary link |
+| Services | `services`, **`about.clients` + `about.facts`**, `homepage.testimonials`, `clients`, `testimonials` | Menu, footer |
+| Team | `team`, `teamMembers`, `jobs` (open positions) | Menu, footer, About team button (`/team#open-positions`) |
+| Job detail | `jobs`, **`team.application_form`** (form labels and messages) | Team open positions; application thank-you button (`/team#open-positions`) |
+| Pricing | `pricing`, **`faq`** (its FAQ section) | Menu, footer |
+| FAQ | `faq` | Menu, footer |
+| Contact | `contact` | Menu, footer CTA, privacy CTA, home process CTA, many content CTAs |
+| Blog, Blog Horizontal, Blog detail | `blog`, `listings` (id `blog`) | Menu, footer, home "View all posts" |
+| Portfolio, Portfolio detail | `portfolio`, `listings` (id `portfolio`) | Menu, footer, home hero button, contact thank-you button |
+| Privacy | `pages` (`privacy.mdx`) | Menu, footer |
+| Thank-you | `thankYou` | Contact and job form `action`s |
+| Style Guide | **`faq`** (one accordion group) | Menu, footer |
+
+**Shared content to keep when removing a page:**
+- Removing **About**: Services still needs `about.clients` and `about.facts`. Keep that content, or move it to `services`.
+- Removing **Services**: Home's services stack still reads `services` items.
+- Removing **FAQ**: Pricing (and the Style Guide) still read `faq`.
+- Removing **careers**: also remove Team's open positions, the About and Team "See Open Positions" buttons, `/thank-you/application`, the `jobs` collection, `getJobs` and `team.application_form` (schema and content).
+- Removing the **Team page** but keeping jobs: keep `team/index.mdx` → `application_form`, or move it into the job content.
+- Removing **Blog** or **Portfolio**: also remove its entry in `src/content/data/listings.json`.
+- Removing **Portfolio**: also remove Home's "Selected projects" section and repoint the hero button and the contact thank-you button.
+- Removing **Blog**: also remove Home's blog section.
+
+**Removing a page cleanly:**
+1. **Page files:** delete the page file(s) in `src/pages/`.
+2. **Content:** if no other page reads it (table above), delete the content folder or data file, its schema in `src/types/collections.ts`, its registration in `src/content.config.ts`, and any helper in `src/lib/content.ts`.
+3. **Config:** remove its entries in `src/config/menu.json` (`main` and the footer columns), in `site.config.json` → `seo.pages`, and in the sitemap `filter` in `astro.config.mjs`.
+4. **Links:** search for every link to the route (e.g. `grep -rn '"/pricing' src`) in content CTAs, config and components, and repoint or remove each one.
+5. **Leftovers:** remove components and demo images used only by that page (see "Used on" in the quick reference), and its section in the project's `CONTENT_TEMPLATE.md`. Update this catalog.
+6. **Verify:**
+   - `npx astro check` and `npm run build` pass.
+   - The route is gone from `dist/sitemap-0.xml`.
+   - A link checker over `dist` finds nothing broken (`npx linkinator dist --recurse`).
+
+## Rebranding
+
+Everything brand-related is set in **one file**: [src/config/site.config.json](src/config/site.config.json), under `brand`. Nothing else needs editing to rebrand.
+
+| Setting | Key in `site.config.json` | What it controls |
+| --- | --- | --- |
+| Site name | `brand.name` | Page title suffix ("About \| Name"), `og:site_name`, Organization JSON-LD, contact form email subject |
+| Colors | `brand.colors.primary`, `dark`, `light`, `muted`, `mutedDark` | Every Tailwind color utility (`text-primary`, `bg-dark/5`, …), the text-selection color, underline links, the green section-title dots |
+| Font | `brand.font.name`, `weights`, `fallback` | The site font. Must be a [Google Font](https://fonts.google.com) name; it's loaded by Astro's font API in `astro.config.mjs` |
+| Logo | `brand.logo.src`, `alt`, `width`, `height` | Header, mobile drawer, footer watermark, Organization JSON-LD |
+| Favicon set | `brand.favicon.svg`, `png32`, `appleTouch`, `icon192`, `icon512`, `ico` | Browser tab icon (SVG, plus 32×32 PNG for browsers without SVG support), 180×180 Apple touch icon, the 192 and 512 icons in the web manifest (`/site.webmanifest`), and `/favicon.ico`. `ico.source` is a square PNG that gets resized to `ico.sizes` (default 16, 32, 48). Leave a link path empty to skip it. |
+
+Related settings in the same file: `locale` (`lang` for `<html lang>`, `format` for dates and numbers, e.g. `en-US`, `en-CA`, `fr-CA`), `seo` (default title, description, share image, author), `footer` (contact details, also used in JSON-LD), `headerButton` (the header's main-action button) and `author` (optional "Developed by" footer credit).
+
+**How it works:**
+- **Colors:** `Base.astro` writes `brand.colors` to CSS variables (`--brand-primary` …). The `@theme` block in `global.css` maps the Tailwind tokens onto those variables, so `global.css` contains no hex values for brand colors.
+- **Font:** `astro.config.mjs` reads `brand.font`, exposes it as `--font-brand`, and `global.css` uses it as `--font-primary`.
+- **Images:** the logo path resolves like every other image (`/images/logo.svg` is found in `src/assets/images/`). Favicon paths are plain `public/` paths, because icons need stable URLs; the theme's set lives in `public/images/icons/`.
+- **Favicon set:** `Base.astro` outputs the icon `<link>` tags. [src/pages/site.webmanifest.ts](src/pages/site.webmanifest.ts) builds the manifest from `brand.name`, `brand.colors.dark` (theme and background color) and the 192 / 512 icons.
+- **`/favicon.ico`:** [src/pages/favicon.ico.ts](src/pages/favicon.ico.ts) builds it at build time. It resizes `brand.favicon.ico.source` (default: the 512 icon) to each of `ico.sizes` with `sharp`, and packs them into one ICO with PNG images. It's for browsers, feed readers and other tools that request `/favicon.ico` directly; pages link the SVG and PNG icons instead. Replacing the source icon updates it automatically.
+- **Placeholder icons:** the theme's icons are placeholders scaled up from the old 16×16 demo favicon (the SVG just wraps that PNG). Every project needs its own icon set.
+
+**Rebrand steps:**
+1. Edit `brand` in `site.config.json` (name, five colors, font name and weights).
+2. Replace the logo file, or point `brand.logo.src` at a new one. The logo sits on the dark header, so it should be light-colored.
+3. Replace the five icons in `public/images/icons/` with the brand's own, keeping the same names or updating `brand.favicon`:
+   - `favicon.svg`: vector icon
+   - `favicon-32.png`: 32×32
+   - `apple-touch-icon.png`: 180×180, no transparency (iOS fills transparent areas with black)
+   - `icon-192.png` and `icon-512.png`; `icon-512.png` is also the default source for `/favicon.ico`, which is regenerated on every build
+4. Replace `public/images/ogimage.png` (1200 × 630), or point `seo.image` at a new file.
+5. Update `locale`, `seo` (including `seo.pages` for pages without content entries), `footer`, `headerButton` and `author` in the same file.
+6. Run `npm run build` and check the Style Guide page, which shows the font name and button styles.
+
+**Colors not tied to the brand:** they live next to the brand tokens in the `@theme` block of global.css, so there are no hex values in components or pages:
+- **Neutrals:** `line` (`#eae9e9`, hairline borders on light sections) and `fill` (`#f1f1f1`, hover fills), plus white, black and the white/black/`dark` opacity steps (e.g. `text-white/95`, `text-dark/70`).
+- **Error red:** `error` (`#dc2625`) for form errors and required marks.
+- **Decorative hero tints:** `shape` (`#332d2b`, the dotted shape behind the home hero) and `avatar-ring` (`#74484a`, the hero avatar border). Check these against a new palette.
+- **Fixed Tailwind colors:** `gray-100` (the "Gray" section background and image placeholders) and `amber-400` (star ratings).
+- **Services cards and blog tints:** come from content (`services/index.mdx` → `items[].color`, a post's `color`).
+- **Contrast:** small text on light backgrounds uses `dark/70` or darker, which passes WCAG AA on white, `light` and `gray-100`. Check `primary` against white if you use it for text on light sections (the demo green doesn't pass).
+
+## SEO
+
+Every page outputs a title, meta description, canonical URL, Open Graph and Twitter tags, and a social share image. This works for **any page, including page types a project adds**, through one mechanism in `Base.astro`.
+
+### How each value is chosen
+
+For the title, description and share image, `Base` uses the first non-empty value from this list. **Empty strings count as "not set"**, so blank fields fall through to the next source.
+
+1. **`seo` prop:** the page's content entry, i.e. the `seo:` block in its front matter.
+2. **`site.config.json` → `seo.pages["/path"]`:** for pages with no content entry. It's matched on the URL path without a trailing slash (`/blog`, `/directory/ai-tools`). No code changes needed.
+3. **The page's own props:** `title`, `description`, `image` passed to `Base` (e.g. a blog post's title, summary and image; a job's title and `meta` line; "About" for the About page).
+4. **Site defaults:** `seo.title` (title, used only when nothing else sets one, e.g. the homepage), `seo.description`, `seo.image`.
+
+The final title is shown as `"{title} | {brand.name}"`. Other tags:
+
+| Tag | Default | Change it with |
+| --- | --- | --- |
+| Canonical URL | The page's own URL on `baseURL` | `canonical` prop on `Base` |
+| `og:type` | `website` | `type="article"` prop (blog posts use it) |
+| `noindex` | off | `noindex` prop (404, thank-you pages and the Style Guide use it) |
+| `meta author` | left out | `seo.author` in site config |
+| Share image format | — | Images in `src/assets` are resized to at most 1200px wide and output as absolute URLs; `public/` paths and full URLs are used as-is |
+
+### Adding SEO to a new page type
+
+**A page backed by a content collection** (e.g. a directory of SaaS products, category pages, product detail pages):
+
+1. Add the shared optional SEO block to the collection's schema in [src/types/collections.ts](src/types/collections.ts):
+   ```ts
+   import { seoSchema } from '@/types/shared';
+
+   export const products = defineCollection({
+     loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/products' }),
+     schema: z.object({
+       seo: seoSchema,           // optional title / description / image overrides
+       name: z.string(),
+       summary: z.string(),
+       logo: z.string(),
+       // …
+     }),
+   });
+   ```
+2. In the page, pass the item's own fields as natural defaults and its `seo` block as overrides:
+   ```astro
+   <Base title={data.name} description={data.summary} image={data.logo} seo={data.seo}>
+   ```
+3. Content editors can then add this to any entry (all fields optional):
+   ```yaml
+   seo:
+     title: "Acme CRM – pricing, features and reviews"   # under 60 characters
+     description: "…"                                   # 120–160 characters
+     image: "/images/share/acme.jpg"                    # 1200 × 630
+   ```
+
+**A page with no content entry** (a listing, search or filter page built in code):
+- Pass its own title (`<Base title="Directory">`).
+- Add an entry for its path in `site.config.json`. No code changes needed:
+  ```json
+  "pages": {
+    "/directory": { "title": "SaaS Directory", "description": "…", "image": "/images/share/directory.jpg" }
+  }
+  ```
+
+**Pages that shouldn't be indexed** (search results, filtered views, thank-you pages, internal pages): pass `noindex`, and exclude their paths in the sitemap `filter` in `astro.config.mjs`. There's no `keywords` meta tag: search engines ignore it.
+
+**Collections that already accept `seo:`:** `homepage`, `about`, `services`, `team`, `jobs`, `pricing`, `faq`, `contact`, `pages`, `thankYou`, `portfolio`, `blog`.
+
+**Pages configured in `seo.pages` (with empty values) as examples:** `/blog`, `/blog-horizontal`, `/portfolio`. The Style Guide and 404 use their title and the site defaults.
+
+### Also generated
+
+- **`/site.webmanifest`** ([src/pages/site.webmanifest.ts](src/pages/site.webmanifest.ts)): name, colors and 192 / 512 icons from `brand`.
+- **`/favicon.ico`** ([src/pages/favicon.ico.ts](src/pages/favicon.ico.ts)): 16, 32 and 48px icons generated from `brand.favicon.ico`.
+- **`/robots.txt`** ([src/pages/robots.txt.ts](src/pages/robots.txt.ts)): allows all crawlers and links to the sitemap on `baseURL`. Thank-you pages are not blocked there, because crawlers must be able to read their `noindex`.
+- **Sitemap** (`@astrojs/sitemap`): includes every built page except `/thank-you/` and `/style-guide`. Drafts (`draft: true` in blog, portfolio and jobs) aren't built at all in production. New pages are added automatically, and removed pages disappear on the next build.
+- **Organization JSON-LD** (homepage only): `brand.name`, `baseURL`, `brand.logo`, `seo.description`, `footer` email, phone and address, and `sameAs` from the `http(s)` links in `social.json` (the demo's `#!` links are skipped).
+
+**Set before launch:** `baseURL` (canonical URLs, share images, sitemap and robots.txt all use it), the `seo` block, and a real share image.
 
 ## Best uses by site type
 
@@ -647,9 +922,10 @@ The theme is built as a **creative agency / studio** site: dark, motion-rich, im
 
 ### Changes worth making for any client site
 
-- Repoint or remove the Header's **"Buy Now"** button (`buyNow` in site config).
-- Replace the footer credit **"Developed by Platoltheme"** and fix the **`/blogs-1-col`** footer link.
-- **Forms use Netlify Forms.** In the site's Netlify dashboard, turn on form detection and set up email notifications for the `contact` and `job-application` forms. Also change the contact form's hardcoded **subject line**.
+- **Scope the project first:** remove the demo pages the site doesn't need (see [Page dependencies and removing a page](#page-dependencies-and-removing-a-page)), and build missing page types from the closest pieces (see "Page types with no demo page" under [Page templates](#page-templates)).
+- Point the header button (`headerButton` in site config, default "Contact Us") at the site's main action, and set `author` if the footer should say "Developed by …".
+- **Forms use Netlify Forms.** In the site's Netlify dashboard, turn on form detection and set up email notifications for the `contact` and `job-application` forms.
+- **Rebrand** through `site.config.json` (see [Rebranding](#rebranding)), and fill in the per-page `seo` fields (see [SEO](#seo)).
 
 ### Corporate
 
@@ -662,7 +938,7 @@ Established firms, consultancies, B2B services.
 **Needs changes**
 - **Home hero:** swap `Showreel` for a still image or a muted ambient loop without the custom cursor; the "Play" pill cursor reads as playful.
 - **`StackedServices` / `WorkProcess`:** keep them, but lower the glyph and frosted-glass styling if the brand is conservative.
-- **`ReviewCarousel`:** the X/Twitter icon on every quote is wrong for corporate references; make the social icon configurable or drop it.
+- **`ReviewCarousel`:** leave `social` empty on references that shouldn't link to a profile (the icon follows the link's network).
 - **Pricing:** usually not wanted. Remove it from the menu.
 - **Palette:** the near-black and neon green may need re-theming through the `@theme` tokens in global.css.
 
@@ -675,9 +951,9 @@ Charities, foundations, community organizations.
 - Components: `Facts` (impact numbers such as people helped or funds raised), `WorkProcess` (how a donation becomes impact, in four steps), `TeamGroupCarousel` (volunteers and events), `ReviewCarousel` (beneficiary or volunteer stories; video cards work well), `Clients` (partners and funders), `BlogCard`.
 
 **Needs changes**
-- **Donations:** there's no donation component. The Pricing page could become donation tiers, but its toggle is billing-specific ("Monthly/Yearly", "Save 20%") and should become "One-time/Monthly"; `formatPrice` hardcodes `$` and whole numbers; "Most Popular" is hardcoded; CTAs need a payment-provider link.
+- **Donations:** there's no donation component. The Pricing page could become donation tiers, but its toggle is billing-specific ("Monthly/Yearly", "Save 20%") and should become "One-time/Monthly"; "Most Popular" is hardcoded; CTAs need a payment-provider link.
 - **Contact form:** replace "Type of Project" and "Budget" with fields like "How would you like to help?".
-- **Accessibility:** non-profits often have stricter accessibility requirements. Add `aria-expanded` on `Faq` and real alt text in `TeamGroupCarousel`.
+- **Accessibility:** non-profits often have stricter accessibility requirements. The theme covers keyboard use, focus, pause controls and contrast; give `TeamGroupCarousel` photos real alt text (`{ src, alt }`) and check the brand colors' contrast.
 - **Tone:** `PortfolioCarousel` and the portfolio pages fit only if presented as "Projects" or "Programs"; otherwise drop them.
 
 ### Small business
@@ -719,7 +995,7 @@ Conferences, meetups, festivals, workshops.
 **Needs changes**
 - **Missing pieces:** no countdown, date/venue block, agenda/schedule, speaker detail page, venue map, or ticketing integration. These must be built.
 - **`WorkProcess`:** can stand in for a short agenda (four-column layout; more items wrap onto new rows). A real schedule needs a new component.
-- **Pricing as tickets:** remove the monthly/yearly toggle; change "Most Popular" and the `$` formatting; link CTAs to a ticketing provider.
+- **Pricing as tickets:** remove the monthly/yearly toggle; change "Most Popular"; link CTAs to a ticketing provider.
 - **Team grid as speakers:** needs talk title, company and a link per person; `teamMembers` only has name, role and image.
 - **Portfolio pages:** usually not needed. Could become "Past editions".
 
@@ -732,9 +1008,9 @@ SaaS, apps, digital or physical products.
 - Components: hero + `Showreel` (product demo video), `StackedServices` (features), `WorkProcess` (how it works / onboarding steps), `Facts` (usage metrics), `ReviewCarousel` (the rating summary card and top-company logos fit well), `Clients` (customer logos), `Faq`, `BannerTestimonial`.
 
 **Needs changes**
-- **Header CTA:** change "Buy Now" to "Sign up" or "Start free trial".
+- **Header CTA:** set `headerButton` to "Sign up" or "Start free trial".
 - **Missing pieces:** no feature-comparison table, integrations grid, app-store badges, screenshot or device mockup gallery, or changelog layout.
-- **Pricing:** "Save 20%" is hardcoded and should come from content; `formatPrice` assumes USD; the plan cards have no "per seat" or usage notes beyond the feature list.
+- **Pricing:** "Save 20%" is hardcoded and should come from content; the plan cards have no "per seat" or usage notes beyond the feature list.
 - **Contact form:** swap "Type of Project / Budget" for "Company size / Use case".
 - **Portfolio pages:** rename to "Customers" / "Case studies" and keep the case-study detail layout; the client sidebar (`client`, `otherInfo`, `services`) maps well onto customer stories.
 

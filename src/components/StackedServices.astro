@@ -1,22 +1,26 @@
 ---
+import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 
-type Service = {
+interface Service {
+  /** an icon-set name (e.g. `lucide:award`) or an image path */
   icon: string;
   title: string;
   info: string;
   meta?: string;
   image?: string;
-};
+  /** alt text for `image`; empty = decorative (the title carries the meaning) */
+  imageAlt?: string;
+}
 
-type Props = {
+interface Props {
   services: Service[];
   withDramaEffect?: boolean;
   stackOffset?: number;
   paneGap?: false | string;
   scrollRunway?: string;
-  className?: string;
-};
+  class?: string;
+}
 
 const {
   services,
@@ -24,7 +28,7 @@ const {
   stackOffset = 5,
   paneGap = 'gap-2',
   scrollRunway = '0px',
-  className,
+  class: className,
 } = Astro.props;
 
 const total = services.length;
@@ -53,19 +57,24 @@ const gapClass = paneGap === false ? undefined : paneGap;
         }}
       >
         <div data-stacked-content="" class="min-h-0 origin-[50%_0%]">
-          <article class="group relative h-95 text-white p-4 overflow-clip">
+          <article class="group relative h-95 bg-dark text-white p-4 overflow-clip rounded-card">
             <AstroImage
               src={service.image}
-              alt={service.title}
+              alt={service.imageAlt ?? ''}
               widths={[400, 800, 1200]}
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover"
             />
-            <div class="relative bg-dark/60 backdrop-blur-2xl h-full flex flex-col p-8 has-anim">
-              <span class="text-4xl absolute top-9 right-8">
+            <!-- bg-dark/75 (theme: /60): keeps white text at 4.5:1+ even over a near-white photo -->
+            <div class="relative bg-dark/75 backdrop-blur-2xl h-full flex flex-col p-8 has-anim rounded-lg">
+              <span class="text-4xl absolute top-9 right-8" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <AstroImage src={service.icon} alt={service.title} class="size-10" width={40} height={40} />
+              {service.icon.includes(':') ? (
+                <Icon name={service.icon} class="size-10 text-primary" aria-hidden="true" />
+              ) : (
+                <AstroImage src={service.icon} alt="" class="size-10" width={40} height={40} />
+              )}
               <div class="space-y-4 mt-auto">
                 <h3 class="font-bold text-xl sm:text-2xl">{service.title}</h3>
                 <p class="text-sm leading-relaxed text-light">{service.info}</p>
@@ -182,17 +191,5 @@ const gapClass = paneGap === false ? undefined : paneGap;
     const target: Window | HTMLElement = scroller ?? window;
     target.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-
-    window.addEventListener('cleanup', () => {
-      target.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (frame) cancelAnimationFrame(frame);
-      for (const content of contents) {
-        if (content) {
-          delete content.dataset.stackedCovered;
-          content.style.transform = '';
-        }
-      }
-    });
   });
 </script>

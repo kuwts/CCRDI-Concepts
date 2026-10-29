@@ -1,0 +1,54 @@
+---
+// "+" load-more button for a list rendered in full with all but the first items
+// hidden. Items are the `[data-load-item]` children of the element with `id={target}`
+// that have the `hidden` class; each click shows the next `step`. It fires a
+// `loadmore` event on the list (e.g. so a masonry layout can re-flow), and moves
+// keyboard focus to the first newly shown item's link.
+interface Props {
+  /** id of the list element */
+  target: string;
+  /** total number of items, and how many show at first */
+  total: number;
+  initial: number;
+  step?: number;
+  /** accessible name, e.g. "Load more posts" */
+  label: string;
+  class?: string;
+}
+
+const { target, total, initial, step = 4, label, class: className = '' } = Astro.props;
+---
+
+{
+  total > initial && (
+    <div class:list={['has-anim text-center', className]} data-load-more-wrap>
+      <button
+        type="button"
+        class="btn-circle btn-circle-white m-1"
+        aria-label={label}
+        aria-controls={target}
+        data-load-more={target}
+        data-step={step}
+      >
+        <span aria-hidden="true">+</span>
+      </button>
+    </div>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-load-more]').forEach((btn) => {
+    const list = document.getElementById(btn.dataset.loadMore ?? '');
+    if (!list) return;
+    const step = Number(btn.dataset.step) || 4;
+
+    btn.addEventListener('click', () => {
+      const hidden = [...list.querySelectorAll<HTMLElement>('[data-load-item].hidden')];
+      const next = hidden.slice(0, step);
+      next.forEach((el) => el.classList.remove('hidden'));
+      list.dispatchEvent(new CustomEvent('loadmore'));
+      next[0]?.querySelector<HTMLElement>('a[href]')?.focus({ preventScroll: true });
+      if (hidden.length <= step) btn.closest('[data-load-more-wrap]')?.classList.add('hidden');
+    });
+  });
+</script>

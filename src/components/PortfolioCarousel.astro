@@ -2,37 +2,49 @@
 import PortfolioCard from '@/components/PortfolioCard.astro';
 
 interface Project {
-  slug: string;
+  slug?: string;
+  /** link for the card; defaults to the project's case-study page */
+  href?: string;
   title: string;
   category: string;
   color: string;
   carouselImage?: string;
   image: string;
+  imageAlt?: string;
+  /** text over the hover colour: `white` (default) or `dark` for light colours */
+  tone?: 'white' | 'dark';
 }
 interface Props {
   projects: Project[];
 }
 const { projects } = Astro.props;
-// short lists are doubled so loop mode has enough slides; the counter still
-// reports the real number of projects
-const slideItems = projects.length < 8 ? [...projects, ...projects] : projects;
+// short lists are repeated until there are 8 slides so loop mode works; the
+// counter still reports the real number of projects, and the repeats are kept
+// out of the keyboard and screen-reader order
+const slideItems: (Project & { repeat: boolean })[] = projects.map((p) => ({ ...p, repeat: false }));
+while (projects.length && slideItems.length < 8) {
+  slideItems.push(...projects.map((p) => ({ ...p, repeat: true })));
+}
 const total = String(projects.length).padStart(2, '0');
 const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider text-black uppercase transition hover:opacity-60';
 ---
 
+{projects.length > 0 && (
 <div class="portfolio-carousel-fluid" data-total={projects.length}>
   <div class="swiper">
     <div class="swiper-wrapper">
       {
         slideItems.map((p) => (
-          <div class="swiper-slide">
+          <div class="swiper-slide" aria-hidden={p.repeat ? 'true' : undefined} data-repeat={p.repeat ? '' : undefined}>
             <PortfolioCard
               variant="carousel"
-              href={`/portfolio/${p.slug}`}
+              href={p.href ?? `/portfolio/${p.slug}`}
               image={p.carouselImage ?? p.image}
               title={p.title}
               category={p.category}
               color={p.color}
+              imageAlt={p.repeat ? '' : p.imageAlt}
+              tone={p.tone}
               titleClass="text-[30px] lg:text-[38px]"
               class="mx-3.75 lg:mx-7.5 xl:mx-10 aspect-160/119 object-cover"
             />
@@ -47,7 +59,7 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
     <button type="button" class:list={['pf-next', btn]}>Next</button>
   </div>
 
-  <div class="swipeCarousel-control pointer-events-none relative h-9.5">
+  <div class="swipeCarousel-control pointer-events-none relative h-9.5" aria-hidden="true">
     <div class="pf-progress swiper-pagination"></div>
     <div
       class="absolute top-[calc(50%+5px)] left-[calc(50%-200px)] leading-none font-semibold text-black max-[575px]:left-[calc(50%-140px)]"
@@ -62,11 +74,12 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
     </div>
   </div>
 </div>
+)}
 
 <style is:global>
   .portfolio-carousel-fluid {
     --swiper-pagination-color: var(--color-dark);
-    --swiper-pagination-progressbar-bg-color: rgba(200, 200, 200, 0.4);
+    --swiper-pagination-progressbar-bg-color: color-mix(in srgb, var(--color-dark) 12%, transparent);
   }
   .portfolio-carousel-fluid .swiper-pagination-progressbar {
     position: absolute !important;
@@ -88,12 +101,14 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
   import Swiper from 'swiper';
   import { Navigation, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
   import 'swiper/css';
-  import 'swiper/css/navigation';
   import 'swiper/css/pagination';
 
   document.querySelectorAll<HTMLElement>('.portfolio-carousel-fluid').forEach((root) => {
     const el = root.querySelector<HTMLElement>('.swiper');
     if (!el) return;
+
+    // repeated slides: still clickable, but not tabbable
+    root.querySelectorAll('[data-repeat] a').forEach((a) => a.setAttribute('tabindex', '-1'));
 
     const active = root.querySelector<HTMLElement>('[data-active]');
     const totalReal = Number(root.dataset.total) || 1;

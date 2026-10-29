@@ -1,54 +1,86 @@
 ---
 import { Icon } from 'astro-icon/components';
+import AstroImage from '@/components/helper/AstroImage.astro';
 import AstroVideo from '@/components/helper/AstroVideo.astro';
+import PauseButton from '@/components/PauseButton.astro';
 
 interface Props {
   src: string;
+  /** Other formats of the same video, e.g. an .mp4 fallback for a .webm `src`. */
+  sources?: string[];
   poster?: string;
+  /** alt text for the poster when there's no video yet (poster-only mode) */
+  posterAlt?: string;
   class?: string;
 }
 
-const { src, poster, class: className } = Astro.props;
+const { src, sources, poster, posterAlt = '', class: className } = Astro.props;
+// no video yet: show the poster as a still image, without the player or its controls
+const hasVideo = !!src;
 ---
 
-<!-- per-instance root; the script moves the cursor and overlay to <body> -->
+{!hasVideo && (
+<div class:list={['relative', className]}>
+  <AstroImage src={poster} alt={posterAlt} class="block w-full h-auto aspect-video object-cover" />
+</div>
+)}
+
+{/* per-instance root; the script moves the cursor and overlay to <body> */}
+{hasVideo && (
 <div data-showreel-root>
 <div class:list={['relative cursor-none', className]} data-showreel>
   <AstroVideo
     src={src}
+    sources={sources}
     poster={poster}
     loop
     muted
     playsinline
     preload="metadata"
     class="block w-full h-auto aspect-video"
+    aria-label={posterAlt || undefined}
     data-showreel-video
   />
 
-  <!-- custom hover cursor -->
+  {/* keyboard: a "Play showreel" button that shows when focused (mouse users click the video) */}
+  <button
+    type="button"
+    class="sr-only-focusable absolute top-1/2 left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-1.5 rounded-full border border-primary bg-dark/90 px-5 py-3 font-medium text-white"
+    aria-haspopup="dialog"
+    data-showreel-open
+  >
+    <Icon name="lucide:play" class="size-[1.1em]" aria-hidden="true" />
+    Play showreel
+  </button>
+  <PauseButton label="showreel" />
+
+  {/* custom hover cursor */}
   <div
-    class="pointer-events-none fixed top-0 left-0 z-9999999 flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 font-medium text-white will-change-transform"
+    class="pointer-events-none fixed top-0 left-0 z-9999999 flex items-center gap-1.5 rounded-full border border-primary bg-dark/90 px-5 py-3 font-medium text-white will-change-transform"
     data-showreel-cursor
     aria-hidden="true"
   >
-    <Icon name="hugeicons:play" class="size-[1.1em]" />
+    <Icon name="lucide:play" class="size-[1.1em]" />
     <span>Play</span>
   </div>
 </div>
 
-<!-- Showreel fullscreen overlay -->
+{/* Showreel fullscreen overlay (a dialog; inert while closed) */}
 <div
   class="pointer-events-none fixed inset-0 z-9999999 flex items-center justify-center bg-dark/90 p-8 opacity-0 transition-opacity duration-500"
   data-showreel-overlay
-  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Showreel"
+  inert
 >
   <button
-    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-[background,transform] duration-200 hover:rotate-90 hover:bg-primary cursor-pointer"
+    class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-[background,transform] duration-200 hover:rotate-90 hover:bg-white/20 cursor-pointer"
     type="button"
     data-showreel-close
     aria-label="Close video"
   >
-    <Icon name="hugeicons:cancel-01" class="inline-block size-4 transition-all duration-200 group-hover:rotate-90" />
+    <Icon name="lucide:x" class="inline-block size-4 transition-all duration-200 group-hover:rotate-90" aria-hidden="true" />
   </button>
   <div
     class="flex max-h-[85vh] max-w-[90vw] items-center justify-center"
@@ -57,6 +89,7 @@ const { src, poster, class: className } = Astro.props;
   </div>
 </div>
 </div>
+)}
 
 <script>
   // reduced motion: no inline autoplay (poster only) and no zoom animation;
@@ -70,32 +103,57 @@ const { src, poster, class: className } = Astro.props;
     const overlay = root.querySelector<HTMLElement>('[data-showreel-overlay]');
     const stage = root.querySelector<HTMLElement>('[data-showreel-stage]');
     const closeBtn = root.querySelector<HTMLElement>('[data-showreel-close]');
+    const openBtn = root.querySelector<HTMLElement>('[data-showreel-open]');
+    const pauseBtn = root.querySelector<HTMLButtonElement>('[data-pause-toggle]');
 
     if (reel && video && cursor && overlay && stage && closeBtn) {
       const dock = video.parentElement as HTMLElement;
       let isOpen = false;
       let placeholder: HTMLElement | null = null;
+      let returnTo: HTMLElement | null = null;
 
       document.body.appendChild(cursor);
       document.body.appendChild(overlay);
 
-      // autoplay only while >= 40% of the reel is visible; otherwise pause
-      // and restore the poster frame
+      // inline autoplay only while >= 40% of the reel is visible, the tab is
+      // visible and it isn't paused; otherwise pause (and, off screen, restore
+      // the poster frame)
       const VISIBLE = 0.4;
-      if (!reduceMotion) new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (isOpen) continue;
-            if (e.intersectionRatio >= VISIBLE) {
-              if (video.paused) video.play().catch(() => {});
-            } else if (!video.paused) {
-              video.pause();
-              video.load(); // reset to show the poster again
+      let inView = false;
+      let paused = false;
+      const syncInline = () => {
+        if (isOpen || reduceMotion) return;
+        if (inView && !paused && !document.hidden) {
+          if (video.paused) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      };
+      if (!reduceMotion) {
+        new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              const was = inView;
+              inView = e.intersectionRatio >= VISIBLE;
+              if (was && !inView && !isOpen) {
+                video.pause();
+                video.load(); // reset to show the poster again
+              }
+              syncInline();
             }
-          }
-        },
-        { threshold: [0, VISIBLE] },
-      ).observe(reel);
+          },
+          { threshold: [0, VISIBLE] },
+        ).observe(reel);
+        document.addEventListener('visibilitychange', syncInline);
+        pauseBtn?.addEventListener('click', () => {
+          paused = !paused;
+          pauseBtn.setAttribute('aria-pressed', String(paused));
+          pauseBtn.textContent = `${paused ? 'Play' : 'Pause'} showreel`;
+          syncInline();
+        });
+      } else {
+        pauseBtn?.remove();
+      }
 
       // --- custom hover cursor (transform/opacity driven from JS) ---
       cursor.style.opacity = '0';
@@ -147,7 +205,7 @@ const { src, poster, class: className } = Astro.props;
         video.style.transformOrigin = 'top left';
         video.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
         void video.getBoundingClientRect(); // force reflow
-        video.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        video.style.transition = 'transform 0.5s var(--ease-theme)';
         video.style.transform = '';
       };
 
@@ -156,12 +214,13 @@ const { src, poster, class: className } = Astro.props;
       const showOverlay = (on: boolean) => {
         overlay.style.opacity = on ? '1' : '0';
         overlay.style.pointerEvents = on ? 'auto' : 'none';
-        overlay.setAttribute('aria-hidden', String(!on));
+        overlay.inert = !on;
       };
 
-      const open = () => {
+      const open = (trigger?: HTMLElement) => {
         if (isOpen) return;
         isOpen = true;
+        returnTo = trigger ?? null;
         showCursor(false);
         showOverlay(true);
         flip(() => {
@@ -178,8 +237,9 @@ const { src, poster, class: className } = Astro.props;
         video.muted = false;
         video.controls = false;
         video.currentTime = 0;
-        video.play();
+        video.play().catch(() => {});
         document.body.style.overflow = 'hidden';
+        closeBtn.focus();
       };
 
       const close = () => {
@@ -213,23 +273,31 @@ const { src, poster, class: className } = Astro.props;
           video.load();
         } else {
           video.addEventListener('transitionend', done);
-          video.play();
+          if (inView && !paused) video.play().catch(() => {});
+          else video.pause();
         }
         document.body.style.overflow = '';
+        returnTo?.focus();
+        returnTo = null;
       };
 
       video.addEventListener('click', () => {
         if (!isOpen) open();
       });
-      // block right-click context menu (no Save video as…)
-      video.addEventListener('contextmenu', (e) => e.preventDefault());
+      openBtn?.addEventListener('click', () => open(openBtn));
       closeBtn.addEventListener('click', close);
       // outside click (overlay backdrop, not the video) restores
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay || e.target === stage) close();
       });
       document.addEventListener('keydown', (e) => {
+        if (!isOpen) return;
         if (e.key === 'Escape') close();
+        // the close button is the only control in the open player
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          closeBtn.focus();
+        }
       });
     }
   });

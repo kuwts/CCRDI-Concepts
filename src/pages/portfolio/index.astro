@@ -1,26 +1,31 @@
 ---
+import { getEntry } from 'astro:content';
+
 import Base from '@/layouts/Base.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import PortfolioCard from '@/components/PortfolioCard.astro';
+import LoadMore from '@/components/LoadMore.astro';
 import { getProjects } from '@/lib/content';
 
+const listing = (await getEntry('listings', 'portfolio'))!.data;
 const projects = await getProjects();
 const initial_load = 4;
 ---
 
 <Base title="Portfolio">
-  <PageHeader subtitle="Work we do" title="Our Portfolio" dot />
+  <PageHeader subtitle={listing.subtitle} title={listing.title} dot />
 
   <section class="bg-white py-20 md:py-25">
     <div class="container">
       <div class="row">
         <div class="lg:col-11 mx-auto">
-          <div class="masonry relative" data-masonry>
+          <div class="masonry relative" id="portfolio-grid" data-masonry>
             {
               projects.map((p, i) => (
                 <div
                   class:list={['masonry-item mb-7.5 xl:mb-20 w-full', i >= initial_load && 'hidden']}
                   data-masonry-item
+                  data-load-item
                 >
                   <PortfolioCard
                     href={`/portfolio/${p.id}`}
@@ -28,6 +33,7 @@ const initial_load = 4;
                     category={p.data.category}
                     color={p.data.color}
                     image={p.data.image}
+                    as="h2"
                     class="has-anim"
                   />
                 </div>
@@ -37,21 +43,18 @@ const initial_load = 4;
         </div>
       </div>
 
-      <div class="has-anim text-center" data-load-more-wrap>
-        <button type="button" data-load-more class="btn-circle btn-circle-white m-1 cursor-pointer">+</button>
-      </div>
+      <LoadMore target="portfolio-grid" total={projects.length} initial={initial_load} label={listing.load_more_label} />
     </div>
   </section>
 </Base>
 
 <script>
+  // Two-column masonry, positioned by script. The "+" button (LoadMore) reveals
+  // more items and fires `loadmore`, which re-runs the layout.
   const masonry = document.querySelector<HTMLElement>('[data-masonry]');
-  const btn = document.querySelector<HTMLButtonElement>('[data-load-more]');
-  const wrap = document.querySelector<HTMLElement>('[data-load-more-wrap]');
-  if (masonry && btn && wrap) {
+  if (masonry) {
 
   const all = Array.from(masonry.querySelectorAll<HTMLElement>('[data-masonry-item]'));
-  const next_load = 4;
 
   const visible = () => all.filter((el) => !el.classList.contains('hidden'));
 
@@ -75,26 +78,7 @@ const initial_load = 4;
     masonry.style.height = `${Math.max(...heights)}px`;
   };
 
-  const loadMore = () => {
-    let shown = 0;
-    for (const el of all) {
-      if (!el.classList.contains('hidden')) shown++;
-    }
-    let added = 0;
-    for (const el of all) {
-      if (el.classList.contains('hidden') && added < next_load) {
-        el.classList.remove('hidden');
-        added++;
-      }
-    }
-    layout();
-
-    if (visible().length >= all.length) {
-      wrap.style.display = 'none';
-    }
-  };
-
-  btn.addEventListener('click', loadMore);
+  masonry.addEventListener('loadmore', layout);
   window.addEventListener('resize', layout);
   new ResizeObserver(layout).observe(masonry);
   layout();

@@ -9,7 +9,7 @@ const faqEntry = await getEntry('faq', 'index');
 const { header, groups } = faqEntry!.data;
 ---
 
-<Base title="FAQ">
+<Base title="FAQ" seo={faqEntry!.data.seo}>
   <PageHeader subtitle={header.subtitle} title={header.title} />
 
   <section class="bg-white py-20 md:py-25">

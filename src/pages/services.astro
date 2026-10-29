@@ -1,7 +1,5 @@
 ---
 import { getEntry, getCollection } from 'astro:content';
-import { markdownify } from "@/utils/textConverter";
-import { animDelay } from "@/utils/animDelay";
 
 import Base from '@/layouts/Base.astro';
 import PageHeader from '@/components/PageHeader.astro';
@@ -24,7 +22,7 @@ const clientLogos = (await getCollection('clients')).map((c) => c.data);
 const reviews = (await getCollection('testimonials')).map((t) => t.data);
 ---
 
-<Base title="Services">
+<Base title="Services" seo={srvc!.data.seo}>
   <PageHeader
     subtitle={header.subtitle}
     title={header.title}
@@ -62,7 +60,7 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
                 const image = (
                   <AstroImage
                     src={item.image}
-                    alt={item.title}
+                    alt=""
                     loading="lazy"
                     class={`h-full w-full aspect-video lg:aspect-9/12 object-cover bg-white/3 ${i % 2 === 0 ? 'max-lg:-mt-10' : ''}`}
                   />
@@ -71,16 +69,16 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
                   <div class={i % 2 === 0 ? 'lg:ps-12 max-lg:mt-10' : 'lg:pe-12 lg:ps-8'}>
                     <AstroImage
                       src={item.icon}
-                      alt={item.title}
+                      alt=""
                       class="size-10 mb-6"
                     />
-                    <h3 class="mb-4 font-semibold text-3xl">{item.title}</h3>
+                    <h2 class="mb-4 font-semibold text-3xl break-words">{item.title}</h2>
                     <div class="lg:max-w-xl pb-10">
                       <p class="mb-7 text-balance">{item.info}</p>
                       <ul class="grid grid-cols-2 gap-x-2 gap-y-2.5 font-medium text-sm">
                         {item.sub_services.map((li) => <li>{li}</li>)}
                       </ul>
-                      <span class="my-5 inline-block tracking-[-3px]">———</span>
+                      <span class="my-5 inline-block tracking-[-3px]" aria-hidden="true">———</span>
                       <p>{item.meta}</p>
                     </div>
                   </div>
@@ -98,7 +96,7 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
                     <div
                       data-stacked-content
                       class="min-h-0 origin-[50%_0%] p-10 pb-0"
-                      style={`background: ${item.color ?? '#001213'}`}
+                      style={`background: ${item.color ?? 'var(--color-dark)'}`}
                     >
                       <div class="row items-end leading-0">
                         {i % 2 === 0 ? (
@@ -137,10 +135,7 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
 </Base>
 
 <script>
-  (() => {
-    const deck = document.querySelector<HTMLElement>("[data-stacked-deck]");
-    if (!deck) return;
-
+  document.querySelectorAll<HTMLElement>("[data-stacked-deck]").forEach((deck) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const cards = Array.from(
@@ -217,5 +212,5 @@ const reviews = (await getCollection('testimonials')).map((t) => t.data);
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-  })();
+  });
 </script>

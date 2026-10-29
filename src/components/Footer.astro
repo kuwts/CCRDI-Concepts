@@ -4,52 +4,58 @@ import social from '@/config/social.json';
 import site from '@/config/site.config.json';
 import LineLink from '@/components/LineLink.astro';
 import AstroImage from "@/components/helper/AstroImage.astro";
+import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 
 const year = new Date().getFullYear();
-const linkClass = 'text-[15px] text-white/80 underline decoration-transparent decoration-1 underline-offset-3 transition hover:decoration-primary/70';
+// inline-block + py-0.5: a 28px tap target (lists use space-y-2.5 to keep the rhythm)
+const linkClass = 'inline-block py-0.5 text-[15px] text-white/80 underline decoration-transparent decoration-1 underline-offset-3 transition hover:decoration-primary/70';
 
-const { logo, footer, author } = site;
+const { footer, author } = site;
+const { logo } = site.brand;
 ---
 
 <footer class="py-20 md:py-25 text-muted">
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <div class="-mt-1.75 mb-15 has-anim fade">
-          <h4 class="inline-flex items-center font-light text-white text-2xl md:text-3xl relative">
-            <span>{footer.cta.title}</span>
-            <a href={footer.cta.url} class="block text-primary transition-all duration-300 hover:brightness-125" aria-label={footer.cta.label}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <div class="-mt-1.75 mb-15 flex flex-wrap items-center gap-x-10 gap-y-6 has-anim fade">
+          <div>
+            <h2 class="font-light text-white text-2xl md:text-3xl text-balance">{footer.cta.title}</h2>
+            <a href={footer.cta.url} class="mt-4 inline-flex items-center gap-1 text-lg font-medium text-primary transition-all duration-300 hover:brightness-125">
+              {footer.cta.label}
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
             </a>
-          </h4>
+          </div>
+          <AnniversarySeal href="/40-years" class="size-28 md:size-32 lg:ml-auto" />
         </div>
       </div>
 
       <div class="lg:col-5 md:col-5 mb-12 md:mb-0 has-anim fade">
-        <h4 class="mb-6 font-light text-xl sm:text-2xl">
+        <p class="mb-6 max-w-md text-[15px] leading-relaxed">{footer.description}</p>
+        <p class="mb-6 font-light text-xl sm:text-2xl">
           <LineLink href={`mailto:${footer.email}`} label={footer.email} />
-        </h4>
-        <p>Phone: {footer.phone}</p>
+        </p>
+        <p>{footer.phone}</p>
         <p>{footer.address_line_1}</p>
-        <p>{footer.address_line_2}</p>
+        {footer.address_line_2 && <p>{footer.address_line_2}</p>}
       </div>
 
       <div class="lg:col-2 md:col-2 sm:col-4 col-6 ml-auto">
-        <ul class="space-y-3 has-anim fade">
+        <ul class="space-y-2.5 has-anim fade">
           {menu.footer.col1.map((l) => (
             <li><a href={l.url} class={linkClass}>{l.name}</a></li>
           ))}
         </ul>
       </div>
       <div class="lg:col-2 md:col-2 sm:col-4 col-6">
-        <ul class="space-y-3 has-anim fade delay-50">
+        <ul class="space-y-2.5 has-anim fade delay-50">
           {menu.footer.col2.map((l) => (
             <li><a href={l.url} class={linkClass}>{l.name}</a></li>
           ))}
         </ul>
       </div>
       <div class="lg:col-2 md:col-3 sm:col-4 col-6 sm:mt-0 mt-5">
-        <ul class="space-y-3 has-anim fade delay-100">
+        <ul class="space-y-2.5 has-anim fade delay-100">
           {menu.footer.col3.map((l) => (
             <li><a href={l.url} class={linkClass}>{l.name}</a></li>
           ))}
@@ -60,17 +66,25 @@ const { logo, footer, author } = site;
         <div class="row">
           <div class="lg:col-6 order-1 lg:order-0">
             <p class="font-light text-sm">
-              Copyright &copy; {year}. Developed by{' '}
-              <a
-                href={author.url}
-                class="line-link font-light text-white"
-                target="_blank"
-                rel="nofollow">{author.name}</a
-              >
+              Copyright &copy; {year} {site.brand.name}.
+              {
+                author.name && (
+                  <>
+                    Developed by{' '}
+                    {author.url ? (
+                      <a href={author.url} class="line-link font-light text-white" target="_blank" rel="noopener">
+                        {author.name}
+                      </a>
+                    ) : (
+                      author.name
+                    )}
+                  </>
+                )
+              }
             </p>
           </div>
           <div class="lg:col-6 order-0 lg:order-1 max-lg:mb-4">
-            <ul class="flex flex-wrap gap-x-4 sm:gap-x-7 sm:gap-y-2">
+            <ul class="flex flex-wrap gap-x-4 sm:gap-x-7">
               {social.map((s) => (
                 <li><a href={s.url} class={linkClass}>{s.name}</a></li>
               ))}
@@ -80,10 +94,10 @@ const { logo, footer, author } = site;
       </div>
     </div>
 
-    <div class="-mb-8 sm:-mb-25 md:-mb-30 mt-16 opacity-5">
+    <div class="-mb-8 sm:-mb-25 md:-mb-30 mt-16 opacity-5" aria-hidden="true">
       <AstroImage
         src={logo.src}
-        alt={logo.alt}
+        alt=""
         width={logo.width}
         height={logo.height}
         class="w-full h-auto"

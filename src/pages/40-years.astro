@@ -1,0 +1,113 @@
+---
+// 40 Years: the theme's case-study page (src/pages/portfolio/[slug].astro) as a single page,
+// with its own content (src/content/anniversary)
+import { getEntry, render } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import LineLink from '@/components/LineLink.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import Showreel from '@/components/Showreel.astro';
+import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
+
+const entry = await getEntry('anniversary', 'index');
+const data = entry!.data;
+const { Content } = await render(entry!);
+
+const brands = data.next.items.map((p) => ({ ...p, imageAlt: p.image_alt }));
+const external = (href: string) => /^https?:\/\//.test(href);
+---
+
+<Base title="40 Years" image={data.image} seo={data.seo}>
+  <section class="page-header pt-20 pb-16 text-muted">
+    <div class="container -mt-1.5">
+      <div class="row justify-center">
+        <div class="lg:col-12 text-center">
+          <p class="has-anim fade mb-5 font-medium">{data.eyebrow}</p>
+          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white break-words">
+            {data.title}
+          </h1>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero -->
+  <div class="container">
+    <div class="row">
+      <div class="lg:col-11 -mb-12 has-anim delay-200 mx-auto">
+        {/* the homepage showreel: autoplays muted while on screen, opens a full-screen player */}
+        {data.video ? (
+          <Showreel src={data.video} poster={data.image} posterAlt={data.image_alt} />
+        ) : (
+          <AstroImage
+            src={data.image}
+            alt={data.image_alt}
+            loading="eager"
+            class="h-auto max-h-130 w-full aspect-video object-cover bg-white/3"
+          />
+        )}
+      </div>
+    </div>
+  </div>
+
+  <section class="bg-white text-mutedDark py-20 md:py-25">
+    <div class="container">
+      <div class="row pt-5 justify-center">
+        <!-- Sidebar -->
+        <div class="lg:col-4 mt-1">
+          <div class="mb-8 lg:mb-12 has-anim fade">
+            <AnniversarySeal variant="light" class="mb-8 size-32" />
+            <p class="text-lg font-medium text-black mb-4">{data.sidebar.name}</p>
+            <p class="mb-6">{data.sidebar.description}</p>
+            {
+              data.sidebar.link && (
+                <LineLink
+                  href={data.sidebar.link.href}
+                  label={data.sidebar.link.label}
+                  tone="dark"
+                  icon="arrow"
+                  target={external(data.sidebar.link.href) ? '_blank' : undefined}
+                  class="font-medium before:bg-primary/70 text-sm"
+                />
+              )
+            }
+          </div>
+          {data.milestones.map((info, i) => (
+            <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(i + 1) * 100}ms`}>
+              <p class="text-lg font-medium text-black mb-3">{info.title}</p>
+              <p>{info.content}</p>
+            </div>
+          ))}
+          <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(data.milestones.length + 1) * 100}ms`}>
+            <p class="text-lg font-medium text-black mb-3">{data.family.title}</p>
+            <ul class="space-y-1.5">
+              {data.family.items.map((s) => <li><span aria-hidden="true">~ </span>{s}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="lg:col-7">
+          <div
+            class="content prose max-w-full pl-0 lg:pl-5 [&_img]:my-5 [&_p]:text-[18px] [&_p]:leading-relaxed [&_h2]:text-[22px]! [&_h2]:leading-[1.6]!"
+          >
+            <Content />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Family of brands: the homepage brand slider -->
+  {brands.length > 0 && (
+    <section class="bg-white pb-20 md:pb-25">
+      <div class="container">
+        <div class="border-t border-black/5 pt-25 max-md:pt-20"></div>
+        <SectionTitle title={data.next.title} />
+      </div>
+      <PortfolioCarousel projects={brands} />
+    </section>
+  )}
+</Base>
