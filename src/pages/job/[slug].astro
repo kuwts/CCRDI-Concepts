@@ -1,4 +1,6 @@
 ---
+// Theme demo page, not in brief/sitemap.md: noindex and out of the XML sitemap until the
+// cleanup phase (brief/cleanup-list.md)
 import { getEntry, render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -28,7 +30,7 @@ const textareaClass = 'field field-textarea';
 const required = '<span class="text-error" aria-hidden="true">*</span>';
 ---
 
-<Base title={title} description={meta} seo={entry.data.seo}>
+<Base title={title} description={meta} seo={entry.data.seo} noindex>
   <!-- Header -->
   <section class="bg-light py-20 md:py-25">
     <div class="container">

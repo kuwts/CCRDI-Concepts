@@ -1,4 +1,6 @@
 ---
+// Theme demo page, not in brief/sitemap.md: noindex and out of the XML sitemap until the
+// cleanup phase (brief/cleanup-list.md)
 import { getEntry, getCollection } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -22,7 +24,7 @@ const clientLogos = (await getCollection('clients')).map((c) => c.data);
 const reviews = (await getCollection('testimonials')).map((t) => t.data);
 ---
 
-<Base title="Services" seo={srvc!.data.seo}>
+<Base title="Services" seo={srvc!.data.seo} noindex>
   <PageHeader
     subtitle={header.subtitle}
     title={header.title}

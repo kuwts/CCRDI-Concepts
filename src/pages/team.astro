@@ -1,4 +1,6 @@
 ---
+// Theme demo page, not in brief/sitemap.md: noindex and out of the XML sitemap until the
+// cleanup phase (brief/cleanup-list.md)
 import { getEntry, getCollection } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -21,7 +23,7 @@ const groups = [...new Set(allJobs.map((j) => j.data.category))].map(
 );
 ---
 
-<Base title="Our Team" seo={teamEntry!.data.seo}>
+<Base title="Our Team" seo={teamEntry!.data.seo} noindex>
   <PageHeader subtitle={header.subtitle} title={header.title} dot />
 
   <!-- Team grid -->

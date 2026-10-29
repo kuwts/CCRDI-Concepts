@@ -1,4 +1,6 @@
 ---
+// Theme demo page, not in brief/sitemap.md: noindex and out of the XML sitemap until the
+// cleanup phase (brief/cleanup-list.md)
 import { render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -26,7 +28,7 @@ const tocItems = [...(entry.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gm)].map(([,
 }));
 ---
 
-<Base title={data.title} description={data.description} image={data.image} seo={data.seo} type="article">
+<Base title={data.title} description={data.description} image={data.image} seo={data.seo} type="article" noindex>
   <section class="page-header pt-20 pb-16 text-muted">
     <div class="container -mt-1.5">
       <div class="row justify-center">

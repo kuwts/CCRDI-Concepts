@@ -1,4 +1,6 @@
 ---
+// Theme demo page, not in brief/sitemap.md: noindex and out of the XML sitemap until the
+// cleanup phase (brief/cleanup-list.md)
 import { getEntry } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -12,7 +14,7 @@ const projects = await getProjects();
 const initial_load = 4;
 ---
 
-<Base title="Portfolio">
+<Base title="Portfolio" noindex>
   <PageHeader subtitle={listing.subtitle} title={listing.title} dot />
 
   <section class="bg-white py-20 md:py-25">
