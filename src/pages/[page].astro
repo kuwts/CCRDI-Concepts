@@ -6,6 +6,7 @@ import PageHeader from '@/components/PageHeader.astro';
 import Button from '@/components/Button.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
 import BlogCard from '@/components/BlogCard.astro';
+import Clients from '@/components/Clients.astro';
 import { animDelay } from '@/utils/animDelay';
 
 // The theme's long-form page (privacy.astro) for the other `pages` entries:
@@ -25,10 +26,24 @@ const home = data.news ? await getEntry('homepage', 'index') : undefined;
 const blog = home?.data.blog;
 const [featuredPost, ...otherPosts] = (blog?.items ?? []).map((n) => ({ ...n, imageAlt: n.image_alt }));
 const gridPosts = otherPosts.slice(0, 3);
+
+// the Our Brands logo wall (the same logos, one source)
+const brandsEntry = data.brand_logos ? await getEntry('brands', 'index') : undefined;
+const logoWall = brandsEntry?.data.clients;
 ---
 
 <Base title={data.title} description={data.description} seo={data.seo}>
   <PageHeader subtitle={data.subtitle ?? ''} title={data.heading} />
+
+  {/* logo wall on navy, as on Our Brands */}
+  {logoWall && (
+    <section class="pb-20 md:pb-25 -mt-24 sm:-mt-28">
+      <div class="container">
+        <SectionTitle subtitle={logoWall.subtitle} background="dark" class="pt-20 sm:pt-24" />
+        <Clients items={logoWall.logos ?? []} columnCount={4} logoHeight={64} class="mt-16" />
+      </div>
+    </section>
+  )}
 
   <section class="bg-white py-20 md:py-25">
     <div class="container has-anim fade delay-150">
