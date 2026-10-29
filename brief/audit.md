@@ -76,7 +76,7 @@ Things that are wrong now, or would be wrong on a live site.
    - **Where:** `Footer.astro`; on all 45 pages.
    - **Effect:** it links to `mailto:[CLIENT TO PROVIDE: email]`.
    - **Fix:** render plain text until the value is a real address, as the Contact page now does.
-   - **Fixed** (53e9c78, d04a7ab, then the footer email commit after it): the email line is
+   - **Fixed** (53e9c78, d04a7ab, b135d4d): the email line is
      hidden until the client provides a general email address (never an individual's); the
      footer CTA above it already links to Contact.
 5. **The dev server's content cache goes stale after schema changes.** Schemas changed during

@@ -143,6 +143,10 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       they're real (placeholders are not published as data).
 - [ ] Privacy policy text
 - [ ] Accessibility Statement text
+- [ ] **SEO descriptions for Privacy Policy and Accessibility Statement**, to be supplied with
+      the legal text. The framework sentences used for now (§3 Mission and the first sentence
+      of the §5 homepage hero) don't describe those pages; replace them with descriptions of
+      each page's content, under 160 characters.
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
 - [ ] Favicon set and a 1200 x 630 social share image
 - [ ] Page eyebrow or intro line for each interior page (or confirm none)
