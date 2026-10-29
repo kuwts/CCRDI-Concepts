@@ -16,6 +16,34 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       About = About paragraph 1 (§5, 168 characters); Our Brands = first sentence of About
       paragraph 2 (§5, 128 characters: "Our organization brings together Consumer Choice Award,
       Consumer Choice Marketing, and Consumer Choice Research, Data & Insights.")
+- [x] SEO descriptions for every other CCC page, word for word from the framework (each
+      under 160 characters; sentences already used as another page's description are not
+      reused):
+      - 40 Years: §10, first sentence (108 characters)
+      - For Businesses: §8 Business Leaders (94)
+      - Media & Partners: §8 Media and Partners (86)
+      - Consumer Choice Award: §5 Family of Brands one-liner (66)
+      - Consumer Choice Marketing: §5 Family of Brands one-liner (98)
+      - CCRDI: §12 CCRDI one-line description (140)
+      - Contact: §5 Homepage Hero, second sentence, "Today, Consumer Choice Canada brings
+        together research, recognition, marketing, and consumer intelligence under one
+        national organization." (138)
+      - Privacy Policy: §3 Mission, "To empower Canadians with trusted information while
+        recognizing businesses that consistently deliver exceptional customer experiences."
+        (134)
+      - Accessibility Statement: §5 Homepage Hero, first sentence, "For more than 40 years,
+        Consumer Choice has helped consumers make better decisions while recognizing
+        businesses that earn their trust." (134)
+      - Contact thank-you page (noindex): §3 Brand Purpose, "To strengthen trust between
+        Canadian consumers and the businesses that serve them." (82)
+      - 404 (noindex): §4 Trust pillar, "For four decades, Consumer Choice has helped Canadians
+        identify businesses they can trust." (90; in site.config.json seo.pages["/404"])
+      The site default (the §12 CCC one-liner, 183 characters) is now used only by the theme
+      demo pages. About's description (§5 About paragraph 1) is 168 characters, over the
+      160 target. **Client to confirm**, or to supply page-specific descriptions.
+- [x] SEO title for CCRDI: "CCRDI" (the framework's own short name, §2, §6), so the page
+      title is "CCRDI | Consumer Choice Canada" (30 characters) instead of the full name
+      (70). The H1 stays "Consumer Choice Research, Data & Insights".
 
 ## Still needed
 - [ ] **Confirm the Consumer Choice Award brand page copy from ccaward.com** (word for word):
@@ -111,8 +139,6 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] Accessibility Statement text
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
 - [ ] Favicon set and a 1200 x 630 social share image
-- [ ] SEO descriptions for 40 Years, For Businesses, Media & Partners, Contact,
-      Privacy Policy, Accessibility Statement
 - [ ] Page eyebrow or intro line for each interior page (or confirm none)
 - [ ] Contact page intro, form placeholders, sending and error messages, thank-you page
       heading, body and button

@@ -55,6 +55,11 @@
     "author": "",
     "image": "/images/ogimage.png",
     "pages": {
+      "/404": {
+        "title": "",
+        "description": "For four decades, Consumer Choice has helped Canadians identify businesses they can trust.",
+        "image": ""
+      },
       "/blog": {
         "title": "",
         "description": "",
