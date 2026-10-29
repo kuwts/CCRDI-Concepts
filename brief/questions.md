@@ -6,10 +6,10 @@ the meantime (the safest reasonable one); none of them is hard to undo.
 1. **Contact details labels.** content.md has the label "Email" (form fields) but none for phone
    or address. The Contact page shows "Email" as a label and the phone and address placeholders
    without labels. Approve "Phone" and "Address" as labels?
-2. **Contact form placeholders.** The theme shows each field's name inside the field (with a
-   hidden label for screen readers). The fields use content.md's names (Name, Email,
-   Organization, Message) and the button "Send". Visible labels above the fields would be more
-   accessible; switch to visible labels?
+2. **Contact form placeholders.** *Answered: visible labels.* The fields now show content.md's
+   names (Name, Email, Organization, Message) as visible labels, with the placeholders kept as
+   hints, and the theme's job-form `*` marker on the required fields (hidden from screen
+   readers, which announce "required" from the field itself).
 3. **Thank-you and 404 text.** Heading, message and page title are placeholders; the button
    reuses "Return Home" (content.md 404 label). Approve "Return Home" on the thank-you page?
 4. **Brand page links.** The Our Brands cards now link to the new brand pages with "Learn More"

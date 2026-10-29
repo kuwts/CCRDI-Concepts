@@ -12,12 +12,14 @@ const { header, intro, email, phone, address, form } = contact!.data;
 const { fields } = form;
 // Submissions go to Netlify Forms (form name "contact"). Where they're emailed is
 // set per site in the Netlify dashboard: Forms > Submission notifications.
-// Each field has a label for screen readers (visually hidden; the placeholder is
-// the visible text). Labels, placeholders and messages come from content.
+// Each field has a visible label (the job application form's pattern, with its
+// required marker); the placeholder stays as a hint. Labels, placeholders and
+// messages come from content.
 const fieldClass = 'field';
 const selectClass = 'field select-icon cursor-pointer';
 const textareaClass = 'field field-textarea';
 const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
+const required = '<span class="text-error" aria-hidden="true">*</span>';
 ---
 
 <Base title={header.title} seo={contact!.data.seo}>
@@ -82,28 +84,28 @@ const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
                 </p>
                 <div class="row">
                   <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-name" class="sr-only">{fields.name.label}</label>
+                    <label for="contact-name" class="field-label">{fields.name.label} <Fragment set:html={required} /></label>
                     <input id="contact-name" type="text" name="name" autocomplete="name" class={fieldClass} placeholder={fields.name.placeholder} required />
                   </div>
                   <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-email" class="sr-only">{fields.email.label}</label>
+                    <label for="contact-email" class="field-label">{fields.email.label} <Fragment set:html={required} /></label>
                     <input id="contact-email" type="email" name="email" autocomplete="email" class={fieldClass} placeholder={fields.email.placeholder} required />
                   </div>
                   {fields.phone && (
                     <div class="col-12 md:col-6 has-anim fade">
-                      <label for="contact-phone" class="sr-only">{fields.phone.label}</label>
+                      <label for="contact-phone" class="field-label">{fields.phone.label} <Fragment set:html={required} /></label>
                       <input id="contact-phone" type="tel" name="phone" autocomplete="tel" class={fieldClass} placeholder={fields.phone.placeholder} required />
                     </div>
                   )}
                   {fields.company && (
                     <div class:list={[fields.phone ? 'col-12 md:col-6' : 'col-12', 'has-anim fade']}>
-                      <label for="contact-company" class="sr-only">{fields.company.label}</label>
+                      <label for="contact-company" class="field-label">{fields.company.label}</label>
                       <input id="contact-company" type="text" name="company" autocomplete="organization" class={fieldClass} placeholder={fields.company.placeholder} />
                     </div>
                   )}
                   {fields.project_type && form.project_types.length > 0 && (
                     <div class="col-12 md:col-6 has-anim fade">
-                      <label for="contact-project-type" class="sr-only">{fields.project_type.label}</label>
+                      <label for="contact-project-type" class="field-label">{fields.project_type.label}</label>
                       <select id="contact-project-type" name="project_type" class={selectClass}>
                         <option value="" disabled selected>{fields.project_type.placeholder}</option>
                         {form.project_types.map((o) => <option value={o}>{o}</option>)}
@@ -112,7 +114,7 @@ const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
                   )}
                   {fields.budget && form.budgets.length > 0 && (
                     <div class="col-12 md:col-6 has-anim fade">
-                      <label for="contact-budget" class="sr-only">{fields.budget.label}</label>
+                      <label for="contact-budget" class="field-label">{fields.budget.label}</label>
                       <select id="contact-budget" name="budget" class={selectClass}>
                         <option value="" disabled selected>{fields.budget.placeholder}</option>
                         {form.budgets.map((o) => <option value={o}>{o}</option>)}
@@ -120,7 +122,7 @@ const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
                     </div>
                   )}
                   <div class="col-12 has-anim fade">
-                    <label for="contact-message" class="sr-only">{fields.message.label}</label>
+                    <label for="contact-message" class="field-label">{fields.message.label} <Fragment set:html={required} /></label>
                     <textarea id="contact-message" name="message" class={textareaClass} rows="1" placeholder={fields.message.placeholder} required></textarea>
                   </div>
                   <div class="col-12 has-anim fade">
