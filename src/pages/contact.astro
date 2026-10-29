@@ -20,7 +20,7 @@ const textareaClass = 'field field-textarea';
 const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
 ---
 
-<Base title="Contact" seo={contact!.data.seo}>
+<Base title={header.title} seo={contact!.data.seo}>
   <PageHeader subtitle={header.subtitle} title={header.title} colClass="lg:col-10" />
 
   <section class="bg-white py-20 md:py-25">
@@ -35,19 +35,28 @@ const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
                 <p class="has-anim fade text-balance">{intro.text}</p>
 
                 <div class="mt-8 has-anim fade delay-100">
-                  <p class={labelClass}>{email.label}</p>
+                  {email.label && <p class={labelClass}>{email.label}</p>}
                   <p>
-                    <LineLink href={`mailto:${email.value}`} label={email.value} tone="dark" />
+                    {email.value.includes('@') ? (
+                      <LineLink href={`mailto:${email.value}`} label={email.value} tone="dark" />
+                    ) : (
+                      email.value
+                    )}
                   </p>
                 </div>
                 <div class="mt-8 has-anim fade delay-200">
-                  <p class={labelClass}>{phone.label}</p>
+                  {phone.label && <p class={labelClass}>{phone.label}</p>}
+                  {/* a real number is a tel: link; a placeholder is plain text */}
                   <p>
-                    <LineLink href={`tel:${phone.value.replace(/\s/g, '')}`} label={phone.value} tone="dark" />
+                    {/^[+\d][\d\s().-]+$/.test(phone.value) ? (
+                      <LineLink href={`tel:${phone.value.replace(/\s/g, '')}`} label={phone.value} tone="dark" />
+                    ) : (
+                      phone.value
+                    )}
                   </p>
                 </div>
                 <div class="mt-8 has-anim fade delay-300">
-                  <p class={labelClass}>{address.label}</p>
+                  {address.label && <p class={labelClass}>{address.label}</p>}
                   {address.lines.map((l) => <p>{l}</p>)}
                 </div>
               </div>
@@ -80,28 +89,36 @@ const labelClass = 'mb-2 text-[13px] sm:text-xs font-medium uppercase';
                     <label for="contact-email" class="sr-only">{fields.email.label}</label>
                     <input id="contact-email" type="email" name="email" autocomplete="email" class={fieldClass} placeholder={fields.email.placeholder} required />
                   </div>
-                  <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-phone" class="sr-only">{fields.phone.label}</label>
-                    <input id="contact-phone" type="tel" name="phone" autocomplete="tel" class={fieldClass} placeholder={fields.phone.placeholder} required />
-                  </div>
-                  <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-company" class="sr-only">{fields.company.label}</label>
-                    <input id="contact-company" type="text" name="company" autocomplete="organization" class={fieldClass} placeholder={fields.company.placeholder} />
-                  </div>
-                  <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-project-type" class="sr-only">{fields.project_type.label}</label>
-                    <select id="contact-project-type" name="project_type" class={selectClass}>
-                      <option value="" disabled selected>{fields.project_type.placeholder}</option>
-                      {form.project_types.map((o) => <option value={o}>{o}</option>)}
-                    </select>
-                  </div>
-                  <div class="col-12 md:col-6 has-anim fade">
-                    <label for="contact-budget" class="sr-only">{fields.budget.label}</label>
-                    <select id="contact-budget" name="budget" class={selectClass}>
-                      <option value="" disabled selected>{fields.budget.placeholder}</option>
-                      {form.budgets.map((o) => <option value={o}>{o}</option>)}
-                    </select>
-                  </div>
+                  {fields.phone && (
+                    <div class="col-12 md:col-6 has-anim fade">
+                      <label for="contact-phone" class="sr-only">{fields.phone.label}</label>
+                      <input id="contact-phone" type="tel" name="phone" autocomplete="tel" class={fieldClass} placeholder={fields.phone.placeholder} required />
+                    </div>
+                  )}
+                  {fields.company && (
+                    <div class:list={[fields.phone ? 'col-12 md:col-6' : 'col-12', 'has-anim fade']}>
+                      <label for="contact-company" class="sr-only">{fields.company.label}</label>
+                      <input id="contact-company" type="text" name="company" autocomplete="organization" class={fieldClass} placeholder={fields.company.placeholder} />
+                    </div>
+                  )}
+                  {fields.project_type && form.project_types.length > 0 && (
+                    <div class="col-12 md:col-6 has-anim fade">
+                      <label for="contact-project-type" class="sr-only">{fields.project_type.label}</label>
+                      <select id="contact-project-type" name="project_type" class={selectClass}>
+                        <option value="" disabled selected>{fields.project_type.placeholder}</option>
+                        {form.project_types.map((o) => <option value={o}>{o}</option>)}
+                      </select>
+                    </div>
+                  )}
+                  {fields.budget && form.budgets.length > 0 && (
+                    <div class="col-12 md:col-6 has-anim fade">
+                      <label for="contact-budget" class="sr-only">{fields.budget.label}</label>
+                      <select id="contact-budget" name="budget" class={selectClass}>
+                        <option value="" disabled selected>{fields.budget.placeholder}</option>
+                        {form.budgets.map((o) => <option value={o}>{o}</option>)}
+                      </select>
+                    </div>
+                  )}
                   <div class="col-12 has-anim fade">
                     <label for="contact-message" class="sr-only">{fields.message.label}</label>
                     <textarea id="contact-message" name="message" class={textareaClass} rows="1" placeholder={fields.message.placeholder} required></textarea>
