@@ -194,9 +194,9 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Favicon set and share image: still the theme's files until supplied
 - Header button "Find a Trusted Business": ccaward.com award winners directory, pending
   confirmation (see Still needed)
-- Footer email: until the client provides a general email address, the footer shows a
-  "Contact Us" link to /contact in its place. Use a general address only (e.g. an info@
-  mailbox), never an individual person's email.
+- Footer email: hidden until the client provides a general email address (the footer CTA
+  above it already links to Contact). Use a general address only (e.g. an info@ mailbox),
+  never an individual person's email.
 - Footer phone: [CLIENT TO PROVIDE: phone]
 - Footer address: [CLIENT TO PROVIDE: address]
 - Footer social links: Consumer Choice Award's accounts, pending confirmation (see Still needed)

@@ -32,14 +32,12 @@ const { logo } = site.brand;
 
       <div class="lg:col-5 md:col-5 mb-12 md:mb-0 has-anim fade">
         <p class="mb-6 max-w-md text-[15px] leading-relaxed">{footer.description}</p>
-        {/* a real (general, never personal) address is a mailto: link; until then, the Contact page */}
-        <p class="mb-6 font-light text-xl sm:text-2xl">
-          {footer.email.includes('@') ? (
+        {/* shown only once it's a real (general, never personal) address; the CTA above links to Contact */}
+        {footer.email.includes('@') && (
+          <p class="mb-6 font-light text-xl sm:text-2xl">
             <LineLink href={`mailto:${footer.email}`} label={footer.email} />
-          ) : (
-            <LineLink href={footer.cta.url} label={footer.cta.label} />
-          )}
-        </p>
+          </p>
+        )}
         <p>{footer.phone}</p>
         <p>{footer.address_line_1}</p>
         {footer.address_line_2 && <p>{footer.address_line_2}</p>}

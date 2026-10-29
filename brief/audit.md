@@ -76,8 +76,9 @@ Things that are wrong now, or would be wrong on a live site.
    - **Where:** `Footer.astro`; on all 45 pages.
    - **Effect:** it links to `mailto:[CLIENT TO PROVIDE: email]`.
    - **Fix:** render plain text until the value is a real address, as the Contact page now does.
-   - **Fixed** (53e9c78, then d04a7ab): until the client provides a general email address
-     (never an individual's), the footer shows a "Contact Us" link to /contact in its place.
+   - **Fixed** (53e9c78, d04a7ab, then the footer email commit after it): the email line is
+     hidden until the client provides a general email address (never an individual's); the
+     footer CTA above it already links to Contact.
 5. **The dev server's content cache goes stale after schema changes.** Schemas changed during
    this build: `businesses`, `brandPages`, the `pages` `news` flag and the contact fields.
    - **Effect:** the dev server can drop new fields, as happened with the 40 Years video.
