@@ -72,7 +72,7 @@ contrast.
 |---|---|---|---|---|
 | 1 | Header | Inline (case study) | Eyebrow: brand tagline; H1: brand name | §9 |
 | 2 | Feature image | `AstroImage` | The brand's photo (the same one as on Home and Our Brands) | placeholder-media.md |
-| 3 | Sidebar | Inline + `LineLink` | Brand name, one-liner, the brand's list (Marketing), link ("Visit Website" → ccaward.com for the Award; "Contact Us" → /contact otherwise); role + core message; Award only: confirmed facts (1987 launch in Montréal; one winner per category) | §5, §2, Our Brands list, ccaward.com |
+| 3 | Sidebar | Inline + `LineLink` | Brand name, one-liner, the brand's list (Marketing), link ("Visit Website" → ccaward.com for the Award; "Contact Us" → /contact otherwise); CCRDI: role + core message; Award only: confirmed facts (1987 launch in Montréal; one winner per category). (Built: the Award and Marketing core messages are the body headings, so they aren't repeated in the sidebar.) | §5, §2, Our Brands list, ccaward.com |
 | 4 | Body | `.content` MDX | **Award:** core message (heading), relationship line, ccaward.com's description of how winners are chosen, its process heading and the four steps with their text. **Marketing:** core message (heading), relationship line. **CCRDI:** §7 hero heading and text, positioning, "Our Mission", "Our Vision", §7 "Core Services" (all five, with their text), ISUCORP credibility message, then the relationship line (award research after the broader positioning) | §2, §6, §7, §12, ccaward.com |
 | 5 | Family of Brands | `SectionTitle` + `PortfolioCarousel` (as on 40 Years) | All three brands, linking to the brand pages | §2, §5 |
 

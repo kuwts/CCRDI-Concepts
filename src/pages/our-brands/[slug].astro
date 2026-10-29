@@ -1,0 +1,111 @@
+---
+// Brand pages (/our-brands/[slug]): the theme's case-study page (portfolio/[slug].astro), the
+// same layout as 40 Years, content in src/content/brand-pages. Each page uses its division
+// colour as the accent: a rule under the H1, the sidebar list markers and the link underline
+// (decorative only; text stays white or dark for contrast).
+import { getCollection, getEntry, render } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import LineLink from '@/components/LineLink.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('brandPages');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content } = await render(entry);
+
+// the homepage brand slider (one source for each brand's photo, colour and link)
+const home = await getEntry('homepage', 'index');
+const brands = home!.data.projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }));
+const external = (href: string) => /^https?:\/\//.test(href);
+---
+
+<Base title={data.title} image={data.image} seo={data.seo}>
+  <section class="page-header pt-20 pb-16 text-muted" style={{ '--accent': data.accent }}>
+    <div class="container -mt-1.5">
+      <div class="row justify-center">
+        <div class="lg:col-12 text-center">
+          <p class="has-anim fade mb-5 font-medium">{data.eyebrow}</p>
+          <h1 class="text-3xl sm:text-4xl has-anim fade delay-100 font-medium text-white break-words">
+            {data.title}
+          </h1>
+          <span class="mx-auto mt-6 block h-1 w-16 rounded-full bg-(--accent) has-anim fade delay-150" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero -->
+  <div class="container">
+    <div class="row">
+      <div class="lg:col-11 -mb-12 has-anim delay-200 mx-auto">
+        <AstroImage
+          src={data.image}
+          alt={data.image_alt}
+          loading="eager"
+          class="h-auto max-h-130 w-full aspect-video object-cover bg-white/3"
+        />
+      </div>
+    </div>
+  </div>
+
+  <section class="bg-white text-mutedDark py-20 md:py-25" style={{ '--accent': data.accent }}>
+    <div class="container">
+      <div class="row pt-5 justify-center">
+        <!-- Sidebar -->
+        <div class="lg:col-4 mt-1">
+          <div class="mb-8 lg:mb-12 has-anim fade">
+            <p class="text-lg font-medium text-black mb-4">{data.sidebar.name}</p>
+            <p class="mb-6">{data.sidebar.description}</p>
+            {data.sidebar.list.length > 0 && (
+              <ul class="mb-6 space-y-1.5">
+                {data.sidebar.list.map((s) => <li><span class="text-(--accent)" aria-hidden="true">~ </span>{s}</li>)}
+              </ul>
+            )}
+            {/* the underline takes the division colour */}
+            <LineLink
+              href={data.sidebar.link.href}
+              label={data.sidebar.link.label}
+              tone="dark"
+              icon="arrow"
+              target={external(data.sidebar.link.href) ? '_blank' : undefined}
+              class="font-medium text-sm [--color-primary:var(--accent)]"
+            />
+          </div>
+          {data.facts.map((info, i) => (
+            <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(i + 1) * 100}ms`}>
+              <p class="text-lg font-medium text-black mb-3">{info.title}</p>
+              <p>{info.content}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Body -->
+        <div class="lg:col-7">
+          <div
+            class="content prose max-w-full pl-0 lg:pl-5 [&_img]:my-5 [&_p]:text-[18px] [&_p]:leading-relaxed [&_li]:text-[18px] [&_h2]:text-[22px]! [&_h2]:leading-[1.6]! [&_h3]:text-[18px]! [&_ul_li]:after:bg-(--accent)!"
+          >
+            <Content />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Family of brands: the homepage brand slider -->
+  {brands.length > 0 && (
+    <section class="bg-white pb-20 md:pb-25">
+      <div class="container">
+        <div class="border-t border-black/5 pt-25 max-md:pt-20"></div>
+        <SectionTitle title={data.next_title} />
+      </div>
+      <PortfolioCarousel projects={brands} />
+    </section>
+  )}
+</Base>

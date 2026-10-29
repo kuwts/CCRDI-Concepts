@@ -17,9 +17,9 @@
       { "name": "Contact", "url": "/contact" }
     ],
     "col2": [
-      { "name": "Consumer Choice Award", "url": "#" },
-      { "name": "Consumer Choice Marketing", "url": "#" },
-      { "name": "Consumer Choice Research, Data & Insights", "url": "#" }
+      { "name": "Consumer Choice Award", "url": "/our-brands/consumer-choice-award" },
+      { "name": "Consumer Choice Marketing", "url": "/our-brands/consumer-choice-marketing" },
+      { "name": "Consumer Choice Research, Data & Insights", "url": "/our-brands/ccrdi" }
     ],
     "col3": [
       { "name": "Privacy Policy", "url": "/privacy" },

@@ -9,6 +9,9 @@
 6. Media & Partners: Media and Partners message, one-line descriptions, placeholders for media contact, logo downloads, news.
 7. Contact: placeholder address, email, and a contact form (placeholder destination).
 8. Privacy Policy (placeholder text), Accessibility Statement (placeholder text), styled 404.
+9. Brand pages (added by the project owner): /our-brands/consumer-choice-award,
+   /our-brands/consumer-choice-marketing, /our-brands/ccrdi. Linked from Our Brands, the
+   homepage and 40 Years brand sliders and the footer.
 
 ## Navigation
 About, Our Brands, 40 Years, For Businesses, Media, Contact.

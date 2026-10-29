@@ -276,6 +276,32 @@ export const businesses = defineCollection({
   }),
 });
 
+/* ── Brand pages (/our-brands/[slug]) ───────────────────────────────── */
+// the case-study (Portfolio detail) layout, like 40 Years; one MDX file per brand
+export const brandPages = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.mdx', base: './src/content/brand-pages' }),
+  schema: z.object({
+    seo: seoSchema,
+    order: z.number().default(0),
+    eyebrow: z.string(),
+    title: z.string(),
+    // the division colour (a token), used as the page accent
+    accent: z.string(),
+    image: z.string(),
+    image_alt: z.string().default(''),
+    sidebar: z.object({
+      name: z.string(),
+      description: z.string(),
+      // the brand's list (shown under the description)
+      list: z.array(z.string()).default([]),
+      link: linkSchema,
+    }),
+    // role + core message, and confirmed public facts (sources in brief/gaps.md)
+    facts: z.array(z.object({ title: z.string(), content: z.string() })),
+    next_title: z.string(),
+  }),
+});
+
 /* ── Services page ─────────────────────────────────────────────────── */
 export const services = defineCollection({
   loader: singleton('services'),
