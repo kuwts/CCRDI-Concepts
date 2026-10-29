@@ -148,6 +148,31 @@ const factsSchema = z.object({
   ),
 });
 
+// home intro block + card stack (StackedServices): label, heading, text, pills, cards
+const introStackSchema = z.object({
+  section_title: z.string(),
+  title: z.string(),
+  description: z.string().default(''),
+  info: z.array(z.string()).default([]),
+  items: z.array(
+    z.object({
+      icon: z.string(),
+      title: z.string(),
+      info: z.string(),
+      meta: z.string().optional(),
+      image: z.string().optional(),
+      image_alt: z.string().optional(),
+    }),
+  ),
+});
+
+// process cards (WorkProcess) with its link strip
+const processSchema = z.object({
+  title: z.string(),
+  steps: z.array(z.object({ heading: z.string(), text: z.string() })),
+  cta: z.object({ title: z.string(), button: linkSchema }),
+});
+
 // logo wall: light logos for a dark section (Clients)
 const logoWallSchema = z.object({
   subtitle: z.string(),
@@ -253,6 +278,9 @@ export const businesses = defineCollection({
   schema: z.object({
     seo: seoSchema,
     title: z.string(),
+    intro: introStackSchema.optional(),
+    // show the homepage testimonial placeholders at the end
+    testimonials: z.boolean().default(false),
     // audiences (WorkProcess) with its contact strip
     audiences: z.object({
       title: z.string(),
@@ -298,6 +326,12 @@ export const brandPages = defineCollection({
     }),
     // role + core message, and confirmed public facts (sources in brief/gaps.md)
     facts: z.array(z.object({ title: z.string(), content: z.string() })),
+    // the brand's logo at the top of the sidebar, when a real one exists
+    logo: z.object({ src: z.string(), alt: z.string() }).optional(),
+    // extra sections after the body, each optional
+    process: processSchema.optional(),
+    stack: introStackSchema.optional(),
+    testimonials: z.boolean().default(false),
     next_title: z.string(),
   }),
 });
@@ -452,6 +486,8 @@ export const pages = defineCollection({
     cta_heading: z.string().optional(),
     // show the homepage news cards under the body (Media & Partners)
     news: z.boolean().default(false),
+    // a logo wall under the header (Media & Partners): the Our Brands logos
+    brand_logos: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });

@@ -8,10 +8,15 @@ import PageHeader from '@/components/PageHeader.astro';
 import WorkProcess from '@/components/WorkProcess.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
 import BlogCard from '@/components/BlogCard.astro';
+import StackedServices from '@/components/StackedServices.astro';
+import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
 
 const entry = await getEntry('businesses', 'index');
-const { title, audiences, brands } = entry!.data;
+const { title, intro, audiences, brands } = entry!.data;
+// testimonials: the homepage placeholders, until the client supplies real ones
+const home = entry!.data.testimonials ? await getEntry('homepage', 'index') : undefined;
+const testimonials = home?.data.testimonials;
 // plain card items: the date line is left empty (these aren't news posts)
 const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }));
 ---
@@ -19,9 +24,39 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
 <Base title={title} seo={entry!.data.seo}>
   <PageHeader subtitle="" title={title} />
 
+  <!-- Intro + card stack (the homepage's intro block) -->
+  {intro && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <div class="row">
+          <div class="lg:col-8">
+            <div class="lg:grid grid-cols-12 sticky top-22">
+              <div class="lg:col-span-3 max-lg:mb-4">
+                <p class="text-sm text-dark block lg:table-caption has-anim fade">{intro.section_title}</p>
+              </div>
+              <div class="lg:col-span-9 space-y-8">
+                <div class="space-y-5">
+                  <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-black has-anim fade">{intro.title}</h2>
+                  <p class="text-dark leading-relaxed max-w-xl text-balance has-anim fade delay-100">{intro.description}</p>
+                </div>
+                <div class="flex flex-col items-start gap-2.5 pt-2">
+                  {intro.info.map((item, i) => (
+                    <p class:list={['inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim', animDelay[i]]}>{item}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-4 max-lg:mt-16">
+            <StackedServices services={intro.items.map((c) => ({ ...c, imageAlt: c.image_alt }))} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- Audiences + contact path -->
-  <WorkProcess subtitle="" title={audiences.title} steps={audiences.steps} cta={audiences.cta} columns={3} class="-mt-24 sm:-mt-28" />
-  {/* negative top margin: follows the page header directly, as on the Services page */}
+  <WorkProcess subtitle="" title={audiences.title} steps={audiences.steps} cta={audiences.cta} columns={3} />
 
   <!-- Consumer Choice Marketing and CCRDI -->
   <section class="bg-white py-20 md:py-25">
@@ -36,4 +71,14 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
       </div>
     </div>
   </section>
+
+  <!-- Testimonials -->
+  {testimonials && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
+      </div>
+      <ReviewCarousel items={testimonials.items} testimonials={testimonials} />
+    </section>
+  )}
 </Base>
