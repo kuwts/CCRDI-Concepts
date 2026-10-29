@@ -56,6 +56,17 @@
   --spacing-section-md: 6.5rem;
   --spacing-section-lg: 8rem;
 
+  /* Roomier section spacing, on trial on the homepage (bold-round): 96px phones,
+     120px tablets, 160px desktops, used by `py-roomy` below */
+  --spacing-roomy-sm: 6rem;
+  --spacing-roomy-md: 7.5rem;
+  --spacing-roomy-lg: 10rem;
+
+  /* Gold hairlines (1px) at key section transitions; each meets 3:1 on its background:
+     Heritage Gold on navy (6.95:1), dark gold on white (5.31:1) and ivory (4.92:1) */
+  --color-hairline-dark: var(--brand-primary);
+  --color-hairline-light: var(--brand-goldText);
+
   /* Motion durations (brief/ui-proposal.md) */
   --duration-fast: 150ms; /* colour and press feedback */
   --duration-base: 250ms; /* underlines, fills, icon nudges */
@@ -95,6 +106,58 @@
   /* Two heading weights in the serif: titles 500, card and sub-section titles 600 */
   --heading-weight: 500;
   --subheading-weight: 600;
+}
+
+/* Roomier rhythm, on trial on the homepage (bold-round) */
+@utility py-roomy {
+  padding-block: var(--spacing-roomy-sm);
+  @media (width >= 48rem) {
+    padding-block: var(--spacing-roomy-md);
+  }
+  @media (width >= 64rem) {
+    padding-block: var(--spacing-roomy-lg);
+  }
+}
+
+/* Navy overlay over hero imagery. Strongest behind the headline column (left on
+   desktop) and at the top; every piece of hero text keeps 4.5:1 over the brightest
+   part of the image (checked per pixel, brief/ui-proposal.md). */
+@utility hero-scrim {
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-dark) 45%, transparent), transparent 40%),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-dark) var(--scrim-left, 82%), transparent),
+      color-mix(in srgb, var(--color-dark) var(--scrim-mid, 74%), transparent) 55%,
+      color-mix(in srgb, var(--color-dark) var(--scrim-right, 68%), transparent)
+    );
+  /* phones and tablets: the text is centred over the whole image, so one even layer */
+  @media (width < 64rem) {
+    background: color-mix(in srgb, var(--color-dark) var(--scrim-small, 72%), transparent);
+  }
+}
+
+/* A very fine grain for navy backgrounds: white specks at no more than 3.5% opacity,
+   so text contrast is effectively unchanged (white stays above 14:1, gold above 6.4:1). */
+@utility bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Pull quote: a larger italic serif for statements taken word for word from the
+   framework (never invented quotes or testimonials), set off by a gold rule. */
+@utility pull-quote {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.875rem, 1.45rem + 1.4vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--color-hairline-light);
+  @media (width >= 64rem) {
+    padding-left: 2rem;
+  }
 }
 
 /* One section rhythm for every page: the padding steps up with the screen width. */

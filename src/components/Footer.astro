@@ -10,11 +10,16 @@ const year = new Date().getFullYear();
 // inline-block + py-0.5: a 28px tap target (lists use space-y-2.5 to keep the rhythm)
 const linkClass = 'inline-block py-0.5 text-[15px] text-white/80 underline decoration-transparent decoration-1 underline-offset-3 transition hover:decoration-primary/70';
 
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
 const { footer, author } = site;
 const { logo } = site.brand;
 ---
 
-<footer class="py-section text-muted">
+<footer class:list={['py-section text-muted', className]}>
   <div class="container">
     <div class="row">
       <div class="col-12">

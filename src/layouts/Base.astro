@@ -9,6 +9,7 @@ import DeviceSizeIndicator from "@/components/helper/DeviceSizeIndicator.astro";
 
 // brand fonts, self-hosted (site.config.json → brand.font names these families)
 import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/source-serif-4/wght-italic.css';
 import '@fontsource-variable/inter';
 import '@/styles/global.css';
 
@@ -22,6 +23,8 @@ interface Props {
   /** SEO overrides from the page's content entry (its `seo` front-matter block). */
   seo?: Seo;
   noindex?: boolean;
+  /** Extra classes on the site footer. */
+  footerClass?: string;
   /** Canonical URL or path; defaults to this page's own URL. */
   canonical?: string;
   /** og:type */
@@ -35,6 +38,7 @@ const {
   image,
   seo,
   noindex = false,
+  footerClass,
   canonical,
   type = 'website',
 } = Astro.props;
@@ -151,7 +155,7 @@ const organization = isHome
     <DeviceSizeIndicator />
     <Header />
     <main id="main" tabindex="-1" class="outline-none"><slot /></main>
-    <Footer />
+    <Footer class={footerClass} />
 
     <script>
       // ── Scroll reveal animations ──────────────────────────────────

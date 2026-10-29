@@ -21,6 +21,14 @@ Selection rules: chosen for the brief's calm, established-institution feel, Cana
 
 Also rejected: a Canadian flags photo taken at the 2022 convoy protest, as political.
 
+Hero imagery (bold-round), also rejected:
+- an Old Québec dusk skyline with "Delta" and "Hilton" signs on two towers
+- a Montréal dusk aerial dominated by the Farine Five Roses sign
+- a Vancouver harbour sunset with a scrolling LED sign on BC Place
+- vertical (9:16) clips of Old Québec and Vancouver, which don't fit a wide hero
+- Ottawa skylines (Parliament: government connection) and Toronto clips (the showreel below is already Toronto)
+- a calm night waterfront in blue hour, location not stated and apparently European, so the Canadian Québec aerial was used instead
+
 Second pass, on the project owner's request:
 - **Replaced:**
   - the news Toronto skyline (the skyline now appears only in the showreel)
@@ -40,7 +48,7 @@ Second pass, on the project owner's request:
 - **Kept, because no Canadian alternative fit as well:** the carpenter (Dar es Salaam, Tanzania) and the Award celebration (York, United Kingdom).
 
 Locations:
-- **Canadian:** showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
+- **Canadian:** hero versions A and B (Québec City), showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
 - **Not stated:** florist, desk, research and marketing teams, OPEN sign, gold stars, flag (tagged Canada).
 
 ## Video
@@ -49,6 +57,8 @@ Locations:
 |---|---|---|---|---|
 | `videos/placeholders/toronto-skyline-lake.mp4` (1280 x 720, 22 s, 3.7 MB; re-encoded from Pexels' 1920 x 1080 file, no audio track) | Home: showreel | https://www.pexels.com/video/boat-ship-dock-canada-4331635/ | Bhargava Marripati | Pexels License |
 | `images/placeholders/showreel-poster-toronto-skyline.jpg` | Home: showreel poster (frame at 0:01 of the video above) | same as above | Bhargava Marripati | Pexels License |
+| `videos/placeholders/hero-quebec-port-aerial.mp4` (1280 x 720, 24 s, 2.8 MB, no audio track; re-encoded from Pexels' 2560 x 1440 file: the first 12 s played forward then in reverse for a seamless loop, slightly darkened and desaturated to keep it calm) | Home: hero background, version B (bold-round branch, decorative, under a navy overlay) | https://www.pexels.com/video/aerial-view-of-old-quebec-city-and-st-lawrence-river-29298568/ | David Montanari | Pexels License |
+| `images/placeholders/hero-quebec-port-aerial-poster.jpg` | Home: hero version B poster (first frame of the video above, same grade) | same as above | David Montanari | Pexels License |
 
 ## Photos
 
@@ -68,6 +78,7 @@ Locations:
 | `news-granville-market.jpg` | Home: news card 2 (cropped to leave out a vendor's sign) | Shoppers at a fruit stand in the Granville Island Public Market, Vancouver | https://unsplash.com/photos/a-group-of-people-standing-around-a-fruit-stand-w0q7OX3T-hM | Dania Shaeeb | Unsplash License |
 | `news-maple-leaves.jpg` | Home: news card 3 | Red maple leaves fallen across an old wooden fence | https://unsplash.com/photos/red-maple-leaves-2SOn18mpBZo | Suvin Vengilat | Unsplash License |
 | `news-st-jacobs-market.jpg` | Home: news card 4 | Shoppers browsing tomatoes and flowers at St. Jacobs Farmers' Market in Ontario | https://unsplash.com/photos/people-shopping-at-an-outdoor-farmers-market-with-fresh-produce-e3-9x-Ee238 | Jason Ng | Unsplash License |
+| `hero-quebec-city-river-dusk.jpg` | Home: hero background, version A (bold-round branch; decorative, `alt=""`, under a navy overlay) | (decorative) Old Québec, the Château Frontenac and the St. Lawrence at dusk, seen from across the river | https://unsplash.com/photos/a-night-view-of-a-city-and-a-body-of-water-w9BtYCIUxi0 | Dana Andreea Gheorghe | Unsplash License |
 
 
 ### About page

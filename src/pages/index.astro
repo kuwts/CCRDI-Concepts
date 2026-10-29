@@ -15,20 +15,56 @@ import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import Clients from '@/components/Clients.astro';
 import BlogCard from '@/components/BlogCard.astro';
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import AstroVideo from '@/components/helper/AstroVideo.astro';
+import PauseButton from '@/components/PauseButton.astro';
 import { animDelay } from '@/utils/animDelay';
 
 // every section reads its copy (and placeholders) from the homepage entry
 const home = await getEntry('homepage', 'index');
 const { banner, intro, projects, process, testimonials, blog } = home!.data;
+const heroBg = banner.background;
+const heroVideo = heroBg?.variant === 'video' && heroBg.video ? heroBg : null;
 
 const [featuredPost, ...otherPosts] = blog.items.map((n) => ({ ...n, imageAlt: n.image_alt }));
 const gridPosts = otherPosts.slice(0, 3);
 ---
 
-<Base seo={home!.data.seo}>
+<Base seo={home!.data.seo} footerClass="bg-grain">
   <!-- Banner -->
-  <section class="relative">
-    <div class="relative z-10 pt-20 lg:pt-25 pb-25 lg:pb-35 text-white">
+  <section class="relative bg-grain">
+    <div class="relative z-10 isolate pt-24 lg:pt-36 pb-32 lg:pb-48 text-white" data-hero>
+      {/* decorative imagery behind the hero text, under a navy overlay (version A: photo,
+          version B: muted looping video; brief/ui-proposal.md) */}
+      {heroBg && (
+        <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+          {heroVideo ? (
+            <AstroVideo
+              src={heroVideo.video}
+              poster={heroVideo.poster}
+              posterWidth={1600}
+              muted
+              loop
+              playsinline
+              preload="none"
+              class="absolute inset-0 h-full w-full object-cover"
+              data-hero-video
+            />
+          ) : (
+            <AstroImage
+              src={heroBg.image}
+              alt=""
+              loading="eager"
+              widths={[800, 1200, 1600, 2400]}
+              sizes="100vw"
+              class="absolute inset-0 h-full w-full object-cover object-[22%_60%] lg:object-[30%_62%]"
+            />
+          )}
+          {/* the video's daytime sky is brighter than the dusk photo: a stronger even layer on smaller screens */}
+          <div class:list={['absolute inset-0 hero-scrim', heroVideo && '[--scrim-small:78%]']}></div>
+          <div class="absolute inset-x-0 bottom-0 h-px bg-hairline-dark"></div>
+        </div>
+      )}
       <div class="container text-center lg:text-left">
         <div class="row md:justify-center">
           <div class="xl:col-6 lg:col-7 md:col-10">
@@ -53,6 +89,7 @@ const gridPosts = otherPosts.slice(0, 3);
           </div>
         </div>
       </div>
+      {heroVideo && <PauseButton label="background video" class="bottom-4 left-4" />}
     </div>
 
     <!-- 40th anniversary seal: a stamp on the edge between the hero and the showreel,
@@ -72,7 +109,7 @@ const gridPosts = otherPosts.slice(0, 3);
       </div>
     </div>
 
-    <div class="relative z-10 -mb-12 has-anim fade">
+    <div class="relative z-10 -mb-12 pt-16 lg:pt-28 has-anim fade">
       <div class="container">
         <div class="row">
           <div class="col-12">
@@ -85,7 +122,7 @@ const gridPosts = otherPosts.slice(0, 3);
     <BannerShape />
   </section>
 
-  <section class="bg-light py-section">
+  <section class="bg-light py-roomy">
     <div class="container">
       <div class="row mt-12">
 
@@ -98,8 +135,8 @@ const gridPosts = otherPosts.slice(0, 3);
             </div>
             
             <div class="lg:col-span-9 space-y-8">
-              <div class="space-y-5">
-                <h2 class="text-statement text-dark has-anim fade">
+              <div class="space-y-8 lg:space-y-10">
+                <h2 class="pull-quote text-dark has-anim fade">
                   {intro.title}
                 </h2>
                 <p class="text-body text-text max-w-measure has-anim fade delay-100">
@@ -130,23 +167,25 @@ const gridPosts = otherPosts.slice(0, 3);
 
   <!-- Family of brands carousel -->
   {projects.items.length > 0 && (
-    <section class="bg-white py-section">
+    <section class="relative bg-white py-roomy">
+      <div class="pointer-events-none absolute inset-x-0 top-0" aria-hidden="true"><div class="container"><div class="h-px bg-hairline-light"></div></div></div>
       <div class="container">
-        <SectionTitle subtitle={projects.subtitle} title={projects.title} />
+        <SectionTitle subtitle={projects.subtitle} title={projects.title} marginClass="mb-15 lg:mb-20" />
       </div>
       <PortfolioCarousel projects={projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }))} />
     </section>
   )}
 
   <!-- Work process -->
-  <WorkProcess subtitle={process.subtitle ?? ''} title={process.title} steps={process.steps} cta={process.cta} />
+  <WorkProcess subtitle={process.subtitle ?? ''} title={process.title} steps={process.steps} cta={process.cta} spacingClass="py-roomy" class="bg-grain" />
 
   <!-- Testimonials -->
-  <section class="bg-light py-section">
+  <section class="bg-light py-roomy">
     <div class="container">
       <SectionTitle
         subtitle={testimonials.subtitle ?? ''}
         title={testimonials.title ?? ''}
+        marginClass="mb-15 lg:mb-20"
        
       />
     </div>
@@ -156,9 +195,10 @@ const gridPosts = otherPosts.slice(0, 3);
 
   <!-- Blog (hidden when there are no posts) -->
   {featuredPost && (
-    <section class="bg-white py-section">
+    <section class="relative bg-white py-roomy">
+      <div class="pointer-events-none absolute inset-x-0 top-0" aria-hidden="true"><div class="container"><div class="h-px bg-hairline-light"></div></div></div>
       <div class="container">
-        <SectionTitle subtitle={blog.subtitle} title={blog.title} />
+        <SectionTitle subtitle={blog.subtitle} title={blog.title} marginClass="mb-15 lg:mb-20" />
 
         <div class="row">
           <div class="lg:col-12 has-anim">
@@ -182,3 +222,38 @@ const gridPosts = otherPosts.slice(0, 3);
     </section>
   )}
 </Base>
+
+<script>
+  // Hero background video (version B): the poster shows first; the video plays only
+  // while the hero is on screen, the tab is visible and it isn't paused, and never
+  // with reduced motion (poster only, so the pause button is removed).
+  const heroVideo = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  if (heroVideo) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pauseBtn = heroVideo.closest('[data-hero]')?.querySelector<HTMLButtonElement>(':scope > [data-pause-toggle]');
+    if (reduceMotion) {
+      pauseBtn?.remove();
+    } else {
+      let inView = false;
+      let paused = false;
+      const sync = () => {
+        if (inView && !paused && !document.hidden) {
+          if (heroVideo.paused) heroVideo.play().catch(() => {});
+        } else if (!heroVideo.paused) {
+          heroVideo.pause();
+        }
+      };
+      new IntersectionObserver(([e]) => {
+        inView = e.isIntersecting;
+        sync();
+      }).observe(heroVideo);
+      document.addEventListener('visibilitychange', sync);
+      pauseBtn?.addEventListener('click', () => {
+        paused = !paused;
+        pauseBtn.setAttribute('aria-pressed', String(paused));
+        pauseBtn.textContent = `${paused ? 'Play' : 'Pause'} background video`;
+        sync();
+      });
+    }
+  }
+</script>

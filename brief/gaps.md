@@ -170,7 +170,10 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] Homepage strip uses "Celebrating 40 Years of Trust", the first half of the §10 headline
       (approved by the project owner)
 - [ ] Theme interface text kept for function and accessibility: "Prev", "Next", "Play",
-      "Play showreel", "Pause ..." controls, "Skip to content", "Close", "Copyright"
+      "Play showreel", "Pause ..." controls, "Skip to content", "Close", "Copyright".
+      Added on the bold-round branch (homepage hero, version B only): "Pause background
+      video" / "Play background video", the same pattern as the showreel's control; shown
+      only on keyboard focus.
 - [ ] **Design decision for client approval (adjusts design.md):** buttons are gold-outline
       instead of solid navy or gold fills, with a slow sheen across the border on hover and
       keyboard focus (off with reduced motion). The border uses Heritage Gold #D4A843 on navy
@@ -207,6 +210,8 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Footer brand links: [CLIENT TO PROVIDE: Consumer Choice Award URL],
   [CLIENT TO PROVIDE: Consumer Choice Marketing URL], [CLIENT TO PROVIDE: CCRDI URL]
 - Anniversary seal (hero and footer): 1987, pending confirmation (see Still needed)
+- Homepage hero background (bold-round branch): free-licence Québec City photo (version A) or
+  video (version B), placeholder-media.md, until [CLIENT TO PROVIDE: hero photography or video]
 
 ### Placeholder photos and video
 All photos and the showreel video on the homepage are free-licence placeholders (Unsplash and

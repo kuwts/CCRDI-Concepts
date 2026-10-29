@@ -30,6 +30,16 @@ export const homepage = defineCollection({
       video: z.string().default(''),
       // other formats of the same video (e.g. an .mp4 for browsers without .webm)
       video_sources: z.array(z.string()).optional(),
+      // decorative imagery behind the hero text (alt=""): a photo, or a muted looping
+      // video whose poster shows first (and alone with reduced motion)
+      background: z
+        .object({
+          variant: z.enum(['photo', 'video']).default('photo'),
+          image: z.string(),
+          video: z.string().default(''),
+          poster: z.string().default(''),
+        })
+        .optional(),
       social_proof: z.object({
         label: z.string(),
         avatars: z.array(
