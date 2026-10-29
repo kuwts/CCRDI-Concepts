@@ -37,3 +37,7 @@ the meantime (the safest reasonable one); none of them is hard to undo.
     footer email fix (a placeholder is now plain text, not a broken mailto: link). Say if
     something else was meant.
 
+12. **Site domain (`baseURL`).** `src/config/site.config.json` still has `https://example.com`,
+    so every canonical URL, `og:url`, share image URL, the XML sitemap and robots.txt point to
+    example.com. What is the live domain for the Consumer Choice Canada site? It is not guessed;
+    it stays as it is until you confirm it (audit.md, Broken #2).
