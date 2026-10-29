@@ -47,7 +47,7 @@ const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
       alt={imageAlt}
       loading="lazy"
       class:list={[
-        'h-auto w-full max-w-full transition-transform duration-700 group-hover:scale-[1.2] group-focus-within:scale-[1.2] bg-gray-100',
+        'h-auto w-full max-w-full transition-[scale] duration-(--duration-slow) group-hover:scale-(--zoom-image) group-focus-within:scale-(--zoom-image) motion-reduce:transition-none bg-gray-100',
         ease,
       ]}
     />

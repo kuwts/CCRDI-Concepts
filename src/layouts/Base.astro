@@ -6,7 +6,6 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ScrollProgress from '@/components/ScrollProgress.astro';
 import DeviceSizeIndicator from "@/components/helper/DeviceSizeIndicator.astro";
-import GradualBlur from '@/components/GradualBlur.astro';
 
 // brand fonts, self-hosted (site.config.json → brand.font names these families)
 import '@fontsource-variable/source-serif-4';
@@ -23,8 +22,6 @@ interface Props {
   /** SEO overrides from the page's content entry (its `seo` front-matter block). */
   seo?: Seo;
   noindex?: boolean;
-  /** Preview the UI proposal (brief/ui-proposal.md) on this page only. */
-  uiProposal?: boolean;
   /** Canonical URL or path; defaults to this page's own URL. */
   canonical?: string;
   /** og:type */
@@ -38,7 +35,6 @@ const {
   image,
   seo,
   noindex = false,
-  uiProposal = false,
   canonical,
   type = 'website',
 } = Astro.props;
@@ -95,7 +91,7 @@ const organization = isHome
 ---
 
 <!doctype html>
-<html lang={config.locale.lang} data-ui={uiProposal ? 'proposal' : undefined}>
+<html lang={config.locale.lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -156,16 +152,6 @@ const organization = isHome
     <Header />
     <main id="main" tabindex="-1" class="outline-none"><slot /></main>
     <Footer />
-
-    <GradualBlur
-      target="page"
-      position="bottom"
-      height="6rem"
-      strength={2}
-      divCount={5}
-      curve="bezier"
-      exponential
-    />
 
     <script>
       // ── Scroll reveal animations ──────────────────────────────────

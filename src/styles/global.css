@@ -139,13 +139,14 @@
    been revealed yet is still read by screen readers, found by find-in-page and
    printed. */
 @utility has-anim {
+  /* one calm fade-up for everything (`fade` is kept as an alias) */
   opacity: 0;
   transition-property: transform, opacity;
-  transition-duration: 0.4s;
+  transition-duration: var(--duration-slow);
   transition-timing-function: var(--ease-theme);
-  transform: translateY(25px) scale(0.99);
+  transform: translateY(var(--reveal-distance));
   &.fade {
-    transform: translateY(8px) scale(1);
+    transform: translateY(var(--reveal-distance));
   }
   /* fade and scale in place (the anniversary seal) */
   &.pop {
@@ -154,7 +155,7 @@
   }
   &.is-visible {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
   }
 
   /* No reveal motion for users who ask for reduced motion, and none in print */
@@ -199,39 +200,51 @@
     top: 1px;
     margin-left: 4px;
   }
+  /* a faint resting underline (::before); on hover or focus a full-strength one
+     draws in from the left (::after) and the arrow nudges up and right */
   &::before,
   &::after {
     position: absolute;
     content: '';
     height: 1px;
-    width: 0;
-    right: 0;
+    left: 0;
     bottom: 0;
-    z-index: -1;
-    background-color: color-mix(in srgb, var(--color-primary) 80%, transparent);
-    transition: 0.4s var(--ease-theme);
     pointer-events: none;
   }
   &::before {
     width: 100%;
     z-index: -2;
-    transition: 0s;
     background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
-  &:is(:hover, :focus-visible)::before {
+  &::after {
     width: 0;
-    transition: 0.4s var(--ease-theme);
+    z-index: -1;
+    background-color: color-mix(in srgb, var(--color-primary) 80%, transparent);
+    transition: width var(--duration-base) var(--ease-theme);
   }
   &:is(:hover, :focus-visible)::after {
     width: 100%;
-    right: auto;
-    left: 0;
-    transition-delay: 0.3s;
+  }
+  & svg {
+    transition: translate var(--duration-base) var(--ease-theme);
+  }
+  &:is(:hover, :focus-visible) svg {
+    translate: 2px -2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &::after,
+    & svg {
+      transition: none;
+    }
+    &:is(:hover, :focus-visible) svg {
+      translate: none;
+    }
   }
 }
 
 /* Buttons. The label wraps onto more lines when there isn't room (the button
-   grows taller instead of overflowing). */
+   grows taller instead of overflowing). The label stays put on hover: a quiet
+   fill (btn-white / btn-black) and a 1px press are the feedback. */
 @utility btn {
   --btn-h: 50px;
   --btn-px: 30px;
@@ -256,34 +269,12 @@
     --btn-px: 22px;
   }
   & span {
+    position: relative;
+    z-index: 1;
     display: block;
-    transition:
-      transform 0.65s var(--ease-theme),
-      opacity 0.2s;
   }
-  &::after {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 var(--btn-px);
-    content: attr(data-text);
-    z-index: 2;
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.95) translateY(12px);
-    transition:
-      transform 0.65s var(--ease-theme),
-      opacity 0.2s;
-  }
-  &:is(:hover, :focus-visible) span {
-    opacity: 0;
-    transform: scale(0.95) translateY(-12px);
-  }
-  &:is(:hover, :focus-visible)::after {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+  &:active {
+    translate: 0 1px;
   }
 }
 /* Gold-outline buttons. The border is drawn by ::before (so the theme's overflow
@@ -332,7 +323,9 @@
   --btn-sheen: color-mix(in srgb, var(--color-light) 95%, transparent);
   color: var(--color-white);
   font-weight: 600;
-  transition: background-color 0.3s var(--ease-theme);
+  transition:
+    background-color var(--duration-base) var(--ease-theme),
+    translate var(--duration-fast) var(--ease-theme);
   &:is(:hover, :focus-visible) {
     background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   }
@@ -343,7 +336,9 @@
   --btn-sheen: color-mix(in srgb, var(--color-primary) 90%, var(--color-white));
   color: var(--color-dark);
   font-weight: 600;
-  transition: background-color 0.3s var(--ease-theme);
+  transition:
+    background-color var(--duration-base) var(--ease-theme),
+    translate var(--duration-fast) var(--ease-theme);
   &:is(:hover, :focus-visible) {
     background-color: color-mix(in srgb, var(--color-dark) 5%, transparent);
   }
@@ -647,116 +642,5 @@
 
   & option {
     color: var(--color-dark);
-  }
-}
-
-/* ── UI proposal preview (brief/ui-proposal.md) ──────────────────────────────
-   Homepage only, behind <html data-ui="proposal"> (Base `uiProposal` prop); the rest
-   of the site is unchanged until the proposal is approved. Unlayered, so it takes
-   precedence over the theme's utilities without !important. */
-[data-ui='proposal'] {
-  /* Buttons: the label stays put (no roll-up swap); a quiet fill and a 1px press.
-     The approved gold sheen on the border is unchanged. */
-  & .btn span,
-  & .btn:is(:hover, :focus-visible) span {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  & .btn::after {
-    display: none;
-  }
-  & .btn {
-    transition:
-      background-color var(--duration-base) var(--ease-theme),
-      translate var(--duration-fast) var(--ease-theme);
-  }
-  & .btn:active {
-    translate: 0 1px;
-  }
-
-  /* Text links: the resting hairline stays; a full-strength underline draws in from
-     the left at once (no retract and 0.3s wait), and the arrow nudges 2px. */
-  & .line-link::before,
-  & .line-link:is(:hover, :focus-visible)::before {
-    width: 100%;
-    transition: none;
-  }
-  & .line-link::after {
-    left: 0;
-    right: auto;
-    width: 0;
-    transition: width var(--duration-base) var(--ease-theme);
-  }
-  & .line-link:is(:hover, :focus-visible)::after {
-    width: 100%;
-    transition-delay: 0s;
-  }
-  & .line-link svg {
-    transition: translate var(--duration-base) var(--ease-theme);
-  }
-  & .line-link:is(:hover, :focus-visible) svg {
-    translate: 2px -2px;
-  }
-
-  /* Scroll reveal: one calm fade-up for everything (12px, 700ms, no scale) instead of
-     a 25px rise with a scale or an 8px rise in 400ms. The seal's pop is unchanged. */
-  & .has-anim,
-  & .has-anim.fade {
-    transform: translateY(var(--reveal-distance));
-    transition-duration: var(--duration-slow);
-  }
-  & .has-anim.pop {
-    transform: scale(0.9);
-    transition-duration: 0.9s;
-  }
-  & .has-anim.is-visible {
-    transform: none;
-  }
-
-  /* Card images: a slow 4% zoom on hover or focus (was 20% on the brand cards and a
-     sideways shift on the news cards). */
-  & .group.rounded-card > span:first-child img,
-  & .group\/img a[aria-label] img {
-    scale: 1;
-    transform-origin: center;
-    transition: scale var(--duration-slow) var(--ease-theme);
-  }
-  & .group.rounded-card:is(:hover, :focus-within) > span:first-child img,
-  & .group\/img:is(:hover, :focus-within) a[aria-label] img {
-    scale: var(--zoom-image);
-  }
-
-  /* No fixed blur band at the bottom of the screen. */
-  & .gradual-blur {
-    display: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .has-anim,
-    & .has-anim.fade,
-    & .has-anim.pop {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-    & .btn,
-    & .line-link::after,
-    & .line-link svg,
-    & .group.rounded-card > span:first-child img,
-    & .group\/img a[aria-label] img {
-      transition: none;
-    }
-    & .line-link:is(:hover, :focus-visible) svg {
-      translate: none;
-    }
-  }
-  @media print {
-    & .has-anim,
-    & .has-anim.fade,
-    & .has-anim.pop {
-      opacity: 1;
-      transform: none;
-    }
   }
 }

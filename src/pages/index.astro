@@ -25,7 +25,7 @@ const [featuredPost, ...otherPosts] = blog.items.map((n) => ({ ...n, imageAlt: n
 const gridPosts = otherPosts.slice(0, 3);
 ---
 
-<Base seo={home!.data.seo} uiProposal>
+<Base seo={home!.data.seo}>
   <!-- Banner -->
   <section class="relative">
     <div class="relative z-10 pt-20 lg:pt-25 pb-25 lg:pb-35 text-white">

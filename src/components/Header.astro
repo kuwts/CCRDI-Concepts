@@ -54,7 +54,6 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
             <a
               href={headerButton.url}
               class="btn btn-sm btn-white"
-              data-text={headerButton.label}
               {...extAttrs}
             >
               <span>{headerButton.label}</span>
@@ -173,7 +172,6 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
   <a
     href={headerButton.url}
     class="btn btn-white mt-6 flex w-full"
-    data-text={headerButton.label}
     {...extAttrs}
   >
     <span>{headerButton.label}</span>

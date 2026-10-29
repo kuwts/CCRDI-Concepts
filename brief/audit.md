@@ -173,6 +173,8 @@ Things that are wrong now, or would be wrong on a live site.
    - **Effect:** it blurs whatever scrolls under it, and a full-width `backdrop-filter` costs
      GPU time on low-end phones. It's also why every full-page screenshot shows a blurred band.
    - **Fix:** remove it, or keep it lighter, for a calmer institutional feel.
+   - **Fixed** (UI proposal, stage 2): removed from `Base.astro`; the component file is on the
+     cleanup list.
 2. **Theme interface text.**
    - **Where:** Prev/Next (sliders), Play / Play showreel, Pause … controls, Close video,
      Close menu / Open menu, "Rated n out of 5", Copyright.

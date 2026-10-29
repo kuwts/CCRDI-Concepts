@@ -69,8 +69,9 @@ changes (CLAUDE.md).
 | `src/components/PortfolioCard.astro`, `PortfolioCarousel.astro` | Home, 40 Years, brand pages (carousel); portfolio pages (grid) | keep; drop the `/portfolio/{slug}` default link |
 | `src/components/helper/DeviceSizeIndicator.astro` | `Base.astro`, dev only | keep or delete (not in production builds) |
 
-Every other component is used by a CCC page. Also keep `CounterUp`, `PauseButton` and
-`GradualBlur` (used by Base, though audit.md suggests removing the effect).
+| `src/components/GradualBlur.astro` | nothing (removed from `Base.astro` with the UI proposal) | unused: delete |
+
+Every other component is used by a CCC page. Also keep `CounterUp` and `PauseButton`.
 
 ## 4. Images and video
 

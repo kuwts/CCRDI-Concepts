@@ -30,11 +30,11 @@ const classes = ['btn', variantClass, block ? 'flex w-full' : '', className]
 
 {
   href ? (
-    <a href={href} class={classes} data-text={label} target={target} rel={rel ?? (target === '_blank' ? 'noopener' : undefined)}>
+    <a href={href} class={classes} target={target} rel={rel ?? (target === '_blank' ? 'noopener' : undefined)}>
       <span>{label}</span>
     </a>
   ) : (
-    <button type={type} class={classes} data-text={label}>
+    <button type={type} class={classes}>
       <span>{label}</span>
     </button>
   )
