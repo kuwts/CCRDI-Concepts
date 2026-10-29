@@ -98,7 +98,7 @@ Rejected for the About page:
 | File | Used on | Alt text (placeholder) | Source | Photographer | Licence |
 |---|---|---|---|---|---|
 | `brands-intro-vancouver-marina.jpg` | Our Brands: Facts intro tile | Boats in a marina on False Creek, with downtown Vancouver and the mountains behind | https://unsplash.com/photos/boats-docked-in-a-marina-with-a-city-skyline-beyond-zBfM4ifCQ7o | Doug Nealy | Unsplash License |
-| `brand-award-celebration.jpg`, `brand-marketing-review.jpg`, `brand-research-charts.jpg` | Our Brands: brand cards (reused from the homepage, so each brand keeps one image) | as on the homepage | see the homepage table | | |
+| `brand-award-celebration.jpg`, `brand-marketing-review.jpg`, `brand-research-charts.jpg` | Our Brands: brand cards; brand pages: feature images; For Businesses: brand cards (reused from the homepage, so each brand keeps one image) | as on the homepage | see the homepage table | | |
 
 ### 40 Years page
 

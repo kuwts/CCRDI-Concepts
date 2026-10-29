@@ -18,6 +18,16 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       Consumer Choice Marketing, and Consumer Choice Research, Data & Insights.")
 
 ## Still needed
+- [ ] **Confirm the Consumer Choice Award brand page copy from ccaward.com** (word for word):
+      - Sidebar facts: "1987": "CCA launched in Montréal in 1987, with early operations also
+        in Ottawa." (https://ccaward.com/blog/40-years-of-recognizing-the-businesses-canadians-count-on/);
+        "One winner per category" (our label): "Unlike other award programs, there is only one
+        winner in your category." (https://www.ccaward.com)
+      - Body: "Your recognition is not based on an application, a company nominating itself, or
+        the opinion of a small judging panel. It begins with independent consumer research and
+        the collective voice of the marketplace." (https://ccaward.com/about/)
+      - Body: the heading "Canada's only award organization to utilize statistically supported
+        independent research." and the four steps with their text (https://www.ccaward.com)
 - [ ] **Consumer Choice Award logo in vector (SVG, EPS or PDF) or high resolution (at least
       1000 px, transparent PNG).** The only public copy on ccaward.com is 255 x 300 px.
 - [ ] Logos for all four brands (SVG), including a light CCC logo for the navy header.
@@ -59,7 +69,8 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       milestones are invented)
 - [ ] Contact details (email, phone, address), form destination email, social links
 - [ ] URLs for the Consumer Choice Award, Consumer Choice Marketing, and CCRDI sites.
-      **Confirm the Our Brands card links:**
+      **Confirm the brand links.** The Our Brands cards now link to the brand pages ("Learn
+      More"). On the brand pages (sidebar):
       - Consumer Choice Award: "Visit Website" → https://www.ccaward.com (opens in a new tab)
       - Consumer Choice Marketing: "Contact Us" → /contact (no official website found)
       - CCRDI: "Contact Us" → /contact (no official website found; ccaward.com mentions
@@ -220,6 +231,22 @@ be rewritten for the client's photos.
    list heading "Our Brands"
 4. Family of Brands slider (the homepage component): reuses the homepage brand photos; links to
    /our-brands
+
+### For Businesses, Media & Partners, Contact, legal and 404 pages
+- For Businesses: no placeholders (brand cards reuse the homepage brand photos)
+- Media & Partners: [CLIENT TO PROVIDE: media contact heading], [CLIENT TO PROVIDE: media
+  contact name, email and phone], [CLIENT TO PROVIDE: logo downloads heading],
+  [CLIENT TO PROVIDE: logo download files]; news: the homepage placeholders
+- Contact: [CLIENT TO PROVIDE: contact intro heading], [CLIENT TO PROVIDE: contact intro text],
+  email, phone, address, [CLIENT TO PROVIDE: sending message], [CLIENT TO PROVIDE: error
+  message]; form notifications email (Netlify dashboard)
+- Contact thank-you: [CLIENT TO PROVIDE: thank-you heading], [CLIENT TO PROVIDE: thank-you
+  message]
+- Privacy Policy and Accessibility Statement: [CLIENT TO PROVIDE: last updated date],
+  [CLIENT TO PROVIDE: privacy policy text], [CLIENT TO PROVIDE: accessibility statement text]
+- 404: [CLIENT TO PROVIDE: 404 message]
+- Brand pages: the brand photos (reused from the homepage); Marketing service list pending
+  confirmation
 
 ## Pre-launch
 - [ ] No [CLIENT TO PROVIDE: ...] text, [FOUNDING YEAR], placeholder images, placeholder
