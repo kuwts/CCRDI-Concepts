@@ -19,6 +19,8 @@ const {
   class: className = '',
 } = Astro.props;
 
+// no decorative dot after a title that already ends in punctuation (e.g. a full sentence)
+const showDot = dot && !/[.!?:]$/.test((title ?? '').trim());
 const titleColor = background === 'dark' ? 'text-white' : 'text-dark';
 const subTitleColor = background === 'dark' ? 'text-white/70' : 'text-dark/70';
 ---
@@ -37,8 +39,8 @@ const subTitleColor = background === 'dark' ? 'text-white/70' : 'text-dark/70';
       class:list={[
         'text-3xl font-semibold md:text-4xl has-anim delay-50 text-balance',
         titleColor,
-        dot ? 'section-title-dot' : '',
-        dot && background !== 'dark' ? '[--dot-color:var(--color-gold-text)]' : '',
+        showDot ? 'section-title-dot' : '',
+        showDot && background !== 'dark' ? '[--dot-color:var(--color-gold-text)]' : '',
       ]}
     >
       {title}

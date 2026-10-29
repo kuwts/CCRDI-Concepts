@@ -26,8 +26,11 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       - Body: "Your recognition is not based on an application, a company nominating itself, or
         the opinion of a small judging panel. It begins with independent consumer research and
         the collective voice of the marketplace." (https://ccaward.com/about/)
-      - Body: the heading "Canada's only award organization to utilize statistically supported
-        independent research." and the four steps with their text (https://www.ccaward.com)
+      - Process cards: the heading "Canada's only award organization to utilize statistically
+        supported independent research." and the four steps with their text; strip line
+        "Recognizing and celebrating business excellence since 1987" (ccaward.com's header)
+        (https://www.ccaward.com)
+      - Sidebar: the real Consumer Choice Award logo (ccaward.com)
 - [ ] **Consumer Choice Award logo in vector (SVG, EPS or PDF) or high resolution (at least
       1000 px, transparent PNG).** The only public copy on ccaward.com is 255 x 300 px.
 - [ ] Logos for all four brands (SVG), including a light CCC logo for the navy header.

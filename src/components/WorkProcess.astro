@@ -19,6 +19,7 @@ interface Props {
     button: {
       label: string;
       href: string;
+      target?: string;
     };
   };
   /** cards per row from lg (default 4) */
@@ -64,7 +65,7 @@ const stripImages = (cta.images ?? []).map((img) =>
         <p class="text-white text-balance">{cta.title}</p>
       </div>
       <div class="md:ms-auto max-md:mt-6 has-anim delay-200">
-        <LineLink href={cta.button.href} label={cta.button.label} tone="white" icon="arrow" />
+        <LineLink href={cta.button.href} label={cta.button.label} target={cta.button.target} tone="white" icon="arrow" />
       </div>
     </div>
   </div>

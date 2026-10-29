@@ -10,6 +10,10 @@ import LineLink from '@/components/LineLink.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
 import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
+import WorkProcess from '@/components/WorkProcess.astro';
+import StackedServices from '@/components/StackedServices.astro';
+import ReviewCarousel from '@/components/ReviewCarousel.astro';
+import { animDelay } from '@/utils/animDelay';
 
 export async function getStaticPaths() {
   const entries = await getCollection('brandPages');
@@ -23,6 +27,9 @@ const { Content } = await render(entry);
 // the homepage brand slider (one source for each brand's photo, colour and link)
 const home = await getEntry('homepage', 'index');
 const brands = home!.data.projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }));
+// testimonials: the homepage placeholders, until the client supplies real ones
+const testimonials = data.testimonials ? home!.data.testimonials : undefined;
+const { process, stack } = data;
 const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
@@ -61,6 +68,9 @@ const external = (href: string) => /^https?:\/\//.test(href);
         <!-- Sidebar -->
         <div class="lg:col-4 mt-1">
           <div class="mb-8 lg:mb-12 has-anim fade">
+            {data.logo && (
+              <AstroImage src={data.logo.src} alt={data.logo.alt} height={120} class="mb-8 h-30 w-auto" />
+            )}
             <p class="text-lg font-medium text-black mb-4">{data.sidebar.name}</p>
             <p class="mb-6">{data.sidebar.description}</p>
             {data.sidebar.list.length > 0 && (
@@ -97,6 +107,54 @@ const external = (href: string) => /^https?:\/\//.test(href);
       </div>
     </div>
   </section>
+
+  <!-- Process cards (Award) -->
+  {process && (
+    <WorkProcess subtitle="" title={process.title} steps={process.steps} cta={process.cta} />
+  )}
+
+  <!-- Intro + card stack (CCRDI's core services) -->
+  {stack && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <div class="row">
+          <div class="lg:col-8">
+            <div class="lg:grid grid-cols-12 sticky top-22">
+              <div class="lg:col-span-3 max-lg:mb-4">
+                <p class="text-sm text-dark block lg:table-caption has-anim fade">{stack.section_title}</p>
+              </div>
+              <div class="lg:col-span-9 space-y-8">
+                <div class="space-y-5">
+                  <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-black has-anim fade">{stack.title}</h2>
+                  {stack.description && <p class="text-dark leading-relaxed max-w-xl text-balance has-anim fade delay-100">{stack.description}</p>}
+                </div>
+                {stack.info.length > 0 && (
+                  <div class="flex flex-col items-start gap-2.5 pt-2">
+                    {stack.info.map((item, i) => (
+                      <p class:list={['inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim', animDelay[i]]}>{item}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-4 max-lg:mt-16">
+            <StackedServices services={stack.items.map((c) => ({ ...c, imageAlt: c.image_alt }))} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Testimonials (Marketing) -->
+  {testimonials && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
+      </div>
+      <ReviewCarousel items={testimonials.items} testimonials={testimonials} />
+    </section>
+  )}
 
   <!-- Family of brands: the homepage brand slider -->
   {brands.length > 0 && (
