@@ -422,6 +422,8 @@ export const pages = defineCollection({
     cta: linkSchema.optional(),
     cta_note: z.string().optional(),
     cta_heading: z.string().optional(),
+    // show the homepage news cards under the body (Media & Partners)
+    news: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });

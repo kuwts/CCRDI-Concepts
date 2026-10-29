@@ -1,0 +1,76 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Button from '@/components/Button.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import { animDelay } from '@/utils/animDelay';
+
+// The theme's long-form page (privacy.astro) for the other `pages` entries:
+// /media (Media & Partners, with the homepage news cards) and /accessibility.
+// /privacy keeps its own page file.
+export async function getStaticPaths() {
+  const entries = await getCollection('pages', (e) => e.id !== 'privacy' && !e.data.draft);
+  return entries.map((entry) => ({ params: { page: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content } = await render(entry);
+
+// news cards from the homepage content (placeholders until the client supplies news)
+const home = data.news ? await getEntry('homepage', 'index') : undefined;
+const blog = home?.data.blog;
+const [featuredPost, ...otherPosts] = (blog?.items ?? []).map((n) => ({ ...n, imageAlt: n.image_alt }));
+const gridPosts = otherPosts.slice(0, 3);
+---
+
+<Base title={data.title} description={data.description} seo={data.seo}>
+  <PageHeader subtitle={data.subtitle ?? ''} title={data.heading} />
+
+  <section class="bg-white py-20 md:py-25">
+    <div class="container has-anim fade delay-150">
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <!-- body headings are ## / ###; they keep the 22px / 18px sizes of the old ### / #### -->
+          <div class="content prose max-w-full text-dark pr-0 lg:pr-10 [&_img]:my-6 [&_h2]:text-[22px]! [&_h2]:leading-[1.6]! [&_h3]:text-[18px]! [&_h3]:leading-[1.5]!">
+            <Content />
+          </div>
+
+          {
+            data.cta && (
+              <div class="mt-16 has-anim fade text-center">
+                <h2 class="text-dark font-semibold">{data.cta_heading}</h2>
+                <Button href={data.cta.href} label={data.cta.label} variant="black" class="my-5" />
+                {data.cta_note && (
+                  <small class="block text-dark/70">{data.cta_note}</small>
+                )}
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* news (the homepage news section) */}
+  {blog && featuredPost && (
+    <section class="bg-light py-20 md:py-25">
+      <div class="container">
+        <SectionTitle subtitle={blog.subtitle} title={blog.title} />
+        <div class="row">
+          <div class="lg:col-12 has-anim">
+            <BlogCard horizontal item={featuredPost} />
+          </div>
+          {gridPosts.map((post, i) => (
+            <div class:list={['lg:col-4 md:col-6 has-anim', animDelay[i]]}>
+              <BlogCard item={post} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
