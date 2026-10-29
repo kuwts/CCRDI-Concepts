@@ -51,6 +51,20 @@
   --ease-theme: cubic-bezier(0.2, 1, 0.2, 1);
 }
 
+/* Proposed tokens (brief/ui-proposal.md), previewed on the homepage only. Section
+   spacing on the 8px scale (`py-section-sm md:py-section-md lg:py-section-lg`) and the
+   motion durations used by the preview block at the end of this file. */
+@theme static {
+  --spacing-section-sm: 5rem; /* 80px, phones */
+  --spacing-section-md: 6.5rem; /* 104px, tablets */
+  --spacing-section-lg: 8rem; /* 128px, desktops */
+  --duration-fast: 150ms; /* colour and press feedback */
+  --duration-base: 250ms; /* underlines, fills, icon nudges */
+  --duration-slow: 700ms; /* scroll reveals and image zoom */
+  --reveal-distance: 12px; /* scroll reveal rise */
+  --zoom-image: 1.04; /* image hover zoom, cards only */
+}
+
 @layer base {
   ::selection {
     background: var(--color-navy-700);
@@ -607,4 +621,113 @@
   }
 }
 
+/* ── UI proposal preview (brief/ui-proposal.md) ──────────────────────────────
+   Homepage only, behind <html data-ui="proposal"> (Base `uiProposal` prop); the rest
+   of the site is unchanged until the proposal is approved. Unlayered, so it takes
+   precedence over the theme's utilities without !important. */
+[data-ui='proposal'] {
+  /* Buttons: the label stays put (no roll-up swap); a quiet fill and a 1px press.
+     The approved gold sheen on the border is unchanged. */
+  & .btn span,
+  & .btn:is(:hover, :focus-visible) span {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  & .btn::after {
+    display: none;
+  }
+  & .btn {
+    transition:
+      background-color var(--duration-base) var(--ease-theme),
+      translate var(--duration-fast) var(--ease-theme);
+  }
+  & .btn:active {
+    translate: 0 1px;
+  }
 
+  /* Text links: the resting hairline stays; a full-strength underline draws in from
+     the left at once (no retract and 0.3s wait), and the arrow nudges 2px. */
+  & .line-link::before,
+  & .line-link:is(:hover, :focus-visible)::before {
+    width: 100%;
+    transition: none;
+  }
+  & .line-link::after {
+    left: 0;
+    right: auto;
+    width: 0;
+    transition: width var(--duration-base) var(--ease-theme);
+  }
+  & .line-link:is(:hover, :focus-visible)::after {
+    width: 100%;
+    transition-delay: 0s;
+  }
+  & .line-link svg {
+    transition: translate var(--duration-base) var(--ease-theme);
+  }
+  & .line-link:is(:hover, :focus-visible) svg {
+    translate: 2px -2px;
+  }
+
+  /* Scroll reveal: one calm fade-up for everything (12px, 700ms, no scale) instead of
+     a 25px rise with a scale or an 8px rise in 400ms. The seal's pop is unchanged. */
+  & .has-anim,
+  & .has-anim.fade {
+    transform: translateY(var(--reveal-distance));
+    transition-duration: var(--duration-slow);
+  }
+  & .has-anim.pop {
+    transform: scale(0.9);
+    transition-duration: 0.9s;
+  }
+  & .has-anim.is-visible {
+    transform: none;
+  }
+
+  /* Card images: a slow 4% zoom on hover or focus (was 20% on the brand cards and a
+     sideways shift on the news cards). */
+  & .group.rounded-card > span:first-child img,
+  & .group\/img a[aria-label] img {
+    scale: 1;
+    transform-origin: center;
+    transition: scale var(--duration-slow) var(--ease-theme);
+  }
+  & .group.rounded-card:is(:hover, :focus-within) > span:first-child img,
+  & .group\/img:is(:hover, :focus-within) a[aria-label] img {
+    scale: var(--zoom-image);
+  }
+
+  /* No fixed blur band at the bottom of the screen. */
+  & .gradual-blur {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .has-anim,
+    & .has-anim.fade,
+    & .has-anim.pop {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    & .btn,
+    & .line-link::after,
+    & .line-link svg,
+    & .group.rounded-card > span:first-child img,
+    & .group\/img a[aria-label] img {
+      transition: none;
+    }
+    & .line-link:is(:hover, :focus-visible) svg {
+      translate: none;
+    }
+  }
+  @media print {
+    & .has-anim,
+    & .has-anim.fade,
+    & .has-anim.pop {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

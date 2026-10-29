@@ -24,16 +24,18 @@ interface Props {
   };
   /** cards per row from lg (default 4) */
   columns?: 3 | 4;
+  /** section padding; defaults to the theme's */
+  spacingClass?: string;
   class?: string;
 }
-const { subtitle, title, steps, cta, columns = 4, class: className = '' } = Astro.props;
+const { subtitle, title, steps, cta, columns = 4, spacingClass = 'py-20 md:py-25', class: className = '' } = Astro.props;
 const symbols = ['✳', '✺', '✲', '❋'];
 const stripImages = (cta.images ?? []).map((img) =>
   typeof img === 'string' ? { src: img, alt: '' } : { src: img.src, alt: img.alt ?? '' },
 );
 ---
 
-<section class:list={['overflow-hidden py-20 md:py-25', className]}>
+<section class:list={['overflow-hidden', spacingClass, className]}>
   <div class="container">
     <SectionTitle subtitle={subtitle} title={title} background="dark" />
     

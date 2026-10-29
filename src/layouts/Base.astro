@@ -23,6 +23,8 @@ interface Props {
   /** SEO overrides from the page's content entry (its `seo` front-matter block). */
   seo?: Seo;
   noindex?: boolean;
+  /** Preview the UI proposal (brief/ui-proposal.md) on this page only. */
+  uiProposal?: boolean;
   /** Canonical URL or path; defaults to this page's own URL. */
   canonical?: string;
   /** og:type */
@@ -36,6 +38,7 @@ const {
   image,
   seo,
   noindex = false,
+  uiProposal = false,
   canonical,
   type = 'website',
 } = Astro.props;
@@ -92,7 +95,7 @@ const organization = isHome
 ---
 
 <!doctype html>
-<html lang={config.locale.lang}>
+<html lang={config.locale.lang} data-ui={uiProposal ? 'proposal' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
