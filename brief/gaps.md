@@ -13,7 +13,8 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [x] Audience messages, including Industry Associations (§8)
 - [x] SEO descriptions: site default = CCC one-line description (§12, 183 characters, cut off
       in search results after about 160); homepage = lead message (§13, 143 characters);
-      About = About paragraph 1 (§5, 168 characters); Our Brands = first sentence of About
+      About = Vision (§3, 116 characters; replaces About paragraph 1, which was 168);
+      Our Brands = first sentence of About
       paragraph 2 (§5, 128 characters: "Our organization brings together Consumer Choice Award,
       Consumer Choice Marketing, and Consumer Choice Research, Data & Insights.")
 - [x] SEO descriptions for every other CCC page, word for word from the framework (each
@@ -39,8 +40,7 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       - 404 (noindex): §4 Trust pillar, "For four decades, Consumer Choice has helped Canadians
         identify businesses they can trust." (90; in site.config.json seo.pages["/404"])
       The site default (the §12 CCC one-liner, 183 characters) is now used only by the theme
-      demo pages. About's description (§5 About paragraph 1) is 168 characters, over the
-      160 target. **Client to confirm**, or to supply page-specific descriptions.
+      demo pages. **Client to confirm**, or to supply page-specific descriptions.
 - [x] SEO title for CCRDI: "CCRDI" (the framework's own short name, §2, §6), so the page
       title is "CCRDI | Consumer Choice Canada" (30 characters) instead of the full name
       (70). The H1 stays "Consumer Choice Research, Data & Insights".

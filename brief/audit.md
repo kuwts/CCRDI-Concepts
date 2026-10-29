@@ -100,7 +100,7 @@ Things that are wrong now, or would be wrong on a live site.
    - **Fix:** client SEO descriptions (gaps.md). The Contact page is the one that matters most.
    - **Fixed** (2dd0770): each of the five has its own sentence from framework sections 3 to 5,
      word for word, 82 to 138 characters (listed in gaps.md). Only the noindex demo pages still
-     use the default. About's description is 168 characters, still over 160 (gaps.md).
+     use the default. About's description is now the §3 Vision (116 characters).
 3. **SEO: share image and favicons are still the theme's.**
    - **Where:** `public/images/ogimage.png` (used by 10 of 14 pages) and the five icons in
      `public/images/icons/`.
