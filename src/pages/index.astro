@@ -85,7 +85,7 @@ const gridPosts = otherPosts.slice(0, 3);
     <BannerShape />
   </section>
 
-  <section class="bg-light py-section-sm md:py-section-md lg:py-section-lg">
+  <section class="bg-light py-section">
     <div class="container">
       <div class="row mt-12">
 
@@ -130,24 +130,24 @@ const gridPosts = otherPosts.slice(0, 3);
 
   <!-- Family of brands carousel -->
   {projects.items.length > 0 && (
-    <section class="bg-white py-section-sm md:py-section-md lg:py-section-lg">
+    <section class="bg-white py-section">
       <div class="container">
-        <SectionTitle subtitle={projects.subtitle} title={projects.title} marginClass="mb-12 lg:mb-16" />
+        <SectionTitle subtitle={projects.subtitle} title={projects.title} />
       </div>
       <PortfolioCarousel projects={projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }))} />
     </section>
   )}
 
   <!-- Work process -->
-  <WorkProcess subtitle={process.subtitle ?? ''} title={process.title} steps={process.steps} cta={process.cta} spacingClass="py-section-sm md:py-section-md lg:py-section-lg" />
+  <WorkProcess subtitle={process.subtitle ?? ''} title={process.title} steps={process.steps} cta={process.cta} />
 
   <!-- Testimonials -->
-  <section class="bg-light py-section-sm md:py-section-md lg:py-section-lg">
+  <section class="bg-light py-section">
     <div class="container">
       <SectionTitle
         subtitle={testimonials.subtitle ?? ''}
         title={testimonials.title ?? ''}
-        marginClass="mb-12 lg:mb-16"
+       
       />
     </div>
     <ReviewCarousel items={testimonials.items} testimonials={testimonials} />
@@ -156,9 +156,9 @@ const gridPosts = otherPosts.slice(0, 3);
 
   <!-- Blog (hidden when there are no posts) -->
   {featuredPost && (
-    <section class="bg-white py-section-sm md:py-section-md lg:py-section-lg">
+    <section class="bg-white py-section">
       <div class="container">
-        <SectionTitle subtitle={blog.subtitle} title={blog.title} marginClass="mb-12 lg:mb-16" />
+        <SectionTitle subtitle={blog.subtitle} title={blog.title} />
 
         <div class="row">
           <div class="lg:col-12 has-anim">

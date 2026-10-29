@@ -37,7 +37,7 @@ const logoWall = brandsEntry?.data.clients;
 
   {/* logo wall on navy, as on Our Brands */}
   {logoWall && (
-    <section class="pb-20 md:pb-25 -mt-24 sm:-mt-28">
+    <section class="pb-section -mt-24 sm:-mt-28">
       <div class="container">
         <SectionTitle subtitle={logoWall.subtitle} background="dark" class="pt-20 sm:pt-24" />
         <Clients items={logoWall.logos ?? []} columnCount={4} logoHeight={64} class="mt-16" />
@@ -45,7 +45,7 @@ const logoWall = brandsEntry?.data.clients;
     </section>
   )}
 
-  <section class="bg-white py-20 md:py-25">
+  <section class="bg-white py-section">
     <div class="container has-anim fade delay-150">
       <div class="row justify-center">
         <div class="lg:col-10">
@@ -72,7 +72,7 @@ const logoWall = brandsEntry?.data.clients;
 
   {/* news (the homepage news section) */}
   {blog && featuredPost && (
-    <section class="bg-light py-20 md:py-25">
+    <section class="bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={blog.subtitle} title={blog.title} />
         <div class="row">

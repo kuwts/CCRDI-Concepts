@@ -49,21 +49,50 @@
 
   /* The theme's one motion curve, for movement and hover effects (`ease-theme`). */
   --ease-theme: cubic-bezier(0.2, 1, 0.2, 1);
-}
 
-/* Proposed tokens (brief/ui-proposal.md), previewed on the homepage only. Section
-   spacing on the 8px scale (`py-section-sm md:py-section-md lg:py-section-lg`) and the
-   motion durations used by the preview block at the end of this file. */
-@theme static {
-  --spacing-section-sm: 5rem; /* 80px, phones */
-  --spacing-section-md: 6.5rem; /* 104px, tablets */
-  --spacing-section-lg: 8rem; /* 128px, desktops */
+  /* Section spacing on the 8px scale (brief/ui-proposal.md), used by `py-section`,
+     `pt-section` and `pb-section` below: 80px phones, 104px tablets, 128px desktops. */
+  --spacing-section-sm: 5rem;
+  --spacing-section-md: 6.5rem;
+  --spacing-section-lg: 8rem;
+
+  /* Motion durations (brief/ui-proposal.md) */
   --duration-fast: 150ms; /* colour and press feedback */
   --duration-base: 250ms; /* underlines, fills, icon nudges */
   --duration-slow: 700ms; /* scroll reveals and image zoom */
   --reveal-distance: 12px; /* scroll reveal rise */
-  --zoom-image: 1.04; /* image hover zoom, cards only */
+  --zoom-image: 1.04; /* image hover zoom, linked cards only */
 }
+
+/* One section rhythm for every page: the padding steps up with the screen width. */
+@utility py-section {
+  padding-block: var(--spacing-section-sm);
+  @media (width >= 48rem) {
+    padding-block: var(--spacing-section-md);
+  }
+  @media (width >= 64rem) {
+    padding-block: var(--spacing-section-lg);
+  }
+}
+@utility pt-section {
+  padding-top: var(--spacing-section-sm);
+  @media (width >= 48rem) {
+    padding-top: var(--spacing-section-md);
+  }
+  @media (width >= 64rem) {
+    padding-top: var(--spacing-section-lg);
+  }
+}
+@utility pb-section {
+  padding-bottom: var(--spacing-section-sm);
+  @media (width >= 48rem) {
+    padding-bottom: var(--spacing-section-md);
+  }
+  @media (width >= 64rem) {
+    padding-bottom: var(--spacing-section-lg);
+  }
+}
+
 
 @layer base {
   ::selection {

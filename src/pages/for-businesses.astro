@@ -26,7 +26,7 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
 
   <!-- Intro + card stack (the homepage's intro block) -->
   {intro && (
-    <section class="bg-light py-20 md:py-25">
+    <section class="bg-light py-section">
       <div class="container">
         <div class="row">
           <div class="lg:col-8">
@@ -59,7 +59,7 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
   <WorkProcess subtitle="" title={audiences.title} steps={audiences.steps} cta={audiences.cta} columns={3} />
 
   <!-- Consumer Choice Marketing and CCRDI -->
-  <section class="bg-white py-20 md:py-25">
+  <section class="bg-white py-section">
     <div class="container">
       <SectionTitle title={brands.title} />
       <div class="row">
@@ -74,7 +74,7 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
 
   <!-- Testimonials -->
   {testimonials && (
-    <section class="bg-light py-20 md:py-25">
+    <section class="bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
       </div>

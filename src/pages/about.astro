@@ -28,7 +28,7 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   <PageHeader subtitle={header.subtitle} title={header.title} colClass="max-sm:[&_br]:hidden lg:col-10" />
 
   <!-- Intro -->
-  <section class="pb-20 md:pb-25">
+  <section class="pb-section">
     <div class="container">
       <div class="has-anim">
         <AstroImage
@@ -49,12 +49,12 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   <Facts facts={facts} />
 
   <!-- Team group carousel -->
-  <section class="bg-white py-20 md:py-25 overflow-hidden">
+  <section class="bg-white py-section overflow-hidden">
     <TeamGroupCarousel images={team_group.images} />
   </section>
 
   <!-- Reviews + clients -->
-  <section class="bg-light py-20 md:py-25">
+  <section class="bg-light py-section">
     <div class="container">
       <SectionTitle
         subtitle={testimonials.subtitle ?? ''}
@@ -65,7 +65,7 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   </section>
 
   <!-- Team grid -->
-  <section class="bg-white py-20 md:py-25">
+  <section class="bg-white py-section">
     <div class="container">
       <div class="row justify-center">
         <div class="col-12 has-anim fade">

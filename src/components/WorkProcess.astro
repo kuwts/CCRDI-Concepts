@@ -28,7 +28,7 @@ interface Props {
   spacingClass?: string;
   class?: string;
 }
-const { subtitle, title, steps, cta, columns = 4, spacingClass = 'py-20 md:py-25', class: className = '' } = Astro.props;
+const { subtitle, title, steps, cta, columns = 4, spacingClass = 'py-section', class: className = '' } = Astro.props;
 const symbols = ['✳', '✺', '✲', '❋'];
 const stripImages = (cta.images ?? []).map((img) =>
   typeof img === 'string' ? { src: img, alt: '' } : { src: img.src, alt: img.alt ?? '' },
@@ -47,7 +47,7 @@ const stripImages = (cta.images ?? []).map((img) =>
               ['h-full flex flex-col bg-white/5 mx-auto text-white px-8 py-8 overflow-clip relative', i == 0 ? 'active' : '']
             }>
               <span class="text-6xl" aria-hidden="true">{symbols[i % symbols.length]}</span>
-              <h3 class="mt-4 mb-24 md:mb-40 text-xl font-medium leading-[1.1]">{step.heading}</h3>
+              <h3 class="mt-4 mb-24 text-xl font-medium leading-[1.1]">{step.heading}</h3>
               <p class="relative text-balance -mb-0.75 leading-relaxed mt-auto opacity-80">
                 {step.text}
               </p>

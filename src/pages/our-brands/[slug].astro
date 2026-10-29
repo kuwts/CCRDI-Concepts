@@ -62,7 +62,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
     </div>
   </div>
 
-  <section class="bg-white text-mutedDark py-20 md:py-25" style={{ '--accent': data.accent }}>
+  <section class="bg-white text-mutedDark py-section" style={{ '--accent': data.accent }}>
     <div class="container">
       <div class="row pt-5 justify-center">
         <!-- Sidebar -->
@@ -115,7 +115,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Intro + card stack (CCRDI's core services) -->
   {stack && (
-    <section class="bg-light py-20 md:py-25">
+    <section class="bg-light py-section">
       <div class="container">
         <div class="row">
           <div class="lg:col-8">
@@ -148,7 +148,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Testimonials (Marketing) -->
   {testimonials && (
-    <section class="bg-light py-20 md:py-25">
+    <section class="bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
       </div>
@@ -158,9 +158,8 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Family of brands: the homepage brand slider -->
   {brands.length > 0 && (
-    <section class="bg-white pb-20 md:pb-25">
+    <section class="bg-white py-section">
       <div class="container">
-        <div class="border-t border-black/5 pt-25 max-md:pt-20"></div>
         <SectionTitle title={data.next_title} />
       </div>
       <PortfolioCarousel projects={brands} />
