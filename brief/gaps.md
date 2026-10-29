@@ -70,7 +70,8 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] More milestones by year for the 40 Years timeline: the sidebar shows only the three
       confirmed facts above; more can be added when the client provides them (no dates or
       milestones are invented)
-- [ ] Contact details (email, phone, address), form destination email, social links
+- [ ] Contact details (a general email address, never an individual's; phone, address),
+      form destination email, social links
 - [ ] URLs for the Consumer Choice Award, Consumer Choice Marketing, and CCRDI sites.
       **Confirm the brand links.** The Our Brands cards now link to the brand pages ("Learn
       More"). On the brand pages (sidebar):
@@ -161,7 +162,9 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Favicon set and share image: still the theme's files until supplied
 - Header button "Find a Trusted Business": ccaward.com award winners directory, pending
   confirmation (see Still needed)
-- Footer email: [CLIENT TO PROVIDE: email] (shown as text, not a link, until it's a real address)
+- Footer email: until the client provides a general email address, the footer shows a
+  "Contact Us" link to /contact in its place. Use a general address only (e.g. an info@
+  mailbox), never an individual person's email.
 - Footer phone: [CLIENT TO PROVIDE: phone]
 - Footer address: [CLIENT TO PROVIDE: address]
 - Footer social links: Consumer Choice Award's accounts, pending confirmation (see Still needed)
