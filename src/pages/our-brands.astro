@@ -62,7 +62,7 @@ const reviews = testimonials.items;
                     src={item.image}
                     alt={item.image_alt}
                     loading="lazy"
-                    class={`h-full w-full aspect-video lg:aspect-9/12 object-cover bg-white/3 ${i % 2 === 0 ? 'max-lg:-mt-10' : ''}`}
+                    class={`h-full w-full aspect-video lg:aspect-9/12 object-cover bg-white/3 rounded-t-card max-lg:rounded-card ${i % 2 === 0 ? 'max-lg:-mt-10' : ''}`}
                   />
                 );
                 const dark = item.tone === 'dark';
@@ -75,7 +75,7 @@ const reviews = testimonials.items;
                       <AstroImage src={item.icon} alt="" class="size-10 mb-6" />
                     )}
                     {/* the brand's tagline (§9), above its name */}
-                    <p class="mb-2 text-sm font-semibold uppercase tracking-wider">{item.tagline}</p>
+                    <p class="mb-2 text-eyebrow uppercase">{item.tagline}</p>
                     <h2 class="mb-4 text-h2 break-words">{item.title}</h2>
                     <div class="lg:max-w-xl pb-10">
                       <div class="mb-7 space-y-3">
@@ -112,7 +112,7 @@ const reviews = testimonials.items;
                   >
                     <div
                       data-stacked-content
-                      class="min-h-0 origin-[50%_0%] p-10 pb-0"
+                      class="min-h-0 origin-[50%_0%] p-10 pb-0 rounded-card"
                       style={`background: ${item.color ?? 'var(--color-dark)'}`}
                     >
                       <div class="row items-end leading-0">

@@ -71,12 +71,12 @@ const clamp = post ? 'line-clamp-2' : '';
     horizontal ? (
       <div class="group/img row justify-center">
         <div class="lg:col-6">
-          <a href={href} aria-label={title} class="block overflow-hidden after:absolute after:inset-0">
+          <a href={href} aria-label={title} class="block overflow-hidden rounded-card after:absolute after:inset-0">
             <AstroImage
               src={image}
               alt={imageAlt}
               loading="lazy"
-              class="w-full transition-[scale] duration-(--duration-slow) ease-theme group-hover/img:scale-(--zoom-image) group-focus-within/img:scale-(--zoom-image) motion-reduce:transition-none bg-gray-100"
+              class="w-full aspect-[3/2] object-cover transition-[scale] duration-(--duration-slow) ease-theme group-hover/img:scale-(--zoom-image) group-focus-within/img:scale-(--zoom-image) motion-reduce:transition-none bg-gray-100"
             />
           </a>
         </div>
@@ -100,12 +100,12 @@ const clamp = post ? 'line-clamp-2' : '';
       </div>
     ) : (
       <div class="group/img">
-        <a href={href} aria-label={title} class="block overflow-hidden after:absolute after:inset-0">
+        <a href={href} aria-label={title} class="block overflow-hidden rounded-card after:absolute after:inset-0">
           <AstroImage
             src={image}
             alt={imageAlt}
             loading="lazy"
-            class="w-full transition-[scale] duration-(--duration-slow) ease-theme group-hover/img:scale-(--zoom-image) group-focus-within/img:scale-(--zoom-image) motion-reduce:transition-none"
+            class="w-full aspect-[3/2] object-cover transition-[scale] duration-(--duration-slow) ease-theme group-hover/img:scale-(--zoom-image) group-focus-within/img:scale-(--zoom-image) motion-reduce:transition-none"
           />
         </a>
         <div class="mt-6 text-dark h-full">
