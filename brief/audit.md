@@ -15,6 +15,21 @@ Report only: no files were changed during the audit. Branch `ccc-site-build`, pr
   order, alt attributes, header fit)
 - page weight measured after scrolling each page to the bottom
 
+**Status (updated 29 October 2026):** fixes made after the audit are marked **Fixed** or
+**Partly fixed** under each item, with the commit. Unmarked items are still open.
+
+| Item | Status |
+|---|---|
+| Broken 1: demo pages public | Partly fixed: noindex and out of the sitemap; deletion waits for cleanup approval |
+| Broken 2: `baseURL` | Open: domain asked in questions.md #12 |
+| Broken 3: placeholder links | Fixed |
+| Broken 4: footer email `mailto:` | Fixed |
+| Broken 5: dev content cache | Fixed |
+| Should fix 1: CCRDI title length | Fixed |
+| Should fix 2: default description | Fixed |
+| Should fix 4: contact form labels | Fixed |
+| Found later: structured data | Fixed |
+
 **What passed:**
 - **Accessibility scan:** 0 axe violations on all 14 pages.
 - **Layout and headings:** at every width tested: one H1, no skipped heading levels, every
@@ -39,25 +54,36 @@ Things that are wrong now, or would be wrong on a live site.
      content, schemas, helpers and `seo.pages` entries, following THEME_CATALOG.md "Removing a
      page cleanly". Until then, adding them to the sitemap `filter` in `astro.config.mjs` and
      `noindex` would at least keep them out of search.
+   - **Partly fixed** (0f07c49): every demo page is `noindex` and out of the XML sitemap, which
+     now lists only the 12 CCC pages. They're still built and reachable by URL until the
+     cleanup list (brief/cleanup-list.md) is approved.
 2. **`baseURL` is `https://example.com`.**
    - **Where:** `src/config/site.config.json`.
    - **Effect:** every canonical URL, `og:url`, share image URL, the sitemap and robots.txt
      point to example.com.
    - **Fix:** set the real domain (gaps.md).
+   - **Open:** not guessed; asked in questions.md #12.
 3. **Placeholder links on every page.**
    - **Where:** the header button "Find a Trusted Business" and the homepage hero button go to
      `#` (directory URL missing). The four footer social links go to `#!`.
    - **Effect:** none of them go anywhere.
    - **Fix:** client URLs (gaps.md). Until then, hide the social links rather than show dead ones.
+   - **Fixed** (53e9c78): "Find a Trusted Business" goes to the official winners directory,
+     https://ccaward.com/award-winners/. The footer links to Consumer Choice Award's official
+     social accounts, and any placeholder social link is hidden. Both pending client
+     confirmation (gaps.md).
 4. **Footer email link is a broken `mailto:`.**
    - **Where:** `Footer.astro`; on all 45 pages.
    - **Effect:** it links to `mailto:[CLIENT TO PROVIDE: email]`.
    - **Fix:** render plain text until the value is a real address, as the Contact page now does.
+   - **Fixed** (53e9c78, then d04a7ab): until the client provides a general email address
+     (never an individual's), the footer shows a "Contact Us" link to /contact in its place.
 5. **The dev server's content cache goes stale after schema changes.** Schemas changed during
    this build: `businesses`, `brandPages`, the `pages` `news` flag and the contact fields.
    - **Effect:** the dev server can drop new fields, as happened with the 40 Years video.
    - **Fix:** restart it with `.astro/data-store.json` deleted (the CLAUDE.md rule). I did this
      after the audit, as it deletes only a generated file.
+   - **Fixed:** restarted with a fresh cache after each schema change since, as CLAUDE.md requires.
 
 ## Should fix
 
@@ -66,10 +92,14 @@ Things that are wrong now, or would be wrong on a live site.
    - **Effect:** "Consumer Choice Research, Data & Insights | Consumer Choice Canada" is 66
      characters (target under 60).
    - **Fix:** set `seo.title` to "CCRDI" in `src/content/brand-pages/ccrdi.mdx`.
+   - **Fixed** (2dd0770): the title is now "CCRDI | Consumer Choice Canada" (30 characters).
 2. **SEO: site default description.**
    - **Where:** Contact, thank-you, Privacy, Accessibility and 404.
    - **Effect:** all five use the same 183-character default (target 120 to 160 characters).
    - **Fix:** client SEO descriptions (gaps.md). The Contact page is the one that matters most.
+   - **Fixed** (2dd0770): each of the five has its own sentence from framework sections 3 to 5,
+     word for word, 82 to 138 characters (listed in gaps.md). Only the noindex demo pages still
+     use the default. About's description is 168 characters, still over 160 (gaps.md).
 3. **SEO: share image and favicons are still the theme's.**
    - **Where:** `public/images/ogimage.png` (used by 10 of 14 pages) and the five icons in
      `public/images/icons/`.
@@ -79,6 +109,9 @@ Things that are wrong now, or would be wrong on a live site.
    - **Effect:** field names show only as placeholders (labels are hidden for screen readers).
      They disappear while typing, and required fields aren't marked.
    - **Fix:** visible labels with a required marker (WCAG 3.3.2; questions.md #2).
+   - **Fixed** (72ac2ba): visible labels (Name, Email, Organization, Message, from content.md)
+     above the fields, the placeholders kept as hints, and the theme's job-form `*` marker on
+     the three required fields. 0 axe violations.
 5. **Contact form: notifications not set up.**
    - **Where:** Netlify dashboard.
    - **Effect:** messages won't be emailed anywhere yet.
@@ -120,6 +153,17 @@ Things that are wrong now, or would be wrong on a live site.
     - **Effect:** the process steps and descriptions are word for word from the Award site;
       it's the client's own copy, but unconfirmed for use on the CCC site.
     - **Fix:** client confirmation (questions.md #7, gaps.md).
+
+## Found after the audit
+
+1. **Structured data named another brand's profiles and published placeholders.**
+   - **Where:** the homepage Organization structured data (`Base.astro`).
+   - **Effect:** `sameAs` listed Consumer Choice Award's social accounts as Consumer Choice
+     Canada's own profiles, and the email, phone and address were sent as
+     "[CLIENT TO PROVIDE: …]" text.
+   - **Fixed** (51ac51e): `sameAs` removed (the accounts stay as footer links), and placeholder
+     contact details are left out until they're real. Add CCC's own profiles when it has them
+     (gaps.md).
 
 ## Nice to have
 
