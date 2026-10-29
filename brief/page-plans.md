@@ -79,3 +79,51 @@ contrast.
 SEO descriptions: Award and Marketing: their §5 one-liners; CCRDI: the §12 one-line description.
 Also: the Our Brands cards, the homepage and 40 Years brand sliders and the footer brand links
 now link to these pages ("Learn More" on the Our Brands cards).
+
+---
+
+# Round 2: richer pages (pre-approved; written before each change)
+
+Goal: bring the newer pages closer to Home, About, Our Brands and 40 Years, using the theme's
+own sections, with a different mix on each page so the site doesn't repeat itself. Content
+rules unchanged; no new copy. Contact and the legal pages stay short (the skill's Contact flow
+is "keep it short"; Privacy and Accessibility stay as they are).
+
+## For Businesses (round 2)
+| # | Section | Component | Content | Source |
+|---|---|---|---|---|
+| 1 | Page header | `PageHeader` | H1 "For Businesses" | unchanged |
+| 2 | **New:** intro + card stack | Home intro block (inline) + `StackedServices` (brand photos, Lucide icons) | Label "Family of Brands"; heading: the Growth pillar line; text: About paragraph 2; pills: the three §2 roles; 3 cards: brand name, §5 one-liner, §9 tagline | Labels; §4; §5; §2; §9 |
+| 3 | Audiences + contact path | `WorkProcess` (3 cards) | unchanged | §8; §3 |
+| 4 | Marketing and CCRDI cards | `SectionTitle` + `BlogCard`s | unchanged | §9; §12 |
+| 5 | **New:** testimonials | `SectionTitle` + `ReviewCarousel` | the homepage testimonial placeholders (award winners' stories belong here) | placeholders |
+
+## Media & Partners (round 2)
+| # | Section | Component | Content | Source |
+|---|---|---|---|---|
+| 1 | Page header | `PageHeader` | unchanged | |
+| 2 | **New:** logo wall | `SectionTitle` + `Clients` (navy, as on Our Brands) | "Family of Brands": the real Consumer Choice Award logo and the brand wordmarks (what media most often need) | Labels; Our Brands logos |
+| 3 | Body | `.content` | unchanged | |
+| 4 | News | `BlogCard`s | unchanged | |
+
+## Consumer Choice Award page (round 2)
+| # | Section | Component | Content | Source |
+|---|---|---|---|---|
+| 1–3 | Header, feature, sidebar + body | unchanged, plus the real Consumer Choice Award logo at the top of the sidebar | | ccaward.com logo |
+| 3 | Body | `.content` | core message heading, relationship line, how winners are chosen (the process steps move to section 4) | §2; §12; ccaward.com |
+| 4 | **New:** the process as cards | `WorkProcess` (dark, 4 cards) | Heading: ccaward.com's "Canada's only award organization to utilize statistically supported independent research."; the four steps with their text; strip: "Recognizing and celebrating business excellence since 1987" + `LineLink` "Find a Trusted Business" → the winners directory | ccaward.com; labels |
+| 5 | Family of Brands | `PortfolioCarousel` | unchanged | |
+
+## CCRDI page (round 2)
+| # | Section | Component | Content | Source |
+|---|---|---|---|---|
+| 1–3 | Header, feature, sidebar + body | unchanged; the body keeps the hero heading and text, positioning, mission, vision (the services move to section 4) | | §6; §7 |
+| 4 | **New:** core services as a card stack | Home intro block (inline, ivory) + `StackedServices` (5 cards, Lucide icons, no photos) | Label "Core Services"; heading: the ISUCORP credibility message; text: the relationship line; 5 cards: service name + its §7 text | §7; §12 |
+| 5 | Family of Brands | `PortfolioCarousel` | unchanged | |
+
+## Consumer Choice Marketing page (round 2)
+Sections 1 to 13 have little Marketing copy (core message, one-liner, relationship line,
+tagline; the service list is pending confirmation), so one section is added:
+| # | Section | Component | Content | Source |
+|---|---|---|---|---|
+| 4 | **New:** testimonials | `SectionTitle` + `ReviewCarousel` (ivory) | the homepage testimonial placeholders (award winners telling their story fits Marketing) | placeholders |
