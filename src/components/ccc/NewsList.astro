@@ -9,6 +9,7 @@
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import { animDelay } from '@/utils/animDelay';
+import { getLang, ui } from '@/i18n';
 
 interface NewsItem {
   title: string;
@@ -23,6 +24,9 @@ interface NewsItem {
   image?: string;
   /** an external page (e.g. a press release): opens in a new tab, and says so to screen readers */
   external?: boolean;
+  /** the language of the headline and summary when it differs from the page's (e.g. "en" for
+   *  an English press release on a French page) */
+  lang?: string;
 }
 interface Props {
   items: NewsItem[];
@@ -33,6 +37,7 @@ interface Props {
 
 const { items, as: Heading = 'h3', class: className = '' } = Astro.props;
 const hasImages = items.some((n) => n.image);
+const t = ui(getLang(Astro.url));
 ---
 
 <div class:list={['relative', className]} data-newslist>
@@ -52,10 +57,10 @@ const hasImages = items.some((n) => n.image);
                 rel={n.external ? 'noopener' : undefined}
                 class="after:absolute after:inset-0 focus-visible:outline-offset-4"
               >
-                {n.title}{n.external && <span class="sr-only"> (opens in a new tab)</span>}
+                <span lang={n.lang}>{n.title}</span>{n.external && <span class="sr-only"> {n.lang ? t.inEnglishNewTab : t.newTab}</span>}
               </a>
             </Heading>
-            {n.excerpt && <p class="mt-3 max-w-measure leading-relaxed text-text">{n.excerpt}</p>}
+            {n.excerpt && <p class="mt-3 max-w-measure leading-relaxed text-text" lang={n.lang}>{n.excerpt}</p>}
           </div>
           <span class="news-arrow hidden md:flex md:mt-1 size-11 items-center justify-center rounded-full border border-dark/15 text-dark" aria-hidden="true">
             <Icon name="lucide:arrow-up-right" class="size-5" />

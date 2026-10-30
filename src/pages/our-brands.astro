@@ -10,19 +10,22 @@ import Clients from "@/components/Clients.astro";
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import Facts from '@/components/Facts.astro';
 import LineLink from '@/components/LineLink.astro';
+import { entryId, getLang, ui } from '@/i18n';
 
 // Our Brands: the theme's Services page, with its own content (src/content/brands)
-const home = await getEntry('homepage', 'index');
+// English at /our-brands, French at /fr/nos-marques (src/pages/fr/nos-marques.astro)
+const lang = getLang(Astro.url);
+const home = await getEntry('homepage', entryId('index', lang));
 const { testimonials } = home!.data;
 
-const brandsEntry = await getEntry('brands', 'index');
+const brandsEntry = await getEntry('brands', entryId('index', lang));
 const { header, clients, facts, items } = brandsEntry!.data;
 
 const clientLogos = clients.logos ?? [];
 const reviews = testimonials.items;
 ---
 
-<Base title="Our Brands" seo={brandsEntry!.data.seo}>
+<Base title={ui(lang).titles.ourBrands} seo={brandsEntry!.data.seo}>
   <PageHeader
     subtitle={header.subtitle}
     title={header.title}

@@ -3,6 +3,10 @@ import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import AstroVideo from '@/components/helper/AstroVideo.astro';
 import PauseButton from '@/components/PauseButton.astro';
+import { fill, getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
 
 interface Props {
   src: string;
@@ -50,9 +54,9 @@ const hasVideo = !!src;
     data-showreel-open
   >
     <Icon name="lucide:play" class="size-[1.1em]" aria-hidden="true" />
-    Play showreel
+    {fill(t.start, { label: t.pauseLabels.showreel })}
   </button>
-  <PauseButton label="showreel" />
+  <PauseButton label={t.pauseLabels.showreel} />
 
   {/* custom hover cursor */}
   <div
@@ -61,7 +65,7 @@ const hasVideo = !!src;
     aria-hidden="true"
   >
     <Icon name="lucide:play" class="size-[1.1em]" />
-    <span>Play</span>
+    <span>{t.playVideo}</span>
   </div>
 </div>
 
@@ -71,14 +75,14 @@ const hasVideo = !!src;
   data-showreel-overlay
   role="dialog"
   aria-modal="true"
-  aria-label="Showreel"
+  aria-label={t.showreel}
   inert
 >
   <button
     class="group absolute top-6 right-6 z-10 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-[background,transform] duration-200 hover:rotate-90 hover:bg-white/20 cursor-pointer"
     type="button"
     data-showreel-close
-    aria-label="Close video"
+    aria-label={t.closeVideo}
   >
     <Icon name="lucide:x" class="inline-block size-4 transition-all duration-200 group-hover:rotate-90" aria-hidden="true" />
   </button>
@@ -148,7 +152,7 @@ const hasVideo = !!src;
         pauseBtn?.addEventListener('click', () => {
           paused = !paused;
           pauseBtn.setAttribute('aria-pressed', String(paused));
-          pauseBtn.textContent = `${paused ? 'Play' : 'Pause'} showreel`;
+          pauseBtn.textContent = (paused ? pauseBtn.dataset.playText : pauseBtn.dataset.pauseText) ?? '';
           syncInline();
         });
       } else {

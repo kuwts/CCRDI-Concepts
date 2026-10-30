@@ -1,0 +1,21 @@
+---
+// Long-form pages, in French (/fr/medias, /fr/accessibilite): the English template with the
+// French entries (src/content/pages/fr/, named like the English ones); /fr/confidentialite has
+// its own page, as /privacy does. French URL slugs: src/i18n/routes.json.
+import { getCollection } from 'astro:content';
+import LongFormPage from '../[page].astro';
+import { frSlug } from '@/i18n';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pages', (e) => e.id.startsWith('fr/') && e.id !== 'fr/privacy' && !e.data.draft);
+  return entries.map((entry) => {
+    const page = frSlug(`/${entry.id.slice(3)}`);
+    if (!page) throw new Error(`No French URL for page ${entry.id} (src/i18n/routes.json)`);
+    return { params: { page }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props;
+---
+
+<LongFormPage entry={entry} />

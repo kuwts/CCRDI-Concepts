@@ -6,8 +6,14 @@ import PageHeader from '@/components/PageHeader.astro';
 import LineLink from '@/components/LineLink.astro';
 import Button from '@/components/Button.astro';
 import site from '@/config/site.config.json';
+import { entryId, fill, getLang, localizePath, ui } from '@/i18n';
 
-const contact = await getEntry('contact', 'index');
+// English at /contact, French at /fr/nous-joindre (src/pages/fr/nous-joindre.astro); both send
+// to the same Netlify form, with a `language` field saying which page it came from
+const lang = getLang(Astro.url);
+const t = ui(lang);
+const thankYou = localizePath('/thank-you/contact', lang);
+const contact = await getEntry('contact', entryId('index', lang));
 const { header, intro, email, phone, address, form } = contact!.data;
 const { fields } = form;
 // Submissions go to Netlify Forms (form name "contact"). Where they're emailed is
@@ -69,18 +75,21 @@ const required = '<span class="text-error" aria-hidden="true">*</span>';
               <form
                 name="contact"
                 method="POST"
-                action="/thank-you/contact"
+                action={thankYou}
                 data-netlify="true"
                 netlify-honeypot="bot-field"
                 id="contact-form"
                 data-sending={form.sending_label}
                 data-error={form.error_message}
+                data-required={form.validation?.required}
+                data-invalid-email={form.validation?.email}
               >
                 <input type="hidden" name="form-name" value="contact" />
-                <input type="hidden" name="subject" value={`Message from ${site.brand.name} website`} />
+                <input type="hidden" name="subject" value={fill(t.formSubject, { site: site.brand.name })} />
+                <input type="hidden" name="language" value={lang} />
                 <!-- spam honeypot: hidden from people; Netlify rejects submissions that fill it -->
                 <p class="hidden">
-                  <label>Don’t fill this out if you’re human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+                  <label>{t.botField} <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
                 </p>
                 <div class="row">
                   <div class="col-12 md:col-6 has-anim fade">
@@ -147,6 +156,20 @@ const required = '<span class="text-error" aria-hidden="true">*</span>';
     const submitBtnTextRef = submitBtnRef?.innerHTML;
     const statusRef = contactFormRef.querySelector<HTMLElement>('.status');
 
+    // custom messages for the browser's own checks (French pages), set before it validates
+    const { required, invalidEmail } = contactFormRef.dataset;
+    if (required || invalidEmail) {
+      contactFormRef.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input:not([type=hidden]), textarea').forEach((field) => {
+        const check = () => {
+          field.setCustomValidity('');
+          if (field.validity.valueMissing && required) field.setCustomValidity(required);
+          else if (field.validity.typeMismatch && invalidEmail) field.setCustomValidity(invalidEmail);
+        };
+        field.addEventListener('invalid', check);
+        field.addEventListener('input', check);
+      });
+    }
+
     const showError = (text: string) => {
       if (statusRef) statusRef.textContent = text;
     };
@@ -177,7 +200,7 @@ const required = '<span class="text-error" aria-hidden="true">*</span>';
           // only a 2xx from Netlify counts as sent; then go to the thank-you page
           // (the form's `action`, which is also where no-JS visitors land)
           if (!response.ok) throw new Error(`Form submission failed (${response.status})`);
-          window.location.href = contactFormRef.getAttribute('action') ?? '/thank-you/contact';
+          window.location.href = contactFormRef.getAttribute('action') ?? '/';
         })
         .catch(() => {
           showError(contactFormRef.dataset.error ?? '');

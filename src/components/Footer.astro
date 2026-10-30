@@ -1,10 +1,10 @@
 ---
-import menu from '@/config/menu.json';
 import social from '@/config/social.json';
 import site from '@/config/site.config.json';
 import LineLink from '@/components/LineLink.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
+import { getLang, localizePath, menuFor, siteText, ui } from '@/i18n';
 
 const year = new Date().getFullYear();
 // inline-block + py-0.5: a 28px tap target (lists use space-y-2.5 to keep the rhythm)
@@ -15,7 +15,12 @@ interface Props {
 }
 const { class: className = '' } = Astro.props;
 
-const { footer, author } = site;
+// footer text and menus in the page's language (site.config.json, menu.json)
+const lang = getLang(Astro.url);
+const { footer } = siteText(lang);
+const menu = menuFor(lang);
+const t = ui(lang);
+const { author } = site;
 ---
 
 <footer class:list={['py-section text-muted', className]}>
@@ -30,7 +35,7 @@ const { footer, author } = site;
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
             </a>
           </div>
-          <AnniversarySeal href="/40-years" class="size-28 md:size-32 lg:ml-auto" />
+          <AnniversarySeal href={localizePath('/40-years', lang)} class="size-28 md:size-32 lg:ml-auto" />
         </div>
       </div>
 
@@ -80,11 +85,11 @@ const { footer, author } = site;
         <div class="row">
           <div class="lg:col-6 order-1 lg:order-0">
             <p class="font-light text-sm">
-              Copyright &copy; {year} {site.brand.name}.
+              {t.copyright} {year} {site.brand.name}.
               {
                 author.name && (
                   <>
-                    Developed by{' '}
+                    {t.developedBy}{' '}
                     {author.url ? (
                       <a href={author.url} class="line-link font-light text-white" target="_blank" rel="noopener">
                         {author.name}

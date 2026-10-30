@@ -34,3 +34,28 @@ section order where it works; the order below is a preference, not a requirement
 11. Footer: the theme's footer with the family of brands, nav, contact placeholders, social placeholders, legal links, and the site-wide tagline.
 
 Remove any other theme homepage sections that have no matching content.
+
+## French version (approved 2026-10-30)
+English stays at the root; French is under /fr, with French slugs (pairs in src/i18n/routes.json).
+A language switcher in the header and the mobile menu goes to the same page in the other
+language. No automatic redirect by browser language.
+
+| English | French |
+|---|---|
+| / | /fr |
+| /about | /fr/a-propos |
+| /our-brands | /fr/nos-marques |
+| /our-brands/consumer-choice-award | /fr/nos-marques/prix-choix-du-consommateur |
+| /our-brands/consumer-choice-marketing | /fr/nos-marques/consumer-choice-marketing |
+| /our-brands/ccrdi | /fr/nos-marques/ccrdi |
+| /40-years | /fr/40-ans |
+| /for-businesses | /fr/entreprises |
+| /media | /fr/medias |
+| /contact | /fr/nous-joindre |
+| /privacy | /fr/confidentialite |
+| /accessibility | /fr/accessibilite |
+| /thank-you/contact | /fr/merci/contact (noindex) |
+| 404 | /fr/404 (served for missing /fr/ URLs) |
+
+French navigation: À propos, Nos marques, 40 ans, Entreprises, Médias, Nous joindre.
+French header button: "Trouver une entreprise de confiance" (ccaward.com/fr winners directory).

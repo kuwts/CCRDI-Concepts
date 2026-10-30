@@ -1,4 +1,6 @@
 ---
+import { fill, getLang, ui } from '@/i18n';
+
 interface Props {
   /** `dark` for navy backgrounds (hero, footer), `light` for white or ivory ones. */
   variant?: 'dark' | 'light';
@@ -14,7 +16,12 @@ const uid = `seal-${Math.random().toString(36).slice(2, 8)}`;
 // founding year: Consumer Choice Award, "since 1987" (ccaward.com and its press releases);
 // client to confirm (brief/gaps.md)
 const year = '1987';
-const title = `40 Years of Trust, Consumer Choice Canada, ${year}`;
+// "Years of Trust" / "ans de confiance" (site.config.json → ui); the brand arc stays in English
+const lang = getLang(Astro.url);
+const t = ui(lang);
+const title = fill(t.sealTitle, { year });
+// the French line is two characters longer and sits on the same chord of the inner ring
+const yearsSize = lang === 'fr' ? 10.5 : 11.5;
 
 // navy disc on light backgrounds; a lighter navy disc so it reads on navy ones
 const disc = variant === 'dark' ? 'fill-navy-700' : 'fill-dark';
@@ -54,6 +61,6 @@ const Wrapper = href ? 'a' : 'span';
     </g>
 
     <text x="100" y="112" text-anchor="middle" class="fill-primary font-heading" font-size="54" font-weight="600">40</text>
-    <text x="100" y="132" text-anchor="middle" class="fill-white font-heading" font-size="11.5" font-weight="500" letter-spacing="0.6">Years of Trust</text>
+    <text x="100" y="132" text-anchor="middle" class="fill-white font-heading" font-size={yearsSize} font-weight="500" letter-spacing="0.6">{t.sealYears}</text>
   </svg>
 </Wrapper>

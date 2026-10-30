@@ -20,27 +20,34 @@ import AstroVideo from '@/components/helper/AstroVideo.astro';
 import PauseButton from '@/components/PauseButton.astro';
 import { animDelay } from '@/utils/animDelay';
 import { getPressReleases } from '@/lib/content';
+import { entryId, formatLongDate, getLang, localizePath, ui } from '@/i18n';
 
-// every section reads its copy (and placeholders) from the homepage entry
-const home = await getEntry('homepage', 'index');
+// every section reads its copy (and placeholders) from the homepage entry, in the page's
+// language (English at /, French at /fr: src/pages/fr/index.astro)
+const lang = getLang(Astro.url);
+const t = ui(lang);
+const home = await getEntry('homepage', entryId('index', lang));
 const { banner, intro, projects, process, testimonials, blog } = home!.data;
 const heroBg = banner.background;
 const heroVideo = heroBg?.variant === 'video' && heroBg.video ? heroBg : null;
 
 // press releases: the featured one large, then the three newest; each opens the release on its
-// newswire in a new tab, with a decorative photo from the homepage content
+// newswire in a new tab, with a decorative photo from the homepage content. The releases are
+// English only: on French pages the headline and summary stay in English (marked as such) and
+// the date is written in French.
 const releases = await getPressReleases();
 const lead = releases.find((r) => r.featured) ?? releases[0];
 const cards = (lead ? [lead, ...releases.filter((r) => r !== lead).slice(0, 3)] : []).map((r, i) => ({
   title: r.title,
   description: r.summary,
-  date: r.date,
+  date: lang === 'fr' ? formatLongDate(r.datetime, lang) : r.date,
   datetime: r.datetime,
   category: r.source,
   image: blog.images[i],
   imageAlt: '',
   href: r.url,
   external: true,
+  lang: lang === 'fr' ? 'en' : undefined,
 }));
 const [featuredPost, ...gridPosts] = cards;
 ---
@@ -104,7 +111,7 @@ const [featuredPost, ...gridPosts] = cards;
           </div>
         </div>
       </div>
-      {heroVideo && <PauseButton label="background video" class="bottom-4 left-4" />}
+      {heroVideo && <PauseButton label={t.pauseLabels.backgroundVideo} class="bottom-4 left-4" />}
     </div>
 
     <!-- 40th anniversary seal: a stamp on the edge between the hero and the showreel,
@@ -115,7 +122,7 @@ const [featuredPost, ...gridPosts] = cards;
           <div class="-translate-y-1/2">
             <div class="has-anim pop">
               <AnniversarySeal
-                href="/40-years"
+                href={localizePath('/40-years', lang)}
                 class="pointer-events-auto size-24 sm:size-32 lg:size-44 focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--color-dark),0_0_0_7px_var(--color-primary)] [&>svg]:drop-shadow-xl"
               />
             </div>
@@ -264,7 +271,7 @@ const [featuredPost, ...gridPosts] = cards;
       pauseBtn?.addEventListener('click', () => {
         paused = !paused;
         pauseBtn.setAttribute('aria-pressed', String(paused));
-        pauseBtn.textContent = `${paused ? 'Play' : 'Pause'} background video`;
+        pauseBtn.textContent = (paused ? pauseBtn.dataset.playText : pauseBtn.dataset.pauseText) ?? '';
         sync();
       });
     }

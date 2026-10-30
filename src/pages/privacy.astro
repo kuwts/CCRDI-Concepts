@@ -4,8 +4,10 @@ import { getEntry, render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import Button from '@/components/Button.astro';
+import { entryId, getLang } from '@/i18n';
 
-const entry = await getEntry('pages', 'privacy');
+// English at /privacy, French at /fr/confidentialite (src/pages/fr/confidentialite.astro)
+const entry = await getEntry('pages', entryId('privacy', getLang(Astro.url)));
 const data = entry!.data;
 const { Content } = await render(entry!);
 ---

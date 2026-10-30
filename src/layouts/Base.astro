@@ -1,6 +1,7 @@
 ---
 import config from '@/config/site.config.json';
 import { absoluteImageURL } from '@/lib/seo';
+import { alternates, getLang, languages, localeTag, siteText, ui } from '@/i18n';
 import type { Seo } from '@/types/shared';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -31,7 +32,11 @@ interface Props {
   type?: 'website' | 'article';
 }
 
-const { seo: siteSeo, brand, footer } = config;
+const { brand } = config;
+// English at the root, French under /fr: SEO defaults, footer details and labels per language
+const lang = getLang(Astro.url);
+const { seo: siteSeo, footer } = siteText(lang);
+const t = ui(lang);
 const {
   title,
   description,
@@ -45,7 +50,7 @@ const {
 
 // SEO for any page, most specific first; empty strings count as unset:
 //   1. `seo` prop: the page's content entry (`seo:` in its front matter)
-//   2. site.config.json → seo.pages["/path"]: for pages with no content entry
+//   2. site.config.json → seo.pages["/path"] (French: fr.seo.pages): for pages with no content entry
 //   3. the page's own title / description / image props
 //   4. site defaults (seo.title, seo.description, seo.image)
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -73,18 +78,26 @@ const brandVars =
   `--brand-font-heading:'${brand.font.heading.name}',${brand.font.heading.fallback};` +
   `--brand-font-body:'${brand.font.body.name}',${brand.font.body.fallback};`;
 
-// Organization structured data, on the homepage only (as Google recommends).
+// the same page in the other language (src/i18n/routes.json): hreflang links, with English
+// as the default for other languages; not on noindex pages (404, thank-you)
+const pair = noindex ? undefined : alternates(Astro.url);
+// written like this page's canonical URL (with a trailing slash in the built site)
+const slash = Astro.url.pathname.endsWith('/');
+const altURL = (path: string) => new URL(slash && path !== '/' ? `${path}/` : path, site).href;
+const otherLang = lang === 'fr' ? 'en' : 'fr';
+
+// Organization structured data, on the homepage only (as Google recommends); in French on /fr.
 // No `sameAs`: the footer's social links are Consumer Choice Award's accounts, not
 // CCC's own profiles (add CCC's profile URLs here when it has them; brief/gaps.md).
 // Placeholder contact details are left out rather than published as data.
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname.replace(/(.)\/$/, '$1') === languages[lang].home;
 const real = (v: string) => (v && !v.includes('CLIENT TO PROVIDE') ? v : undefined);
 const organization = isHome
   ? {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: brand.name,
-      url: new URL('/', site).href,
+      url: new URL(languages[lang].home, site).href,
       logo: await absoluteImageURL(brand.logoLight.src, site),
       description: siteSeo.description,
       email: real(footer.email),
@@ -95,7 +108,7 @@ const organization = isHome
 ---
 
 <!doctype html>
-<html lang={config.locale.lang}>
+<html lang={localeTag(lang)}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -109,6 +122,15 @@ const organization = isHome
     <meta name="theme-color" content={brand.colors.dark} />
     <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex" />}
+    {
+      pair && (
+        <>
+          <link rel="alternate" hreflang={languages.en.lang} href={altURL(pair.en)} />
+          <link rel="alternate" hreflang={languages.fr.lang} href={altURL(pair.fr)} />
+          <link rel="alternate" hreflang="x-default" href={altURL(pair.en)} />
+        </>
+      )
+    }
 
     <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={pageTitle} />
@@ -116,6 +138,8 @@ const organization = isHome
     <meta property="og:image" content={imageURL} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:type" content={type} />
+    <meta property="og:locale" content={languages[lang].ogLocale} />
+    {pair && <meta property="og:locale:alternate" content={languages[otherLang].ogLocale} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
@@ -149,7 +173,7 @@ const organization = isHome
       href="#main"
       class="sr-only-focusable fixed top-3 left-3 z-99999 bg-white px-5 py-3 font-medium text-dark"
     >
-      Skip to content
+      {t.skipToContent}
     </a>
     <ScrollProgress />
     <DeviceSizeIndicator />

@@ -87,6 +87,22 @@ THEME_CATALOG.md with its signature interaction, props and accessibility notes.
 
 Also: `src/dev-pages/component-lab.astro` (the lab page) as the theme's component showcase.
 
+## 3b. Multilingual support (English + French)
+
+| Item | Files | Strip |
+|---|---|---|
+| **i18n core:** route pairs (JSON, so `astro.config.mjs` can read it), language from the URL, localized entry ids, `localizePath`, per-language site text / menus / interface labels, long dates and file sizes per locale | `src/i18n/routes.json`, `src/i18n/index.ts` | The route list and French slugs are CCC's; make the language list config-driven for the theme. |
+| **Interface labels in config** (`ui.<lang>`) instead of hard-coded English in components: skip link, menu open/close, back to top, pause/play, carousel prev/next, breadcrumb, showreel, testimonial labels, honeypot | `site.config.json`, `Base.astro`, `Header.astro`, `PauseButton.astro` (+ `data-pause-text` / `data-play-text` read by the Clients, Showreel, ReviewCarousel, TeamGroupCarousel and hero scripts), `PortfolioCarousel.astro`, `ScrollProgress.astro`, `Breadcrumbs.astro` | Generic (useful even for one-language sites in another language). Seal strings are CCC's. |
+| **Language switcher** in the header (compact code with full name for screen readers) and drawer (full name), to the paired page | `Header.astro` | Generic. Header spacing at `lg` is tuned to CCC's labels. |
+| **hreflang + og:locale** (written like the canonical URL), localized Organization JSON-LD, per-language SEO defaults | `Base.astro` | Generic. |
+| **Per-language sitemaps with alternates** (`chunks` + `serialize`), noindex French pages filtered | `astro.config.mjs` | Generic. |
+| **Singleton loaders for two languages** (`index.mdx` + `fr/index.mdx`); English listings filter out `fr/` entries; thin French route wrappers rendering the English template | `src/types/collections.ts`, `src/pages/fr/**`, page templates | Generic pattern. |
+| **Mixed-language items:** `BlogCard` / `NewsList` `lang` prop; BlogCard's link name moved from `aria-label` to an sr-only span so the title can carry `lang` | `BlogCard.astro`, `ccc/NewsList.astro` | Generic. |
+| **Form in two languages:** shared Netlify form with a `language` field, localized thank-you page, custom validation messages from content (`form.validation`) | `src/pages/contact.astro`, contact schema | Generic. |
+| **CounterUp** counts in the page's locale | `CounterUp.astro` | Generic. |
+| **Localized 404** for a language folder via Netlify `_redirects` | `public/_redirects`, `src/pages/404.astro` | Generic (Netlify). |
+| **QA:** `i18n.cjs` (pairs, hreflang, switcher, labels, form), `frtypo.cjs` (French typography in `dist/fr`) | `scripts/qa/` | Page pairs come from `routes.json`; the English-label list is CCC's. |
+
 ## 4. Build and tooling
 
 | Item | Files | Strip |

@@ -1,0 +1,16 @@
+[
+  { "en": "/", "fr": "/fr" },
+  { "en": "/about", "fr": "/fr/a-propos" },
+  { "en": "/our-brands", "fr": "/fr/nos-marques" },
+  { "en": "/our-brands/consumer-choice-award", "fr": "/fr/nos-marques/prix-choix-du-consommateur" },
+  { "en": "/our-brands/consumer-choice-marketing", "fr": "/fr/nos-marques/consumer-choice-marketing" },
+  { "en": "/our-brands/ccrdi", "fr": "/fr/nos-marques/ccrdi" },
+  { "en": "/40-years", "fr": "/fr/40-ans" },
+  { "en": "/for-businesses", "fr": "/fr/entreprises" },
+  { "en": "/media", "fr": "/fr/medias" },
+  { "en": "/contact", "fr": "/fr/nous-joindre" },
+  { "en": "/privacy", "fr": "/fr/confidentialite" },
+  { "en": "/accessibility", "fr": "/fr/accessibilite" },
+  { "en": "/thank-you/contact", "fr": "/fr/merci/contact" },
+  { "en": "/404", "fr": "/fr/404" }
+]

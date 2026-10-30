@@ -34,5 +34,43 @@
       { "name": "Privacy Policy", "url": "/privacy" },
       { "name": "Accessibility Statement", "url": "/accessibility" }
     ]
+  },
+  "fr": {
+    "main": [
+      { "name": "À propos", "url": "/fr/a-propos" },
+      {
+        "name": "Nos marques",
+        "url": "/fr/nos-marques",
+        "children": [
+          { "name": "Nos marques", "url": "/fr/nos-marques" },
+          { "name": "Prix Choix du Consommateur", "url": "/fr/nos-marques/prix-choix-du-consommateur" },
+          { "name": "Consumer Choice Marketing", "url": "/fr/nos-marques/consumer-choice-marketing" },
+          { "name": "Consumer Choice Research, Data & Insights", "url": "/fr/nos-marques/ccrdi" }
+        ]
+      },
+      { "name": "40 ans", "url": "/fr/40-ans" },
+      { "name": "Entreprises", "url": "/fr/entreprises" },
+      { "name": "Médias", "url": "/fr/medias" },
+      { "name": "Nous joindre", "url": "/fr/nous-joindre" }
+    ],
+    "footer": {
+      "col1": [
+        { "name": "À propos", "url": "/fr/a-propos" },
+        { "name": "Nos marques", "url": "/fr/nos-marques" },
+        { "name": "40 ans", "url": "/fr/40-ans" },
+        { "name": "Entreprises", "url": "/fr/entreprises" },
+        { "name": "Médias", "url": "/fr/medias" },
+        { "name": "Nous joindre", "url": "/fr/nous-joindre" }
+      ],
+      "col2": [
+        { "name": "Prix Choix du Consommateur", "url": "/fr/nos-marques/prix-choix-du-consommateur" },
+        { "name": "Consumer Choice Marketing", "url": "/fr/nos-marques/consumer-choice-marketing" },
+        { "name": "Consumer Choice Research, Data & Insights", "url": "/fr/nos-marques/ccrdi" }
+      ],
+      "col3": [
+        { "name": "Politique de confidentialité", "url": "/fr/confidentialite" },
+        { "name": "Déclaration d’accessibilité", "url": "/fr/accessibilite" }
+      ]
+    }
   }
 }

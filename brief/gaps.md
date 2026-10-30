@@ -311,6 +311,46 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       logos or signage. ccaward.com has no event photos (its large images are licensed stock
       or winners' ads), so none could be used from there.
 
+## French version (/fr)
+- [ ] **All French copy is a machine-assisted draft.** Every French page, label, alt text,
+      form message, SEO title and description, structured data and the seal text must be
+      reviewed by a professional translator or a native French speaker before launch.
+      Standard Quebec French (OQLF), professional corporate register; glossary approved by the
+      project owner on 2026-10-30. Files: src/content/*/fr/, src/config/site.config.json (`fr`,
+      `ui.fr`), src/config/menu.json (`fr`).
+- [ ] **Brand names in French: question for the client.** Consumer Choice Award appears as
+      "Prix Choix du Consommateur" (the name ccaward.com/fr uses; that site mixes
+      "consommateur" and "Consommateur", we use the capital C throughout). Consumer Choice
+      Canada, Consumer Choice Marketing and Consumer Choice Research, Data & Insights (CCRDI)
+      stay in English. Does the client have official French names for any of them? The
+      English logos are used on French pages (there are no French logos).
+- [ ] **ccaward.com/fr wording.** The four process headings on the Award's French page and the
+      closing line "Reconnaître et célébrer l’excellence commerciale depuis 1987" are
+      ccaward.com/fr's own (https://ccaward.com/fr/). Its French process texts were not used
+      because some have errors (e.g. "La seule organisation canadienne de subventions…":
+      "subventions" means grants); ours are new drafts. The client may want ccaward.com/fr
+      corrected too.
+- [ ] **French header button at 1024–1287px.** "Trouver une entreprise de confiance" is 83px
+      wider than "Find a Trusted Business", and the French desktop header overflows from 1024
+      to 1287px (up to about 109px short at 1024). Waiting for the project owner's decision
+      before shortening anything.
+- [ ] French press releases: the headlines link to the English releases, so they stay in
+      English (marked lang="en", with "(en anglais, s’ouvre dans un nouvel onglet)" for screen
+      readers). Does Consumer Choice Award publish French releases that could be linked
+      instead?
+- [ ] French header button and "Visiter le site Web" link to ccaward.com/fr
+      (https://ccaward.com/fr/laureats/canada/ and https://ccaward.com/fr/): client to confirm,
+      as for the English links.
+- [ ] Netlify: both contact forms post to the same form ("contact") with a `language` field
+      (en or fr); the French thank-you page is /fr/merci/contact. public/_redirects serves the
+      French 404 page for missing /fr/ URLs. Check both after the first deploy.
+- [ ] French interface labels that are new wording (translations of the English labels):
+      "Les publics que nous servons" (Who We Serve), "Nos jalons" (Our Milestones), "Pourquoi
+      Consumer Choice", "Organisation faîtière" (Umbrella organization), "Rayonnement et
+      croissance" (Amplification and growth), and the taglines "Éclairer les décisions"
+      (Delivering Insight) and "Aider les entreprises d’exception à grandir" (Helping Great
+      Businesses Grow). For the reviewer's attention.
+
 ## Approvals and open questions
 - [ ] Superlative claims ("Canada's leading", "most trusted", "Canada's Trusted Consumer
       Authority"): used in the framework's final copy (§3, §5); still needs explicit sign-off

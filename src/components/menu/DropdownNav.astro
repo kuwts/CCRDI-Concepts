@@ -25,7 +25,7 @@ const isActive = (u: string) => u !== '#' && strip === u.replace(/\/$/, '');
 const inSection = (item: NavItem) => isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
 
 const linkClass =
-  'flex items-center gap-0.5 px-3 xl:px-5.5 py-5 text-[15px] leading-none font-medium whitespace-nowrap cursor-pointer transition-colors duration-200 group-data-dimmed/nav:text-white/50 data-current:text-white! hover:text-white';
+  'flex items-center gap-0.5 px-2.5 xl:px-5.5 py-5 text-[15px] leading-none font-medium whitespace-nowrap cursor-pointer transition-colors duration-200 group-data-dimmed/nav:text-white/50 data-current:text-white! hover:text-white';
 ---
 
 <div class="group/nav relative mx-auto hidden lg:block" data-dropnav>

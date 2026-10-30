@@ -200,6 +200,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **Visual weight:** Medium.
 - **Used on:** all pages (via Base).
 - **Notes:** the header button is the site's main action: `headerButton` (`label`, `url`; default "Contact Us" → `/contact`). Full `http(s)` URLs open in a new tab.
+- **Language switcher (CCC, bilingual):** a link to the same page in the other language (`src/i18n/routes.json`), beside the header button: compact "FR" / "EN" with the full name for screen readers ("FR – Français", so the accessible name contains the visible text), and the full name ("Français" / "English") in the drawer above the button. The link carries the other language's `lang` and `hreflang`. Menus, logo link, header button and labels follow the page's language. Header fit is tight at `lg`: nav items `px-2.5` (was `px-3`), switcher–button gap 12px; check every width with a header-fit script after changing labels.
 
 #### DropdownNav
 
@@ -1054,6 +1055,22 @@ Related settings in the same file: `locale` (`lang` for `<html lang>`, `format` 
 - **Fixed Tailwind colors:** `gray-100` (the "Gray" section background and image placeholders) and `amber-400` (star ratings).
 - **Services cards and blog tints:** come from content (`services/index.mdx` → `items[].color`, a post's `color`).
 - **Contrast:** small text on light backgrounds uses `dark/70` or darker, which passes WCAG AA on white, `light` and `gray-100`. Check `primary` against white if you use it for text on light sections (the demo green doesn't pass).
+
+## Languages (English and French)
+
+CCC is bilingual: English at the root, Canadian French (fr-CA) under `/fr` with French slugs.
+
+- **`src/i18n/routes.json`:** every English URL paired with its French URL. The switcher, hreflang, the sitemap's alternates and the French route files read it.
+- **`src/i18n/index.ts`:** `getLang(Astro.url)` (French under `/fr`), `entryId(id, lang)` (French singletons are `fr`, other French entries `fr/<id>`), `isFrenchEntry`, `localizePath` (English paths in shared code → French URLs on French pages), `siteText` / `menuFor` / `ui` (site-wide text, menus and interface labels per language), `fill`, `formatLongDate` ("1er octobre 2026"), `fileSize` ("1,2 Mo").
+- **Content:** French entries in each collection's `fr/` folder, named like the English ones (`homepage/fr/index.mdx`, `brand-pages/fr/consumer-choice-award.mdx`). Singleton loaders match `index.mdx` and `fr/index.mdx`; English listings filter out French entries.
+- **Config:** `site.config.json` → `i18n.languages` (tags, `og:locale`, names, home URLs), `fr` (SEO defaults, footer, header button), `ui.en` / `ui.fr` (labels that were hard-coded in components: skip link, menu, pause/play, carousel, breadcrumb, seal, form honeypot, …); `menu.json` → `fr`.
+- **Pages:** each template reads its language from the URL; `src/pages/fr/` holds thin wrappers that render the English template (`<About />`), plus `getStaticPaths` for the dynamic ones with slugs from `routes.json`.
+- **`<head>`:** `html lang`, hreflang for both languages and `x-default` (English), written like the canonical URL; `og:locale` and `og:locale:alternate`; Organization JSON-LD in French on `/fr`.
+- **Sitemap:** `sitemap-en-0.xml` and `sitemap-fr-0.xml` (`chunks`), each URL with its alternates (`serialize`); French thank-you and 404 pages left out.
+- **Mixed-language content:** `BlogCard` and `NewsList` items take `lang` (e.g. `"en"` for English press releases on French pages): the title and summary get `lang`, the screen-reader note reads "(en anglais, s’ouvre dans un nouvel onglet)".
+- **Forms:** the same Netlify form on both contact pages, with a hidden `language` field; French custom validation messages (`form.validation`), French thank-you page `/fr/merci/contact`.
+- **404:** `/fr/404`, served for missing `/fr/` URLs by `public/_redirects` (Netlify).
+- **QA:** `scripts/qa/i18n.cjs` and `scripts/qa/frtypo.cjs`; `stage.cjs` covers the French pages.
 
 ## SEO
 

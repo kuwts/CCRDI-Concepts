@@ -18,9 +18,11 @@ import config from '@/config/site.config.json';
 import StackedServices from '@/components/StackedServices.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
+import { entryId, getLang, isFrenchEntry, localizePath, ui } from '@/i18n';
 
+// French pages: src/pages/fr/nos-marques/[slug].astro (entries in brand-pages/fr/)
 export async function getStaticPaths() {
-  const entries = await getCollection('brandPages');
+  const entries = await getCollection('brandPages', (e) => !isFrenchEntry(e.id));
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -29,7 +31,9 @@ const data = entry.data;
 const { Content } = await render(entry);
 
 // the homepage brand slider (one source for each brand's photo, colour and link)
-const home = await getEntry('homepage', 'index');
+const lang = getLang(Astro.url);
+const t = ui(lang);
+const home = await getEntry('homepage', entryId('index', lang));
 const brands = home!.data.projects.items.map((p) => ({ ...p, imageAlt: p.image_alt }));
 // testimonials: the homepage placeholders, until the client supplies real ones
 const testimonials = data.testimonials ? home!.data.testimonials : undefined;
@@ -37,7 +41,11 @@ const { process, stack } = data;
 const external = (href: string) => /^https?:\/\//.test(href);
 
 // breadcrumbs (Home › Our Brands › brand) and the same trail as BreadcrumbList structured data
-const crumbs = [{ label: 'Home', href: '/' }, { label: 'Our Brands', href: '/our-brands' }, { label: data.title }];
+const crumbs = [
+  { label: t.home, href: localizePath('/', lang) },
+  { label: t.titles.ourBrands, href: localizePath('/our-brands', lang) },
+  { label: data.title },
+];
 const site = Astro.site ?? new URL(config.baseURL);
 const breadcrumbData = {
   '@context': 'https://schema.org',

@@ -1,6 +1,10 @@
 ---
 import AstroImage from '@/components/helper/AstroImage.astro';
 import PauseButton from '@/components/PauseButton.astro';
+import { getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
 
 interface ClientLogo {
   name: string;
@@ -53,7 +57,7 @@ const logoColumns = items.length ? distributeLogos(items, Math.min(columnCount, 
 
 {logoColumns.length > 0 && (
 <div class:list={['relative container xl:max-w-275 has-anim fade', className]} data-logo-carousel>
-  <PauseButton label="logo animation" />
+  <PauseButton label={t.pauseLabels.logos} />
   <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6">
     {
       logoColumns.map((col, colIndex) => (
@@ -218,7 +222,7 @@ const logoColumns = items.length ? distributeLogos(items, Math.min(columnCount, 
     toggle?.addEventListener('click', () => {
       paused = !paused;
       toggle.setAttribute('aria-pressed', String(paused));
-      toggle.textContent = `${paused ? 'Play' : 'Pause'} logo animation`;
+      toggle.textContent = (paused ? toggle.dataset.playText : toggle.dataset.pauseText) ?? '';
       sync();
     });
   });

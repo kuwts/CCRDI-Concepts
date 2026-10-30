@@ -1,6 +1,10 @@
 ---
 import AstroImage from '@/components/helper/AstroImage.astro';
 import PauseButton from '@/components/PauseButton.astro';
+import { getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
 
 type GroupImage = string | { src: string; alt?: string };
 interface Props {
@@ -16,7 +20,7 @@ const duration = 20;
 
 {photos.length > 0 && (
 <div class="team-group-carousel marquee relative overflow-hidden" data-marquee>
-  <PauseButton label="photo strip" />
+  <PauseButton label={t.pauseLabels.photoStrip} />
   <div class="marquee-track flex" data-marquee-track data-duration={duration}>
     {
       items.map((photo, i) => (
@@ -111,7 +115,7 @@ const duration = 20;
     toggle?.addEventListener('click', () => {
       paused = !paused;
       toggle.setAttribute('aria-pressed', String(paused));
-      toggle.textContent = `${paused ? 'Play' : 'Pause'} photo strip`;
+      toggle.textContent = (paused ? toggle.dataset.playText : toggle.dataset.pauseText) ?? '';
       sync();
     });
   });

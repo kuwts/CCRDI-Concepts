@@ -12,11 +12,14 @@ import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import StackedServices from '@/components/StackedServices.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
+import { entryId, getLang } from '@/i18n';
 
-const entry = await getEntry('businesses', 'index');
+// English at /for-businesses, French at /fr/entreprises (src/pages/fr/entreprises.astro)
+const lang = getLang(Astro.url);
+const entry = await getEntry('businesses', entryId('index', lang));
 const { title, intro, audiences, brands } = entry!.data;
 // testimonials: the homepage placeholders, until the client supplies real ones
-const home = entry!.data.testimonials ? await getEntry('homepage', 'index') : undefined;
+const home = entry!.data.testimonials ? await getEntry('homepage', entryId('index', lang)) : undefined;
 const testimonials = home?.data.testimonials;
 const slides = brands.items.map((b) => ({ ...b, imageAlt: b.image_alt }));
 ---

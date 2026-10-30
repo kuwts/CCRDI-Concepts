@@ -6,6 +6,7 @@
 // faint underline at rest, a gold one drawn in on hover or focus). Best on pages two or more
 // levels deep, above the page title. Reduced motion: in place, rule drawn.
 import { Icon } from 'astro-icon/components';
+import { getLang, ui } from '@/i18n';
 
 interface Crumb {
   label: string;
@@ -21,7 +22,7 @@ interface Props {
   class?: string;
 }
 
-const { items, tone = 'dark', label = 'Breadcrumb', class: className = '' } = Astro.props;
+const { items, tone = 'dark', label = ui(getLang(Astro.url)).breadcrumb, class: className = '' } = Astro.props;
 const dark = tone === 'dark';
 const delays = ['', 'delay-100', 'delay-200', 'delay-300', 'delay-[400ms]', 'delay-500'];
 ---

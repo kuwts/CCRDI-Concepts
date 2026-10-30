@@ -4,6 +4,7 @@ import { formatDate } from '@/utils/formatDate';
 import { readingTime } from '@/utils/readingTime';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import { Icon } from "astro-icon/components";
+import { getLang, ui } from '@/i18n';
 
 /** A card without a blog post behind it (e.g. a homepage news item); the date is shown as written. */
 interface CardItem {
@@ -18,6 +19,9 @@ interface CardItem {
   datetime?: string;
   /** an external page (e.g. a press release): opens in a new tab, and says so to screen readers */
   external?: boolean;
+  /** the language of the title and description when it differs from the page's (e.g. "en"
+   *  for an English press release on a French page) */
+  lang?: string;
 }
 
 interface Props {
@@ -52,9 +56,12 @@ const meta = post
   : [item?.date ?? ''];
 
 const external = !post && item?.external;
-const linkAttrs = external
-  ? { target: '_blank', rel: 'noopener', 'aria-label': `${title} (opens in a new tab)` }
-  : { 'aria-label': title };
+const linkAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+// the link's name: the title (in its own language), plus "opens in a new tab" in the page's
+// language ("in English, opens in a new tab" for an English item on a French page)
+const t = ui(getLang(Astro.url));
+const textLang = !post ? item?.lang : undefined;
+const newTab = textLang ? t.inEnglishNewTab : t.newTab;
 const datetime = !post ? item?.datetime : undefined;
 
 const headingClass = 'text-dark underline decoration-transparent transition group-hover/img:text-black group-hover/img:decoration-dark/70 break-words';
@@ -82,6 +89,7 @@ const clamp = post ? 'line-clamp-2' : '';
       <div class="group/img row justify-center">
         <div class="lg:col-6">
           <a href={href} {...linkAttrs} class="block overflow-hidden rounded-card after:absolute after:inset-0">
+            <span class="sr-only"><span lang={textLang}>{title}</span>{external && ` ${newTab}`}</span>
             <AstroImage
               src={image}
               alt={imageAlt}
@@ -93,10 +101,10 @@ const clamp = post ? 'line-clamp-2' : '';
         <div class="lg:col-6">
           <div class="mt-6 sm:mt-8 lg:mt-0 text-dark lg:h-full p-0 lg:p-6 lg:flex flex-col">
             {category && <span class:list={['mb-6', chipClass]}>{category}</span>}
-            <Heading class:list={['text-statement', headingClass]}>
+            <Heading class:list={['text-statement', headingClass]} lang={textLang}>
               {title}
             </Heading>
-            <p class:list={['my-6 text-[15px]', clamp]}>{description}</p>
+            <p class:list={['my-6 text-[15px]', clamp]} lang={textLang}>{description}</p>
             <div class="mt-0 lg:mt-auto flex items-end justify-between">
               <p class="text-[14px]">
                 {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
@@ -111,6 +119,7 @@ const clamp = post ? 'line-clamp-2' : '';
     ) : (
       <div class="group/img">
         <a href={href} {...linkAttrs} class="block overflow-hidden rounded-card after:absolute after:inset-0">
+          <span class="sr-only"><span lang={textLang}>{title}</span>{external && ` ${newTab}`}</span>
           <AstroImage
             src={image}
             alt={imageAlt}
@@ -120,10 +129,10 @@ const clamp = post ? 'line-clamp-2' : '';
         </a>
         <div class="mt-6 text-dark h-full">
           {category && <span class:list={['mb-4', chipClass]}>{category}</span>}
-          <Heading class:list={['text-h3', clamp, headingClass]}>
+          <Heading class:list={['text-h3', clamp, headingClass]} lang={textLang}>
             {title}
           </Heading>
-          <p class:list={['mt-3 mb-6 text-[15px]', clamp]}>{description}</p>
+          <p class:list={['mt-3 mb-6 text-[15px]', clamp]} lang={textLang}>{description}</p>
           <div class="mt-auto flex items-end justify-between">
             <p class="text-[14px]">
               {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}

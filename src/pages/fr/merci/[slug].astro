@@ -1,0 +1,20 @@
+---
+// Form thank-you pages, in French (/fr/merci/contact): the English template with the French
+// entries (src/content/thank-you/fr/). Noindex, out of the nav and the sitemap.
+import { getCollection } from 'astro:content';
+import ThankYouPage from '../../thank-you/[slug].astro';
+import { frSlug } from '@/i18n';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('thankYou', (e) => e.id.startsWith('fr/') && e.id !== 'fr/application');
+  return entries.map((entry) => {
+    const slug = frSlug(`/thank-you/${entry.id.slice(3)}`);
+    if (!slug) throw new Error(`No French URL for thank-you page ${entry.id} (src/i18n/routes.json)`);
+    return { params: { slug }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props;
+---
+
+<ThankYouPage entry={entry} />

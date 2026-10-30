@@ -1,12 +1,16 @@
 ---
 // Back-to-top button with a circular scroll-progress indicator.
 // Behaviour lives in Base.astro's global script.
+import { getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
 ---
 
 <button
   type="button"
   class="scroll-progress"
-  aria-label="Scroll to top"
+  aria-label={t.scrollToTop}
   data-scroll-progress
 >
   <svg

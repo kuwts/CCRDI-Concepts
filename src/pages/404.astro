@@ -1,22 +1,27 @@
 ---
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
-// heading and button: content.md 404 labels; the message is a placeholder (brief/gaps.md)
+import { getLang, languages, ui } from '@/i18n';
+// heading and button: content.md 404 labels (site.config.json → ui); the message is a
+// placeholder (brief/gaps.md). French: /fr/404 (src/pages/fr/404.astro), served for missing
+// /fr/ URLs by public/_redirects.
+const lang = getLang(Astro.url);
+const t = ui(lang);
 ---
 
-<Base title="Page not found" noindex footerClass="hairline-top hairline-dark">
+<Base title={t.titles.notFound} noindex footerClass="hairline-top hairline-dark">
   <section class="pt-24 sm:pt-28 pb-28 sm:pb-32">
     <div class="container">
       <div class="row justify-center text-center">
         <div class="lg:col-8">
           <p class="mb-3 font-medium text-9xl text-white" aria-hidden="true">40<span class="rotate-y-180 inline-block">4</span></p>
           <h1 class="mb-6 text-h1 text-white">
-            Page not found
+            {t.titles.notFound}
           </h1>
           <p class="lead mb-8 text-white/80">
             [CLIENT TO PROVIDE: 404 message]
           </p>
-          <Button href="/" label="Return Home" />
+          <Button href={languages[lang].home} label={t.returnHome} />
         </div>
       </div>
     </div>

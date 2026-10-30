@@ -9,8 +9,9 @@ import {
   seoSchema,
 } from '@/types/shared';
 
+// one entry per language: index.mdx (English, id "index") and fr/index.mdx (French, id "fr")
 const singleton = (folder: string) =>
-  glob({ pattern: 'index.mdx', base: `./src/content/${folder}` });
+  glob({ pattern: ['index.mdx', 'fr/index.mdx'], base: `./src/content/${folder}` });
 
 /* ── Home page ─────────────────────────────────────────────────────── */
 export const homepage = defineCollection({
@@ -478,6 +479,9 @@ export const contact = defineCollection({
       submit_label: z.string(),
       sending_label: z.string(),
       error_message: z.string(),
+      // custom messages for the browser's required/email checks; unset = the browser's own
+      // (which follow the browser's language, not the page's)
+      validation: z.object({ required: z.string(), email: z.string() }).optional(),
     }),
   }),
 });

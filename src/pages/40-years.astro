@@ -11,8 +11,11 @@ import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 import StepList from '@/components/ccc/StepList.astro';
+import { entryId, getLang, ui } from '@/i18n';
 
-const entry = await getEntry('anniversary', 'index');
+// English at /40-years, French at /fr/40-ans (src/pages/fr/40-ans.astro)
+const lang = getLang(Astro.url);
+const entry = await getEntry('anniversary', entryId('index', lang));
 const data = entry!.data;
 const { Content } = await render(entry!);
 
@@ -20,7 +23,7 @@ const brands = data.next.items.map((p) => ({ ...p, imageAlt: p.image_alt }));
 const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
-<Base title="40 Years" image={data.image} seo={data.seo}>
+<Base title={ui(lang).titles.fortyYears} image={data.image} seo={data.seo}>
   <section class="page-header pt-20 pb-16 text-muted">
     <div class="container -mt-1.5">
       <div class="row justify-center">

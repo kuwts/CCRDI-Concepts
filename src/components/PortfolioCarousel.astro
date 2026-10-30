@@ -1,5 +1,9 @@
 ---
 import PortfolioCard from '@/components/PortfolioCard.astro';
+import { getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
 
 interface Project {
   slug?: string;
@@ -63,8 +67,8 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
   </div>
 
   <div class="mt-4 text-center">
-    <button type="button" class:list={['pf-prev', btn]}>Prev</button>
-    <button type="button" class:list={['pf-next', btn]}>Next</button>
+    <button type="button" class:list={['pf-prev', btn]}>{t.prev}</button>
+    <button type="button" class:list={['pf-next', btn]}>{t.next}</button>
   </div>
 
   <div class="swipeCarousel-control pointer-events-none relative h-9.5" aria-hidden="true">

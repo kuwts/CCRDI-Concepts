@@ -1,12 +1,15 @@
 // usage: node stage.cjs <projectDir> <baseUrl> <outDir> [axe.min.js]
-// Every CCC page at 390 and 1440: full-page screenshot, sideways overflow, H1 count,
+// Every CCC page (English and French) at 390 and 1440: full-page screenshot, sideways overflow, H1 count,
 // heading skips, missing alt, console errors, and (optionally) axe violations.
 const fs = require('fs');
 const { createRequire } = require('module');
 const [, , projectDir, base, outDir, axePath] = process.argv;
 const { chromium } = createRequire(projectDir + '/package.json')('playwright');
 const pages = process.env.PAGES ? process.env.PAGES.split(',') : ['/', '/about', '/our-brands', '/our-brands/consumer-choice-award', '/our-brands/consumer-choice-marketing',
-  '/our-brands/ccrdi', '/40-years', '/for-businesses', '/media', '/contact', '/thank-you/contact', '/privacy', '/accessibility', '/404'];
+  '/our-brands/ccrdi', '/40-years', '/for-businesses', '/media', '/contact', '/thank-you/contact', '/privacy', '/accessibility', '/404',
+  // French (src/i18n/routes.json)
+  '/fr', '/fr/a-propos', '/fr/nos-marques', '/fr/nos-marques/prix-choix-du-consommateur', '/fr/nos-marques/consumer-choice-marketing',
+  '/fr/nos-marques/ccrdi', '/fr/40-ans', '/fr/entreprises', '/fr/medias', '/fr/nous-joindre', '/fr/merci/contact', '/fr/confidentialite', '/fr/accessibilite', '/fr/404'];
 const slug = (p) => (p === '/' ? 'home' : p.slice(1).replace(/\//g, '-'));
 fs.mkdirSync(outDir, { recursive: true });
 const axe = fs.readFileSync(axePath || createRequire(projectDir + '/package.json').resolve('axe-core/axe.min.js'), 'utf8');

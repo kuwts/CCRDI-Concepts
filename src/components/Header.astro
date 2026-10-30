@@ -3,8 +3,8 @@ import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import DropdownNav from '@/components/menu/DropdownNav.astro';
 
-import menuConfig from '@/config/menu.json';
 import site from '@/config/site.config.json';
+import { alternates, getLang, languages, menuFor, siteText, ui } from '@/i18n';
 
 // typed so menus without dropdowns (no `children` anywhere) still check
 interface MenuItem {
@@ -12,7 +12,11 @@ interface MenuItem {
   url: string;
   children?: { name: string; url: string }[];
 }
-const menu: { main: MenuItem[] } = menuConfig;
+// menus, header button and labels in the page's language (menu.json, site.config.json)
+const lang = getLang(Astro.url);
+const menu: { main: MenuItem[] } = menuFor(lang);
+const t = ui(lang);
+const home = languages[lang].home;
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (url: string) =>
@@ -21,9 +25,16 @@ const inSection = (item: MenuItem) =>
   isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
 
 // header button: the site's main action (site.config.json → headerButton)
-const { headerButton } = site;
+const { headerButton } = siteText(lang);
 const external = /^https?:\/\//.test(headerButton.url);
 const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+
+// language switcher: the same page in the other language (src/i18n/routes.json), or its home.
+// Compact "FR"/"EN" in the header bar, the full name in the mobile menu; the link text is in
+// the other language, so it carries that `lang`.
+const other = lang === 'fr' ? 'en' : 'fr';
+const otherLang = languages[other];
+const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
 ---
 <header
   id="site-header"
@@ -35,7 +46,7 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
       <div class="col-12">
         <nav class="flex items-center justify-between py-4 lg:py-5 group-[.sticky-pinned]/header:py-2 transition-all duration-300">
           <!-- logo -->
-          <a href="/" title={site.brand.logo.alt} class="inline-block shrink-0">
+          <a href={home} title={site.brand.logo.alt} class="inline-block shrink-0">
             <AstroImage
               src={site.brand.logo.src}
               alt={site.brand.logo.alt}
@@ -49,8 +60,16 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
           <!-- desktop nav -->
           <DropdownNav items={menu.main} currentPath={pathname} />
 
-          <!-- desktop header button -->
-          <div class="hidden shrink-0 lg:block">
+          <!-- desktop language switcher + header button -->
+          <div class="hidden shrink-0 items-center gap-3 xl:gap-5 lg:flex">
+            <a
+              href={switchHref}
+              lang={otherLang.lang}
+              hreflang={otherLang.lang}
+              class="py-1 text-[15px] font-medium text-white/85 underline decoration-transparent decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
+            >
+              {otherLang.short}<span class="sr-only"> – {otherLang.name}</span>
+            </a>
             <a
               href={headerButton.url}
               class="btn btn-sm btn-white"
@@ -64,7 +83,7 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
           <button
             type="button"
             data-menu-open
-            aria-label="Open menu"
+            aria-label={t.openMenu}
             aria-expanded="false"
             aria-controls="mobile-drawer"
             class="text-white transition-opacity hover:opacity-70 lg:hidden cursor-pointer p-1"
@@ -87,22 +106,22 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 <!-- mobile drawer -->
 <aside
   id="mobile-drawer"
-  aria-label="Menu"
+  aria-label={t.menu}
   inert
   class="bg-dark invisible fixed top-0 right-0 z-9999 flex h-screen w-75 max-w-[85vw] translate-x-full flex-col p-7.5 shadow-2xl shadow-black/50 transition-transform duration-500 lg:hidden"
   style="transition-timing-function:var(--ease-theme)"
 >
   <div class="mb-4 flex items-center justify-between">
-    <a href="/" title={site.brand.logo.alt}>
+    <a href={home} title={site.brand.logo.alt}>
       <AstroImage src={site.brand.logo.src} alt={site.brand.logo.alt} class="w-38 h-auto" width={site.brand.logo.width} height={site.brand.logo.height} loading="eager" />
     </a>
     <button
       type="button"
       data-menu-close
-      aria-label="Close menu"
+      aria-label={t.closeMenu}
       class="flex items-center gap-1 text-[14px] tracking-wider text-white/80 uppercase transition-opacity hover:opacity-60 cursor-pointer p-1"
     >
-      <Icon name="lucide:x" class="text-[18px]" aria-hidden="true" /> Close
+      <Icon name="lucide:x" class="text-[18px]" aria-hidden="true" /> {t.close}
     </button>
   </div>
 
@@ -170,8 +189,17 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
   </ul>
 
   <a
+    href={switchHref}
+    lang={otherLang.lang}
+    hreflang={otherLang.lang}
+    class="mt-5 inline-block self-start py-2 text-[15px] font-medium text-white/85 underline decoration-white/30 decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
+  >
+    {otherLang.name}
+  </a>
+
+  <a
     href={headerButton.url}
-    class="btn btn-white mt-6 flex w-full"
+    class="btn btn-white mt-5 flex w-full"
     {...extAttrs}
   >
     <span>{headerButton.label}</span>

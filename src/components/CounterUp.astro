@@ -2,7 +2,8 @@
 // Animated stat number. The final value is what's rendered, so it's correct
 // without JavaScript and with reduced motion. Shortly before it scrolls into view
 // the number drops to 60% of its value, then counts up linearly over 1.5s.
-import config from '@/config/site.config.json';
+// Counts in the page's locale (en-CA or fr-CA).
+import { getLang, localeTag } from '@/i18n';
 
 interface Props {
   value: string;
@@ -29,7 +30,7 @@ const isNumber = !isNaN(numValue) && match !== null && !isYear;
       data-value={numValue}
       data-decimals={numberStr.split('.')[1]?.length || 0}
       data-grouping={numberStr.includes(',') ? '' : undefined}
-      data-locale={config.locale.format}
+      data-locale={localeTag(getLang(Astro.url))}
     >
       {value}
     </span>

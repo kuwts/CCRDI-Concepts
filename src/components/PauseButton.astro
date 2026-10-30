@@ -3,8 +3,14 @@
 // Hidden until it gets keyboard focus, so it doesn't change the design; the
 // component that owns it listens for clicks and keeps `aria-pressed` in sync.
 // Needs a `relative` parent.
+import { fill, getLang, ui } from '@/i18n';
+
+// labels in the page's language (site.config.json → ui)
+const t = ui(getLang(Astro.url));
+
 interface Props {
-  /** What it pauses, e.g. "logo animation"; read as "Pause logo animation". */
+  /** What it pauses, in the page's language (site.config.json → ui.pauseLabels), e.g. "logo
+   *  animation"; read as "Pause logo animation". */
   label: string;
   /** Position classes; default `top-2 left-2`. */
   class?: string;
@@ -21,6 +27,8 @@ const { label, class: className = 'top-2 left-2' } = Astro.props;
   ]}
   aria-pressed="false"
   data-pause-toggle
+  data-pause-text={fill(t.pause, { label })}
+  data-play-text={fill(t.play, { label })}
 >
-  Pause {label}
+  {fill(t.pause, { label })}
 </button>

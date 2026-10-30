@@ -1,0 +1,2 @@
+# Netlify: missing French URLs get the French 404 page (English ones get /404.html)
+/fr/*  /fr/404/index.html  404

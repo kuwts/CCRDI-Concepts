@@ -34,6 +34,19 @@ Component reference: THEME_CATALOG.md (current; /brief/theme-audit.md is out of 
   milestones; the Consumer Choice Marketing service list from
   the framework's draft notes, on Our Brands only. Never use or write quotes from real people
   unless the client supplies them.
+- French version (approved exception): the French pages under /fr translate the approved
+  English copy into Canadian French (fr-CA, standard Quebec French following OQLF guidance, a
+  professional corporate register). They are machine-assisted drafts, logged in
+  /brief/gaps.md, and must be reviewed by a professional translator or a native French speaker
+  before launch. Translate only what the English pages say; add nothing. Brand names stay in
+  English, except Consumer Choice Award, which is "Prix Choix du Consommateur" (as on
+  ccaward.com/fr). Inclusive writing: gender-neutral wording where it reads naturally, paired
+  forms in key places (e.g. "Canadiennes et Canadiens"), never dot forms. Press release
+  headlines and summaries stay in English (marked lang="en"). [CLIENT TO PROVIDE: ...]
+  placeholders stay in English. How it's built: src/i18n (routes.json pairs every English and
+  French URL), French entries in each collection's fr/ folder, French site-wide text in
+  site.config.json (`fr`, `ui`) and menu.json (`fr`). Check with scripts/qa/i18n.cjs and
+  scripts/qa/frtypo.cjs.
 - STRUCTURE: Keep the theme's existing layouts, page templates, section components, header,
   footer, grid and spacing system. Change the content and styling inside them; do not
   rebuild or restructure what the theme already does.
@@ -76,6 +89,8 @@ Component reference: THEME_CATALOG.md (current; /brief/theme-audit.md is out of 
   src/assets/images/placeholders/ and src/assets/videos/placeholders/ are no longer used.
 - Refresh the press releases (src/content/data/press-releases.json) from Consumer Choice
   Award's newswire releases, word for word, and log the changes in /brief/gaps.md.
+- All French copy has been reviewed and approved by a professional translator or a native
+  French speaker (/brief/gaps.md), and `node scripts/qa/frtypo.cjs .` reports no problems.
 
 ## Tone
 Confident, plain, professional. No hype words, emoji, or exclamation marks.
