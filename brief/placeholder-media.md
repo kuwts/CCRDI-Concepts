@@ -28,6 +28,17 @@ Hero imagery (bold-round), also rejected:
 - an Old Québec dusk skyline with "Delta" and "Hilton" signs on two towers
 - a Montréal dusk aerial dominated by the Farine Five Roses sign
 - a Vancouver harbour sunset with a scrolling LED sign on BC Place
+- Seaton Lake (Lillooet, BC) at dusk, version A until 2026-10-30: replaced, on the project owner's
+  request, with a business event photo (people not the focal point, no logos or signage)
+
+Business event photos for hero version A (2026-10-30), rejected:
+- people mingling at a San Francisco tech event (a "Unity" logo on a bag, faces in focus)
+- a crowded Gothenburg event hall (a banner, an exit sign, a market stall)
+- an office social (labelled bottles on the shelves, bright daylight that needs a heavy overlay)
+- three cocktail-reception and networking photos with faces in sharp focus
+- a fully blurred crowd under string lights (green club-style lighting; doesn't read as business)
+- every large photo on ccaward.com: licensed stock (many with the award decal added to shop
+  windows), winners' ads, or graphics; no Consumer Choice Award event photography was found
 - vertical (9:16) clips of Old Québec and Vancouver, which don't fit a wide hero
 - Ottawa skylines (Parliament: government connection) and Toronto clips (the showreel below is already Toronto)
 - a calm night waterfront in blue hour, location not stated and apparently European, so the Canadian Québec aerial was used instead
@@ -51,7 +62,8 @@ Second pass, on the project owner's request:
 - **Kept, because no Canadian alternative fit as well:** the carpenter (Dar es Salaam, Tanzania) and the Award celebration (York, United Kingdom).
 
 Locations:
-- **Canadian:** hero version A (Seaton Lake, Lillooet BC), hero version B (Québec City), showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
+- **Canadian:** hero version B (Québec City), showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
+- **Not in Canada:** hero version A (Fox Cities Exhibition Center, Appleton, Wisconsin, USA).
 - **Not stated:** florist, desk, research and marketing teams, OPEN sign, gold stars, flag (tagged Canada).
 
 ## Video
@@ -81,7 +93,7 @@ Locations:
 | `news-granville-market.jpg` | Home: news card 2 (cropped to leave out a vendor's sign) | Shoppers at a fruit stand in the Granville Island Public Market, Vancouver | https://unsplash.com/photos/a-group-of-people-standing-around-a-fruit-stand-w0q7OX3T-hM | Dania Shaeeb | Unsplash License |
 | `news-maple-leaves.jpg` | Home: news card 3 | Red maple leaves fallen across an old wooden fence | https://unsplash.com/photos/red-maple-leaves-2SOn18mpBZo | Suvin Vengilat | Unsplash License |
 | `news-st-jacobs-market.jpg` | Home: news card 4 | Shoppers browsing tomatoes and flowers at St. Jacobs Farmers' Market in Ontario | https://unsplash.com/photos/people-shopping-at-an-outdoor-farmers-market-with-fresh-produce-e3-9x-Ee238 | Jason Ng | Unsplash License |
-| `hero-seaton-lake-dusk.jpg` | Home: hero background, version A (decorative, `alt=""`, under a navy overlay) | (decorative) Mountain silhouettes framing Seaton Lake at dusk, with an orange glow on the horizon | https://unsplash.com/photos/dark-mountains-silhouette-a-lake-with-a-beautiful-sunset-glow-iNF9KBUYaxw | Caleb Sebastian | Unsplash License |
+| `hero-conference-audience.jpg` (2400 x 1600, downloaded from Unsplash at that width) | Home: hero background, version A (decorative, `alt=""`, under a navy overlay; worst-case hero text contrast 5.01:1) | (decorative) A conference audience seen from behind and to the side in a dark hall, with soft bokeh lights on the wall behind the stage | https://unsplash.com/photos/crowd-of-people-sitting-on-chairs-inside-room-F2KRf_QfCqw | Headway | Unsplash License |
 
 
 ### About page

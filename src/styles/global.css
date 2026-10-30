@@ -134,7 +134,7 @@
 
 /* Navy overlay over hero imagery. Strongest behind the headline column (left on
    desktop) and at the top; every piece of hero text keeps 4.5:1 over the brightest
-   part of the image (checked per pixel). The defaults suit the dark dusk photo
+   part of the image (checked per pixel). The defaults suit the dark conference photo
    (version A); a brighter image sets stronger values with the --scrim-* variables. */
 @utility hero-scrim {
   background:
@@ -142,8 +142,8 @@
     linear-gradient(
       to right,
       color-mix(in srgb, var(--color-dark) var(--scrim-left, 72%), transparent),
-      color-mix(in srgb, var(--color-dark) var(--scrim-mid, 62%), transparent) 55%,
-      color-mix(in srgb, var(--color-dark) var(--scrim-right, 60%), transparent)
+      color-mix(in srgb, var(--color-dark) var(--scrim-mid, 64%), transparent) 55%,
+      color-mix(in srgb, var(--color-dark) var(--scrim-right, 66%), transparent)
     );
   /* phones and tablets: the text is centred over the whole image, so one even layer */
   @media (width < 64rem) {

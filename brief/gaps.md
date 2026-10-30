@@ -304,6 +304,13 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] 404 body text (only "Page not found / Return Home" is supplied)
 - [ ] Media & Partners: media contact, logo-download files, news items
 
+- [ ] **Hero photography: the client's own event photos.** The homepage hero uses a free-licence
+      placeholder (a conference audience at a US event, Unsplash). Please supply Consumer Choice
+      event photography to replace it: winner events, award presentations or networking
+      evenings, ideally wide (1920px or more), calm, with people not the focal point and no
+      logos or signage. ccaward.com has no event photos (its large images are licensed stock
+      or winners' ads), so none could be used from there.
+
 ## Approvals and open questions
 - [ ] Superlative claims ("Canada's leading", "most trusted", "Canada's Trusted Consumer
       Authority"): used in the framework's final copy (§3, §5); still needs explicit sign-off
@@ -341,7 +348,7 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       - Italic pull quotes for framework statements.
       - Wider section spacing.
       The hero photo was changed from Old Québec (Château Frontenac, a hotel brand's building)
-      to Seaton Lake, BC.
+      to Seaton Lake, BC, then (2026-10-30) to a free-licence photo of a conference audience.
 - [ ] **Design decision for client approval:** the anniversary seal sits on the edge between
       the hero and the showreel, like a stamp, instead of inside the hero.
 - [ ] AODA: does it apply (Ontario organization with 50+ employees)? The site already targets
@@ -370,8 +377,9 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Footer brand links: [CLIENT TO PROVIDE: Consumer Choice Award URL],
   [CLIENT TO PROVIDE: Consumer Choice Marketing URL], [CLIENT TO PROVIDE: CCRDI URL]
 - Anniversary seal (hero and footer): 1987, pending confirmation (see Still needed)
-- Homepage hero background: free-licence photo of Seaton Lake, BC (version A, used); a Québec City
-  video (version B) is kept switchable but unused (placeholder-media.md), until [CLIENT TO PROVIDE: hero photography or video]
+- Homepage hero background: free-licence photo of a conference audience (version A, used;
+  Unsplash, Headway); a Québec City video (version B) is kept switchable but unused
+  (placeholder-media.md), until [CLIENT TO PROVIDE: hero photography or video]
 
 ### Placeholder photos and video
 All photos and the showreel video on the homepage are free-licence placeholders (Unsplash and
