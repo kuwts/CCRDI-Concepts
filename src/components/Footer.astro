@@ -3,7 +3,6 @@ import menu from '@/config/menu.json';
 import social from '@/config/social.json';
 import site from '@/config/site.config.json';
 import LineLink from '@/components/LineLink.astro';
-import AstroImage from "@/components/helper/AstroImage.astro";
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 
 const year = new Date().getFullYear();
@@ -16,7 +15,6 @@ interface Props {
 const { class: className = '' } = Astro.props;
 
 const { footer, author } = site;
-const { logo } = site.brand;
 ---
 
 <footer class:list={['py-section text-muted', className]}>
@@ -101,16 +99,6 @@ const { logo } = site.brand;
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="-mb-8 sm:-mb-25 md:-mb-30 mt-16 opacity-5" aria-hidden="true">
-      <AstroImage
-        src={logo.src}
-        alt=""
-        width={logo.width}
-        height={logo.height}
-        class="w-full h-auto"
-      />
     </div>
   </div>
 </footer>
