@@ -57,7 +57,7 @@
       "icon192": "/images/icons/icon-192.png",
       "icon512": "/images/icons/icon-512.png",
       "ico": {
-        "source": "/images/icons/icon-512.png",
+        "source": "/images/icons/favicon-small.png",
         "sizes": [
           16,
           32,

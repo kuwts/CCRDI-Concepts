@@ -105,6 +105,8 @@ Things that are wrong now, or would be wrong on a live site.
    - **Where:** `public/images/ogimage.png` (used by 10 of 14 pages) and the five icons in
      `public/images/icons/`.
    - **Fix:** a 1200 × 630 CCC share image and a CCC icon set (skill pre-launch checklist).
+   - **Fixed:** the share image uses the CCC logo (`share-default.png`); the favicon set is a CC
+     monogram from the CCC logo (pending client approval, gaps.md).
 4. **Contact form: placeholder-only labels.**
    - **Where:** `src/pages/contact.astro`.
    - **Effect:** field names show only as placeholders (labels are hidden for screen readers).

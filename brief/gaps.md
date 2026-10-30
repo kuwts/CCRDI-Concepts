@@ -95,8 +95,14 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       (changed from red, which sat too close to Marketing's). The Marketing red is an on-dark
       shade of the CCM deep red (the original is 1.43:1 on navy); it clears 3:1. On navy:
       Award gold 9.1:1 and 5.3:1, Marketing 3.1:1 into 6.3:1, CCRDI silver 10.3:1 and 6.3:1.
-- [ ] **An icon or monogram version of the CCC logo for the favicon.** The theme's favicon set
-      stays until then.
+- [ ] **Approve the favicon (temporary monogram).** Made from the CCC logo: "CC" in the logo's
+      geometric letterforms (a near-circular C with diagonal terminals, stroke about a quarter of
+      the letter height), the first white (Consumer, as in the reversed logo) and the second in
+      the CHOICE gold gradient, on a navy rounded square. Tab sizes (favicon.svg, 32px PNG and
+      /favicon.ico at 16, 32 and 48) use slightly larger letters so it stays legible at 16px;
+      home-screen sizes (180 Apple touch icon, 192 and 512 manifest icons) have more room.
+      Files: public/images/icons/. Replace with an official icon or monogram if the client has
+      one.
 - [ ] **Confirm the updated division colours** (taken from the new logos; approved by the
       project owner and applied, replacing design.md's Marketing orange and CCRDI teal):
       Marketing deep red #7B1417 with the checkmark gold #CF9F28 as a decorative line; CCRDI
@@ -182,7 +188,6 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       of the §5 homepage hero) don't describe those pages; replace them with descriptions of
       each page's content, under 160 characters.
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
-- [ ] Favicon set (the share image now uses the CCC logo; the favicon waits for an icon version)
 - [ ] Page eyebrow or intro line for each interior page (or confirm none)
 - [ ] Contact page intro, form placeholders, sending and error messages, thank-you page
       heading, body and button
@@ -242,7 +247,7 @@ Every placeholder on the site. Each one must be replaced before launch.
 ### Site-wide (header and footer)
 - Header, mobile menu and footer logo: the client's CCC logo, in a temporary reversed version
   until the official one arrives (see Still needed)
-- Favicon set: still the theme's files until an icon version of the CCC logo arrives
+- Favicon set: a temporary CC monogram from the CCC logo, pending approval (see Still needed)
 - Header button "Find a Trusted Business": ccaward.com award winners directory, pending
   confirmation (see Still needed)
 - Footer email: hidden until the client provides a general email address (the footer CTA
