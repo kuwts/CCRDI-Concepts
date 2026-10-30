@@ -218,8 +218,11 @@ subtle-motion rule and WCAG 2.1 AA.
   - On light sections they use dark gold (`#8A6514`), on navy Heritage Gold.
   - Page-header edges use an edge gold (`#A9802A`), which meets 3:1 against both navy and
     white.
-- **Navy grain:** a fine SVG grain on the page background (so every navy area has it) and on the
-  sticky header. It's at most 3.5% white, so white text stays above 14:1 and gold above 6.3:1.
+- **Navy texture:** a woven linen texture (an SVG turbulence filter: horizontal and vertical
+  fibres plus a soft paper tone, 240px tile) on the page background (so every navy area has it)
+  and on the sticky header. The first version (3.5% white speckle) was invisible in practice and
+  was replaced. The fibres darken more than they lighten; at the brightest fleck white text stays
+  above 12:1, Heritage Gold above 5.5:1 and 60% white above 5:1, at 1x and 2x.
 - **Pull quotes:** italic serif with a gold rule (`pull-quote`), framework text only.
   - Home: §13 lead message.
   - For Businesses: the Growth pillar.

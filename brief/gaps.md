@@ -201,7 +201,7 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       - Thin gold hairlines at a few section transitions, including a new edge gold, #A9802A, in
         `brand.colors.goldEdge`. It's used only for lines on the edge between navy and a light
         section, because it meets 3:1 against both (4.26:1 navy, 3.61:1 white, 3.31:1 ivory).
-      - A fine grain on navy.
+      - A subtle woven linen texture on navy (CSS/SVG, no image file).
       - Italic pull quotes for framework statements.
       - Wider section spacing.
       The hero photo was changed from Old Québec (Château Frontenac, a hotel brand's building)
