@@ -1,7 +1,10 @@
 ---
-// Breadcrumbs: where a page sits in the site (Home > Our Brands > CCRDI). The last item is
-// the current page (not a link, aria-current="page"); separators are hidden from screen
-// readers. Best on pages two or more levels deep, placed above the page title.
+// Breadcrumbs: where a page sits in the site (Home › Our Brands › CCRDI). The last item is the
+// current page (not a link, aria-current="page"); separators are hidden from screen readers.
+// Signature: the trail rises crumb by crumb from behind its own line (`has-anim mask`, staggered)
+// and a short gold rule draws under the current page; links use the theme's line-link wipe (a
+// faint underline at rest, a gold one drawn in on hover or focus). Best on pages two or more
+// levels deep, above the page title. Reduced motion: in place, rule drawn.
 import { Icon } from 'astro-icon/components';
 
 interface Crumb {
@@ -20,28 +23,34 @@ interface Props {
 
 const { items, tone = 'dark', label = 'Breadcrumb', class: className = '' } = Astro.props;
 const dark = tone === 'dark';
+const delays = ['', 'delay-100', 'delay-200', 'delay-300', 'delay-[400ms]', 'delay-500'];
 ---
 
 <nav aria-label={label} class={className}>
-  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+  <ol class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
     {items.map((c, i) => {
       const current = i === items.length - 1;
       return (
-        <li class="flex items-center gap-x-2">
-          {i > 0 && <Icon name="lucide:chevron-right" class:list={['size-3.5 shrink-0', dark ? 'text-white/60' : 'text-mutedDark']} aria-hidden="true" />}
-          {current || !c.href ? (
-            <span aria-current={current ? 'page' : undefined} class:list={['font-medium', dark ? 'text-white' : 'text-dark']}>{c.label}</span>
-          ) : (
-            <a
-              href={c.href}
-              class:list={[
-                'underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base)',
-                dark ? 'text-white/80 hover:text-white hover:decoration-primary' : 'text-mutedDark hover:text-dark hover:decoration-gold-text',
-              ]}
-            >
-              {c.label}
-            </a>
-          )}
+        <li class:list={['has-anim mask', delays[Math.min(i, 5)]]}>
+          <span class="flex items-center gap-x-3 py-1">
+            {i > 0 && <Icon name="lucide:chevron-right" class:list={['size-3.5 shrink-0', dark ? 'text-white/60' : 'text-mutedDark']} aria-hidden="true" />}
+            {current || !c.href ? (
+              <span aria-current={current ? 'page' : undefined} class:list={['relative pb-1 font-medium', dark ? 'text-white' : 'text-dark']}>
+                {c.label}
+                {current && (
+                  <span
+                    class:list={['draw-x absolute inset-x-0 bottom-0 h-px', dark ? 'bg-hairline-dark' : 'bg-hairline-light']}
+                    style={`--draw-delay: ${items.length * 100 + 300}ms`}
+                    aria-hidden="true"
+                  ></span>
+                )}
+              </span>
+            ) : (
+              <a href={c.href} class:list={['line-link pb-1 font-normal', dark ? 'text-white/80 hover:text-white' : 'text-mutedDark hover:text-dark']}>
+                {c.label}
+              </a>
+            )}
+          </span>
         </li>
       );
     })}

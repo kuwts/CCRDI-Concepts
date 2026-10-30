@@ -1,6 +1,11 @@
 ---
-// A grid of features, services or values: an icon, a title, a short text and an optional
-// link, each item topped by a gold hairline (no boxes). A block, not a section.
+// Features, services or values as a grid, in the language of WorkProcess and Facts: each item
+// a tall tile with a two-digit index, a gold Lucide icon, then (after a long gap) its title and
+// text at the foot. Signature: as the grid comes into view, the gold rule across the top of each
+// tile draws left to right in a wave along the row (`draw-x`, staggered); on hover or keyboard
+// focus the rule thickens and the icon lifts. On navy the tiles are Facts' translucent
+// `bg-white/3`; on white or ivory they're open, ruled only. A block, not a section; a `<ul>`.
+// Reduced motion: rules drawn, nothing moves.
 import { Icon } from 'astro-icon/components';
 import LineLink from '@/components/LineLink.astro';
 import { animDelay } from '@/utils/animDelay';
@@ -29,17 +34,71 @@ const cols = { 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-2 xl:g
 const dark = tone === 'dark';
 ---
 
-<ul class:list={['grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12', cols, className]}>
+<ul class:list={['grid grid-cols-1 md:grid-cols-2', dark ? 'gap-6' : 'gap-x-8 gap-y-14', cols, className]}>
   {items.map((f, i) => (
-    <li class:list={['border-t pt-8 has-anim fade', dark ? 'border-hairline-dark' : 'border-hairline-light', animDelay[i % 4]]}>
-      {f.icon && (
-        <Icon name={f.icon} class:list={['mb-6 size-8', dark ? 'text-primary' : 'text-gold-text']} aria-hidden="true" />
-      )}
-      <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>{f.title}</Heading>
-      {f.text && <p class:list={['mt-3 max-w-measure', dark ? 'text-white/80' : 'text-text']}>{f.text}</p>}
-      {f.link && (
-        <LineLink href={f.link.href} label={f.link.label} tone={dark ? 'white' : 'dark'} icon="arrow" class="mt-5 text-[15px]" />
-      )}
+    <li
+      class:list={['feature group/feature relative flex flex-col has-anim fade', dark ? 'bg-white/3 p-8 md:p-10' : 'pt-8', animDelay[i % 4]]}
+      style={`--draw-delay: ${(i % 4) * 140 + 200}ms`}
+    >
+      {/* the rule: drawn on reveal, thicker on hover */}
+      <span
+        class:list={[
+          'feature-rule draw-x absolute inset-x-0 top-0 h-px',
+          dark ? 'bg-hairline-dark' : 'bg-hairline-light',
+        ]}
+        aria-hidden="true"
+      ></span>
+      <div class="flex items-start justify-between">
+        {f.icon ? (
+          <Icon
+            name={f.icon}
+            class:list={['feature-icon size-9', dark ? 'text-primary' : 'text-gold-text']}
+            aria-hidden="true"
+          />
+        ) : <span></span>}
+        <span class:list={['text-sm tabular-nums', dark ? 'text-white/60' : 'text-mutedDark']} aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+      </div>
+      <div class="mt-14 lg:mt-20">
+        <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>{f.title}</Heading>
+        {f.text && <p class:list={['mt-3 max-w-measure leading-relaxed', dark ? 'text-white/80' : 'text-text']}>{f.text}</p>}
+        {f.link && (
+          <LineLink href={f.link.href} label={f.link.label} tone={dark ? 'white' : 'dark'} icon="arrow" class="mt-5 text-[15px]" />
+        )}
+      </div>
     </li>
   ))}
 </ul>
+
+<style>
+  /* hover or focus: the rule thickens to 2px and the icon lifts */
+  .feature-rule {
+    transition:
+      scale 1.2s var(--ease-theme) var(--draw-delay, 0ms),
+      height var(--duration-base) var(--ease-theme);
+  }
+  .feature:hover .feature-rule,
+  .feature:focus-within .feature-rule {
+    height: 2px;
+  }
+  .feature-icon {
+    transition: translate var(--duration-slow) var(--ease-theme);
+  }
+  .feature:hover .feature-icon,
+  .feature:focus-within .feature-icon {
+    translate: 0 -4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature-rule {
+      transition: none;
+    }
+    .feature-icon {
+      transition: none;
+    }
+    .feature:hover .feature-icon,
+    .feature:focus-within .feature-icon {
+      translate: none;
+    }
+  }
+</style>

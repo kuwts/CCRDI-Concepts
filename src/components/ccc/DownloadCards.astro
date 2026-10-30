@@ -1,8 +1,12 @@
 ---
-// Download cards for a media kit or resources: each file's name, a short description, its
-// format and size. The name is the link (the whole card is clickable); format and size are
-// read with it (aria-describedby). Same-site files get the `download` attribute. A block,
-// not a section; for white or ivory backgrounds.
+// Download cards for a media kit or resources: each file's name, a short description, and its
+// format and size. The name is the link (the whole card is clickable); format and size are read
+// with it (aria-describedby). Same-site files get the `download` attribute. Tiles in the
+// language of ReviewCarousel's cards: white `rounded-card` on ivory, tall, content at the foot,
+// the format set large and quiet in the corner like its oversized numerals. Signature: on
+// hover or keyboard focus the arrow drops into its tray, as if downloading (it falls out
+// below and a new one drops in from above), and a gold rule draws along the card's foot. A
+// block, not a section. Reduced motion: no drop, the rule shows at once.
 import { Icon } from 'astro-icon/components';
 import { animDelay } from '@/utils/animDelay';
 
@@ -28,33 +32,79 @@ interface Props {
 
 const { items, columns = 3, id, as: Heading = 'h3', class: className = '' } = Astro.props;
 const cols = columns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
-const icon = (format: string) => (/^(png|jpe?g|svg|webp|gif)$/i.test(format) ? 'lucide:file-image' : 'lucide:file-text');
 const sameSite = (href: string) => href.startsWith('/') && !href.startsWith('//');
 ---
 
 <ul class:list={['grid grid-cols-1 md:grid-cols-2 gap-6', cols, className]}>
   {items.map((f, i) => (
     <li class:list={['has-anim fade', animDelay[i % 3]]}>
-      <article class="group relative flex h-full flex-col rounded-card border border-line bg-white p-6 sm:p-8 transition-colors duration-(--duration-base) hover:border-hairline-light focus-within:border-hairline-light">
-        <Icon name={icon(f.format)} class="mb-6 size-8 text-gold-text" aria-hidden="true" />
-        <Heading class="text-xl font-semibold leading-snug text-dark">
-          <a
-            href={f.href}
-            download={sameSite(f.href) ? '' : undefined}
-            aria-describedby={`${id}-${i}-meta`}
-            class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 hover:decoration-current"
-          >
-            {f.title}
-          </a>
-        </Heading>
-        {f.description && <p class="mt-3 text-text">{f.description}</p>}
-        <p id={`${id}-${i}-meta`} class="mt-auto flex items-center gap-2 pt-8 text-sm font-medium text-mutedDark">
-          <Icon name="lucide:download" class="size-4 transition-transform duration-(--duration-base) group-hover:translate-y-0.5 motion-reduce:transition-none" aria-hidden="true" />
-          <span>{f.format}</span>
-          {f.size && <span aria-hidden="true">·</span>}
-          {f.size && <span>{f.size}</span>}
-        </p>
+      <article class="dl-card group relative flex h-full min-h-80 flex-col overflow-hidden rounded-card bg-white p-8 md:p-10">
+        <div class="flex items-start justify-between">
+          {/* the tray: the arrow drops into it on hover */}
+          <span class="dl-tray relative flex size-12 items-center justify-center overflow-hidden rounded-full border border-hairline-light text-gold-text" aria-hidden="true">
+            <Icon name="lucide:arrow-down" class="dl-arrow size-5" />
+          </span>
+          <span class="font-heading text-4xl font-medium leading-none text-dark/55" aria-hidden="true">{f.format}</span>
+        </div>
+        <div class="mt-auto pt-14">
+          <Heading class="text-h3 text-dark">
+            <a
+              href={f.href}
+              download={sameSite(f.href) ? '' : undefined}
+              aria-describedby={`${id}-${i}-meta`}
+              class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 group-hover:decoration-current"
+            >
+              {f.title}
+            </a>
+          </Heading>
+          {f.description && <p class="mt-3 leading-relaxed text-text">{f.description}</p>}
+          <p id={`${id}-${i}-meta`} class="mt-6 flex items-center gap-2 text-sm font-medium text-mutedDark">
+            <span>{f.format}</span>
+            {f.size && <span aria-hidden="true">·</span>}
+            {f.size && <span>{f.size}</span>}
+          </p>
+        </div>
+        <span class="dl-rule absolute inset-x-0 bottom-0 h-0.5 origin-left bg-hairline-light" aria-hidden="true"></span>
       </article>
     </li>
   ))}
 </ul>
+
+<style>
+  .dl-rule {
+    scale: 0 1;
+    transition: scale var(--duration-slow) var(--ease-theme);
+  }
+  .dl-card:hover .dl-rule,
+  .dl-card:focus-within .dl-rule {
+    scale: 1 1;
+  }
+  .dl-card:hover :global(.dl-arrow),
+  .dl-card:focus-within :global(.dl-arrow) {
+    animation: dl-drop 0.8s var(--ease-theme);
+  }
+  /* out through the bottom of the tray, back in from the top */
+  @keyframes dl-drop {
+    0% {
+      translate: 0 0;
+    }
+    40% {
+      translate: 0 160%;
+    }
+    41% {
+      translate: 0 -160%;
+    }
+    100% {
+      translate: 0 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dl-rule {
+      transition: none;
+    }
+    .dl-card:hover :global(.dl-arrow),
+    .dl-card:focus-within :global(.dl-arrow) {
+      animation: none;
+    }
+  }
+</style>

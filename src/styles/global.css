@@ -189,6 +189,76 @@
   }
 }
 
+/* Hairlines that draw in when their revealed ancestor (`has-anim` → `is-visible`) appears:
+   `draw-x` left to right, `draw-y` top to bottom, over 1.2s on the theme's curve, delayed by
+   `--draw-delay`. Already drawn with reduced motion and in print. */
+@utility draw-x {
+  scale: 0 1;
+  transform-origin: left center;
+  transition: scale 1.2s var(--ease-theme) var(--draw-delay, 0ms);
+  :where(.is-visible) &,
+  &:where(.is-visible) {
+    scale: 1 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    scale: 1 1;
+    transition: none;
+  }
+  @media print {
+    scale: 1 1;
+  }
+}
+@utility draw-y {
+  scale: 1 0;
+  transform-origin: center top;
+  transition: scale 1.2s var(--ease-theme) var(--draw-delay, 0ms);
+  :where(.is-visible) &,
+  &:where(.is-visible) {
+    scale: 1 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    scale: 1 1;
+    transition: none;
+  }
+  @media print {
+    scale: 1 1;
+  }
+}
+
+/* A gold frame that draws itself clockwise from the top centre when its revealed ancestor
+   appears: an `edge-ring` masked by a sweeping conic gradient (`--frame`, 0 → 360deg). */
+@property --frame {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@utility frame-ring {
+  @apply edge-ring;
+  -webkit-mask:
+    conic-gradient(black var(--frame), transparent 0),
+    linear-gradient(black 0 0) content-box,
+    linear-gradient(black 0 0);
+  -webkit-mask-composite: source-in, xor;
+  mask:
+    conic-gradient(black var(--frame), transparent 0) intersect,
+    linear-gradient(black 0 0) content-box exclude,
+    linear-gradient(black 0 0);
+  transition:
+    --frame 1.8s var(--ease-theme) 0.2s,
+    background-position 1.6s ease-in-out;
+  :where(.is-visible) &,
+  &:where(.is-visible) {
+    --frame: 360deg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    --frame: 360deg;
+    transition: none;
+  }
+  @media print {
+    --frame: 360deg;
+  }
+}
+
 /* The navy linen texture on a solid navy element (the page background already has it) */
 @utility bg-grain {
   background-image: var(--grain-image);

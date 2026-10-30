@@ -1,10 +1,15 @@
 ---
-// A call-to-action band: a heading, an optional line of text and up to two actions (a Button
-// and a LineLink). A complete section. Variants:
-//   navy  - centred on navy with the grain (Heritage Gold eyebrow, white button)
-//   ivory - centred on ivory (dark gold eyebrow, dark button)
-//   split - on white: heading and text on the left, actions on the right, a gold hairline above
-// Keep one main Button per page: on a page whose hero already has one, use only `secondary`.
+// A call-to-action band: an optional eyebrow, a heading (optionally in the pull-quote style), a
+// line of text and up to two actions (a Button and a LineLink). A complete section.
+// Signature: a gold frame draws itself clockwise around the band from the top centre as it
+// comes into view (`frame-ring`, the brand cards' inset edge, 1.8s), while the heading rises from
+// behind its edge (`has-anim mask`) and the text and actions follow in a stagger; the frame's
+// sheen sweeps along it on hover. Variants:
+//   navy  - centred on navy with the linen texture, a Heritage Gold frame
+//   ivory - centred on ivory, a dark gold frame
+//   split - on white: heading left, actions right, under a gold rule that draws across
+// Keep one main Button per page: where the hero already has one, use only `secondary`.
+// Reduced motion: frame and rule drawn, everything in place.
 import Button from '@/components/Button.astro';
 import LineLink from '@/components/LineLink.astro';
 
@@ -37,36 +42,53 @@ const split = variant === 'split';
     'py-section',
     navy && 'bg-dark bg-grain text-white',
     variant === 'ivory' && 'bg-light',
-    split && 'hairline-top bg-white',
+    split && 'bg-white',
     className,
   ]}
 >
   <div class="container">
-    <div class:list={['row', split ? 'items-end' : 'justify-center text-center']}>
-      <div class:list={[split ? 'lg:col-7' : 'lg:col-9 xl:col-8']}>
-        {eyebrow && <p class:list={['mb-4 text-eyebrow uppercase has-anim fade', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
-        <Heading
-          class:list={[
-            'has-anim fade delay-100',
-            quote ? 'pull-quote' : 'text-h2',
-            // centred pull quotes drop the side rule
-            quote && !split && 'border-l-0! pl-0! lg:pl-0!',
-            quote && navy && '[--pull-quote-rule:var(--color-hairline-dark)]',
-            navy ? 'text-white' : 'text-dark',
-          ]}
-        >
-          {title}
-        </Heading>
-        {text && <p class:list={['mt-5 text-lead has-anim fade delay-150', split ? 'max-w-measure' : 'mx-auto max-w-measure', navy ? 'text-white/85' : 'text-text']}>{text}</p>}
-      </div>
-      {(primary || secondary) && (
-        <div class:list={[split ? 'lg:col-5 max-lg:mt-8 flex lg:justify-end' : 'col-12 mt-10 flex justify-center']}>
-          <div class="flex max-sm:flex-col items-center gap-x-8 gap-y-5 has-anim fade delay-200">
-            {primary && <Button href={primary.href} label={primary.label} target={primary.target} variant={navy ? 'white' : 'black'} class="max-sm:w-full" />}
-            {secondary && <LineLink href={secondary.href} label={secondary.label} target={secondary.target} tone={navy ? 'white' : 'dark'} icon="arrow" />}
-          </div>
-        </div>
+    <div
+      class:list={['cta group relative has-anim fade', !split && 'px-6 py-16 sm:px-12 md:py-20 lg:py-24']}
+      style={navy ? '--edge: var(--edge-award); --edge-inset: 0px' : '--edge: linear-gradient(135deg, var(--color-gold-text), var(--color-hairline-edge), var(--color-gold-text)); --edge-inset: 0px'}
+    >
+      {split ? (
+        <span class="draw-x absolute inset-x-0 top-0 h-px bg-hairline-light" style="--draw-delay: 150ms" aria-hidden="true"></span>
+      ) : (
+        <span class="frame-ring" aria-hidden="true"></span>
       )}
+      <div class:list={['row', split ? 'items-end pt-14 lg:pt-16' : 'justify-center text-center']}>
+        <div class:list={[split ? 'lg:col-7' : 'lg:col-10 xl:col-9']}>
+          {eyebrow && (
+            <div class="has-anim mask delay-100">
+              <p class:list={['mb-4 text-eyebrow uppercase', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>
+            </div>
+          )}
+          <div class="has-anim mask delay-200">
+            <Heading
+              class:list={[
+                quote ? 'pull-quote' : 'text-h2',
+                // centred pull quotes drop the side rule
+                quote && !split && 'border-l-0! pl-0! lg:pl-0!',
+                quote && navy && '[--pull-quote-rule:var(--color-hairline-dark)]',
+                navy ? 'text-white' : 'text-dark',
+              ]}
+            >
+              {title}
+            </Heading>
+          </div>
+          {text && (
+            <p class:list={['mt-6 text-lead has-anim fade delay-300', split ? 'max-w-measure' : 'mx-auto max-w-measure', navy ? 'text-white/85' : 'text-text']}>{text}</p>
+          )}
+        </div>
+        {(primary || secondary) && (
+          <div class:list={[split ? 'lg:col-5 max-lg:mt-8 flex lg:justify-end' : 'col-12 mt-10 flex justify-center']}>
+            <div class="flex max-sm:flex-col items-center gap-x-8 gap-y-5 has-anim fade delay-[400ms]">
+              {primary && <Button href={primary.href} label={primary.label} target={primary.target} variant={navy ? 'white' : 'black'} class="max-sm:w-full" />}
+              {secondary && <LineLink href={secondary.href} label={secondary.label} target={secondary.target} tone={navy ? 'white' : 'dark'} icon="arrow" />}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   </div>
 </section>

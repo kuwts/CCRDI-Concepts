@@ -1,9 +1,13 @@
 ---
-// A list of news items, announcements or press releases: date, category, headline and an
-// optional summary, one per row between hairlines. Lighter than the BlogCard grid when there
-// are many items or no photos. The headline is the link (the whole row is clickable). A
-// block, not a section; for white or ivory backgrounds.
+// News, announcements or press releases as rows between hairlines: date (in <time> when an ISO
+// date is given), category, headline (the link; the whole row is clickable) and an optional
+// summary. Signature, after the Showreel's cursor pill: on a pointer device, hovering a row
+// brings up a small preview of its photo that eases after the cursor (scaling in from 0, as the
+// pill does) and changes as you move between rows; the headline nudges right and a gold rule
+// draws along the row's foot. Rows reveal in a stagger. Keyboard focus gets the nudge and rule.
+// Touch, reduced motion and rows without a photo: no preview. A block, not a section.
 import { Icon } from 'astro-icon/components';
+import AstroImage from '@/components/helper/AstroImage.astro';
 import { animDelay } from '@/utils/animDelay';
 
 interface NewsItem {
@@ -15,6 +19,8 @@ interface NewsItem {
   datetime?: string;
   category?: string;
   excerpt?: string;
+  /** a photo for the hover preview (decorative) */
+  image?: string;
 }
 interface Props {
   items: NewsItem[];
@@ -24,33 +30,146 @@ interface Props {
 }
 
 const { items, as: Heading = 'h3', class: className = '' } = Astro.props;
+const hasImages = items.some((n) => n.image);
 ---
 
-<ul class:list={['border-t border-hairline-light', className]}>
-  {items.map((n, i) => (
-    <li class:list={['has-anim fade', animDelay[i % 3]]}>
-      <article class="group relative grid gap-x-8 gap-y-2 border-b border-line py-7 md:grid-cols-[11rem_1fr_auto] md:py-8">
-        <p class="text-sm text-mutedDark md:pt-1">
-          {n.date && (n.datetime ? <time datetime={n.datetime}>{n.date}</time> : n.date)}
-        </p>
-        <div class="min-w-0">
-          {n.category && <p class="mb-2 text-eyebrow uppercase text-gold-text">{n.category}</p>}
-          <Heading class="text-h3 text-dark">
-            <a
-              href={n.href}
-              class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 group-hover:decoration-current"
-            >
-              {n.title}
-            </a>
-          </Heading>
-          {n.excerpt && <p class="mt-3 max-w-measure text-text">{n.excerpt}</p>}
-        </div>
-        <Icon
-          name="lucide:arrow-up-right"
-          class="hidden size-6 text-dark transition-transform duration-(--duration-base) group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none md:block md:mt-1"
-          aria-hidden="true"
-        />
-      </article>
-    </li>
-  ))}
-</ul>
+<div class:list={['relative', className]} data-newslist>
+  <ul class="border-t border-hairline-light">
+    {items.map((n, i) => (
+      <li class:list={['has-anim fade', animDelay[i % 4]]}>
+        <article class="news-row group relative grid gap-x-8 gap-y-2 border-b border-dark/10 py-8 md:grid-cols-[11rem_1fr_auto] md:py-10" data-news-index={n.image ? i : undefined}>
+          <p class="text-sm text-mutedDark md:pt-1.5">
+            {n.date && (n.datetime ? <time datetime={n.datetime}>{n.date}</time> : n.date)}
+          </p>
+          <div class="news-body min-w-0">
+            {n.category && <p class="mb-2 text-eyebrow uppercase text-gold-text">{n.category}</p>}
+            <Heading class="text-h3 text-dark">
+              <a href={n.href} class="after:absolute after:inset-0 focus-visible:outline-offset-4">{n.title}</a>
+            </Heading>
+            {n.excerpt && <p class="mt-3 max-w-measure leading-relaxed text-text">{n.excerpt}</p>}
+          </div>
+          <span class="news-arrow hidden md:flex md:mt-1 size-11 items-center justify-center rounded-full border border-dark/15 text-dark" aria-hidden="true">
+            <Icon name="lucide:arrow-up-right" class="size-5" />
+          </span>
+          <span class="news-rule absolute inset-x-0 -bottom-px h-px origin-left bg-hairline-light" aria-hidden="true"></span>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  {/* the cursor preview: one frame, the hovered row's photo shown in it */}
+  {hasImages && (
+    <div class="news-preview pointer-events-none fixed top-0 left-0 z-50 hidden aspect-[4/3] w-60 overflow-hidden rounded-card" aria-hidden="true" data-news-preview>
+      {items.map((n, i) =>
+        n.image ? (
+          <span class="news-preview-img absolute inset-0 opacity-0" data-preview={i}>
+            <AstroImage src={n.image} alt="" widths={[480]} sizes="240px" loading="lazy" class="size-full object-cover" />
+          </span>
+        ) : null,
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  /* the nudge moves the margin, not a transform: a transformed column would become the
+     containing block for the headline link's full-row click area and shrink it */
+  .news-body {
+    transition: margin-inline-start var(--duration-slow) var(--ease-theme);
+  }
+  .news-row:hover .news-body,
+  .news-row:focus-within .news-body {
+    margin-inline-start: 0.5rem;
+  }
+  .news-arrow {
+    transition:
+      background-color var(--duration-base) var(--ease-theme),
+      color var(--duration-base) var(--ease-theme),
+      border-color var(--duration-base) var(--ease-theme);
+  }
+  .news-row:hover .news-arrow,
+  .news-row:focus-within .news-arrow {
+    background-color: var(--color-dark);
+    border-color: var(--color-dark);
+    color: var(--color-white);
+  }
+  .news-rule {
+    scale: 0 1;
+    transition: scale var(--duration-slow) var(--ease-theme);
+  }
+  .news-row:hover .news-rule,
+  .news-row:focus-within .news-rule {
+    scale: 1 1;
+  }
+  .news-preview {
+    scale: 0;
+    opacity: 0;
+    transition:
+      scale 0.35s var(--ease-theme),
+      opacity 0.2s ease;
+  }
+  .news-preview[data-on] {
+    scale: 1;
+    opacity: 1;
+  }
+  :global(.news-preview-img) {
+    transition: opacity 0.25s ease;
+  }
+  :global(.news-preview-img[data-on]) {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .news-body,
+    .news-arrow,
+    .news-rule {
+      transition: none;
+    }
+    .news-row:hover .news-body,
+    .news-row:focus-within .news-body {
+      margin-inline-start: 0;
+    }
+  }
+</style>
+
+<script>
+  // Cursor preview: pointer devices with motion allowed. The frame eases after the cursor
+  // (a requestAnimationFrame lerp, as the Showreel's pill follows it) and shows the hovered
+  // row's photo; it hides off the list and while scrolling past rows without a photo.
+  const canPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (canPreview) {
+    document.querySelectorAll<HTMLElement>('[data-newslist]').forEach((root) => {
+      const preview = root.querySelector<HTMLElement>('[data-news-preview]');
+      if (!preview) return;
+      document.body.appendChild(preview);
+      preview.classList.remove('hidden');
+      const imgs = [...preview.querySelectorAll<HTMLElement>('[data-preview]')];
+      let x = 0, y = 0, tx = 0, ty = 0, frame = 0, active = -1;
+
+      const tick = () => {
+        x += (tx - x) * 0.16;
+        y += (ty - y) * 0.16;
+        preview.style.transform = `translate(${x + 24}px, ${y - preview.offsetHeight / 2}px)`;
+        frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(tick) : 0;
+      };
+      const show = (index: number) => {
+        if (index === active) return;
+        active = index;
+        imgs.forEach((img) => (img.dataset.preview === String(index) ? (img.dataset.on = '') : delete img.dataset.on));
+        index < 0 ? delete preview.dataset.on : (preview.dataset.on = '');
+      };
+      root.addEventListener('pointermove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+        if (active < 0) {
+          x = tx;
+          y = ty;
+        }
+        const row = (e.target as HTMLElement).closest<HTMLElement>('[data-news-index]');
+        show(row ? Number(row.dataset.newsIndex) : -1);
+        if (!frame) frame = requestAnimationFrame(tick);
+      });
+      root.addEventListener('pointerleave', () => show(-1));
+      window.addEventListener('scroll', () => show(-1), { passive: true });
+    });
+  }
+</script>

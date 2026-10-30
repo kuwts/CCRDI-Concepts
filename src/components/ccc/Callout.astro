@@ -1,17 +1,17 @@
 ---
-// A callout or notice: a short message set apart from the text around it (an update, a
-// note, a key point). A block, not a section; not dismissible, so it can't hide anything
-// important. The body goes in the default slot.
+// A callout: a short note set apart from the text around it (`role="note"`; the body goes in
+// the default slot). Not dismissible, so it can't hide anything important. Signature: its gold
+// rule draws as it comes into view: down the left edge (`note`), across the top (`outline`), or,
+// on navy, an inset gold frame (`edge-ring`, the brand cards' edge) whose sheen sweeps once along
+// it as it appears. The title rises from behind its own edge (`has-anim mask`). A block, not a
+// section. Reduced motion: drawn and in place.
 import { Icon } from 'astro-icon/components';
 import LineLink from '@/components/LineLink.astro';
 
 interface Props {
   title?: string;
-  /**
-   * `note`: ivory panel with a gold rule on the left (default);
-   * `outline`: white panel with a hairline border and a gold top edge;
-   * `navy`: navy panel with the grain, white text
-   */
+  /** `note`: ivory, gold rule down the left (default); `outline`: white, hairline border with a
+      gold top edge; `navy`: navy with the linen texture and an inset gold frame */
   variant?: 'note' | 'outline' | 'navy';
   /** an icon-set name, e.g. lucide:info (decorative) */
   icon?: string;
@@ -28,21 +28,44 @@ const navy = variant === 'navy';
 <div
   role="note"
   class:list={[
-    'flex gap-4 sm:gap-5 rounded-card p-6 sm:p-8 has-anim fade',
-    variant === 'note' && 'bg-light border-l-2 border-hairline-light rounded-l-none',
-    variant === 'outline' && 'bg-white border border-line border-t-2 border-t-hairline-light',
-    navy && 'bg-dark bg-grain text-white',
+    'callout group relative flex gap-4 sm:gap-5 overflow-hidden p-7 sm:p-9 has-anim fade',
+    variant === 'note' && 'bg-light',
+    variant === 'outline' && 'rounded-card border border-line bg-white',
+    navy && 'rounded-card bg-dark bg-grain text-white',
     className,
   ]}
+  style="--draw-delay: 250ms; --edge-inset: 8px"
 >
-  {icon && <Icon name={icon} class:list={['size-6 shrink-0 mt-0.5', navy ? 'text-primary' : 'text-gold-text']} aria-hidden="true" />}
-  <div class="min-w-0">
-    {title && <Heading class:list={['text-xl font-heading font-semibold leading-snug', navy ? 'text-white' : 'text-dark']}>{title}</Heading>}
-    <div class:list={['max-w-measure [&>p+p]:mt-3', title && 'mt-2', navy ? 'text-white/85' : 'text-text']}>
+  {variant === 'note' && <span class="draw-y absolute inset-y-0 left-0 w-0.5 bg-hairline-light" aria-hidden="true"></span>}
+  {variant === 'outline' && <span class="draw-x absolute inset-x-0 top-0 h-0.5 bg-hairline-light" aria-hidden="true"></span>}
+  {navy && <span class="callout-frame edge-ring" aria-hidden="true"></span>}
+
+  {icon && <Icon name={icon} class:list={['relative size-6 shrink-0 mt-0.5', navy ? 'text-primary' : 'text-gold-text']} aria-hidden="true" />}
+  <div class="relative min-w-0">
+    {title && (
+      <div class="has-anim mask delay-100">
+        <Heading class:list={['font-heading text-xl font-semibold leading-snug', navy ? 'text-white' : 'text-dark']}>{title}</Heading>
+      </div>
+    )}
+    <div class:list={['max-w-measure leading-relaxed [&>p+p]:mt-3', title && 'mt-2', navy ? 'text-white/85' : 'text-text']}>
       <slot />
     </div>
     {link && (
-      <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" class="mt-4 text-[15px]" />
+      <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" class="mt-5 text-[15px]" />
     )}
   </div>
 </div>
+
+<style>
+  /* navy: the frame's sheen sweeps once along it as the callout appears (and again on hover) */
+  :global(.is-visible) > .callout-frame {
+    background-position: 0 0, 0 0;
+    transition: background-position 1.6s ease-in-out 0.4s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.is-visible) > .callout-frame {
+      background-position: 100% 0, 0 0;
+      transition: none;
+    }
+  }
+</style>

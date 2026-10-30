@@ -1,7 +1,12 @@
 ---
-// A statement band: one strong framework statement, centred in the pull-quote style, with a
-// short gold rule above and optional gold hairlines framing the section. Framework text only:
-// never an invented quote or a testimonial, so there is no attribution. A complete section.
+// A statement band: one strong framework statement, centred in the italic pull-quote style, with
+// a short gold rule above that draws out from the centre. Framework text only: never an
+// invented quote or a testimonial, so there's no attribution. A complete section.
+// Signature: the statement lights up word by word as you scroll through it, scrubbed by the
+// scroll like StepList's spine (each word goes from a soft 25% to full as the reading line
+// passes; it stays lit). The words are spans inside one element, so screen readers read the
+// sentence as one. Progressive enhancement: the markup is the finished state; the script only
+// dims the words when motion is allowed, so reduced motion and no-JS show it in full.
 interface Props {
   statement: string;
   eyebrow?: string;
@@ -15,11 +20,12 @@ interface Props {
 
 const { statement, eyebrow, background = 'light', hairlines = false, as: Tag = 'p', class: className = '' } = Astro.props;
 const navy = background === 'navy';
+const words = statement.trim().split(/\s+/);
 ---
 
 <section
   class:list={[
-    'py-section',
+    'relative py-section',
     background === 'white' && 'bg-white',
     background === 'light' && 'bg-light',
     navy && 'bg-dark bg-grain text-white',
@@ -30,16 +36,22 @@ const navy = background === 'navy';
 >
   <div class="container">
     <div class="row justify-center text-center">
-      <div class="lg:col-10 xl:col-9">
-        {eyebrow && <p class:list={['mb-6 text-eyebrow uppercase has-anim fade', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
-        <span class:list={['mx-auto mb-8 block h-px w-16 has-anim fade', navy ? 'bg-hairline-dark' : 'bg-hairline-light']} aria-hidden="true"></span>
+      <div class="lg:col-10 xl:col-9 has-anim fade">
+        {eyebrow && <p class:list={['mb-6 text-eyebrow uppercase', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
+        <span
+          class:list={['statement-rule mx-auto mb-10 block h-px w-20', navy ? 'bg-hairline-dark' : 'bg-hairline-light']}
+          aria-hidden="true"
+        ></span>
         <Tag
           class:list={[
-            'pull-quote border-l-0! pl-0! lg:pl-0! has-anim fade delay-100 [--pull-quote-size:clamp(1.875rem,1.35rem+1.9vw,3rem)]',
+            'pull-quote border-l-0! pl-0! lg:pl-0! [--pull-quote-size:clamp(1.875rem,1.35rem+1.9vw,3rem)]',
             navy ? 'text-white' : 'text-dark',
           ]}
+          data-statement
         >
-          {statement}
+          {words.map((w, i) => (
+            <span class="statement-word" style={`--i: ${i}`}>{w}{i < words.length - 1 ? ' ' : ''}</span>
+          ))}
         </Tag>
       </div>
     </div>
@@ -51,3 +63,58 @@ const navy = background === 'navy';
     </div>
   )}
 </section>
+
+<style>
+  /* the rule draws out from the centre */
+  .statement-rule {
+    scale: 0 1;
+    transition: scale 1.2s var(--ease-theme) 0.2s;
+  }
+  :global(.is-visible) > .statement-rule {
+    scale: 1 1;
+  }
+  /* words dim only while the script scrubs them */
+  [data-statement][data-scrub] .statement-word {
+    opacity: calc(0.25 + 0.75 * clamp(0, var(--lit, 0) - var(--i), 1));
+    transition: opacity 0.25s linear;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .statement-rule {
+      scale: 1 1;
+      transition: none;
+    }
+  }
+  @media print {
+    .statement-rule {
+      scale: 1 1;
+    }
+  }
+</style>
+
+<script>
+  // Scrubs --lit (how many words are lit) from the statement's position: the first word lights
+  // when the text's top reaches 80% down the view, the last when its bottom reaches 45%.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-statement]').forEach((el) => {
+      const count = el.querySelectorAll('.statement-word').length;
+      el.dataset.scrub = '';
+      let lit = 0;
+      let frame = 0;
+      const update = () => {
+        frame = 0;
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const start = vh * 0.8, end = vh * 0.45;
+        const p = (start - r.top) / (start - end + r.height);
+        lit = Math.max(lit, Math.min(Math.max(p, 0), 1) * (count + 1)); // once lit, stays lit
+        el.style.setProperty('--lit', lit.toFixed(2));
+      };
+      const onScroll = () => {
+        if (!frame) frame = requestAnimationFrame(update);
+      };
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    });
+  }
+</script>

@@ -1,9 +1,14 @@
 ---
-// Tabs: related content of the same kind shown one panel at a time (e.g. Mission / Vision /
-// Purpose, or one panel per audience). WAI-ARIA tabs pattern with automatic activation:
-// Tab moves into the tab list and on to the open panel; Left / Right arrows move between
-// tabs (wrapping), Home / End jump to the first / last. Without JavaScript every panel is
-// shown, each under its own label. A block, not a section; for white or ivory backgrounds.
+// Tabs: related content of the same kind shown one panel at a time (e.g. purpose / mission /
+// vision, or one panel per audience). WAI-ARIA tabs with automatic activation: Tab moves into
+// the tab list (only the selected tab is in the Tab order) and on to the open panel; Left /
+// Right arrows move between tabs (wrapping); Home / End jump to the first / last.
+// Signature: one gold indicator glides from tab to tab under a faint track (500ms on the theme's
+// curve), each tab carries a small two-digit index, and the opening panel's content rises in
+// (the eyebrow and title from behind their edge, the text in a short stagger). On small
+// screens the tab list scrolls sideways and fades the edge with more tabs. Without JavaScript
+// every panel is shown under its own label. A block, not a section; for white or ivory.
+// Reduced motion: the indicator jumps, panels appear in place.
 import { markdownify } from '@/utils/textConverter';
 
 interface Tab {
@@ -27,27 +32,32 @@ interface Props {
 const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.props;
 ---
 
-<div class:list={['ccc-tabs', className]} data-tabs>
-  <div
-    role="tablist"
-    aria-label={label}
-    class="-mx-1 flex gap-x-6 sm:gap-x-10 overflow-x-auto scrollbar-hidden border-b border-line px-1"
-    hidden
-  >
-    {items.map((t, i) => (
-      <button
-        type="button"
-        role="tab"
-        id={`${id}-tab-${i}`}
-        aria-controls={`${id}-panel-${i}`}
-        aria-selected={i === 0 ? 'true' : 'false'}
-        tabindex={i === 0 ? 0 : -1}
-        class="tab relative shrink-0 cursor-pointer whitespace-nowrap py-4 text-[15px] font-medium text-mutedDark transition-colors duration-(--duration-fast) hover:text-dark aria-selected:text-dark"
-        data-tab
-      >
-        {t.label}
-      </button>
-    ))}
+<div class:list={['ccc-tabs has-anim fade', className]} data-tabs>
+  <div class="relative">
+    <div
+      role="tablist"
+      aria-label={label}
+      class="tablist relative -mx-1 flex gap-x-8 sm:gap-x-12 overflow-x-auto scrollbar-hidden border-b border-dark/10 px-1"
+      hidden
+    >
+      {items.map((t, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`${id}-tab-${i}`}
+          aria-controls={`${id}-panel-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          class="tab group/tab relative flex shrink-0 cursor-pointer items-baseline gap-2 whitespace-nowrap pt-2 pb-5 text-[15px] font-medium text-mutedDark transition-colors duration-(--duration-base) hover:text-dark aria-selected:text-dark"
+          data-tab
+        >
+          <span class="text-[12px] tabular-nums text-mutedDark group-aria-selected/tab:text-gold-text" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          {t.label}
+        </button>
+      ))}
+      {/* the gliding indicator, positioned under the selected tab by the script */}
+      <span class="tab-indicator pointer-events-none absolute bottom-0 left-0 h-0.5 bg-hairline-light" aria-hidden="true"></span>
+    </div>
   </div>
 
   {items.map((t, i) => (
@@ -56,31 +66,28 @@ const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.pr
       id={`${id}-panel-${i}`}
       aria-labelledby={`${id}-tab-${i}`}
       tabindex="0"
-      class="pt-8 lg:pt-10"
+      class="tab-panel pt-10 lg:pt-12"
       data-tab-panel
     >
       {/* without JavaScript the tab list is hidden, so each panel shows its own label */}
       <Heading class="mb-4 text-eyebrow uppercase text-gold-text" data-tab-fallback>{t.label}</Heading>
-      {t.title && <p class="mb-4 font-heading text-h3 text-dark">{t.title}</p>}
-      <div class="max-w-measure text-body text-text [&>p+p]:mt-4" set:html={markdownify(t.body, true)} />
+      {t.title && (
+        <div class="tab-rise overflow-clip" style="overflow-clip-margin: 0.25em">
+          <p class="mb-4 font-heading text-h3 text-dark">{t.title}</p>
+        </div>
+      )}
+      <div class="tab-text max-w-measure text-body leading-relaxed text-text [&>p+p]:mt-4" set:html={markdownify(t.body, true)} />
     </div>
   ))}
 </div>
 
 <style>
-  /* the selected tab's gold underline */
-  .tab::after {
-    position: absolute;
-    inset-inline: 0;
-    bottom: -1px;
-    height: 2px;
-    content: '';
-    background: var(--color-hairline-light);
-    scale: 0 1;
-    transition: scale var(--duration-base) var(--ease-theme);
-  }
-  .tab[aria-selected='true']::after {
-    scale: 1 1;
+  .tab-indicator {
+    width: var(--tab-w, 0);
+    translate: var(--tab-x, 0) 0;
+    transition:
+      translate 0.5s var(--ease-theme),
+      width 0.5s var(--ease-theme);
   }
   /* when the tab list scrolls sideways (small screens), fade the edge with more tabs */
   [role='tablist'][data-more='end'] {
@@ -92,20 +99,30 @@ const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.pr
   [role='tablist'][data-more='both'] {
     mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);
   }
-  /* a short fade as a panel opens */
-  [data-tabs][data-ready] [data-tab-panel]:not([hidden]) {
-    animation: tab-in var(--duration-base) var(--ease-theme);
+  /* the opening panel: its title rises from behind its edge, its text follows */
+  [data-tabs][data-ready] .tab-panel:not([hidden]) .tab-rise > * {
+    animation: tab-rise 0.7s var(--ease-theme) both;
   }
-  @keyframes tab-in {
+  [data-tabs][data-ready] .tab-panel:not([hidden]) .tab-text {
+    animation: tab-fade var(--duration-slow) var(--ease-theme) 90ms both;
+  }
+  @keyframes tab-rise {
+    from {
+      transform: translateY(105%);
+    }
+  }
+  @keyframes tab-fade {
     from {
       opacity: 0;
+      transform: translateY(var(--reveal-distance));
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .tab::after {
+    .tab-indicator {
       transition: none;
     }
-    [data-tabs][data-ready] [data-tab-panel]:not([hidden]) {
+    [data-tabs][data-ready] .tab-panel:not([hidden]) .tab-rise > *,
+    [data-tabs][data-ready] .tab-panel:not([hidden]) .tab-text {
       animation: none;
     }
   }
@@ -114,17 +131,28 @@ const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.pr
 <script>
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
     const list = root.querySelector<HTMLElement>('[role="tablist"]');
+    const indicator = root.querySelector<HTMLElement>('.tab-indicator');
     const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
     const panels = [...root.querySelectorAll<HTMLElement>('[data-tab-panel]')];
-    if (!list || !tabs.length) return;
+    if (!list || !indicator || !tabs.length) return;
+    let current = 0;
+
+    // the indicator sits under the selected tab's label
+    const place = () => {
+      const t = tabs[current];
+      indicator.style.setProperty('--tab-x', `${t.offsetLeft}px`);
+      indicator.style.setProperty('--tab-w', `${t.offsetWidth}px`);
+    };
 
     const select = (index: number, focus = false) => {
+      current = index;
       tabs.forEach((tab, i) => {
         const on = i === index;
         tab.setAttribute('aria-selected', String(on));
         tab.tabIndex = on ? 0 : -1;
         panels[i].hidden = !on;
       });
+      place();
       if (focus) {
         tabs[index].focus();
         tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -145,17 +173,21 @@ const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.pr
       list.dataset.more = start && end ? 'both' : start ? 'start' : 'end';
     };
     list.addEventListener('scroll', updateMore, { passive: true });
-    window.addEventListener('resize', updateMore);
+    window.addEventListener('resize', () => {
+      place();
+      updateMore();
+    });
+    document.fonts?.ready.then(place);
     updateMore();
 
     tabs.forEach((tab, i) => tab.addEventListener('click', () => select(i)));
     list.addEventListener('keydown', (e) => {
-      const current = tabs.indexOf(document.activeElement as HTMLButtonElement);
-      if (current < 0) return;
+      const at = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (at < 0) return;
       const last = tabs.length - 1;
       const next =
-        e.key === 'ArrowRight' ? (current === last ? 0 : current + 1)
-        : e.key === 'ArrowLeft' ? (current === 0 ? last : current - 1)
+        e.key === 'ArrowRight' ? (at === last ? 0 : at + 1)
+        : e.key === 'ArrowLeft' ? (at === 0 ? last : at - 1)
         : e.key === 'Home' ? 0
         : e.key === 'End' ? last
         : -1;
