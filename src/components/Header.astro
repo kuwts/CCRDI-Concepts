@@ -42,7 +42,7 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
               width={site.brand.logo.width}
               height={site.brand.logo.height}
               loading="eager"
-              class="w-25 lg:w-27.5 h-auto"
+              class="w-38 lg:w-40 xl:w-50 h-auto"
             />
           </a>
 
@@ -94,7 +94,7 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 >
   <div class="mb-4 flex items-center justify-between">
     <a href="/" title={site.brand.logo.alt}>
-      <AstroImage src={site.brand.logo.src} alt={site.brand.logo.alt} class="w-20" width={site.brand.logo.width} height={40} loading="eager" />
+      <AstroImage src={site.brand.logo.src} alt={site.brand.logo.alt} class="w-38 h-auto" width={site.brand.logo.width} height={site.brand.logo.height} loading="eager" />
     </a>
     <button
       type="button"

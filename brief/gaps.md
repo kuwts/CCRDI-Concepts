@@ -59,15 +59,26 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
         "Recognizing and celebrating business excellence since 1987" (ccaward.com's header)
         (https://www.ccaward.com)
       - Sidebar: the real Consumer Choice Award logo (ccaward.com)
-- [ ] **Consumer Choice Award logo in vector (SVG, EPS or PDF) or high resolution (at least
-      1000 px, transparent PNG).** The only public copy on ccaward.com is 255 x 300 px.
-- [ ] Logos for all four brands (SVG), including a light CCC logo for the navy header.
-      Our Brands uses the real Consumer Choice Award logo from ccaward.com (a 255 x 300 PNG;
-      a larger or vector copy is needed) and temporary text wordmarks in each brand's colour
-      for Consumer Choice Canada, Consumer Choice Marketing and CCRDI. The CCRDI wordmark uses a
-      lighter tint of the research teal (#338B84, 3.79:1 on navy; the design teal #0F766E is
-      2.81:1), and the Marketing wordmark a slightly lighter orange (#C44713, 3.12:1 on navy;
-      the design orange #C2410C is 2.97:1).
+- [x] Brand logos: the client supplied the Consumer Choice Canada, Consumer Choice Marketing
+      and CCRDI logos (src/assets/images/brands/ccc-logo.webp, ccm-logo.webp, ccrdi-logo.png,
+      kept as delivered). The site uses trimmed copies (ccc.png, ccm.png, ccrdi.png: empty space
+      cropped; the backgrounds were already transparent; nothing else changed). The Consumer
+      Choice Award logo is the medal from ccaward.com.
+      - Header, mobile menu and footer (navy): a temporary reversed CCC logo, ccc-reversed.png
+        (navy text and lines recoloured to white; the gold gradient untouched, checked pixel by
+        pixel). The original is used on light backgrounds, in the structured data and in the
+        default share image (/images/share-default.png, 1200 x 630, ivory).
+      - Logo walls (Our Brands, Media & Partners): all four logos on white tiles, so they keep
+        their own colours on the navy section (no reversed sub-brand versions needed).
+      - Brand page sidebars: each brand's own logo.
+- [ ] **Logos in SVG for all four brands** (Consumer Choice Canada, Consumer Choice Award,
+      CCRDI, Consumer Choice Marketing). The Award's only public copy is a 255 x 300 PNG.
+- [ ] **Official reversed logos for dark backgrounds**, to replace the temporary recoloured CCC
+      logo (ccc-reversed.png); reversed CCM and CCRDI versions too, if the client has them.
+- [ ] **An icon or monogram version of the CCC logo for the favicon.** The theme's favicon set
+      stays until then.
+- [ ] **Confirm the updated division colours** (taken from the new logos; proposal pending the
+      project owner's approval, replacing design.md's Marketing orange and CCRDI teal).
 - [ ] Existing brand colours and fonts, if any (palette may change to match the award logo;
       the Consumer Choice Award logo is red and gold)
 - [ ] **Confirm the founding year 1987**, now on the anniversary seal (hero and footer). Sources:
@@ -148,7 +159,7 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       of the §5 homepage hero) don't describe those pages; replace them with descriptions of
       each page's content, under 160 characters.
 - [ ] Photography (owned or approved stock), with one-sentence alt text for each photo
-- [ ] Favicon set and a 1200 x 630 social share image
+- [ ] Favicon set (the share image now uses the CCC logo; the favicon waits for an icon version)
 - [ ] Page eyebrow or intro line for each interior page (or confirm none)
 - [ ] Contact page intro, form placeholders, sending and error messages, thank-you page
       heading, body and button
@@ -206,9 +217,9 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 Every placeholder on the site. Each one must be replaced before launch.
 
 ### Site-wide (header and footer)
-- Header and footer logo: temporary text wordmark "Consumer Choice Canada"
-  (images/placeholders/logo-wordmark.svg) until [CLIENT TO PROVIDE: CCC logo]
-- Favicon set and share image: still the theme's files until supplied
+- Header, mobile menu and footer logo: the client's CCC logo, in a temporary reversed version
+  until the official one arrives (see Still needed)
+- Favicon set: still the theme's files until an icon version of the CCC logo arrives
 - Header button "Find a Trusted Business": ccaward.com award winners directory, pending
   confirmation (see Still needed)
 - Footer email: hidden until the client provides a general email address (the footer CTA
@@ -281,8 +292,7 @@ be rewritten for the client's photos.
 
 ### Our Brands page
 1. Page header: H1 "Our Brands", no eyebrow
-2. Logo wall ("Family of Brands"): real Consumer Choice Award logo; temporary text
-   wordmarks for Consumer Choice Canada, Consumer Choice Marketing and CCRDI
+2. Logo wall ("Family of Brands"): the four brands' logos on white tiles
 3. Facts: intro tile photo is a placeholder; stat tiles use public facts pending
    confirmation (see Still needed)
 4. Brand cards: Award list from ccaward.com's process headings, pending confirmation;

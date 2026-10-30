@@ -29,10 +29,16 @@
       "body": { "name": "Inter Variable", "fallback": "sans-serif" }
     },
     "logo": {
-      "src": "/images/placeholders/logo-wordmark.svg",
+      "src": "/images/brands/ccc-reversed.png",
       "alt": "Consumer Choice Canada",
-      "width": 240,
-      "height": 29
+      "width": 1796,
+      "height": 265
+    },
+    "logoLight": {
+      "src": "/images/brands/ccc.png",
+      "alt": "Consumer Choice Canada",
+      "width": 1796,
+      "height": 265
     },
     "favicon": {
       "svg": "/images/icons/favicon.svg",
@@ -54,7 +60,7 @@
     "title": "Consumer Choice Canada",
     "description": "Consumer Choice Canada brings together trusted recognition, marketing support, and consumer intelligence to strengthen confidence between Canadians and the businesses that serve them.",
     "author": "",
-    "image": "/images/ogimage.png",
+    "image": "/images/share-default.png",
     "pages": {
       "/404": {
         "title": "",

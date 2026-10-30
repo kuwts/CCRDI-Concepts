@@ -13,9 +13,12 @@ interface Props {
   columnCount?: number;
   /** logo height in px (default 36); width follows each logo's proportions */
   logoHeight?: number;
+  /** set each logo on a white tile (logos made for light backgrounds, on a navy section) */
+  tiles?: boolean;
   class?: string;
 }
-const { items, columnCount = 5, logoHeight = 36, class: className = '' } = Astro.props;
+const { items, columnCount = 5, logoHeight = 36, tiles = false, class: className = '' } = Astro.props;
+const tilePad = 24; // px around each logo on its tile
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -55,15 +58,16 @@ const logoColumns = items.length ? distributeLogos(items, Math.min(columnCount, 
     {
       logoColumns.map((col, colIndex) => (
         <div
-          class="logo-col relative w-[calc(38%-0.5rem)] sm:w-[calc(25%-0.5rem)] overflow-hidden lg:w-auto lg:flex-1"
-          style={{ height: `${logoHeight}px` }}
+          class:list={['logo-col relative w-[calc(38%-0.5rem)] sm:w-[calc(25%-0.5rem)] overflow-hidden lg:w-auto lg:flex-1', tiles && 'rounded-card bg-white max-sm:w-[calc(50%-0.5rem)]']}
+          style={{ height: `${logoHeight + (tiles ? tilePad * 2 : 0)}px` }}
           data-column={colIndex}
         >
           <div class="logo-stack relative h-full w-full">
             {col.map((logo, logoIndex) => (
               <div
                 class:list={[
-                  'logo-slot absolute inset-0 flex items-center justify-center pointer-events-none',
+                  'logo-slot absolute flex items-center justify-center pointer-events-none',
+                  tiles ? 'inset-6' : 'inset-0',
                   logoIndex === 0 && 'active',
                 ]}
                 data-logo-index={logoIndex}
@@ -74,7 +78,7 @@ const logoColumns = items.length ? distributeLogos(items, Math.min(columnCount, 
                   src={logo.logo}
                   alt={logo.name}
                   loading="lazy"
-                  class="w-auto max-w-[80%] object-contain"
+                  class:list={['w-auto object-contain', tiles ? 'max-w-full' : 'max-w-[80%]']}
                   style={{ height: `${logoHeight}px` }}
                   height={logoHeight}
                 />

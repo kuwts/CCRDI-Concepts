@@ -85,7 +85,7 @@ const organization = isHome
       '@type': 'Organization',
       name: brand.name,
       url: new URL('/', site).href,
-      logo: await absoluteImageURL(brand.logo.src, site),
+      logo: await absoluteImageURL(brand.logoLight.src, site),
       description: siteSeo.description,
       email: real(footer.email),
       telephone: real(footer.phone),

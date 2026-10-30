@@ -85,7 +85,8 @@ Every other component is used by a CCC page. Also keep `CounterUp` and `PauseBut
 | `src/assets/images/clients/` (20 logos) | 120 KB | `clients*.json`, `pricing` |
 | `src/assets/images/testimonials/` (avatars, `video-01.mp4`, `video-02.mp4`) | 820 KB | `testimonials.json` |
 | `src/assets/images/about-header.jpg`, `about-stats.jpg` | — | nothing |
-| `src/assets/images/logo.svg` (Obicol logo) | — | nothing (logo is the temporary CCC wordmark) |
+| `src/assets/images/logo.svg` (Obicol logo) | — | nothing (the site uses the client's CCC logo) |
+| `src/assets/images/placeholders/logo-wordmark.svg`, `wordmark-consumer-choice-canada.svg`, `wordmark-consumer-choice-marketing.svg`, `wordmark-ccrdi.svg` | — | nothing (replaced by the client's logos) |
 | `src/assets/videos/showreel.webm`, `showreel.mp4`, `poster.png` | 4.3 MB | nothing in CCC pages; the demo homepage video |
 | `public/.DS_Store`, `public/images/.DS_Store` | — | macOS files; delete and they're already git-ignored |
 
