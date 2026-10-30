@@ -75,6 +75,18 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       CCRDI, Consumer Choice Marketing). The Award's only public copy is a 255 x 300 PNG.
 - [ ] **Official reversed logos for dark backgrounds**, to replace the temporary recoloured CCC
       logo (ccc-reversed.png); reversed CCM and CCRDI versions too, if the client has them.
+- [ ] **Approve the temporary all-white sub-brand logos** used on the navy brand cards (the
+      brand slider on Home, 40 Years and the brand pages, and the Our Brands panels):
+      ccm-white.png and ccrdi-white.png, made from the client's logos. Every pixel is white;
+      solid ink is fully opaque, and very light details (the CCRDI circuit ring and pale pixel
+      squares) stay faint, as in the original. The Consumer Choice Award medal is kept in
+      colour (it reads well on navy). Replace with official single-colour versions.
+- [ ] **Approve the brand card edge colours** (thin inset border on the navy brand cards, a
+      gradient in each brand's own colours): Award, CCC logo gold #E8C44C into medal gold
+      #C0902C; Marketing, CCM deep red lifted to #D92329 into the checkmark gold #CF9F28;
+      CCRDI, its red lifted to #DA242A into its bright red #ED1C28 and the pale pink of its
+      pixel squares #F4D1D8. The two lifted reds are on-dark shades of the logo reds (the
+      originals are 1.43:1 and 2.71:1 on navy); both clear 3:1.
 - [ ] **An icon or monogram version of the CCC logo for the favicon.** The theme's favicon set
       stays until then.
 - [ ] **Confirm the updated division colours** (taken from the new logos; approved by the

@@ -1,4 +1,5 @@
 ---
+import type { ImageMetadata } from 'astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
 
 interface Props {
@@ -14,6 +15,11 @@ interface Props {
   tone?: 'white' | 'dark';
   /** carousel: a short decorative line in the brand's second colour, shown with the colour wash */
   accent?: string;
+  /** carousel: the brand's logo for dark backgrounds; makes a branded card (photo under navy,
+      an inset gradient edge, the logo as the heading) */
+  logo?: { src: string; alt: string };
+  /** branded card: the edge gradient, e.g. var(--edge-award) */
+  edge?: string;
   variant?: 'grid' | 'carousel';
   titleClass?: string;
   /** Heading level for the title: `h2` on listing pages, `h3` under a section heading (default). */
@@ -30,6 +36,8 @@ const {
   imageAlt = '',
   tone = 'white',
   accent,
+  logo,
+  edge,
   variant = 'grid',
   titleClass = 'text-h3',
   as: Heading = 'h3',
@@ -37,12 +45,50 @@ const {
 } = Astro.props;
 
 const ease = 'ease-theme';
+// branded card: size the logo by its shape, so a tall mark (the Award medal) carries the same
+// visual weight as a wide wordmark
+const logoFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/brands/*.{png,webp,jpg}', { eager: true });
+const logoMeta = logo ? logoFiles[`/src/assets/${logo.src.replace(/^\//, '')}`]?.default : undefined;
+const tallLogo = logoMeta ? logoMeta.width / logoMeta.height < 1.2 : false;
 const textTone = tone === 'dark' ? 'text-dark touch:text-white' : 'text-white';
 const underline = tone === 'dark' ? 'hover:decoration-current focus-visible:decoration-current' : 'hover:decoration-white focus-visible:decoration-white';
 // hover reveals (zoom, color wash, title) also run while the title link has keyboard focus
 const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
 ---
 
+{variant === 'carousel' && logo ? (
+  /* Branded card: the photo under a navy overlay, an inset edge in the brand's colours, the
+     logo as the heading (its alt names the brand; the link covers the card). On hover or
+     focus: the photo zooms, the navy deepens, the edge's sheen sweeps, the logo lifts and the
+     role rises in beneath it. Touch: everything shown at rest. */
+  <div class:list={['group relative block overflow-hidden rounded-card bg-dark', className]} style={`--edge:${edge ?? 'var(--edge-award)'}`}>
+    <AstroImage
+      src={image}
+      alt={imageAlt}
+      loading="lazy"
+      widths={[600, 900, 1200]}
+      sizes="(min-width: 1024px) 45vw, 90vw"
+      class="absolute inset-0 size-full object-cover transition-[scale] duration-(--duration-slow) ease-theme group-hover:scale-(--zoom-image) group-focus-within:scale-(--zoom-image) motion-reduce:transition-none"
+    />
+    <span class="absolute inset-0 bg-linear-to-b from-dark/60 via-dark/70 to-dark/90" aria-hidden="true"></span>
+    {/* hover: the navy deepens a little so the logo and role stand out */}
+    <span class="absolute inset-0 bg-dark/40 opacity-0 transition-opacity duration-(--duration-slow) group-hover:opacity-100 group-focus-within:opacity-100 touch:opacity-100 motion-reduce:transition-none" aria-hidden="true"></span>
+    <span class="edge-ring" aria-hidden="true"></span>
+
+    <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white">
+      <Heading class="brand-card-logo transition-transform duration-(--duration-slow) ease-theme group-hover:-translate-y-3 group-focus-within:-translate-y-3 touch:-translate-y-3 motion-reduce:transition-none">
+        <a href={href} class="inline-block rounded-sm after:absolute after:inset-0 focus-visible:outline-offset-8">
+          <AstroImage src={logo.src} alt={logo.alt} height={320} class:list={['w-auto object-contain', tallLogo ? 'h-28 sm:h-32 lg:h-40' : 'h-20 sm:h-24 lg:h-28 max-w-[min(62vw,18rem)]']} />
+        </a>
+      </Heading>
+      <div class:list={['translate-y-6 opacity-0 transition-all duration-(--duration-slow) ease-theme group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 touch:translate-y-0 touch:opacity-100 motion-reduce:transition-none']}>
+        {/* the brand's second colour; Heritage Gold for the Award, whose mark is all gold */}
+        <span class="mx-auto mt-6 mb-3 block h-0.5 w-12 rounded-full" style={`background:${accent ?? 'var(--color-primary)'}`} aria-hidden="true"></span>
+        <span class="block text-[15px] text-white">{category}</span>
+      </div>
+    </div>
+  </div>
+) : (
 <div class:list={['group relative block overflow-hidden rounded-card', className]}>
   <span class="relative block overflow-hidden">
     <AstroImage
@@ -122,3 +168,4 @@ const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
     )
   }
 </div>
+)}

@@ -39,6 +39,15 @@
   --color-marketing-on-dark: var(--brand-marketingOnDark);
   --color-research-on-dark: var(--brand-researchOnDark);
 
+  /* Brand card edges: the inset border on the sub-brand cards and panels (over a navy
+     overlay), a gradient in each brand's own colours. Logo colours that vanish on navy are
+     lifted to an on-dark shade of the same hue that clears 3:1 (client to confirm). */
+  --color-award-edge-light: var(--brand-awardEdgeLight); /* CCC logo gold, 9.1:1 on navy */
+  --color-award-edge-deep: var(--brand-awardEdgeDeep); /* medal gold, 5.3:1 */
+  --color-marketing-edge: var(--brand-marketingEdge); /* CCM deep red, lifted: 3.1:1 */
+  --color-research-edge: var(--brand-researchEdge); /* CCRDI red, lifted: 3.1:1 */
+  --color-research-edge-light: var(--brand-researchEdgeLight); /* CCRDI pixel-square pink */
+
   /* Neutrals and fixed tints. Use these (or the white/black/dark opacity steps)
      instead of one-off hex values. */
   --color-line: var(--brand-border); /* hairline borders on light sections */
@@ -138,6 +147,45 @@
   /* phones and tablets: the text is centred over the whole image, so one even layer */
   @media (width < 64rem) {
     background: color-mix(in srgb, var(--color-dark) var(--scrim-small, 66%), transparent);
+  }
+}
+
+/* Brand edge gradients (`--edge` on a card), each in its brand's own colours */
+:root {
+  --edge-award: linear-gradient(135deg, var(--color-award-edge-light), var(--color-award-edge-deep) 55%, var(--color-award-edge-light));
+  --edge-marketing: linear-gradient(135deg, var(--color-marketing-edge), var(--color-marketing-on-dark));
+  --edge-research: linear-gradient(135deg, var(--color-research-edge), var(--color-research-on-dark) 60%, var(--color-research-edge-light));
+}
+
+/* An inset 1px border in a gradient (`--edge`), drawn by a mask so it follows the corner
+   radius. Inside a `.group` card, a slow sheen sweeps along it on hover or keyboard focus,
+   as on the gold-outline buttons (none with reduced motion). */
+@utility edge-ring {
+  position: absolute;
+  inset: var(--edge-inset, 12px);
+  padding: 1px;
+  border-radius: var(--radius-btn);
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 40%, color-mix(in srgb, var(--color-white) 85%, transparent) 50%, transparent 60%) 100% 0 / 300% 100% no-repeat,
+    var(--edge, var(--edge-award));
+  -webkit-mask:
+    linear-gradient(black 0 0) content-box,
+    linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(black 0 0) content-box exclude,
+    linear-gradient(black 0 0);
+  :where(.group):is(:hover, :focus-within) & {
+    background-position: 0 0, 0 0;
+    transition: background-position 1.6s ease-in-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    :where(.group):is(:hover, :focus-within) & {
+      background-position: 100% 0, 0 0;
+      transition: none;
+    }
   }
 }
 

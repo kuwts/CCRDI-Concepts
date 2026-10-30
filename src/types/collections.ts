@@ -80,6 +80,9 @@ export const homepage = defineCollection({
           tone: z.enum(['white', 'dark']).optional(),
           // a thin decorative line in the logo's second colour (never text)
           accent: z.string().optional(),
+          // the brand's logo for dark backgrounds, and its edge gradient (e.g. var(--edge-award))
+          logo: z.object({ src: z.string(), alt: z.string() }).optional(),
+          edge: z.string().optional(),
           image: z.string(),
           image_alt: z.string().optional(),
           href: z.string(),
@@ -240,6 +243,9 @@ export const brands = defineCollection({
         tone: z.enum(['white', 'dark']).default('white'),
         // a thin decorative line in the logo's second colour (never text)
         accent: z.string().optional(),
+        // the brand's logo for dark backgrounds, and its edge gradient (e.g. var(--edge-award))
+        logo: z.object({ src: z.string(), alt: z.string() }).optional(),
+        edge: z.string().optional(),
         sub_services: z.array(z.string()),
         meta: z.array(z.string()),
         link: linkSchema,
@@ -279,6 +285,9 @@ export const anniversary = defineCollection({
           tone: z.enum(['white', 'dark']).default('white'),
           // a thin decorative line in the logo's second colour (never text)
           accent: z.string().optional(),
+          // the brand's logo for dark backgrounds, and its edge gradient (e.g. var(--edge-award))
+          logo: z.object({ src: z.string(), alt: z.string() }).optional(),
+          edge: z.string().optional(),
           image: z.string(),
           image_alt: z.string().default(''),
           href: z.string(),

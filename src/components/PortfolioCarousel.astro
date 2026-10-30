@@ -15,6 +15,9 @@ interface Project {
   tone?: 'white' | 'dark';
   /** a thin decorative line in the brand's second colour */
   accent?: string;
+  /** the brand's logo for dark backgrounds and its edge gradient: a branded card */
+  logo?: { src: string; alt: string };
+  edge?: string;
 }
 interface Props {
   projects: Project[];
@@ -48,6 +51,8 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
               imageAlt={p.repeat ? '' : p.imageAlt}
               tone={p.tone}
               accent={p.accent}
+              logo={p.logo && (p.repeat ? { ...p.logo, alt: '' } : p.logo)}
+              edge={p.edge}
               titleClass="text-h3"
               class="mx-3.75 lg:mx-7.5 xl:mx-10 aspect-[3/2]"
             />

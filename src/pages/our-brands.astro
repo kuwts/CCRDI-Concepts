@@ -57,49 +57,47 @@ const reviews = testimonials.items;
             {
               items.map((item, i) => {
                 const cardIndex = i + 1;
-                const image = (
-                  <AstroImage
-                    src={item.image}
-                    alt={item.image_alt}
-                    loading="lazy"
-                    class={`h-full w-full aspect-video lg:aspect-9/12 object-cover bg-white/3 rounded-t-card max-lg:rounded-card ${i % 2 === 0 ? 'max-lg:-mt-10' : ''}`}
-                  />
-                );
-                const dark = item.tone === 'dark';
+                const flip = i % 2 === 1;
                 const external = /^https?:\/\//.test(item.link.href);
+                // the brand's logo for dark backgrounds, in its own column (decorative: the panel's
+                // heading names the brand right beside it); a Lucide icon if there's no logo
+                const mark = item.logo ? (
+                  <AstroImage
+                    src={item.logo.src}
+                    alt=""
+                    height={320}
+                    class="h-24 sm:h-28 lg:h-auto lg:max-h-40 w-auto max-w-[70%] lg:max-w-full object-contain"
+                  />
+                ) : (
+                  <Icon name={item.icon} class="size-14 text-primary" aria-hidden="true" />
+                );
                 const content = (
-                  <div class={i % 2 === 0 ? 'lg:ps-12 max-lg:mt-10' : 'lg:pe-12 lg:ps-8'}>
-                    {item.icon.includes(':') ? (
-                      <Icon name={item.icon} class="size-10 mb-6" aria-hidden="true" />
-                    ) : (
-                      <AstroImage src={item.icon} alt="" class="size-10 mb-6" />
-                    )}
+                  <div>
                     {/* the brand's tagline (§9), above its name */}
-                    <p class="mb-2 text-eyebrow uppercase">{item.tagline}</p>
-                    <h2 class="mb-4 text-h2 break-words">{item.title}</h2>
-                    <div class="lg:max-w-xl pb-10">
-                      <div class="mb-7 space-y-3">
+                    <p class="mb-3 text-eyebrow uppercase text-primary">{item.tagline}</p>
+                    <h2 class="mb-5 text-h2 text-white break-words">{item.title}</h2>
+                    <div class="lg:max-w-xl">
+                      <div class="mb-7 space-y-3 text-white/85">
                         {item.info.map((p) => <p class="text-balance">{p}</p>)}
                       </div>
-                      <ul class="grid grid-cols-2 gap-x-2 gap-y-2.5 font-medium text-sm">
+                      <ul class="grid grid-cols-2 gap-x-4 gap-y-2.5 font-medium text-sm text-white">
                         {item.sub_services.map((li) => <li>{li}</li>)}
                       </ul>
                       {item.accent ? (
-                        <span class="my-5 block h-0.5 w-12 rounded-full" style={{ background: item.accent }} aria-hidden="true"></span>
+                        <span class="my-6 block h-0.5 w-12 rounded-full" style={{ background: item.accent }} aria-hidden="true"></span>
                       ) : (
-                        <span class="my-5 inline-block tracking-[-3px]" aria-hidden="true">———</span>
+                        <span class="my-6 block h-0.5 w-12 rounded-full bg-primary" aria-hidden="true"></span>
                       )}
-                      <div class="space-y-3">
+                      <div class="space-y-3 text-white/85">
                         {item.meta.map((p) => <p>{p}</p>)}
                       </div>
-                      {/* on the gold card the underline is navy, so it shows */}
                       <LineLink
                         href={item.link.href}
                         label={item.link.label}
-                        tone={dark ? 'dark' : 'white'}
+                        tone="white"
                         icon="arrow"
                         target={external ? '_blank' : undefined}
-                        class:list={['mt-6', dark && '[--color-primary:var(--color-dark)]']}
+                        class="mt-7"
                       />
                     </div>
                   </div>
@@ -107,30 +105,40 @@ const reviews = testimonials.items;
                 return (
                   <div
                     data-stacked-card
-                    class:list={[dark ? 'text-dark' : 'text-white', 'lg:sticky top-10 mb-10']}
+                    class="lg:sticky top-10 mb-10"
                     style={{
                       '--index': cardIndex,
                       zIndex: cardIndex,
                       paddingTop: `calc(${cardIndex} * var(--stacked-top-offset))`,
                     }}
                   >
+                    {/* the brand's photo under a navy overlay (strongest behind the text), an inset
+                        edge in the brand's colours, the logo in its own column */}
                     <div
                       data-stacked-content
-                      class="min-h-0 origin-[50%_0%] p-10 pb-0 rounded-card"
-                      style={`background: ${item.color ?? 'var(--color-dark)'}`}
+                      class="group relative min-h-0 origin-[50%_0%] overflow-hidden rounded-card bg-dark text-white"
+                      style={`--edge:${item.edge ?? 'var(--edge-award)'}; --edge-inset: 14px`}
                     >
-                      <div class="row items-end leading-0">
-                        {i % 2 === 0 ? (
-                          <>
-                            <div class="lg:col-4">{image}</div>
-                            <div class="lg:col-8 leading-snug">{content}</div>
-                          </>
-                        ) : (
-                          <>
-                            <div class="lg:col-8 leading-snug">{content}</div>
-                            <div class="lg:col-4">{image}</div>
-                          </>
-                        )}
+                      <AstroImage
+                        src={item.image}
+                        alt=""
+                        loading="lazy"
+                        widths={[800, 1200, 1600]}
+                        sizes="(min-width: 1024px) 85vw, 100vw"
+                        class="absolute inset-0 size-full object-cover"
+                      />
+                      <span
+                        class:list={[
+                          'absolute inset-0 bg-dark/85',
+                          flip ? 'lg:bg-linear-to-r' : 'lg:bg-linear-to-l',
+                          'lg:bg-transparent lg:from-dark/93 lg:via-dark/88 lg:to-dark/62',
+                        ]}
+                        aria-hidden="true"
+                      ></span>
+                      <span class="edge-ring" aria-hidden="true"></span>
+                      <div class="relative row items-center gap-y-10 px-6 py-14 sm:px-12 sm:py-16 lg:px-16 lg:py-20">
+                        <div class:list={['lg:col-4 flex justify-center', flip && 'lg:order-2']}>{mark}</div>
+                        <div class:list={['lg:col-8', flip && 'lg:order-1']}>{content}</div>
                       </div>
                     </div>
                   </div>

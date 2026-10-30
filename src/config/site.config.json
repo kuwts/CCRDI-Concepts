@@ -27,7 +27,12 @@
       "marketingMark": "#7B1417",
       "researchMark": "#C82127",
       "marketingOnDark": "#CF9F28",
-      "researchOnDark": "#ED1C28"
+      "researchOnDark": "#ED1C28",
+      "awardEdgeLight": "#E8C44C",
+      "awardEdgeDeep": "#C0902C",
+      "marketingEdge": "#D92329",
+      "researchEdge": "#DA242A",
+      "researchEdgeLight": "#F4D1D8"
     },
     "font": {
       "heading": { "name": "Source Serif 4 Variable", "fallback": "serif" },
