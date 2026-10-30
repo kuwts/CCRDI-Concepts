@@ -3,6 +3,7 @@ import menu from '@/config/menu.json';
 import social from '@/config/social.json';
 import site from '@/config/site.config.json';
 import LineLink from '@/components/LineLink.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 
 const year = new Date().getFullYear();
@@ -34,6 +35,13 @@ const { footer, author } = site;
       </div>
 
       <div class="lg:col-5 md:col-5 mb-12 md:mb-0 has-anim fade">
+        <AstroImage
+          src={site.brand.logo.src}
+          alt={site.brand.logo.alt}
+          width={site.brand.logo.width}
+          height={site.brand.logo.height}
+          class="mb-6 w-44 md:w-48 h-auto"
+        />
         <p class="mb-6 max-w-md text-[15px] leading-relaxed">{footer.description}</p>
         {/* shown only once it's a real (general, never personal) address; the CTA above links to Contact */}
         {footer.email.includes('@') && (

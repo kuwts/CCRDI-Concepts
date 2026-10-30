@@ -61,6 +61,7 @@ content, and page lists in scripts.
 | Hero imagery behind the headline (photo or muted looping video, switchable; poster only with reduced motion; paused off screen; keyboard pause; `hero-scrim` overlay with `--scrim-*` strengths, contrast measured per pixel) | `src/pages/index.astro`, `global.css`, homepage schema `banner.background` | Media and scrim strengths. |
 | `PageHeader` `hairline` prop; `Facts` `quote` prop; `WorkProcess` `columns`, `spacingClass`, optional `cta`; `BlogCard` `item` mode; `PortfolioCarousel` per-item `href`, `accent`, `logo`, `edge` | those components | Generic. |
 | **Branded slider cards:** with `logo` and `edge`, a carousel slide becomes photo under a navy overlay, an inset gradient edge, the logo as the heading (sized by shape), role rising on hover | `PortfolioCard.astro`, `PortfolioCarousel.astro` | Generic pattern; brand values are CCC's. |
+| **Footer logo:** the reversed `brand.logo` above the footer description, at a normal footer size (`w-44 md:w-48`) | `Footer.astro` | Width depends on the logo's shape. |
 | Division / brand colour pattern: `brand.colors` keys → `--brand-*` → `@theme` tokens, with separate fill, mark-on-light and on-dark shades | `site.config.json`, `Base.astro`, `global.css` | The colours. |
 
 ## 3. New components and shared utilities
