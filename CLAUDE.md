@@ -74,6 +74,8 @@ Component reference: THEME_CATALOG.md (current; /brief/theme-audit.md is out of 
   remain on the live site. Check: `grep -rl "CLIENT TO PROVIDE\|FOUNDING YEAR" dist` and
   `grep -rl "placeholders/" src/content src/config` both return nothing, and
   src/assets/images/placeholders/ and src/assets/videos/placeholders/ are no longer used.
+- Refresh the press releases (src/content/data/press-releases.json) from Consumer Choice
+  Award's newswire releases, word for word, and log the changes in /brief/gaps.md.
 
 ## Tone
 Confident, plain, professional. No hype words, emoji, or exclamation marks.

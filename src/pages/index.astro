@@ -19,6 +19,7 @@ import AstroImage from '@/components/helper/AstroImage.astro';
 import AstroVideo from '@/components/helper/AstroVideo.astro';
 import PauseButton from '@/components/PauseButton.astro';
 import { animDelay } from '@/utils/animDelay';
+import { getPressReleases } from '@/lib/content';
 
 // every section reads its copy (and placeholders) from the homepage entry
 const home = await getEntry('homepage', 'index');
@@ -26,8 +27,22 @@ const { banner, intro, projects, process, testimonials, blog } = home!.data;
 const heroBg = banner.background;
 const heroVideo = heroBg?.variant === 'video' && heroBg.video ? heroBg : null;
 
-const [featuredPost, ...otherPosts] = blog.items.map((n) => ({ ...n, imageAlt: n.image_alt }));
-const gridPosts = otherPosts.slice(0, 3);
+// press releases: the featured one large, then the three newest; each opens the release on its
+// newswire in a new tab, with a decorative photo from the homepage content
+const releases = await getPressReleases();
+const lead = releases.find((r) => r.featured) ?? releases[0];
+const cards = (lead ? [lead, ...releases.filter((r) => r !== lead).slice(0, 3)] : []).map((r, i) => ({
+  title: r.title,
+  description: r.summary,
+  date: r.date,
+  datetime: r.datetime,
+  category: r.source,
+  image: blog.images[i],
+  imageAlt: '',
+  href: r.url,
+  external: true,
+}));
+const [featuredPost, ...gridPosts] = cards;
 ---
 
 <Base seo={home!.data.seo}>

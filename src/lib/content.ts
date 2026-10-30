@@ -34,3 +34,12 @@ export async function getFeaturedProjects() {
     .filter((p) => p.data.featured)
     .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 }
+
+/** Press releases (src/content/data/press-releases.json), newest first; same-day releases in
+ *  alphabetical order of headline. */
+export async function getPressReleases() {
+  const releases = await getCollection('pressReleases');
+  return releases
+    .map((r) => r.data)
+    .sort((a, b) => b.datetime.localeCompare(a.datetime) || a.title.localeCompare(b.title));
+}

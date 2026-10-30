@@ -1,40 +1,42 @@
 ---
-# Copy: framework §8 (audiences), §3 (alternate tagline, secondary use), §9 (taglines),
-# §12 (relationship lines); labels from content.md. Plan: brief/page-plans.md.
+# Copy: framework §8 (audiences), §4 (pillars), §2 (roles), §3 (alternate tagline, secondary
+# use), §9 (taglines), §12 (relationship lines), one ccaward.com fact; labels from content.md.
+# Plan: brief/page-plans.md.
 seo:
   description: "Understand how your organization is perceived, where it stands, and where opportunities exist."
 
 title: "For Businesses"
 
-# card stack beside the intro: §4 Growth pillar, §5 About paragraph 2, §2 roles; cards: §5
-# one-liners and §9 taglines
+# Why Consumer Choice: the intro beside the card stack (§4 Growth pillar, §5 About paragraph 2),
+# and the stack as the benefits: §4 Trust pillar; §2 roles with a ccaward.com fact (Recognition,
+# https://ccaward.com/advantages/) and the §12 relationship lines. "Why Consumer Choice" is a
+# new label approved by the project owner, for client confirmation (brief/gaps.md). The photos
+# are the homepage pillar photos (placeholders).
 intro:
-  section_title: "Family of Brands"
+  section_title: "Why Consumer Choice"
   title: "Helping Canadian businesses understand, improve, and communicate their competitive strengths."
   description: "Our organization brings together Consumer Choice Award, Consumer Choice Marketing, and Consumer Choice Research, Data & Insights. Together, these divisions provide Canadian businesses with trusted recognition, marketing support, market intelligence, and consumer insight designed to strengthen brands and customer relationships."
-  info:
-    - Recognition
-    - Amplification and growth
-    - Research and intelligence
   items:
+    - icon: "lucide:shield-check"
+      title: "Trust"
+      info: "For four decades, Consumer Choice has helped Canadians identify businesses they can trust."
+      image: "/images/placeholders/pillar-trust-open-sign.jpg"
+      image_alt: "A blue and white OPEN sign hanging in a shop's glass door"
     - icon: "lucide:award"
-      title: "Consumer Choice Award"
-      info: "Recognizing excellence and celebrating businesses Canadians trust."
-      meta: "Recognizing Excellence"
-      image: "/images/placeholders/brand-award-celebration.jpg"
-      image_alt: "Guests raising glasses in a toast at a celebration dinner"
+      title: "Recognition"
+      info: "Unlike other award programs, there is only one winner in your category."
+      image: "/images/placeholders/pillar-recognition-florist.jpg"
+      image_alt: "A florist working at a table in her flower shop"
     - icon: "lucide:megaphone"
-      title: "Consumer Choice Marketing"
-      info: "Helping award-winning businesses communicate their success, strengthen their reputation, and grow."
-      meta: "Helping Great Businesses Grow"
-      image: "/images/placeholders/brand-marketing-review.jpg"
-      image_alt: "Four colleagues reviewing printed photos together at a table"
+      title: "Amplification and growth"
+      info: "Consumer Choice Marketing helps award-winning businesses communicate their recognition and strengthen market visibility."
+      image: "/images/placeholders/pillar-growth-carpenter.jpg"
+      image_alt: "A smiling carpenter shaping a piece of wood in his workshop"
     - icon: "lucide:chart-line"
-      title: "Consumer Choice Research, Data & Insights"
-      info: "Delivering independent research, consumer intelligence, industry benchmarking, and strategic insight."
-      meta: "Turning Consumer Intelligence Into Business Confidence"
-      image: "/images/placeholders/brand-research-charts.jpg"
-      image_alt: "Four colleagues reviewing printed charts and graphs around a table, seen from above"
+      title: "Research and intelligence"
+      info: "CCRDI provides the independent research, data, and insight that supports award selection and broader industry intelligence."
+      image: "/images/placeholders/pillar-intelligence-charts.jpg"
+      image_alt: "A desk with a calculator, reading glasses, binders and printed charts"
 
 # the homepage testimonial placeholders
 testimonials: true
@@ -49,19 +51,36 @@ audiences:
     title: "Building Trust Between Consumers and Business."
     button: { label: "Contact Us", href: "/contact" }
 
+# the brand slider (the homepage component), with the §9 taglines as each card's line
 brands:
   title: "Family of Brands"
   items:
+    # navy text on the Award gold (6.95:1)
+    - title: "Consumer Choice Award"
+      category: "Recognizing Excellence"
+      color: "var(--color-award)"
+      logo: { src: "images/brands/consumer-choice-award-logo.png", alt: "Consumer Choice Award" }
+      edge: "var(--edge-award)"
+      tone: "dark"
+      image: "/images/placeholders/brand-award-celebration.jpg"
+      image_alt: "Guests raising glasses in a toast at a celebration dinner"
+      href: "/our-brands/consumer-choice-award"
     - title: "Consumer Choice Marketing"
       category: "Helping Great Businesses Grow"
-      description: "Consumer Choice Marketing helps award-winning businesses communicate their recognition and strengthen market visibility."
-      image: "images/placeholders/brand-marketing-review.jpg"
+      color: "var(--color-marketing)"
+      logo: { src: "images/brands/ccm-white.png", alt: "Consumer Choice Marketing" }
+      edge: "var(--edge-marketing)"
+      accent: "var(--color-marketing-on-dark)"
+      image: "/images/placeholders/brand-marketing-review.jpg"
       image_alt: "Four colleagues reviewing printed photos together at a table"
       href: "/our-brands/consumer-choice-marketing"
     - title: "Consumer Choice Research, Data & Insights"
       category: "Turning Consumer Intelligence Into Business Confidence"
-      description: "CCRDI provides the independent research, data, and insight that supports award selection and broader industry intelligence."
-      image: "images/placeholders/brand-research-charts.jpg"
+      color: "var(--color-research)"
+      logo: { src: "images/brands/ccrdi-white.png", alt: "Consumer Choice Research, Data & Insights" }
+      edge: "var(--edge-research)"
+      accent: "var(--color-research-on-dark)"
+      image: "/images/placeholders/brand-research-charts.jpg"
       image_alt: "Four colleagues reviewing printed charts and graphs around a table, seen from above"
       href: "/our-brands/ccrdi"
 ---

@@ -1,13 +1,14 @@
 ---
 // For Businesses: a Services-overview page composed from the theme's own sections
-// (PageHeader, WorkProcess, the homepage news cards); plan in brief/page-plans.md
+// (PageHeader, the homepage intro block and card stack, WorkProcess, the homepage brand slider);
+// plan in brief/page-plans.md
 import { getEntry } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import WorkProcess from '@/components/WorkProcess.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
-import BlogCard from '@/components/BlogCard.astro';
+import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import StackedServices from '@/components/StackedServices.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
@@ -17,14 +18,13 @@ const { title, intro, audiences, brands } = entry!.data;
 // testimonials: the homepage placeholders, until the client supplies real ones
 const home = entry!.data.testimonials ? await getEntry('homepage', 'index') : undefined;
 const testimonials = home?.data.testimonials;
-// plain card items: the date line is left empty (these aren't news posts)
-const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }));
+const slides = brands.items.map((b) => ({ ...b, imageAlt: b.image_alt }));
 ---
 
 <Base title={title} seo={entry!.data.seo}>
   <PageHeader subtitle="" title={title} hairline />
 
-  <!-- Intro + card stack (the homepage's intro block) -->
+  <!-- Why Consumer Choice: intro + the benefits as a card stack (the homepage's intro block) -->
   {intro && (
     <section class="bg-light py-section">
       <div class="container">
@@ -39,11 +39,13 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
                   <h2 class="pull-quote text-dark has-anim fade">{intro.title}</h2>
                   <p class="text-body text-text max-w-measure has-anim fade delay-100">{intro.description}</p>
                 </div>
-                <div class="flex flex-col items-start gap-2.5 pt-2">
-                  {intro.info.map((item, i) => (
-                    <p class:list={['inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim', animDelay[i]]}>{item}</p>
-                  ))}
-                </div>
+                {intro.info.length > 0 && (
+                  <div class="flex flex-col items-start gap-2.5 pt-2">
+                    {intro.info.map((item, i) => (
+                      <p class:list={['inline-block text-dark px-5 py-2 text-sm bg-white border border-dark/10 rounded-full has-anim', animDelay[i]]}>{item}</p>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -58,19 +60,15 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
   <!-- Audiences + contact path -->
   <WorkProcess subtitle="" title={audiences.title} steps={audiences.steps} cta={audiences.cta} columns={3} />
 
-  <!-- Consumer Choice Marketing and CCRDI -->
-  <section class="bg-white py-section">
-    <div class="container">
-      <SectionTitle title={brands.title} />
-      <div class="row">
-        {cards.map((item, i) => (
-          <div class:list={['md:col-6 has-anim', animDelay[i]]}>
-            <BlogCard item={item} />
-          </div>
-        ))}
+  <!-- Family of brands: the homepage brand slider -->
+  {slides.length > 0 && (
+    <section class="hairline-top bg-white py-section">
+      <div class="container">
+        <SectionTitle title={brands.title} />
       </div>
-    </div>
-  </section>
+      <PortfolioCarousel projects={slides} />
+    </section>
+  )}
 
   <!-- Testimonials -->
   {testimonials && (

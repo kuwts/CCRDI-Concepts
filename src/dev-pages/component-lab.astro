@@ -4,6 +4,7 @@
 // Sample content is either framework text (sections 1 to 13, word for word, or the site's
 // existing content entries) or clearly marked demo content. Nothing here is approved copy.
 import { getEntry } from 'astro:content';
+import { getPressReleases } from '@/lib/content';
 
 import Base from '@/layouts/Base.astro';
 import PageHeader from '@/components/PageHeader.astro';
@@ -29,7 +30,8 @@ const ccrdi = await getEntry('brandPages', 'ccrdi');
 const forty = await getEntry('anniversary', 'index');
 const home = await getEntry('homepage', 'index');
 const about = await getEntry('about', 'index');
-const featuredNews = { ...home!.data.blog.items[0], imageAlt: home!.data.blog.items[0].image_alt };
+const [release] = await getPressReleases();
+const featuredNews = { title: release.title, description: release.summary, date: release.date, datetime: release.datetime, category: release.source, image: home!.data.blog.images[0], imageAlt: '', href: release.url, external: true };
 
 const stats = brands!.data.facts.stats;
 const steps = award!.data.process!.steps.map((s) => ({ title: s.heading, text: s.text }));

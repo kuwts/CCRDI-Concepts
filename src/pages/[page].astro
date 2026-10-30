@@ -8,6 +8,7 @@ import SectionTitle from '@/components/SectionTitle.astro';
 import Callout from '@/components/ccc/Callout.astro';
 import DownloadCards from '@/components/ccc/DownloadCards.astro';
 import NewsList from '@/components/ccc/NewsList.astro';
+import { getPressReleases } from '@/lib/content';
 import { statSync } from 'node:fs';
 import type { ImageMetadata } from 'astro';
 import Clients from '@/components/Clients.astro';
@@ -25,10 +26,13 @@ const { entry } = Astro.props;
 const data = entry.data;
 const { Content } = await render(entry);
 
-// news from the homepage content (placeholders until the client supplies news), as a list
+// press releases (src/content/data/press-releases.json), newest first, under the homepage's
+// section heading; each opens the release on its newswire in a new tab
 const home = data.news ? await getEntry('homepage', 'index') : undefined;
 const blog = home?.data.blog;
-const newsItems = (blog?.items ?? []).map((n) => ({ title: n.title, href: n.href, date: n.date, category: n.category, excerpt: n.description, image: n.image }));
+const newsItems = blog
+  ? (await getPressReleases()).map((r) => ({ title: r.title, href: r.url, date: r.date, datetime: r.datetime, category: r.source, excerpt: r.summary, external: true }))
+  : [];
 
 // downloads: each file's built URL, format and size are read from the file itself
 // downloads come from the brand logos folder (an eager glob emits every file it matches)
@@ -105,7 +109,7 @@ const logoWall = brandsEntry?.data.clients;
     </section>
   )}
 
-  {/* news (the homepage news), as a list with a cursor preview */}
+  {/* press releases, as a list (no photos, so no cursor preview) */}
   {blog && newsItems.length > 0 && (
     <section class="hairline-top bg-white py-section">
       <div class="container">

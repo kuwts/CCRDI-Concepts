@@ -112,20 +112,12 @@ export const homepage = defineCollection({
       logos: z.array(z.object({ name: z.string(), logo: z.string() })),
     }),
     clients: sectionHeadingSchema.optional(),
+    // press releases (BlogCard): the releases come from src/content/data/press-releases.json
+    // (the featured one is shown large, then the newest); `images` are the cards' decorative
+    // photos, in order
     blog: sectionHeadingSchema.extend({
       button: linkSchema.optional(),
-      // news cards (BlogCard); the first is shown large
-      items: z.array(
-        z.object({
-          title: z.string(),
-          description: z.string(),
-          date: z.string(),
-          category: z.string().optional(),
-          image: z.string().optional(),
-          image_alt: z.string().optional(),
-          href: z.string(),
-        }),
-      ),
+      images: z.array(z.string()).default([]),
     }),
   }),
 });
@@ -255,6 +247,22 @@ export const brands = defineCollection({
   }),
 });
 
+// brand slider cards (PortfolioCarousel): 40 Years and For Businesses
+const brandSlideSchema = z.object({
+  title: z.string(),
+  category: z.string(),
+  color: z.string(),
+  tone: z.enum(['white', 'dark']).default('white'),
+  // a thin decorative line in the logo's second colour (never text)
+  accent: z.string().optional(),
+  // the brand's logo for dark backgrounds, and its edge gradient (e.g. var(--edge-award))
+  logo: z.object({ src: z.string(), alt: z.string() }).optional(),
+  edge: z.string().optional(),
+  image: z.string(),
+  image_alt: z.string().default(''),
+  href: z.string(),
+});
+
 /* ── 40 Years page ─────────────────────────────────────────────────── */
 // built on the case-study (Portfolio detail) layout: header, feature image, sidebar + MDX body,
 // closing row of cards
@@ -278,25 +286,7 @@ export const anniversary = defineCollection({
     milestones_title: z.string().optional(),
     milestones: z.array(z.object({ title: z.string(), content: z.string() })),
     family: z.object({ title: z.string(), items: z.array(z.string()) }),
-    next: z.object({
-      title: z.string(),
-      items: z.array(
-        z.object({
-          title: z.string(),
-          category: z.string(),
-          color: z.string(),
-          tone: z.enum(['white', 'dark']).default('white'),
-          // a thin decorative line in the logo's second colour (never text)
-          accent: z.string().optional(),
-          // the brand's logo for dark backgrounds, and its edge gradient (e.g. var(--edge-award))
-          logo: z.object({ src: z.string(), alt: z.string() }).optional(),
-          edge: z.string().optional(),
-          image: z.string(),
-          image_alt: z.string().default(''),
-          href: z.string(),
-        }),
-      ),
-    }),
+    next: z.object({ title: z.string(), items: z.array(brandSlideSchema) }),
   }),
 });
 
@@ -315,20 +305,8 @@ export const businesses = defineCollection({
       steps: z.array(z.object({ heading: z.string(), text: z.string() })),
       cta: z.object({ title: z.string(), button: linkSchema }),
     }),
-    // brand cards (BlogCard plain items)
-    brands: z.object({
-      title: z.string(),
-      items: z.array(
-        z.object({
-          title: z.string(),
-          description: z.string(),
-          category: z.string().optional(),
-          image: z.string().optional(),
-          image_alt: z.string().optional(),
-          href: z.string(),
-        }),
-      ),
-    }),
+    // the brand slider (PortfolioCarousel)
+    brands: z.object({ title: z.string(), items: z.array(brandSlideSchema) }),
   }),
 });
 
@@ -597,6 +575,26 @@ export const listings = defineCollection({
     title: z.string(),
     // accessible name for the "+" load-more button
     load_more_label: z.string(),
+  }),
+});
+
+/* ── Press releases (Media page and homepage) ─────────────────────── */
+// Consumer Choice Award's own releases on official newswires, newest first; refresh before
+// launch (CLAUDE.md, Pre-launch). Headline, date and summary (the release's first sentence)
+// word for word; logged in brief/gaps.md.
+export const pressReleases = defineCollection({
+  loader: file('./src/content/data/press-releases.json'),
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    summary: z.string(),
+    // as shown, and ISO for <time>
+    date: z.string(),
+    datetime: z.string(),
+    source: z.string(),
+    url: z.url(),
+    // the homepage's large card
+    featured: z.boolean().default(false),
   }),
 });
 

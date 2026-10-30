@@ -47,11 +47,13 @@ const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
         <div class="bg-white/3 p-8 md:p-10 h-full has-anim fade delay-100 flex flex-col justify-between">
 
           <div>
-            <span class={labelClass}>
-              {facts.philosophy.label}
-            </span>
+            {facts.philosophy.label && (
+              <span class={labelClass}>
+                {facts.philosophy.label}
+              </span>
+            )}
 
-            <p class:list={['mt-6 text-white', quote ? 'pull-quote [--pull-quote-size:clamp(1.375rem,1.2rem+0.6vw,1.75rem)] [--pull-quote-rule:var(--color-hairline-dark)]' : 'text-xl md:text-2xl font-medium leading-snug']}>
+            <p class:list={['text-white', facts.philosophy.label && 'mt-6', quote ? 'pull-quote [--pull-quote-size:clamp(1.375rem,1.2rem+0.6vw,1.75rem)] [--pull-quote-rule:var(--color-hairline-dark)]' : 'text-xl md:text-2xl font-medium leading-snug']}>
               {facts.philosophy.title}
             </p>
           </div>
@@ -71,9 +73,11 @@ const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
         <div class="h-full grid grid-cols-12 gap-6">
           <div class="bg-white/3 p-8 md:p-10 has-anim fade delay-200 col-span-12 md:col-span-7 lg:col-span-8 xl:col-span-12 max-xl:flex flex-col">
 
-            <span class:list={[labelClass, 'text-white/80']}>
-              {facts.hero.label}
-            </span>
+            {facts.hero.label && (
+              <span class:list={[labelClass, 'text-white/80']}>
+                {facts.hero.label}
+              </span>
+            )}
 
             {/* no value: a text tile (label + description), e.g. a mission statement */}
             {facts.hero.value && (
@@ -82,7 +86,8 @@ const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
               </p>
             )}
 
-            <p class="mt-6 max-w-sm text-white/70 text-balance">
+            {/* with no label or value, the statement alone, set larger */}
+            <p class:list={[facts.hero.label || facts.hero.value ? 'mt-6 max-w-sm text-white/70' : 'text-lg md:text-xl leading-relaxed text-white/85', 'text-balance']}>
               {facts.hero.description}
             </p>
 
@@ -116,19 +121,24 @@ const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
       <div class="col-span-12 md:col-span-6 order-3 md:order-2 xl:order-3">
         <div class="bg-white/3 p-10 h-full has-anim fade delay-400 flex flex-col justify-between">
 
-          <div>
-            <span class={labelClass}>
-              {facts.impact.label}
-            </span>
+          {/* with no label or value, the statement sits at the top, like the other text tiles */}
+          {(facts.impact.label || facts.impact.value) && (
+            <div>
+              {facts.impact.label && (
+                <span class={labelClass}>
+                  {facts.impact.label}
+                </span>
+              )}
 
-            {facts.impact.value && (
-              <p class:list={['mt-5 font-semibold text-white', isNumber(facts.impact.value) ? 'text-3xl md:text-5xl' : 'text-xl md:text-2xl leading-snug']}>
-                <CounterUp value={facts.impact.value} />
-              </p>
-            )}
-          </div>
+              {facts.impact.value && (
+                <p class:list={['mt-5 font-semibold text-white', isNumber(facts.impact.value) ? 'text-3xl md:text-5xl' : 'text-xl md:text-2xl leading-snug']}>
+                  <CounterUp value={facts.impact.value} />
+                </p>
+              )}
+            </div>
+          )}
 
-          <p class="mt-6 max-w-sm text-white/70 text-balance">
+          <p class:list={[facts.impact.label || facts.impact.value ? 'mt-6 max-w-sm text-white/70' : 'text-lg md:text-xl leading-relaxed text-white/85', 'text-balance']}>
             {facts.impact.description}
           </p>
 

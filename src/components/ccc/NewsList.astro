@@ -1,10 +1,10 @@
 ---
 // News, announcements or press releases as rows between hairlines: date (in <time> when an ISO
 // date is given), category, headline (the link; the whole row is clickable) and an optional
-// summary. Signature, after the Showreel's cursor pill: on a pointer device, hovering a row
-// brings up a small preview of its photo that eases after the cursor (scaling in from 0, as the
-// pill does) and changes as you move between rows; the headline nudges right and a gold rule
-// draws along the row's foot. Rows reveal in a stagger. Keyboard focus gets the nudge and rule.
+// summary; `external` rows open in a new tab. Signature, after the Showreel's cursor pill: on a
+// pointer device, hovering a row brings up a small preview of its photo that eases after the
+// cursor (scaling in from 0, as the pill does) and changes as you move between rows; the headline
+// nudges right and a gold rule draws along the row's foot. Rows reveal in a stagger. Keyboard focus gets the nudge and rule.
 // Touch, reduced motion and rows without a photo: no preview. A block, not a section.
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
@@ -21,6 +21,8 @@ interface NewsItem {
   excerpt?: string;
   /** a photo for the hover preview (decorative) */
   image?: string;
+  /** an external page (e.g. a press release): opens in a new tab, and says so to screen readers */
+  external?: boolean;
 }
 interface Props {
   items: NewsItem[];
@@ -44,7 +46,14 @@ const hasImages = items.some((n) => n.image);
           <div class="news-body min-w-0">
             {n.category && <p class="mb-2 text-eyebrow uppercase text-gold-text">{n.category}</p>}
             <Heading class="text-h3 text-dark">
-              <a href={n.href} class="after:absolute after:inset-0 focus-visible:outline-offset-4">{n.title}</a>
+              <a
+                href={n.href}
+                target={n.external ? '_blank' : undefined}
+                rel={n.external ? 'noopener' : undefined}
+                class="after:absolute after:inset-0 focus-visible:outline-offset-4"
+              >
+                {n.title}{n.external && <span class="sr-only"> (opens in a new tab)</span>}
+              </a>
             </Heading>
             {n.excerpt && <p class="mt-3 max-w-measure leading-relaxed text-text">{n.excerpt}</p>}
           </div>

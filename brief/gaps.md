@@ -138,22 +138,36 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       Source for these three: Consumer Choice Award blog, "40 Years of Recognizing the Businesses
       Canadians Count On" by Sumi Saleh, Communications Manager
       (https://ccaward.com/blog/40-years-of-recognizing-the-businesses-canadians-count-on/).
-      The three below are the cities named in Consumer Choice Award's own press releases (the
-      "About" boilerplate), quoted in full; "Montreal" is unaccented in the releases:
-      - "2012": "Consumer Choice Award lives in Calgary, Edmonton, Halifax, Hamilton, Montreal,
-        Ottawa, Quebec City, Saskatoon, St. John's, Toronto, Vancouver and Winnipeg." Source:
-        "2012 Consumer Choice Award Winners", CNW, Calgary, March 20, 2012
+      **Rewritten copy for client approval (2012, 2015, 2019).** The project owner asked for
+      these three in milestone style instead of quoting the releases. Each keeps the facts and
+      numbers exactly as the source states them (the counts are the cities and regions each
+      release names; nothing rounded or estimated); the year is the release's date. None of
+      the three lines names Montréal; where it's named on the site it has its accent (the
+      releases spell it "Montreal").
+      - "2012": "Consumer Choice Award recognizes businesses in 12 cities across Canada, from
+        St. John's to Vancouver." Source sentence: "Consumer Choice Award lives in Calgary,
+        Edmonton, Halifax, Hamilton, Montreal, Ottawa, Quebec City, Saskatoon, St. John's,
+        Toronto, Vancouver and Winnipeg." (12 cities; St. John's is the easternmost and
+        Vancouver the westernmost.) "2012 Consumer Choice Award Winners", CNW, Calgary, March
+        20, 2012
         (https://www.newswire.ca/news-releases/2012-consumer-choice-award-winners-509870361.html);
         the same list in the July 4, 2012 Toronto release.
-      - "2015": "Consumer Choice Award lives in Calgary, Edmonton, Halifax, Hamilton, London,
-        Montreal, Ottawa, Quebec City, Regina, Saskatoon, St. John's, Toronto, Vancouver and
-        Winnipeg." Source: "2015 Montreal Consumer Choice Award Winners", CNW, Montreal, March
-        23, 2015 (https://www.newswire.ca/news-releases/2015-montreal-consumer-choice-award-winners-517377111.html).
-      - "2019": "Consumer Choice Award lives in Barrie, Calgary, Edmonton, Gatineau, Greater
+      - "2015": "Consumer Choice Award grows to 14 cities across Canada, including London and
+        Regina." Source sentence: "Consumer Choice Award lives in Calgary, Edmonton, Halifax,
+        Hamilton, London, Montreal, Ottawa, Quebec City, Regina, Saskatoon, St. John's, Toronto,
+        Vancouver and Winnipeg." (14 cities; London and Regina are the two not in the 2012
+        list, hence "grows to".) "2015 Montreal Consumer Choice Award Winners", CNW, Montreal,
+        March 23, 2015
+        (https://www.newswire.ca/news-releases/2015-montreal-consumer-choice-award-winners-517377111.html).
+      - "2019": "Consumer Choice Award recognizes businesses in more than 22 cities and regions
+        across Canada, including Barrie, Gatineau, Kingston, Peterborough and Surrey." Source
+        sentence: "Consumer Choice Award lives in Barrie, Calgary, Edmonton, Gatineau, Greater
         Toronto Area, Halifax, Hamilton, Kingston, London, Montreal, Niagara region, North
         Vancouver, Ottawa, Peterborough, Quebec City, Regina, Saskatoon, St. John's, Surrey,
-        Vancouver, Waterloo, Winnipeg & more." Source: "2019 Greater Toronto Area and Barrie
-        Consumer Choice Award Winners", 24-7 Press Release, Toronto, June 26, 2019
+        Vancouver, Waterloo, Winnipeg & more." (22 named, "& more", hence "more than 22";
+        the five named in the line are among those not in the 2015 list.) "2019 Greater
+        Toronto Area and Barrie Consumer Choice Award Winners", 24-7 Press Release, Toronto,
+        June 26, 2019
         (https://www.24-7pressrelease.com/press-release/463789/2019-greater-toronto-area-and-barrie-consumer-choice-award-winners).
       Found but not used:
       - 2018 list ("Saskatoon's 2018 Consumer Choice Award Winners", August 23, 2018,
@@ -177,6 +191,56 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       year it reached each new city or region, the first year in the USA, the first winners'
       celebration, new research methods, and the creation of Consumer Choice Canada. These would
       replace or join the ones above; no dates or milestones are invented.
+- [ ] **Confirm the Our Brands bento tiles** (the three tiles beside the intro, no labels,
+      approved by the project owner; the brands themselves are in the logo wall and panels):
+      - Pull quote: the lead message (content.md, "Lead message"), "Consumer Choice Canada
+        helps Canadians make more confident decisions while helping businesses earn,
+        understand, and communicate consumer trust."
+      - "Founded in 1987, Consumer Choice Award uses independent market research to identify
+        the top-ranked businesses in their respective categories and communities." and "Over
+        the past four decades, Consumer Choice Award has expanded its presence across Canada,
+        recognizing businesses across a wide range of industries and communities." Source:
+        "Consumer Choice Award Celebrates 40 Years of Recognizing Business Excellence Across
+        Canada", EIN Presswire, Toronto, September 21, 2026
+        (https://www.einpresswire.com/article/943441319/consumer-choice-award-celebrates-40-years-of-recognizing-business-excellence-across-canada).
+      The §2 role and core message tiles they replace are no longer on the site for CCRDI
+      ("Turning consumer data into business confidence"); its §9 tagline is very close.
+- [ ] **New label "Why Consumer Choice"** (For Businesses: the label over the benefits),
+      approved by the project owner, for client confirmation.
+- [ ] **Confirm the For Businesses benefits** (the card stack beside "Why Consumer Choice"):
+      "Trust" (§4 pillar and its line); "Recognition" (§2 role) with "Unlike other award
+      programs, there is only one winner in your category." (https://ccaward.com/advantages/,
+      also on the Award page); "Amplification and growth" and "Research and intelligence" (§2
+      roles) with the §12 relationship lines for Consumer Choice Marketing and CCRDI. The role
+      pills that sat beside the intro are gone (they repeated these titles).
+- [ ] **More benefits copy for For Businesses (client to provide).** What a business gains from
+      working with Consumer Choice Canada and its brands: 4 to 6 benefits, each with a short
+      heading and one or two sentences, plus any proof the client can stand behind (figures
+      or examples, with permission to publish).
+- [ ] **New label "Press Releases"** (the heading on the homepage and Media & Partners),
+      approved by the project owner, for client confirmation.
+- [ ] **Confirm the press releases** (src/content/data/press-releases.json; homepage and Media
+      & Partners). Consumer Choice Award's six most recent Canadian announcements as of October
+      30, 2026, each on EIN Presswire as "News Provided By Consumer Choice Award"; headline,
+      date and summary (the release's first sentence) word for word; each link opens the
+      release in a new tab, newest first (same-day ones alphabetically). Single-business winner
+      releases and US releases are left out. The homepage leads with the 40 Years release, then
+      the three newest.
+      - October 1, 2026: "Announcing the 2026 Victoria Consumer Choice Award Winners"
+        (https://www.einpresswire.com/article/946453455/announcing-the-2026-victoria-consumer-choice-award-winners)
+      - October 1, 2026: "Announcing the 2026 Kelowna Consumer Choice Award Winners"
+        (https://www.einpresswire.com/article/946429489/announcing-the-2026-kelowna-consumer-choice-award-winners)
+      - October 1, 2026: "Announcing the 2026 Nanaimo Consumer Choice Award Winners"
+        (https://www.einpresswire.com/article/946443894/announcing-the-2026-nanaimo-consumer-choice-award-winners)
+      - October 1, 2026: "Announcing the 2026 Abbotsford Consumer Choice Award Winners"
+        (https://www.einpresswire.com/article/946431882/announcing-the-2026-abbotsford-consumer-choice-award-winners)
+      - September 21, 2026: "Consumer Choice Award Celebrates 40 Years of Recognizing Business
+        Excellence Across Canada"
+        (https://www.einpresswire.com/article/943441319/consumer-choice-award-celebrates-40-years-of-recognizing-business-excellence-across-canada)
+      - September 14, 2026: "Announcing the 2026 Barrie Consumer Choice Award Winners"
+        (https://www.einpresswire.com/article/940972244/announcing-the-2026-barrie-consumer-choice-award-winners)
+      The category line on each item is the newswire's name, "EIN Presswire". The homepage
+      cards' photos are decorative placeholders until the client supplies press images.
 - [ ] Contact details (a general email address, never an individual's; phone, address),
       form destination email, social links
 - [ ] URLs for the Consumer Choice Award, Consumer Choice Marketing, and CCRDI sites.
@@ -255,7 +319,8 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] Homepage strip uses "Celebrating 40 Years of Trust", the first half of the §10 headline
       (approved by the project owner)
 - [ ] Theme interface text kept for function and accessibility: "Prev", "Next", "Play",
-      "Play showreel", "Pause ..." controls, "Skip to content", "Close", "Copyright".
+      "Play showreel", "Pause ..." controls, "Skip to content", "Close", "Copyright", and
+      "(opens in a new tab)" (read by screen readers only, on the press release links).
       Added on the bold-round branch (homepage hero, version B only): "Pause background
       video" / "Play background video", the same pattern as the showreel's control; shown
       only on keyboard focus.
@@ -319,7 +384,7 @@ be rewritten for the client's photos.
 - [ ] Pillar card photos (Trust, Recognition, Intelligence, Growth)
 - [ ] Family of Brands slide photos (Award, Marketing, Research, Data & Insights)
 - [ ] Who We Serve strip: 3 thumbnails next to "Celebrating 40 Years of Trust"
-- [ ] News card photos (4)
+- [ ] Press release card photos (4, decorative)
 - [ ] About: header photo, intro tile photo, 6 marquee photos (Canadian places, no
       identifiable faces, so nothing reads as CCC staff)
 - [ ] Our Brands: intro tile photo; the three brand cards reuse the homepage brand photos
@@ -344,11 +409,8 @@ be rewritten for the client's photos.
    - 5 cards: [CLIENT TO PROVIDE: client testimonial], [CLIENT TO PROVIDE: name],
      [CLIENT TO PROVIDE: business name], generic silhouette
    - Logo wall: 5 logos [CLIENT TO PROVIDE: award winner or partner logo]
-7. News
-   - Heading: [CLIENT TO PROVIDE: news section heading]
-   - 4 cards: [CLIENT TO PROVIDE: news headline], [CLIENT TO PROVIDE: news summary],
-     [CLIENT TO PROVIDE: date], [CLIENT TO PROVIDE: news category], placeholder photos
-     (see above)
+7. Press Releases: four of Consumer Choice Award's releases (see Still needed); the card
+   photos are placeholders (see above)
 
 ### About page
 1. Page header: no eyebrow line (H1 "About Consumer Choice Canada"); header photo is a
@@ -367,8 +429,8 @@ be rewritten for the client's photos.
 ### Our Brands page
 1. Page header: H1 "Our Brands", no eyebrow
 2. Logo wall ("Family of Brands"): the four brands' logos on white tiles
-3. Facts: intro tile photo is a placeholder; stat tiles use public facts pending
-   confirmation (see Still needed)
+3. Facts: intro tile photo is a placeholder; the lead message and two press release facts
+   beside it, and stat tiles of public facts, pending confirmation (see Still needed)
 4. Brand cards: Award list from ccaward.com's process headings, pending confirmation;
    Marketing list from the draft notes, pending confirmation; card photos and links
    pending confirmation (see above)
@@ -387,11 +449,12 @@ be rewritten for the client's photos.
    /our-brands
 
 ### For Businesses, Media & Partners, Contact, legal and 404 pages
-- For Businesses: no placeholders (brand cards reuse the homepage brand photos)
+- For Businesses: benefit card photos reuse the homepage pillar photos; the brand slider
+  reuses the homepage brand photos
 - Media & Partners: [CLIENT TO PROVIDE: media contact heading], [CLIENT TO PROVIDE: media
   contact name, email and phone] (a Callout under the body, with "Contact Us"),
   [CLIENT TO PROVIDE: logo downloads heading] (the downloads are the client's logos, see Still
-  needed); news: the homepage placeholders, as a list
+  needed); Press Releases: the six releases (see Still needed), as a list
 - Contact: [CLIENT TO PROVIDE: contact intro heading], [CLIENT TO PROVIDE: contact intro text],
   email, phone, address, [CLIENT TO PROVIDE: sending message], [CLIENT TO PROVIDE: error
   message]; form notifications email (Netlify dashboard)
@@ -407,3 +470,7 @@ be rewritten for the client's photos.
 - [ ] No [CLIENT TO PROVIDE: ...] text, [FOUNDING YEAR], placeholder images, placeholder
       photos or placeholder video remain on the live site (see the Pre-launch check in
       CLAUDE.md and /brief/placeholder-media.md).
+- [ ] **Refresh the press releases** right before launch: check Consumer Choice Award's newswire
+      releases (EIN Presswire and ACCESS Newswire) for newer Canadian announcements, update
+      src/content/data/press-releases.json (headline, date and first sentence word for word,
+      newest first; keep one `featured`), and log the changes here.

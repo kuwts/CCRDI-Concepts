@@ -53,7 +53,7 @@ const results = []; const ok = (c, ctx, m) => { results.push(c); if (!c) console
       const navs = [...document.querySelectorAll('nav[aria-label^="Breadcrumb"]')];
       const bc = navs.map((n) => ({ cur: n.querySelector('[aria-current=page]')?.textContent.trim(), links: n.querySelectorAll('a').length, sepHidden: [...n.querySelectorAll('svg')].every((s) => s.getAttribute('aria-hidden') === 'true') }));
       const dl = [...document.querySelectorAll('#lab-downloads-0-meta')].length ? (() => { const a = document.querySelector('a[aria-describedby="lab-downloads-0-meta"]'); return { download: a.hasAttribute('download'), desc: document.getElementById('lab-downloads-0-meta').textContent.replace(/\s+/g, ' ').trim(), demoNoDownload: !document.querySelector('a[aria-describedby="lab-downloads-1-meta"]').hasAttribute('download') || true }; })() : null;
-      const news = [...document.querySelectorAll('time[datetime]')].length;
+      const news = [...document.querySelectorAll('[data-newslist] time[datetime]')].length;
       const decor = [...document.querySelectorAll('main svg')].filter((s) => !s.closest('a,button,[aria-hidden="true"]') && !s.getAttribute('role')).length;
       const notes = document.querySelectorAll('[role=note]').length;
       const stepsSr = [...document.querySelectorAll('ol li h3 .sr-only')].map((e) => e.textContent.trim()).slice(0, 2).join(' ');

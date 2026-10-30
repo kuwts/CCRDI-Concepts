@@ -302,7 +302,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **Variants:** with or without the "drama" effect (scaling).
 - **Animations:** cards are `position: sticky` and pile on top of one another; with the drama effect, covered cards shrink step by step, driven by scroll in `requestAnimationFrame`; inner panels use scroll reveal. Respects `prefers-reduced-motion`.
 - **Visual weight:** Heavy.
-- **Used on:** Home (right-hand column of the intro section).
+- **Used on:** Home (right-hand column of the intro section); CCC: For Businesses (the benefits, beside "Why Consumer Choice") and the brand pages.
 - **Notes:** sticky `top` values assume the header height. A card without an `image` shows on the dark background. The photo and icon are decorative (`alt=""`); the title carries the meaning. Overlay (CCC): a navy gradient strongest at the foot behind the text (92% → 86% at half height → 45% at the top), a soft shade behind the card number, and a blur only behind the text, fading out above it, so the photo shows through; all text measured at 4.5:1 or better (`scripts/qa/cardcontrast.cjs`). The theme's version is a flat frosted `bg-dark/60` pane.
 
 #### WorkProcess
@@ -325,7 +325,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **Animations:** scroll reveal (fade) with staggered delays; every number counts up with `CounterUp`.
 - **Visual weight:** Heavy.
 - **Used on:** About, Services.
-- **Notes:** a complete `<section>`. Dark background only. Built for three `stats`.
+- **Notes:** a complete `<section>`. Dark background only. Built for three `stats`. An empty `label` isn't rendered; a `hero` or `impact` tile with no label and no value shows its `description` alone, larger and at the top (CCC Our Brands: the lead message as a `quote`, then two confirmed facts).
 
 #### Faq
 
@@ -385,7 +385,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **Layout:** a full-bleed, centered, looping Swiper (1 slide on mobile, 2 from 640px) of `PortfolioCard` (carousel variant), with Prev / Next text buttons and a thin progress bar between "01" and the total.
 - **Animations:** free-mode drag and mousewheel, 600ms slide easing, a progress bar and a live counter; card hover effects (see PortfolioCard).
 - **Visual weight:** Heavy.
-- **Used on:** Home.
+- **Used on:** Home; CCC: 40 Years and For Businesses (the brand slider).
 - **Notes:** light background only (black controls). With fewer than 8 projects the slides are repeated until there are 8 so the loop works; the counter still shows the real number of projects, and the repeats are hidden from screen readers and skipped by Tab. Renders nothing with no projects.
 
 ### Cards
@@ -407,7 +407,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 
 - **File:** [src/components/BlogCard.astro](src/components/BlogCard.astro)
 - **For:** a blog / news / article card.
-- **Props:** `post: CollectionEntry<'blog'>`, `horizontal?: boolean` (default `false`), `category?: string` (overrides the chip label, e.g. "Featured"), `as?: 'h2' | 'h3' | 'h4'` (title heading level; default `h3`, `h2` on listing pages), `class?: string`.
+- **Props:** `post: CollectionEntry<'blog'>` or `item: { title, description, date, datetime?, category?, image?, imageAlt?, href, external? }` (a card without a post; `datetime` puts the date in `<time>`; `external` opens the link in a new tab and adds "(opens in a new tab)" to its accessible name), `horizontal?: boolean` (default `false`), `category?: string` (overrides the chip label, e.g. "Featured"), `as?: 'h2' | 'h3' | 'h4'` (title heading level; default `h3`, `h2` on listing pages), `class?: string`.
 - **Variants:**
   - Vertical: image on top, then the category chip, title (2 lines), description (2 lines), "date — reading time" and an arrow.
   - Horizontal: image and text side by side from `lg`, with a larger title.
@@ -602,7 +602,7 @@ All are in `src/components/ccc/`, built for the CCC design (bold-round spacing, 
 - **File:** [src/components/ccc/NewsList.astro](src/components/ccc/NewsList.astro) (block, with a small script). **Rebuilt (round 3)** in the theme's design language.
 - **For:** news, announcements or press releases as rows between hairlines: date (`<time>`), category, headline (the link; the whole row is clickable), optional summary, a round arrow button.
 - **Signature:** after the Showreel's cursor pill: on a pointer device, hovering a row brings up a small photo preview that eases after the cursor (a `requestAnimationFrame` lerp; it scales in from 0) and changes as you move between rows. The headline nudges right (a margin move, not a transform, so the full-row link stays whole), the arrow button fills navy and a gold rule draws along the row's foot. Rows reveal in a stagger. Keyboard focus gets the nudge, fill and rule.
-- **Props:** `items: { title, href, date?, datetime?, category?, excerpt?, image? }[]` (`image` for the preview, decorative), `as?`, `class?`.
+- **Props:** `items: { title, href, date?, datetime?, category?, excerpt?, image?, external? }[]` (`image` for the preview, decorative; `external` opens the row's link in a new tab, with screen-reader text "(opens in a new tab)"), `as?`, `class?`.
 - **Touch, reduced motion, rows without a photo:** no preview.
 - **Best for:** many items or items without photos. **Could fit:** Media & Partners, the homepage news.
 - **Considered:** `BlogCard`. **Base theme candidate:** yes. **Visual weight:** Light to Medium.

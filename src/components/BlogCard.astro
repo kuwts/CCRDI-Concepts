@@ -14,6 +14,10 @@ interface CardItem {
   image?: string;
   imageAlt?: string;
   href: string;
+  /** the same date in ISO format for <time>, e.g. "2026-10-01" */
+  datetime?: string;
+  /** an external page (e.g. a press release): opens in a new tab, and says so to screen readers */
+  external?: boolean;
 }
 
 interface Props {
@@ -47,6 +51,12 @@ const meta = post
   ? [formatDate(post.data.date), readingTime(post.body ?? '')]
   : [item?.date ?? ''];
 
+const external = !post && item?.external;
+const linkAttrs = external
+  ? { target: '_blank', rel: 'noopener', 'aria-label': `${title} (opens in a new tab)` }
+  : { 'aria-label': title };
+const datetime = !post ? item?.datetime : undefined;
+
 const headingClass = 'text-dark underline decoration-transparent transition group-hover/img:text-black group-hover/img:decoration-dark/70 break-words';
 // wraps when the label is wider than the card (long taglines)
 const chipClass = 'text-[13px] sm:text-xs tracking-wider text-dark/80 uppercase bg-dark/5 px-2 py-1 inline-block w-fit max-w-full';
@@ -71,7 +81,7 @@ const clamp = post ? 'line-clamp-2' : '';
     horizontal ? (
       <div class="group/img row justify-center">
         <div class="lg:col-6">
-          <a href={href} aria-label={title} class="block overflow-hidden rounded-card after:absolute after:inset-0">
+          <a href={href} {...linkAttrs} class="block overflow-hidden rounded-card after:absolute after:inset-0">
             <AstroImage
               src={image}
               alt={imageAlt}
@@ -89,7 +99,7 @@ const clamp = post ? 'line-clamp-2' : '';
             <p class:list={['my-6 text-[15px]', clamp]}>{description}</p>
             <div class="mt-0 lg:mt-auto flex items-end justify-between">
               <p class="text-[14px]">
-                {meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
+                {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
               </p>
               <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
                 <Icon name="lucide:arrow-up-right" class="size-6" />
@@ -100,7 +110,7 @@ const clamp = post ? 'line-clamp-2' : '';
       </div>
     ) : (
       <div class="group/img">
-        <a href={href} aria-label={title} class="block overflow-hidden rounded-card after:absolute after:inset-0">
+        <a href={href} {...linkAttrs} class="block overflow-hidden rounded-card after:absolute after:inset-0">
           <AstroImage
             src={image}
             alt={imageAlt}
@@ -116,7 +126,7 @@ const clamp = post ? 'line-clamp-2' : '';
           <p class:list={['mt-3 mb-6 text-[15px]', clamp]}>{description}</p>
           <div class="mt-auto flex items-end justify-between">
             <p class="text-[14px]">
-              {meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
+              {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
             </p>
             <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
               <Icon name="lucide:arrow-up-right" class="size-6" />

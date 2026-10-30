@@ -52,6 +52,9 @@ content, and page lists in scripts.
 | Pull quote utility (`pull-quote`, `--pull-quote-size`, `--pull-quote-rule`) | `global.css` | Generic. |
 | Navy paper texture (SVG turbulence, `--grain-image`, `bg-grain`), tuned to be only just visible | `global.css` | Tuned for navy #0B2545; retune per brand. |
 | **Long-form reading text** (`content`): line height 1.75 (`--leading-body`), paragraph gap `--spacing-paragraph` (1.5rem), headings 3rem above and 1rem below (the theme's 15px gap applied to headings too, because `> *:not(:last-child)` outranks the heading rule) | `global.css` (`@utility content`) | Generic. |
+| **`Facts` with text-only tiles:** empty labels aren't rendered (they left a gap); a `hero` or `impact` tile with no label and no value shows its statement alone, larger, at the top | `Facts.astro` | Generic. |
+| **External cards and rows:** `BlogCard` items and `NewsList` rows take `external` (new tab, `rel="noopener"`, "(opens in a new tab)" for screen readers); `BlogCard` items take `datetime` for `<time>` | `BlogCard.astro`, `ccc/NewsList.astro` | Generic. |
+| **Press releases as a data collection** (`file()` loader on a JSON file, a `getPressReleases()` helper, newest first) feeding both the card grid and the list | `src/content/data/press-releases.json`, `src/types/collections.ts`, `src/lib/content.ts` | The releases; the pattern is generic. |
 | **`StackedServices` overlay:** a gradient scrim strongest behind the text, a soft shade behind the number, a masked blur behind the text only, replacing the flat frosted pane, so the photo shows | `StackedServices.astro` | Stops tuned for navy; measure with `cardcontrast.cjs`. |
 | Card images: one radius, 3:2 ratio, 4% zoom on hover or focus | `PortfolioCard.astro`, `BlogCard.astro`, `PortfolioCarousel.astro` | Generic. |
 | GradualBlur removed from Base | `Base.astro` | Theme decision. |

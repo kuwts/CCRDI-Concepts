@@ -20,6 +20,7 @@ import {
   clients,
   clientsDark,
   teamMembers,
+  pressReleases,
 } from '@/types/collections';
 
 export const collections = {
@@ -44,4 +45,5 @@ export const collections = {
   clients,
   clientsDark,
   teamMembers,
+  pressReleases,
 };
