@@ -19,7 +19,7 @@ PAGES=/,/contact node scripts/qa/stage.cjs "$PWD" http://localhost:4331 screensh
 | `drag.cjs` | The brand slider: mouse drags, long flings and touch swipes move exactly one slide and settle; a drag never opens a link; a click does. |
 | `jitter.cjs` | The page holds still at every scroll position from 0 to 200px (the header pin twitch). |
 | `herocontrast.cjs` | Worst-case contrast of every hero text line over the hero image or video frames and overlay. |
-| `cardcontrast.cjs` | Worst-case text contrast on the brand cards and Our Brands panels. |
+| `cardcontrast.cjs` | Worst-case text contrast on the brand cards, the Our Brands panels and every `StackedServices` photo card (large text at 3:1, the rest at 4.5:1). |
 | `texture-contrast.cjs` | Pixel spread and worst-case text contrast of the navy texture. |
 | `hlall.cjs` | Every gold hairline: colour and contrast against both sides. |
 | `rhythm.cjs` | Section background order per page; flags two adjacent sections with the same background. |

@@ -9,7 +9,8 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [x] Brand descriptions for Our Brands: role and core message (§2), one-liners (§5),
       taglines (§9), relationship lines (§12), CCRDI positioning, mission, vision, taglines (§6)
       and services (§7)
-- [x] One-line descriptions for Media & Partners: CCC and CCRDI (§12)
+- [x] One-line descriptions for Media & Partners: CCC and CCRDI (§12); Consumer Choice Award and
+      Consumer Choice Marketing (§5 Family of Brands one-liners), so all four brands appear
 - [x] Audience messages, including Industry Associations (§8)
 - [x] SEO descriptions: site default = CCC one-line description (§12, 183 characters, cut off
       in search results after about 160); homepage = lead message (§13, 143 characters);
@@ -126,18 +127,56 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
         category." (https://www.ccaward.com)
 - [ ] Leadership/team names, titles, photos
 - [ ] Testimonials from past award winners, with permission
-- [ ] **Confirm the 40 Years sidebar milestones** (public facts, word for word; the short labels
-      "Coast to coast" and the years are ours, approved by the project owner). Source for all
-      three: Consumer Choice Award blog, "40 Years of Recognizing the Businesses Canadians Count
-      On" by Sumi Saleh, Communications Manager (https://ccaward.com/blog/40-years-of-recognizing-the-businesses-canadians-count-on/):
+- [ ] **Confirm the 40 Years milestones** (the "Our Milestones" timeline; public facts, word for
+      word; the markers are ours: the short label "Coast to coast", approved by the project
+      owner, and the years, which are the dates of the sources):
       - "1987": "CCA launched in Montréal in 1987, with early operations also in Ottawa."
       - "Coast to coast": "What began in those two cities has grown into recognition for
         businesses in communities from coast to coast."
       - "2027": "CCA's 40th anniversary year" (the post: "As we begin recognizing our 2027
         winners, … throughout CCA's 40th anniversary year.")
-- [ ] More milestones by year for the 40 Years timeline: the sidebar shows only the three
-      confirmed facts above; more can be added when the client provides them (no dates or
-      milestones are invented)
+      Source for these three: Consumer Choice Award blog, "40 Years of Recognizing the Businesses
+      Canadians Count On" by Sumi Saleh, Communications Manager
+      (https://ccaward.com/blog/40-years-of-recognizing-the-businesses-canadians-count-on/).
+      The three below are the cities named in Consumer Choice Award's own press releases (the
+      "About" boilerplate), quoted in full; "Montreal" is unaccented in the releases:
+      - "2012": "Consumer Choice Award lives in Calgary, Edmonton, Halifax, Hamilton, Montreal,
+        Ottawa, Quebec City, Saskatoon, St. John's, Toronto, Vancouver and Winnipeg." Source:
+        "2012 Consumer Choice Award Winners", CNW, Calgary, March 20, 2012
+        (https://www.newswire.ca/news-releases/2012-consumer-choice-award-winners-509870361.html);
+        the same list in the July 4, 2012 Toronto release.
+      - "2015": "Consumer Choice Award lives in Calgary, Edmonton, Halifax, Hamilton, London,
+        Montreal, Ottawa, Quebec City, Regina, Saskatoon, St. John's, Toronto, Vancouver and
+        Winnipeg." Source: "2015 Montreal Consumer Choice Award Winners", CNW, Montreal, March
+        23, 2015 (https://www.newswire.ca/news-releases/2015-montreal-consumer-choice-award-winners-517377111.html).
+      - "2019": "Consumer Choice Award lives in Barrie, Calgary, Edmonton, Gatineau, Greater
+        Toronto Area, Halifax, Hamilton, Kingston, London, Montreal, Niagara region, North
+        Vancouver, Ottawa, Peterborough, Quebec City, Regina, Saskatoon, St. John's, Surrey,
+        Vancouver, Waterloo, Winnipeg & more." Source: "2019 Greater Toronto Area and Barrie
+        Consumer Choice Award Winners", 24-7 Press Release, Toronto, June 26, 2019
+        (https://www.24-7pressrelease.com/press-release/463789/2019-greater-toronto-area-and-barrie-consumer-choice-award-winners).
+      Found but not used:
+      - 2018 list ("Saskatoon's 2018 Consumer Choice Award Winners", August 23, 2018,
+        https://www.24-7pressrelease.com/press-release/455086/saskatoons-2018-consumer-choice-award-winners):
+        it reads "St. Catharine's St. John's" (missing comma, St. Catharines misspelled), so
+        it can't be quoted word for word.
+      - Late 2019 lists: September 10, 2019, "Soon to be launching, Abbotsford, Kelowna and
+        Windsor." (https://www.24-7pressrelease.com/press-release/465674/southern-alberta-2019-consumer-choice-award-winners),
+        and November 20, 2019, a 27-place list including them, which spells "St. Catherines"
+        (https://www.newswire.com/news/waterloo-and-guelph-region-2020-consumer-choice-award-winners).
+        The client could confirm a corrected version of either.
+      - The USA: the earliest US release found is "Announcing the 2025 Atlanta Consumer Choice
+        Award Winners" (ACCESS Newswire, January 27, 2025,
+        https://www.accessnewswire.com/newsroom/en/business-and-professional-services/announcing-the-2025-atlanta-consumer-choice-award-winners-973583),
+        which doesn't say when the award began in the USA; not used.
+      - The research partner named in the 2012 and 2015 boilerplate: left out (an open
+        question, see Research partner wording).
+- [ ] **Milestones for the 40 Years timeline (client to provide 5 to 7).** The timeline uses
+      only what public sources confirm (above). Please supply 5 to 7 milestones from Consumer
+      Choice Award's history, each with its year and one or two sentences: for example the
+      year it reached each new city or region, the first year in the USA, the first winners'
+      celebration, new research methods, and the creation of Consumer Choice Canada. These would
+      replace or join the ones above; no dates or milestones are invented.
 - [ ] Contact details (a general email address, never an individual's; phone, address),
       form destination email, social links
 - [ ] URLs for the Consumer Choice Award, Consumer Choice Marketing, and CCRDI sites.
@@ -343,7 +382,7 @@ be rewritten for the client's photos.
 3. Sidebar: anniversary seal (1987, pending confirmation); "Visit Website" → ccaward.com
    (pending confirmation, as on Our Brands); list heading "Our Brands"
 4. Milestones timeline (StepList): heading "Our Milestones" (new label, see Still needed); the
-   three confirmed milestones (see Still needed)
+   six confirmed milestones (1987, Coast to coast, 2012, 2015, 2019, 2027; see Still needed)
 5. Family of Brands slider (the homepage component): reuses the homepage brand photos; links to
    /our-brands
 

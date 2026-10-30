@@ -303,7 +303,7 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **Animations:** cards are `position: sticky` and pile on top of one another; with the drama effect, covered cards shrink step by step, driven by scroll in `requestAnimationFrame`; inner panels use scroll reveal. Respects `prefers-reduced-motion`.
 - **Visual weight:** Heavy.
 - **Used on:** Home (right-hand column of the intro section).
-- **Notes:** sticky `top` values assume the header height. A card without an `image` shows on the dark background. The photo and icon are decorative (`alt=""`); the title carries the meaning.
+- **Notes:** sticky `top` values assume the header height. A card without an `image` shows on the dark background. The photo and icon are decorative (`alt=""`); the title carries the meaning. Overlay (CCC): a navy gradient strongest at the foot behind the text (92% → 86% at half height → 45% at the top), a soft shade behind the card number, and a blur only behind the text, fading out above it, so the photo shows through; all text measured at 4.5:1 or better (`scripts/qa/cardcontrast.cjs`). The theme's version is a flat frosted `bg-dark/60` pane.
 
 #### WorkProcess
 

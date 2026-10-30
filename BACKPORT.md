@@ -51,6 +51,8 @@ content, and page lists in scripts.
 | `edge-ring` (inset gradient border with hover sheen) and `frame-ring` (draws itself clockwise on reveal, `@property --frame`) | `global.css` | Edge gradients `--edge-award/marketing/research` are CCC's. |
 | Pull quote utility (`pull-quote`, `--pull-quote-size`, `--pull-quote-rule`) | `global.css` | Generic. |
 | Navy paper texture (SVG turbulence, `--grain-image`, `bg-grain`), tuned to be only just visible | `global.css` | Tuned for navy #0B2545; retune per brand. |
+| **Long-form reading text** (`content`): line height 1.75 (`--leading-body`), paragraph gap `--spacing-paragraph` (1.5rem), headings 3rem above and 1rem below (the theme's 15px gap applied to headings too, because `> *:not(:last-child)` outranks the heading rule) | `global.css` (`@utility content`) | Generic. |
+| **`StackedServices` overlay:** a gradient scrim strongest behind the text, a soft shade behind the number, a masked blur behind the text only, replacing the flat frosted pane, so the photo shows | `StackedServices.astro` | Stops tuned for navy; measure with `cardcontrast.cjs`. |
 | Card images: one radius, 3:2 ratio, 4% zoom on hover or focus | `PortfolioCard.astro`, `BlogCard.astro`, `PortfolioCarousel.astro` | Generic. |
 | GradualBlur removed from Base | `Base.astro` | Theme decision. |
 | Hero imagery behind the headline (photo or muted looping video, switchable; poster only with reduced motion; paused off screen; keyboard pause; `hero-scrim` overlay with `--scrim-*` strengths, contrast measured per pixel) | `src/pages/index.astro`, `global.css`, homepage schema `banner.background` | Media and scrim strengths. |
@@ -87,6 +89,6 @@ Also: `src/dev-pages/component-lab.astro` (the lab page) as the theme's componen
 |---|---|---|
 | **Dev-only pages:** pages in `src/dev-pages/` routed only by `astro dev` (`dev-only-pages` integration, `devOnlyPages` list); never built. Content-collection pages filtered with `import.meta.env.DEV`. | `astro.config.mjs`, `src/pages/thank-you/[slug].astro` | The page list. |
 | **Favicon from a monogram:** a tab-size SVG master plus a home-screen variant; `/favicon.ico` built from a dedicated small source (`brand.favicon.ico.source`) | `public/images/icons/`, `site.config.json` | The CCC artwork. |
-| **QA scripts** (see `scripts/qa/README.md`); `axe-core` as a pinned dev dependency | `scripts/qa/`, `package.json` | Page lists, selectors, brand names. |
+| **QA scripts** (see `scripts/qa/README.md`); `axe-core` as a pinned dev dependency; `cardcontrast.cjs` judges large text at 3:1 and covers `StackedServices` cards; `labtest.cjs` skips the dev-only `DeviceSizeIndicator` | `scripts/qa/`, `package.json` | Page lists, selectors, brand names. |
 | **THEME_CATALOG.md "Theme design language"** section | `THEME_CATALOG.md` | CCC-specific notes in the component entries. |
 | **Dev server cache rule:** after a content schema change, restart dev with `.astro/data-store.json` deleted (the build's `astro sync --force` doesn't clear it) | `CLAUDE.md` | Put in the theme's docs. |

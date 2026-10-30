@@ -123,7 +123,8 @@
   --text-eyebrow--font-weight: 500;
   --leading-display: 1.1;
   --leading-heading: 1.2;
-  --leading-body: 1.65;
+  --leading-body: 1.75; /* long-form reading text (`content`): a little more open than --text-body */
+  --spacing-paragraph: 1.5rem; /* the gap between paragraphs in long-form text */
   --tracking-display: -0.015em;
   --container-measure: 34em; /* `max-w-measure`: about 65 characters (`ch` is a "0", wider than average text) */
   /* Two heading weights in the serif: titles 500, card and sub-section titles 600 */
@@ -856,11 +857,15 @@
     margin-top: 0;
   }
   & > *:not(:last-child) {
-    margin-bottom: 15px;
+    margin-bottom: var(--spacing-paragraph);
+  }
+  /* a heading sits closer to its own text than to the paragraph above it */
+  & > :is(h1, h2, h3, h4, h5, h6):not(:last-child) {
+    margin-bottom: 1rem;
   }
   & :is(h1, h2, h3, h4, h5, h6) {
-    margin-top: 40px;
-    margin-bottom: 16px;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
     font-weight: var(--subheading-weight);
     line-height: var(--leading-heading);
     color: var(--color-dark);

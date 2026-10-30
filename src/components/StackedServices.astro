@@ -65,8 +65,12 @@ const gapClass = paneGap === false ? undefined : paneGap;
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover"
             />
-            <!-- bg-dark/75 (theme: /60): keeps white text at 4.5:1+ even over a near-white photo -->
-            <div class="relative bg-dark/75 backdrop-blur-2xl h-full flex flex-col p-8 has-anim rounded-lg">
+            <!-- the overlay (theme: a flat bg-dark/60 frosted pane): a navy gradient, strongest at
+                 the foot behind the text, lighter above so the photo shows; a blur behind the
+                 text only, fading out above it. Measured: all text 4.5:1+ (scripts/qa/cardcontrast.cjs) -->
+            <span class="stacked-scrim absolute inset-4 rounded-lg" aria-hidden="true"></span>
+            <span class="stacked-blur absolute inset-4 rounded-lg backdrop-blur-md" aria-hidden="true"></span>
+            <div class="relative h-full flex flex-col p-8 has-anim rounded-lg">
               <span class="text-4xl absolute top-9 right-8" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
@@ -97,6 +101,29 @@ const gapClass = paneGap === false ? undefined : paneGap;
     />
   )}
 </div>
+
+<style>
+  /* a soft shade behind the card number (top right), then the gradient behind the text */
+  .stacked-scrim {
+    background:
+      radial-gradient(
+        circle at calc(100% - 3.5rem) 3.25rem,
+        color-mix(in srgb, var(--color-dark) 72%, transparent) 0,
+        color-mix(in srgb, var(--color-dark) 50%, transparent) 2.75rem,
+        transparent 6rem
+      ),
+      linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-dark) 92%, transparent) 0%,
+      color-mix(in srgb, var(--color-dark) 86%, transparent) 50%,
+      color-mix(in srgb, var(--color-dark) 58%, transparent) 74%,
+      color-mix(in srgb, var(--color-dark) 45%, transparent) 100%
+    );
+  }
+  .stacked-blur {
+    mask-image: linear-gradient(to top, black 48%, transparent 74%);
+  }
+</style>
 
 <script>
   // Each instance gets its own marker (not the Services page's `data-stacked-deck`)
