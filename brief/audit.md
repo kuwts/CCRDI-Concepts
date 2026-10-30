@@ -21,7 +21,7 @@ Report only: no files were changed during the audit. Branch `ccc-site-build`, pr
 | Item | Status |
 |---|---|
 | Broken 1: demo pages public | Partly fixed: noindex and out of the sitemap; deletion waits for cleanup approval |
-| Broken 2: `baseURL` | Open: domain asked in questions.md #12 |
+| Broken 2: `baseURL` | Fixed: consumerchoicecanada.com |
 | Broken 3: placeholder links | Fixed |
 | Broken 4: footer email `mailto:` | Fixed |
 | Broken 5: dev content cache | Fixed |
@@ -62,7 +62,7 @@ Things that are wrong now, or would be wrong on a live site.
    - **Effect:** every canonical URL, `og:url`, share image URL, the sitemap and robots.txt
      point to example.com.
    - **Fix:** set the real domain (gaps.md).
-   - **Open:** not guessed; asked in questions.md #12.
+   - **Fixed:** `baseURL` is `https://consumerchoicecanada.com` (questions.md #12).
 3. **Placeholder links on every page.**
    - **Where:** the header button "Find a Trusted Business" and the homepage hero button go to
      `#` (directory URL missing). The four footer social links go to `#!`.

@@ -38,10 +38,9 @@ the meantime (the safest reasonable one); none of them is hard to undo.
     footer email fix (a placeholder is now plain text, not a broken mailto: link). Say if
     something else was meant.
 
-12. **Site domain (`baseURL`).** `src/config/site.config.json` still has `https://example.com`,
-    so every canonical URL, `og:url`, share image URL, the XML sitemap and robots.txt point to
-    example.com. What is the live domain for the Consumer Choice Canada site? It is not guessed;
-    it stays as it is until you confirm it (audit.md, Broken #2).
+12. **Site domain (`baseURL`).** *Answered: consumerchoicecanada.com.* `baseURL` is now
+    `https://consumerchoicecanada.com`; canonical URLs, `og:url`, share image URLs, the XML
+    sitemap, robots.txt, structured data and breadcrumbs all follow it.
 13. **More Consumer Choice Marketing copy (for the client).** The Consumer Choice Marketing page
     is the thinnest on the site: framework sections 1 to 13 give it only a core message, a
     one-liner, a relationship line and a tagline, and its service list ("Digital marketing",

@@ -31,7 +31,8 @@ const blog = home?.data.blog;
 const newsItems = (blog?.items ?? []).map((n) => ({ title: n.title, href: n.href, date: n.date, category: n.category, excerpt: n.description, image: n.image }));
 
 // downloads: each file's built URL, format and size are read from the file itself
-const assetFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/**/*.{png,jpg,jpeg,webp,svg}', { eager: true });
+// downloads come from the brand logos folder (an eager glob emits every file it matches)
+const assetFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/brands/*.{png,jpg,jpeg,webp,svg}', { eager: true });
 const fileSize = (bytes: number) => (bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`);
 const downloads = data.downloads?.items.map((d) => {
   const key = `/src/assets/${d.file.replace(/^\//, '')}`;

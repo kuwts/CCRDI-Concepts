@@ -31,9 +31,12 @@ const { items, light = false, testimonials } = Astro.props;
 
 const isVideo = (src?: string) => !!src && /\.(mp4|webm|mov|ogv)$/i.test(src);
 
-const videoModules = import.meta.glob<{ default: string }>(
-  '/src/assets/**/*.{mp4,webm,ogv,ogg,mov}'
-);
+// In a production build the theme's demo-only media (the dev pages' blog, portfolio, team,
+// client and testimonial assets and the demo showreel; brief/cleanup-list.md) is left out of
+// this glob, so Vite doesn't emit it; `astro dev` resolves everything for the dev pages.
+const videoModules = import.meta.env.DEV
+  ? import.meta.glob<{ default: string }>('/src/assets/**/*.{mp4,webm,ogv,ogg,mov}')
+  : import.meta.glob<{ default: string }>(['/src/assets/**/*.{mp4,webm,ogv,ogg,mov}', '!/src/assets/videos/showreel.*', '!/src/assets/images/testimonials/**']);
 
 const resolveVideo = async (path: string | undefined): Promise<string> => {
   if (!path) return '';

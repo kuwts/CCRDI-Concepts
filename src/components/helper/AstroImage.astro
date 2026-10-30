@@ -31,9 +31,12 @@ const {
   sizes,
 } = Astro.props;
 
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/**/*.{jpeg,jpg,png,gif,webp,avif,svg}'
-);
+// In a production build the theme's demo-only media (the dev pages' blog, portfolio, team,
+// client and testimonial assets and the demo showreel; brief/cleanup-list.md) is left out of
+// this glob, so Vite doesn't emit it; `astro dev` resolves everything for the dev pages.
+const images = import.meta.env.DEV
+  ? import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpeg,jpg,png,gif,webp,avif,svg}')
+  : import.meta.glob<{ default: ImageMetadata }>(['/src/assets/**/*.{jpeg,jpg,png,gif,webp,avif,svg}', '!/src/assets/images/{blogs,portfolio,services,team,team-group,clients,testimonials}/**', '!/src/assets/images/{about-header.jpg,about-stats.jpg,logo.svg}', '!/src/assets/videos/poster.png']);
 
 const resolveImage = (path: string | undefined): string | null => {
   if (!path) return null;

@@ -8,9 +8,10 @@ import Button from '@/components/Button.astro';
 // One thank-you page per form (contact → /thank-you/contact, job form →
 // /thank-you/application). Each form's `action` points here, and its script
 // redirects here on success. Kept out of search (noindex), the nav and the
-// sitemap (filtered in astro.config.mjs).
+// sitemap (filtered in astro.config.mjs). The job form's page (the theme's careers demo) is
+// built only in dev, with the other demo pages (astro.config.mjs → devOnlyPages).
 export async function getStaticPaths() {
-  const entries = await getCollection('thankYou');
+  const entries = await getCollection('thankYou', (e) => import.meta.env.DEV || e.id !== 'application');
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 

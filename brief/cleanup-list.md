@@ -1,9 +1,19 @@
 # Cleanup list
 
 Everything from the Obicol theme that could be deleted in the cleanup phase, with what depends
-on it. **Nothing has been deleted.** Delete only after the project owner approves this list,
-then follow THEME_CATALOG.md "Removing a page cleanly". Until then, every demo page is
-`noindex` and kept out of the XML sitemap (`noIndexPaths` in `astro.config.mjs`).
+on it. **Nothing has been deleted**, and the project owner has decided to keep all of it for
+now. Delete only after the project owner approves this list, then follow THEME_CATALOG.md
+"Removing a page cleanly".
+
+**Dev only, never in production.** The demo pages, the Style Guide and /component-lab live in
+`src/dev-pages/` and are routed only by `npm run dev` (the `dev-only-pages` integration in
+`astro.config.mjs`, list `devOnlyPages`). `npm run build` doesn't build them, so they aren't in
+`dist`, the XML sitemap or any link. The careers thank-you page (/thank-you/application) is
+built only in dev too (filtered in `src/pages/thank-you/[slug].astro`). The demo-only media in
+section 4 is left out of the asset globs in production builds (`AstroImage`, `AstroVideo`,
+`ReviewCarousel`, `src/lib/seo.ts`), so Vite doesn't emit it; dev still resolves it. Checked
+after a clean build: 14 pages in `dist` (the 12 sitemap pages, /thank-you/contact and 404), none
+of the dev pages, no demo media.
 
 Order matters: pages first, then the content, schemas and helpers only those pages read, then
 components and assets, then packages. After each step run `npx astro check`, `npm run build`
@@ -14,20 +24,22 @@ changes (CLAUDE.md).
 
 | File | Route(s) | Reads | Linked from |
 |---|---|---|---|
-| `src/pages/blog/index.astro` | /blog | `blog`, `listings` (blog), `BlogCard`, `LoadMore` | nothing in CCC pages |
-| `src/pages/blog/[slug].astro` | /blog/… (7 posts) | `blog`, `BlogCard`, `formatDate`, `readingTime` | /blog |
-| `src/pages/blog-horizontal.astro` | /blog-horizontal | `blog`, `listings`, `BlogCard`, `LoadMore` | nothing |
-| `src/pages/portfolio/index.astro` | /portfolio | `portfolio`, `listings` (portfolio), `PortfolioCard`, `LoadMore` | nothing |
-| `src/pages/portfolio/[slug].astro` | /portfolio/… (7) | `portfolio`, `PortfolioCard`, `LineLink` | /portfolio |
-| `src/pages/job/[slug].astro` | /job/… (8) | `jobs`, `team` → `application_form` | /team |
-| `src/pages/team.astro` | /team | `team`, `teamMembers`, `jobs`, `TeamGrid` | nothing |
-| `src/pages/pricing.astro` | /pricing | `pricing`, `faq`, `Faq` | nothing |
-| `src/pages/faq.astro` | /faq | `faq`, `Faq` | nothing |
-| `src/pages/services.astro` | /services | `services`, `about.clients`, `about.facts`, `clients`, `homepage.testimonials` | nothing (Our Brands is its own page, built from this layout) |
-| `src/pages/style-guide.astro` | /style-guide | `faq`, `astro-embed` | nothing |
-| `src/content/thank-you/application.mdx` | /thank-you/application | `thankYou` (shared template stays for /thank-you/contact) | the job form `action` only |
+| `src/dev-pages/blog/index.astro` | /blog | `blog`, `listings` (blog), `BlogCard`, `LoadMore` | nothing in CCC pages |
+| `src/dev-pages/blog/[slug].astro` | /blog/… (7 posts) | `blog`, `BlogCard`, `formatDate`, `readingTime` | /blog |
+| `src/dev-pages/blog-horizontal.astro` | /blog-horizontal | `blog`, `listings`, `BlogCard`, `LoadMore` | nothing |
+| `src/dev-pages/portfolio/index.astro` | /portfolio | `portfolio`, `listings` (portfolio), `PortfolioCard`, `LoadMore` | nothing |
+| `src/dev-pages/portfolio/[slug].astro` | /portfolio/… (7) | `portfolio`, `PortfolioCard`, `LineLink` | /portfolio |
+| `src/dev-pages/job/[slug].astro` | /job/… (8) | `jobs`, `team` → `application_form` | /team |
+| `src/dev-pages/team.astro` | /team | `team`, `teamMembers`, `jobs`, `TeamGrid` | nothing |
+| `src/dev-pages/pricing.astro` | /pricing | `pricing`, `faq`, `Faq` | nothing |
+| `src/dev-pages/faq.astro` | /faq | `faq`, `Faq` | nothing |
+| `src/dev-pages/services.astro` | /services | `services`, `about.clients`, `about.facts`, `clients`, `homepage.testimonials` | nothing (Our Brands is its own page, built from this layout) |
+| `src/dev-pages/style-guide.astro` | /style-guide | `faq`, `astro-embed` | nothing |
+| `src/content/thank-you/application.mdx` | /thank-you/application (dev only) | `thankYou` (shared template stays for /thank-you/contact) | the job form `action` only |
+| `src/dev-pages/component-lab.astro` | /component-lab | the new CCC components (`src/components/ccc/`), `Facts`, `WorkProcess`, `BlogCard` | nothing (internal test page; keep it as long as the components are developed) |
 
-| `src/pages/component-lab.astro` | /component-lab | the new CCC components (`src/components/ccc/`) | nothing (internal test page, noindex, not in the sitemap) |
+All routes above exist only under `npm run dev`. To delete a page later: remove its file and its
+entry in `devOnlyPages`.
 
 **Keep:** `src/pages/thank-you/[slug].astro` (it builds /thank-you/contact), `privacy.astro`,
 `404.astro`, `favicon.ico.ts`, `robots.txt.ts`, `site.webmanifest.ts`.
@@ -70,12 +82,14 @@ changes (CLAUDE.md).
 | `src/components/TeamGrid.astro` | About (CCC), team page | keep |
 | `src/components/PortfolioCard.astro`, `PortfolioCarousel.astro` | Home, 40 Years, brand pages (carousel); portfolio pages (grid) | keep; drop the `/portfolio/{slug}` default link |
 | `src/components/helper/DeviceSizeIndicator.astro` | `Base.astro`, dev only | keep or delete (not in production builds) |
-
 | `src/components/GradualBlur.astro` | nothing (removed from `Base.astro` with the UI proposal) | unused: delete |
 
 Every other component is used by a CCC page. Also keep `CounterUp` and `PauseButton`.
 
 ## 4. Images and video
+
+All of these are left out of production builds by the asset globs (see the top); they still
+resolve in dev for the demo pages.
 
 | Path | Size | Used by |
 |---|---|---|
@@ -92,8 +106,8 @@ Every other component is used by a CCC page. Also keep `CounterUp` and `PauseBut
 | `src/assets/videos/showreel.webm`, `showreel.mp4`, `poster.png` | 4.3 MB | nothing in CCC pages; the demo homepage video |
 | `public/.DS_Store`, `public/images/.DS_Store` | — | macOS files; delete and they're already git-ignored |
 
-**Replace, don't delete:** `public/images/ogimage.png` and the 5 icons in `public/images/icons/`
-(the theme's placeholders; CCC versions needed, gaps.md).
+**Replace, don't delete:** `public/images/ogimage.png` (the theme's share image; the site now
+uses `public/images/share-default.png`, so it's unused).
 
 **Keep until launch:** `src/assets/images/placeholders/`, `src/assets/videos/placeholders/`
 (placeholder-media.md; removed when the client's media arrives), `src/assets/images/brands/`.
@@ -112,8 +126,8 @@ Every other component is used by a CCC page. Also keep `CounterUp` and `PauseBut
 
 - `src/config/site.config.json`: `seo.pages` entries for `/blog`, `/blog-horizontal`,
   `/portfolio`.
-- `astro.config.mjs`: the demo entries in `noIndexPaths` (keep `/thank-you/` and, if kept,
-  `/style-guide`).
+- `astro.config.mjs`: the `devOnlyPages` entries, as pages are deleted (`noIndexPaths` now holds
+  only `/thank-you/`).
 - `THEME_CATALOG.md`: remove the demo page sections, and record the CCC pages.
 - `CONTENT_TEMPLATE.md`: the theme's client template. Tailor it to the CCC sitemap, or remove
   it if gaps.md replaces it.
