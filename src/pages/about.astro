@@ -46,7 +46,7 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   </section>
   
   <!-- Facts -->
-  <Facts facts={facts} />
+  <Facts facts={facts} quote />
 
   <!-- Team group carousel -->
   <section class="bg-white py-section overflow-hidden">
@@ -54,7 +54,7 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   </section>
 
   <!-- Reviews + clients -->
-  <section class="bg-light py-section">
+  <section class="hairline-top bg-light py-section">
     <div class="container">
       <SectionTitle
         subtitle={testimonials.subtitle ?? ''}
@@ -65,7 +65,7 @@ const members = team.members ?? (await getCollection('teamMembers')).map((m) => 
   </section>
 
   <!-- Team grid -->
-  <section class="bg-white py-section">
+  <section class="hairline-top bg-white py-section">
     <div class="container">
       <div class="row justify-center">
         <div class="col-12 has-anim fade">

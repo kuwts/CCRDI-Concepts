@@ -115,7 +115,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Intro + card stack (CCRDI's core services) -->
   {stack && (
-    <section class="bg-light py-section">
+    <section class="hairline-top bg-light py-section">
       <div class="container">
         <div class="row">
           <div class="lg:col-8">
@@ -124,8 +124,8 @@ const external = (href: string) => /^https?:\/\//.test(href);
                 <p class="text-eyebrow uppercase text-gold-text block lg:table-caption has-anim fade">{stack.section_title}</p>
               </div>
               <div class="lg:col-span-9 space-y-8">
-                <div class="space-y-5">
-                  <h2 class="text-statement text-dark has-anim fade">{stack.title}</h2>
+                <div class="space-y-8 lg:space-y-10">
+                  <h2 class="pull-quote text-dark has-anim fade">{stack.title}</h2>
                   {stack.description && <p class="text-body text-text max-w-measure has-anim fade delay-100">{stack.description}</p>}
                 </div>
                 {stack.info.length > 0 && (
@@ -148,7 +148,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Testimonials (Marketing) -->
   {testimonials && (
-    <section class="bg-light py-section">
+    <section class="hairline-top bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
       </div>
@@ -158,7 +158,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 
   <!-- Family of brands: the homepage brand slider -->
   {brands.length > 0 && (
-    <section class="bg-white py-section">
+    <section class="hairline-top bg-white py-section">
       <div class="container">
         <SectionTitle title={data.next_title} />
       </div>

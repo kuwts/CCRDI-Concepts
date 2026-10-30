@@ -4,6 +4,8 @@ interface Props {
   title: string;
   align?: 'left' | 'center';
   dot?: boolean;
+  /** a 1px gold hairline along the bottom edge (when a light section follows) */
+  hairline?: boolean;
   colClass?: string;
 }
 
@@ -12,11 +14,12 @@ const {
   title,
   align = 'left',
   dot = false,
+  hairline = false,
   colClass = 'lg:col-10',
 } = Astro.props;
 ---
 
-<section class="page-header pt-24 sm:pt-28 pb-28 sm:pb-32 text-muted">
+<section class:list={['page-header pt-24 sm:pt-28 pb-28 sm:pb-32 text-muted', hairline && 'hairline-bottom']}>
   <div class="container -mt-1.5">
     <div class="row justify-center">
       <div class:list={[colClass, align === 'center' ? 'text-center' : '']}>

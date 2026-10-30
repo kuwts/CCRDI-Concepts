@@ -190,7 +190,11 @@ const organization = isHome
         if (header) {
           const hide = y > 300 && y > lastScroll && !header.contains(document.activeElement);
           header.classList.toggle('-translate-y-full', hide);
-          header.classList.toggle('sticky-pinned', y > 100);
+          // pinning shrinks the header (it's sticky, so the page moves up with it); a gap
+          // between the two thresholds, wider than that shift, stops it toggling back and
+          // forth near 100px
+          const pinned = header.classList.contains('sticky-pinned');
+          header.classList.toggle('sticky-pinned', pinned ? y > 40 : y > 100);
         }
         lastScroll = y;
       };

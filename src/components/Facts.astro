@@ -8,9 +8,11 @@ import CounterUp from '@/components/CounterUp.astro';
 interface Props {
   /** The `facts` block of the about entry (src/content/about/index.mdx). */
   facts: CollectionEntry<'about'>['data']['facts'];
+  /** set the Philosophy tile's statement as a pull quote (a framework statement) */
+  quote?: boolean;
 }
 
-const { facts } = Astro.props;
+const { facts, quote = false } = Astro.props;
 const labelClass = 'uppercase tracking-widest text-[13px] sm:text-xs';
 // text instead of a number (a name or a placeholder) is set smaller, so it fits its tile
 const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
@@ -49,7 +51,7 @@ const isNumber = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
               {facts.philosophy.label}
             </span>
 
-            <p class="mt-6 text-white text-xl md:text-2xl font-medium leading-snug">
+            <p class:list={['mt-6 text-white', quote ? 'pull-quote [--pull-quote-size:clamp(1.375rem,1.2rem+0.6vw,1.75rem)] [--pull-quote-rule:var(--color-hairline-dark)]' : 'text-xl md:text-2xl font-medium leading-snug']}>
               {facts.philosophy.title}
             </p>
           </div>

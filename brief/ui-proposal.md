@@ -195,3 +195,33 @@ one easing curve (`--ease-theme`) is kept for every movement, as the skill requi
   - axe: 0 violations
   - no sideways overflow at 390, 768 and 1440px
   - one H1, no skipped heading levels
+
+---
+
+## 7. Bold round (approved; branch `bold-round`)
+
+Applied after the proposal, on the project owner's request, keeping the calm feel, the
+subtle-motion rule and WCAG 2.1 AA.
+
+- **Homepage hero:** imagery behind the headline under a navy overlay (`hero-scrim`, with
+  `--scrim-*` strengths).
+  - Version A (used): a photo of Seaton Lake, BC, at dusk.
+  - Version B (kept switchable, unused): a muted looping Québec City aerial video. The poster
+    shows first, and alone with reduced motion; it pauses off screen and has a keyboard pause
+    control.
+  - Switch with `banner.background.variant` in the homepage content.
+  - Every hero text line keeps 4.5:1 or better over the brightest pixel behind it.
+- **Interior page headers** stay small, with no imagery.
+- **Section spacing:** 96 / 120 / 160px on every page (`--spacing-section-*`). Section title
+  gaps are 60 / 80px.
+- **Gold hairlines (1px):** a few per page (`hairline-top`, `hairline-dark`, `hairline-bottom`).
+  - On light sections they use dark gold (`#8A6514`), on navy Heritage Gold.
+  - Page-header edges use an edge gold (`#A9802A`), which meets 3:1 against both navy and
+    white.
+- **Navy grain:** a fine SVG grain on the page background (so every navy area has it) and on the
+  sticky header. It's at most 3.5% white, so white text stays above 14:1 and gold above 6.3:1.
+- **Pull quotes:** italic serif with a gold rule (`pull-quote`), framework text only.
+  - Home: §13 lead message.
+  - For Businesses: the Growth pillar.
+  - CCRDI: the ISUCORP credibility message.
+  - About: the Purpose statement (smaller, in its tile).

@@ -50,22 +50,24 @@
   /* The theme's one motion curve, for movement and hover effects (`ease-theme`). */
   --ease-theme: cubic-bezier(0.2, 1, 0.2, 1);
 
-  /* Section spacing on the 8px scale (brief/ui-proposal.md), used by `py-section`,
-     `pt-section` and `pb-section` below: 80px phones, 104px tablets, 128px desktops. */
-  --spacing-section-sm: 5rem;
-  --spacing-section-md: 6.5rem;
-  --spacing-section-lg: 8rem;
-
-  /* Roomier section spacing, on trial on the homepage (bold-round): 96px phones,
-     120px tablets, 160px desktops, used by `py-roomy` below */
-  --spacing-roomy-sm: 6rem;
-  --spacing-roomy-md: 7.5rem;
-  --spacing-roomy-lg: 10rem;
+  /* Section spacing on the 8px scale (brief/ui-proposal.md, bold round), used by
+     `py-section`, `pt-section` and `pb-section` below: 96px phones, 120px tablets,
+     160px desktops. */
+  --spacing-section-sm: 6rem;
+  --spacing-section-md: 7.5rem;
+  --spacing-section-lg: 10rem;
 
   /* Gold hairlines (1px) at key section transitions; each meets 3:1 on its background:
      Heritage Gold on navy (6.95:1), dark gold on white (5.31:1) and ivory (4.92:1) */
   --color-hairline-dark: var(--brand-primary);
   --color-hairline-light: var(--brand-goldText);
+  /* a line on the edge between navy and a light section has to meet 3:1 against both:
+     this gold does (4.26:1 on navy, 3.61:1 on white, 3.31:1 on ivory) */
+  --color-hairline-edge: var(--brand-goldEdge);
+
+  /* A very fine grain for navy: white specks at no more than 3.5% opacity, so text
+     contrast is effectively unchanged (white stays above 14:1, gold above 6.3:1) */
+  --grain-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* Motion durations (brief/ui-proposal.md) */
   --duration-fast: 150ms; /* colour and press feedback */
@@ -108,40 +110,77 @@
   --subheading-weight: 600;
 }
 
-/* Roomier rhythm, on trial on the homepage (bold-round) */
-@utility py-roomy {
-  padding-block: var(--spacing-roomy-sm);
-  @media (width >= 48rem) {
-    padding-block: var(--spacing-roomy-md);
-  }
-  @media (width >= 64rem) {
-    padding-block: var(--spacing-roomy-lg);
-  }
-}
-
 /* Navy overlay over hero imagery. Strongest behind the headline column (left on
    desktop) and at the top; every piece of hero text keeps 4.5:1 over the brightest
-   part of the image (checked per pixel, brief/ui-proposal.md). */
+   part of the image (checked per pixel). The defaults suit the dark dusk photo
+   (version A); a brighter image sets stronger values with the --scrim-* variables. */
 @utility hero-scrim {
   background:
     linear-gradient(to bottom, color-mix(in srgb, var(--color-dark) 45%, transparent), transparent 40%),
     linear-gradient(
       to right,
-      color-mix(in srgb, var(--color-dark) var(--scrim-left, 82%), transparent),
-      color-mix(in srgb, var(--color-dark) var(--scrim-mid, 74%), transparent) 55%,
-      color-mix(in srgb, var(--color-dark) var(--scrim-right, 68%), transparent)
+      color-mix(in srgb, var(--color-dark) var(--scrim-left, 72%), transparent),
+      color-mix(in srgb, var(--color-dark) var(--scrim-mid, 62%), transparent) 55%,
+      color-mix(in srgb, var(--color-dark) var(--scrim-right, 60%), transparent)
     );
   /* phones and tablets: the text is centred over the whole image, so one even layer */
   @media (width < 64rem) {
-    background: color-mix(in srgb, var(--color-dark) var(--scrim-small, 72%), transparent);
+    background: color-mix(in srgb, var(--color-dark) var(--scrim-small, 66%), transparent);
   }
 }
 
-/* A very fine grain for navy backgrounds: white specks at no more than 3.5% opacity,
-   so text contrast is effectively unchanged (white stays above 14:1, gold above 6.4:1). */
+/* The navy grain on a solid navy element (the page background already has it) */
 @utility bg-grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: var(--grain-image);
   background-size: 160px 160px;
+}
+
+/* Gold hairlines (1px) at a few key section transitions. `hairline-top` draws one at the
+   top of a section, the width of the container's content (it lines up with the grid);
+   add `hairline-dark` on navy. `hairline-bottom` runs edge to edge along the bottom of a
+   navy block where a light section follows (the page headers), in the edge gold. */
+@utility hairline-top {
+  position: relative;
+  --hairline-max: 100%;
+  @media (width >= 40rem) {
+    --hairline-max: 540px;
+  }
+  @media (width >= 48rem) {
+    --hairline-max: 720px;
+  }
+  @media (width >= 64rem) {
+    --hairline-max: 960px;
+  }
+  @media (width >= 80rem) {
+    --hairline-max: 1320px;
+  }
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 1;
+    width: calc(min(100%, var(--hairline-max)) - 24px);
+    height: 1px;
+    content: '';
+    translate: -50% 0;
+    background: var(--hairline-color, var(--color-hairline-light));
+    pointer-events: none;
+  }
+}
+@utility hairline-dark {
+  --hairline-color: var(--color-hairline-dark);
+}
+@utility hairline-bottom {
+  position: relative;
+  &::after {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    content: '';
+    background: var(--color-hairline-edge);
+    pointer-events: none;
+  }
 }
 
 /* Pull quote: a larger italic serif for statements taken word for word from the
@@ -150,11 +189,12 @@
   font-family: var(--font-heading);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.875rem, 1.45rem + 1.4vw, 2.75rem);
+  /* smaller in tiles (--pull-quote-size); Heritage Gold rule on navy (--pull-quote-rule) */
+  font-size: var(--pull-quote-size, clamp(1.875rem, 1.45rem + 1.4vw, 2.75rem));
   line-height: 1.2;
   letter-spacing: -0.01em;
   padding-left: 1.5rem;
-  border-left: 2px solid var(--color-hairline-light);
+  border-left: 2px solid var(--pull-quote-rule, var(--color-hairline-light));
   @media (width >= 64rem) {
     padding-left: 2rem;
   }
@@ -219,6 +259,9 @@
     line-height: 1.6;
     color: var(--color-dark);
     background-color: var(--color-dark);
+    /* the navy grain shows wherever the page background does (all navy areas) */
+    background-image: var(--grain-image);
+    background-size: 160px 160px;
   }
 
   h1,

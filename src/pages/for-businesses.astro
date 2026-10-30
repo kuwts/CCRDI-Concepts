@@ -22,7 +22,7 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
 ---
 
 <Base title={title} seo={entry!.data.seo}>
-  <PageHeader subtitle="" title={title} />
+  <PageHeader subtitle="" title={title} hairline />
 
   <!-- Intro + card stack (the homepage's intro block) -->
   {intro && (
@@ -35,8 +35,8 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
                 <p class="text-eyebrow uppercase text-gold-text block lg:table-caption has-anim fade">{intro.section_title}</p>
               </div>
               <div class="lg:col-span-9 space-y-8">
-                <div class="space-y-5">
-                  <h2 class="text-statement text-dark has-anim fade">{intro.title}</h2>
+                <div class="space-y-8 lg:space-y-10">
+                  <h2 class="pull-quote text-dark has-anim fade">{intro.title}</h2>
                   <p class="text-body text-text max-w-measure has-anim fade delay-100">{intro.description}</p>
                 </div>
                 <div class="flex flex-col items-start gap-2.5 pt-2">
@@ -74,7 +74,7 @@ const cards = brands.items.map((b) => ({ ...b, date: '', imageAlt: b.image_alt }
 
   <!-- Testimonials -->
   {testimonials && (
-    <section class="bg-light py-section">
+    <section class="hairline-top bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={testimonials.subtitle ?? ''} title={testimonials.title ?? ''} />
       </div>

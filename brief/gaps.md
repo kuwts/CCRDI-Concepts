@@ -182,6 +182,16 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       colour; text selection is now navy. Gold stays as an accent: the anniversary seal, button
       borders, focus rings, link underlines, the footer "Contact Us" link, heading dots, pillar
       icons and hero avatar rings.
+- [ ] **Design decision for client approval (bold round):**
+      - Homepage hero imagery under a navy overlay.
+      - Thin gold hairlines at a few section transitions, including a new edge gold, #A9802A, in
+        `brand.colors.goldEdge`. It's used only for lines on the edge between navy and a light
+        section, because it meets 3:1 against both (4.26:1 navy, 3.61:1 white, 3.31:1 ivory).
+      - A fine grain on navy.
+      - Italic pull quotes for framework statements.
+      - Wider section spacing.
+      The hero photo was changed from Old Québec (Château Frontenac, a hotel brand's building)
+      to Seaton Lake, BC.
 - [ ] **Design decision for client approval:** the anniversary seal sits on the edge between
       the hero and the showreel, like a stamp, instead of inside the hero.
 - [ ] AODA: does it apply (Ontario organization with 50+ employees)? The site already targets
@@ -210,8 +220,8 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Footer brand links: [CLIENT TO PROVIDE: Consumer Choice Award URL],
   [CLIENT TO PROVIDE: Consumer Choice Marketing URL], [CLIENT TO PROVIDE: CCRDI URL]
 - Anniversary seal (hero and footer): 1987, pending confirmation (see Still needed)
-- Homepage hero background (bold-round branch): free-licence Québec City photo (version A) or
-  video (version B), placeholder-media.md, until [CLIENT TO PROVIDE: hero photography or video]
+- Homepage hero background: free-licence photo of Seaton Lake, BC (version A, used); a Québec City
+  video (version B) is kept switchable but unused (placeholder-media.md), until [CLIENT TO PROVIDE: hero photography or video]
 
 ### Placeholder photos and video
 All photos and the showreel video on the homepage are free-licence placeholders (Unsplash and

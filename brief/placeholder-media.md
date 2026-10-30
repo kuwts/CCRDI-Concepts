@@ -22,6 +22,9 @@ Selection rules: chosen for the brief's calm, established-institution feel, Cana
 Also rejected: a Canadian flags photo taken at the 2022 convoy protest, as political.
 
 Hero imagery (bold-round), also rejected:
+- the first version A photo, Old Québec and the Château Frontenac at dusk: the Château is a hotel
+  brand's building (replaced with Seaton Lake, on the project owner's request)
+- Vermilion Lakes (Banff) sunsets: bright, saturated skies that need a much heavier overlay
 - an Old Québec dusk skyline with "Delta" and "Hilton" signs on two towers
 - a Montréal dusk aerial dominated by the Farine Five Roses sign
 - a Vancouver harbour sunset with a scrolling LED sign on BC Place
@@ -48,7 +51,7 @@ Second pass, on the project owner's request:
 - **Kept, because no Canadian alternative fit as well:** the carpenter (Dar es Salaam, Tanzania) and the Award celebration (York, United Kingdom).
 
 Locations:
-- **Canadian:** hero versions A and B (Québec City), showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
+- **Canadian:** hero version A (Seaton Lake, Lillooet BC), hero version B (Québec City), showreel (Toronto), Lunenburg NS, Granville Island BC, Scarborough ON, St. Jacobs ON, Regina SK.
 - **Not stated:** florist, desk, research and marketing teams, OPEN sign, gold stars, flag (tagged Canada).
 
 ## Video
@@ -78,7 +81,7 @@ Locations:
 | `news-granville-market.jpg` | Home: news card 2 (cropped to leave out a vendor's sign) | Shoppers at a fruit stand in the Granville Island Public Market, Vancouver | https://unsplash.com/photos/a-group-of-people-standing-around-a-fruit-stand-w0q7OX3T-hM | Dania Shaeeb | Unsplash License |
 | `news-maple-leaves.jpg` | Home: news card 3 | Red maple leaves fallen across an old wooden fence | https://unsplash.com/photos/red-maple-leaves-2SOn18mpBZo | Suvin Vengilat | Unsplash License |
 | `news-st-jacobs-market.jpg` | Home: news card 4 | Shoppers browsing tomatoes and flowers at St. Jacobs Farmers' Market in Ontario | https://unsplash.com/photos/people-shopping-at-an-outdoor-farmers-market-with-fresh-produce-e3-9x-Ee238 | Jason Ng | Unsplash License |
-| `hero-quebec-city-river-dusk.jpg` | Home: hero background, version A (bold-round branch; decorative, `alt=""`, under a navy overlay) | (decorative) Old Québec, the Château Frontenac and the St. Lawrence at dusk, seen from across the river | https://unsplash.com/photos/a-night-view-of-a-city-and-a-body-of-water-w9BtYCIUxi0 | Dana Andreea Gheorghe | Unsplash License |
+| `hero-seaton-lake-dusk.jpg` | Home: hero background, version A (decorative, `alt=""`, under a navy overlay) | (decorative) Mountain silhouettes framing Seaton Lake at dusk, with an orange glow on the horizon | https://unsplash.com/photos/dark-mountains-silhouette-a-lake-with-a-beautiful-sunset-glow-iNF9KBUYaxw | Caleb Sebastian | Unsplash License |
 
 
 ### About page

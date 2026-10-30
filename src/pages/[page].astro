@@ -33,7 +33,7 @@ const logoWall = brandsEntry?.data.clients;
 ---
 
 <Base title={data.title} description={data.description} seo={data.seo}>
-  <PageHeader subtitle={data.subtitle ?? ''} title={data.heading} />
+  <PageHeader subtitle={data.subtitle ?? ''} title={data.heading} hairline={!logoWall} />
 
   {/* logo wall on navy, as on Our Brands */}
   {logoWall && (
@@ -72,7 +72,7 @@ const logoWall = brandsEntry?.data.clients;
 
   {/* news (the homepage news section) */}
   {blog && featuredPost && (
-    <section class="bg-light py-section">
+    <section class="hairline-top bg-light py-section">
       <div class="container">
         <SectionTitle subtitle={blog.subtitle} title={blog.title} />
         <div class="row">
