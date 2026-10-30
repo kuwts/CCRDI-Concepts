@@ -21,8 +21,13 @@
       "text": "#1F2933",
       "border": "#E4E7EB",
       "award": "#D4A843",
-      "marketing": "#C2410C",
-      "research": "#0F766E"
+      "marketing": "#7B1417",
+      "research": "#3A3A3C",
+      "awardMark": "#8A6514",
+      "marketingMark": "#7B1417",
+      "researchMark": "#C82127",
+      "marketingOnDark": "#CF9F28",
+      "researchOnDark": "#ED1C28"
     },
     "font": {
       "heading": { "name": "Source Serif 4 Variable", "fallback": "serif" },

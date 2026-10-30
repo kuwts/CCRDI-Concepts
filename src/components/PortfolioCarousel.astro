@@ -13,6 +13,8 @@ interface Project {
   imageAlt?: string;
   /** text over the hover colour: `white` (default) or `dark` for light colours */
   tone?: 'white' | 'dark';
+  /** a thin decorative line in the brand's second colour */
+  accent?: string;
 }
 interface Props {
   projects: Project[];
@@ -45,6 +47,7 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
               color={p.color}
               imageAlt={p.repeat ? '' : p.imageAlt}
               tone={p.tone}
+              accent={p.accent}
               titleClass="text-h3"
               class="mx-3.75 lg:mx-7.5 xl:mx-10 aspect-[3/2]"
             />

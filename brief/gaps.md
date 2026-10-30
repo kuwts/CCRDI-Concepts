@@ -77,8 +77,11 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       logo (ccc-reversed.png); reversed CCM and CCRDI versions too, if the client has them.
 - [ ] **An icon or monogram version of the CCC logo for the favicon.** The theme's favicon set
       stays until then.
-- [ ] **Confirm the updated division colours** (taken from the new logos; proposal pending the
-      project owner's approval, replacing design.md's Marketing orange and CCRDI teal).
+- [ ] **Confirm the updated division colours** (taken from the new logos; approved by the
+      project owner and applied, replacing design.md's Marketing orange and CCRDI teal):
+      Marketing deep red #7B1417 with the checkmark gold #CF9F28 as a decorative line; CCRDI
+      charcoal #3A3A3C with its red #C82127 (marks on white) and bright red #ED1C28 (marks on
+      navy, decorative line); Award gold unchanged (brief/division-colours.md).
 - [ ] Existing brand colours and fonts, if any (palette may change to match the award logo;
       the Consumer Choice Award logo is red and gold)
 - [ ] **Confirm the founding year 1987**, now on the anniversary seal (hero and footer). Sources:

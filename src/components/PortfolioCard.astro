@@ -12,6 +12,8 @@ interface Props {
   /** text over the hover colour: `white` (default) or `dark` for light colours.
       Touch devices always use white, over the darkened image. */
   tone?: 'white' | 'dark';
+  /** carousel: a short decorative line in the brand's second colour, shown with the colour wash */
+  accent?: string;
   variant?: 'grid' | 'carousel';
   titleClass?: string;
   /** Heading level for the title: `h2` on listing pages, `h3` under a section heading (default). */
@@ -27,6 +29,7 @@ const {
   image,
   imageAlt = '',
   tone = 'white',
+  accent,
   variant = 'grid',
   titleClass = 'text-h3',
   as: Heading = 'h3',
@@ -79,6 +82,12 @@ const reveal = 'group-hover:translate-y-0 group-focus-within:translate-y-0';
               {title}
             </a>
           </Heading>
+          {accent && (
+            <span
+              class:list={['mx-auto mb-3 block h-0.5 w-12 rounded-full translate-y-15 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:delay-200 group-focus-within:opacity-100 touch:translate-y-0 touch:opacity-100', reveal]}
+              style={`background:${accent}`}
+              aria-hidden="true"></span>
+          )}
           <span class:list={[textTone, 'block text-[15px] translate-y-15 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:delay-200 group-focus-within:opacity-100 touch:translate-y-0 touch:opacity-100', reveal]}>
             {category}
           </span>

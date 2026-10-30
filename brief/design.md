@@ -20,10 +20,15 @@ Canadian standards body or foundation, not a marketing agency. Generous white sp
 --color-text-muted: #52606D     (captions, secondary copy)
 --color-border: #E4E7EB         (card borders, dividers)
 
-Division accents (used on family-of-brands cards):
---color-award: #D4A843 (Consumer Choice Award)
---color-marketing: #C2410C (Consumer Choice Marketing)
---color-research: #0F766E (CCRDI)
+Division accents, taken from the brands' logos (updated; brief/division-colours.md; client
+to confirm). Fill = family-of-brands panels and the brand sliders' colour wash; mark = small
+marks on white or ivory; on navy = marks on navy and the thin decorative line on the fill.
+--color-award: #D4A843 (Consumer Choice Award; mark #8A6514; on navy #D4A843)
+--color-marketing: #7B1417 deep red (Consumer Choice Marketing; mark #7B1417; on navy and
+  decorative line: CCM checkmark gold #CF9F28)
+--color-research: #3A3A3C charcoal (CCRDI; mark: CCRDI red #C82127; on navy and decorative
+  line: CCRDI bright red #ED1C28)
+The decorative lines are never used for text.
 
 ## Shape and spacing
 - Card radius 12px, button radius 8px

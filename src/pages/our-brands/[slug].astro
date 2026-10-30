@@ -1,8 +1,9 @@
 ---
 // Brand pages (/our-brands/[slug]): the theme's case-study page (portfolio/[slug].astro), the
 // same layout as 40 Years, content in src/content/brand-pages. Each page uses its division
-// colour as the accent: a rule under the H1, the sidebar list markers and the link underline
-// (decorative only; text stays white or dark for contrast).
+// colours as accents: the on-navy mark for the rule under the H1, the mark-on-white colour
+// for the sidebar list markers, link underline and body bullets (decorative only; text stays
+// white or dark for contrast; brief/division-colours.md).
 import { getCollection, getEntry, render } from 'astro:content';
 
 import Base from '@/layouts/Base.astro';
@@ -34,7 +35,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
 <Base title={data.title} image={data.image} seo={data.seo}>
-  <section class="page-header pt-20 pb-16 text-muted" style={{ '--accent': data.accent }}>
+  <section class="page-header pt-20 pb-16 text-muted" style={{ '--accent': data.accent_on_dark ?? data.accent }}>
     <div class="container -mt-1.5">
       <div class="row justify-center">
         <div class="lg:col-12 text-center">

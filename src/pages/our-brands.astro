@@ -84,7 +84,11 @@ const reviews = testimonials.items;
                       <ul class="grid grid-cols-2 gap-x-2 gap-y-2.5 font-medium text-sm">
                         {item.sub_services.map((li) => <li>{li}</li>)}
                       </ul>
-                      <span class="my-5 inline-block tracking-[-3px]" aria-hidden="true">———</span>
+                      {item.accent ? (
+                        <span class="my-5 block h-0.5 w-12 rounded-full" style={{ background: item.accent }} aria-hidden="true"></span>
+                      ) : (
+                        <span class="my-5 inline-block tracking-[-3px]" aria-hidden="true">———</span>
+                      )}
                       <div class="space-y-3">
                         {item.meta.map((p) => <p>{p}</p>)}
                       </div>

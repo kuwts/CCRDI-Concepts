@@ -1,7 +1,13 @@
 # Division colours: proposal
 
-**Status:** proposal, waiting for the project owner's approval. Nothing has been changed
-yet. The client is also to confirm (gaps.md).
+**Status:** approved by the project owner, with charcoal as the CCRDI fill, and applied. The
+client is still to confirm (gaps.md).
+
+**Approved addition:** the Marketing and CCRDI panels (Our Brands) and slider cards (Home,
+40 Years, brand pages) get a thin decorative line in their logo's second colour, so they read
+as their brands. That's the CCM checkmark gold `#CF9F28` on the deep red (4.45:1 against it)
+and the CCRDI bright red `#ED1C28` on the charcoal (2.67:1). These are decorative only, never
+text. The Award stays as it was.
 
 **Why:** design.md's division accents no longer match the real logos:
 - Consumer Choice Marketing is navy, deep red and gold, not orange.

@@ -78,6 +78,8 @@ export const homepage = defineCollection({
           color: z.string(),
           // text over the hover colour: dark for light colours (e.g. gold)
           tone: z.enum(['white', 'dark']).optional(),
+          // a thin decorative line in the logo's second colour (never text)
+          accent: z.string().optional(),
           image: z.string(),
           image_alt: z.string().optional(),
           href: z.string(),
@@ -236,6 +238,8 @@ export const brands = defineCollection({
         color: z.string(),
         // text on the card: white (default) or dark for light colours
         tone: z.enum(['white', 'dark']).default('white'),
+        // a thin decorative line in the logo's second colour (never text)
+        accent: z.string().optional(),
         sub_services: z.array(z.string()),
         meta: z.array(z.string()),
         link: linkSchema,
@@ -273,6 +277,8 @@ export const anniversary = defineCollection({
           category: z.string(),
           color: z.string(),
           tone: z.enum(['white', 'dark']).default('white'),
+          // a thin decorative line in the logo's second colour (never text)
+          accent: z.string().optional(),
           image: z.string(),
           image_alt: z.string().default(''),
           href: z.string(),
@@ -323,8 +329,10 @@ export const brandPages = defineCollection({
     order: z.number().default(0),
     eyebrow: z.string(),
     title: z.string(),
-    // the division colour (a token), used as the page accent
+    // the division's mark colour (a token) for small marks on white: list markers, link underline
     accent: z.string(),
+    // its mark on navy (the rule under the H1); defaults to `accent`
+    accent_on_dark: z.string().optional(),
     image: z.string(),
     image_alt: z.string().default(''),
     sidebar: z.object({

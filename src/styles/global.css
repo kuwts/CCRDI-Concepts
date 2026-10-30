@@ -26,9 +26,18 @@
   --color-surface: var(--brand-surface);
   --color-text: var(--brand-text); /* body text on light backgrounds */
   --color-border: var(--brand-border);
+  /* Division colours, from the brands' logos (brief/division-colours.md). Fill: panels and
+     the brand sliders' colour wash. Mark: small marks on white or ivory (list markers, link
+     underline). On dark: marks on navy (the brand page H1 rule), and the thin decorative
+     accent on the Marketing and CCRDI fills (the logo's second colour). */
   --color-award: var(--brand-award);
   --color-marketing: var(--brand-marketing);
   --color-research: var(--brand-research);
+  --color-award-mark: var(--brand-awardMark);
+  --color-marketing-mark: var(--brand-marketingMark);
+  --color-research-mark: var(--brand-researchMark);
+  --color-marketing-on-dark: var(--brand-marketingOnDark);
+  --color-research-on-dark: var(--brand-researchOnDark);
 
   /* Neutrals and fixed tints. Use these (or the white/black/dark opacity steps)
      instead of one-off hex values. */
