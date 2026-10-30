@@ -19,12 +19,17 @@ import CtaBand from '@/components/ccc/CtaBand.astro';
 import MediaSplit from '@/components/ccc/MediaSplit.astro';
 import Statement from '@/components/ccc/Statement.astro';
 import Breadcrumbs from '@/components/ccc/Breadcrumbs.astro';
+import Facts from '@/components/Facts.astro';
+import WorkProcess from '@/components/WorkProcess.astro';
+import BlogCard from '@/components/BlogCard.astro';
 
 const brands = await getEntry('brands', 'index');
 const award = await getEntry('brandPages', 'consumer-choice-award');
 const ccrdi = await getEntry('brandPages', 'ccrdi');
 const forty = await getEntry('anniversary', 'index');
 const home = await getEntry('homepage', 'index');
+const about = await getEntry('about', 'index');
+const featuredNews = { ...home!.data.blog.items[0], imageAlt: home!.data.blog.items[0].image_alt };
 
 const stats = brands!.data.facts.stats;
 const steps = award!.data.process!.steps.map((s) => ({ title: s.heading, text: s.text }));
@@ -40,6 +45,124 @@ const chip = { framework: 'Framework content', demo: 'Demo content' };
 <Base title="Component lab" noindex>
   <PageHeader subtitle="Internal test page: not linked, not indexed" title="Component lab" hairline />
 
+  <!-- Rebuilt components, each after the theme component it's closest to -->
+  <section class="bg-white pt-section pb-12">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Round 2</p>
+      <h2 class="mt-2 text-h2 text-dark">Rebuilt, beside the theme</h2>
+      <p class="mt-4 max-w-measure text-text">Each rebuilt component follows the theme component it is closest to, so the two can be compared.</p>
+    </div>
+  </section>
+
+  <!-- 1. Facts (theme) / StatRow (new) -->
+  <section class="pt-section pb-12">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-primary">Theme component</p>
+      <h2 class="mt-2 text-h3 text-white">Facts</h2>
+      <p class="mt-2 max-w-measure text-white/80">The theme&rsquo;s stats bento: translucent tiles on navy, uppercase labels, numbers that count up, staggered reveals.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-white/20 text-white/80">Theme, with this site&rsquo;s About content</p>
+    </div>
+  </section>
+  <Facts facts={about!.data.facts} quote />
+  <section class="hairline-top hairline-dark py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-primary">Rebuilt CCC component</p>
+      <h2 class="mt-2 text-h3 text-white">StatRow</h2>
+      <p class="mt-2 max-w-measure text-white/80">Facts&rsquo; tiles as a row: two-digit index, the theme&rsquo;s count-up, and a gold rule that draws across each tile with the count. Navy, then ivory.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-white/20 text-white/80">Framework content (confirmed public facts, as on Our Brands)</p>
+      <StatRow items={stats} class="mt-12" />
+    </div>
+  </section>
+  <section class="bg-light py-section">
+    <div class="container">
+      <StatRow items={stats} tone="light" />
+    </div>
+  </section>
+
+  <!-- 2. WorkProcess (theme) / StepList (new) -->
+  <section class="pt-section pb-0">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-primary">Theme component</p>
+      <h2 class="mt-2 text-h3 text-white">WorkProcess</h2>
+      <p class="mt-2 max-w-measure text-white/80">The theme&rsquo;s process: tall translucent cards with large glyphs, staggered in, and a CTA strip under a hairline.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-white/20 text-white/80">Theme, with this site&rsquo;s homepage content</p>
+    </div>
+  </section>
+  <WorkProcess subtitle="" title={home!.data.process.title} steps={home!.data.process.steps} cta={home!.data.process.cta} />
+  <section class="hairline-top bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Rebuilt CCC component</p>
+      <h2 class="mt-2 text-h3 text-dark">StepList: timeline</h2>
+      <p class="mt-2 max-w-measure text-text">A spine that draws in gold as you scroll; each marker lights when the line reaches it, and its year and text rise into place.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-line text-mutedDark">Framework content (40 Years milestones)</p>
+      <StepList items={milestones} class="mt-16" />
+    </div>
+  </section>
+  <section class="bg-light py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Rebuilt CCC component</p>
+      <h2 class="mt-2 text-h3 text-dark">StepList: steps</h2>
+      <p class="mt-2 max-w-measure text-text">The same spine with numbered markers that fill gold as they are reached.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-line text-mutedDark">Framework content (Award process from ccaward.com)</p>
+      <div class="row mt-16">
+        <div class="lg:col-8">
+          <StepList items={steps} variant="steps" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. BlogCard horizontal (theme) / MediaSplit (new) -->
+  <section class="hairline-top bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Theme component</p>
+      <h2 class="mt-2 text-h3 text-dark">BlogCard (horizontal)</h2>
+      <p class="mt-2 max-w-measure text-text">The theme&rsquo;s image-and-text split: a 6/6 featured card, the image zooming on hover, a chip label and an arrow that nudges.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-line text-mutedDark">Theme, with this site&rsquo;s homepage placeholders</p>
+      <div class="mt-12">
+        <BlogCard horizontal item={featuredNews} />
+      </div>
+    </div>
+  </section>
+  <section class="hairline-top bg-white pt-section pb-0">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Rebuilt CCC component</p>
+      <h2 class="mt-2 text-h3 text-dark">MediaSplit</h2>
+      <p class="mt-2 max-w-measure text-text">A wide photo that unveils upward and settles, then drifts with the scroll; the heading rises from behind its edge; the statement sits in the stacked cards&rsquo; frosted pane over the photo.</p>
+      <p class="mt-3 inline-block rounded-full border px-3 py-1 text-[13px] border-line text-mutedDark">Framework content (§10; §5 hero; §13 lead message; placeholder photos)</p>
+    </div>
+  </section>
+  <MediaSplit
+    image="images/placeholders/forty-montreal-old-port.jpg"
+    imageAlt={forty!.data.image_alt}
+    eyebrow="40 Years"
+    title="Celebrating 40 Years of Trust"
+    text={[
+      'For 40 years, Consumer Choice Award has helped Canadians recognize businesses that earn consumer confidence. The creation of Consumer Choice Canada marks the next chapter: bringing recognition, marketing, research, data, and insight together under one national organization.',
+    ]}
+    link={{ label: 'Read Our Story', href: '/40-years' }}
+  />
+  <MediaSplit
+    image="images/placeholders/about-intro-peggys-cove-harbour.jpg"
+    imageAlt="Fishing boats and wooden houses around the harbour at Peggy's Cove, Nova Scotia"
+    eyebrow="About"
+    title="Canada’s Trusted Consumer Authority"
+    text="For more than 40 years, Consumer Choice has helped consumers make better decisions while recognizing businesses that earn their trust."
+    quote="Consumer Choice Canada helps Canadians make more confident decisions while helping businesses earn, understand, and communicate consumer trust."
+    imageSide="right"
+    background="navy"
+    ratio="portrait"
+  />
+
+  <!-- Not yet rebuilt (round 1) -->
+  <section class="hairline-top bg-white pt-section pb-0">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Round 1</p>
+      <h2 class="mt-2 text-h2 text-dark">Not yet rebuilt</h2>
+      <p class="mt-4 max-w-measure text-text">The other nine, as first built. They will follow the same design language once the direction is confirmed.</p>
+    </div>
+  </section>
+
   <section class="bg-white py-section">
     <div class="container space-y-8">
       <div>
@@ -52,38 +175,6 @@ const chip = { framework: 'Framework content', demo: 'Demo content' };
         <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Our Brands', href: '/our-brands' }, { label: 'CCRDI' }]} />
       </div>
       <Breadcrumbs tone="light" label="Breadcrumb (light)" items={[{ label: 'Home', href: '/' }, { label: 'Media & Partners', href: '/media' }, { label: '[Demo] Press release' }]} />
-    </div>
-  </section>
-
-  <section class="hairline-top bg-white py-section">
-    <div class="container">
-      <p class="text-eyebrow uppercase text-gold-text">Component 02</p>
-      <h2 class="mt-2 text-h3 text-dark">StatRow</h2>
-      <p class="mt-2 max-w-measure text-text">Key facts or figures in a row, divided by gold hairlines. Light and dark.</p>
-      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (confirmed public facts, as on Our Brands)</p>
-      <StatRow items={stats} />
-    </div>
-  </section>
-  <section class="bg-dark bg-grain py-section">
-    <div class="container">
-      <StatRow items={stats} tone="dark" align="center" />
-    </div>
-  </section>
-
-  <section class="bg-light py-section">
-    <div class="container">
-      <p class="text-eyebrow uppercase text-gold-text">Component 03</p>
-      <h2 class="mt-2 text-h3 text-dark">StepList</h2>
-      <p class="mt-2 max-w-measure text-text">A vertical process (numbered steps) or a timeline (dated milestones).</p>
-      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (Award process from ccaward.com; 40 Years milestones)</p>
-      <div class="row gap-y-16">
-        <div class="lg:col-6">
-          <StepList items={steps} />
-        </div>
-        <div class="lg:col-5 lg:ml-auto">
-          <StepList items={milestones} variant="timeline" />
-        </div>
-      </div>
     </div>
   </section>
 
@@ -200,36 +291,6 @@ const chip = { framework: 'Framework content', demo: 'Demo content' };
       />
     </div>
   </section>
-
-  <section class="hairline-top bg-white pt-section pb-16">
-    <div class="container">
-      <p class="text-eyebrow uppercase text-gold-text">Component 10</p>
-      <h2 class="mt-2 text-h3 text-dark">MediaSplit</h2>
-      <p class="mt-2 max-w-measure text-text">A photo beside an eyebrow, heading, text, optional pull quote and link. Image left or right; white, ivory or navy.</p>
-      <p class="mt-3 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§10; §13 lead message; placeholder photos)</p>
-    </div>
-  </section>
-  <MediaSplit
-    image="images/placeholders/forty-montreal-old-port.jpg"
-    imageAlt={forty!.data.image_alt}
-    eyebrow="40 Years"
-    title="Celebrating 40 Years of Trust"
-    text={[
-      'For 40 years, Consumer Choice Award has helped Canadians recognize businesses that earn consumer confidence. The creation of Consumer Choice Canada marks the next chapter: bringing recognition, marketing, research, data, and insight together under one national organization.',
-    ]}
-    link={{ label: 'Read Our Story', href: '/40-years' }}
-  />
-  <MediaSplit
-    image="images/placeholders/about-intro-peggys-cove-harbour.jpg"
-    imageAlt="Fishing boats and wooden houses around the harbour at Peggy's Cove, Nova Scotia"
-    eyebrow="About"
-    title="Canada’s Trusted Consumer Authority"
-    text="For more than 40 years, Consumer Choice has helped consumers make better decisions while recognizing businesses that earn their trust."
-    quote="Consumer Choice Canada helps Canadians make more confident decisions while helping businesses earn, understand, and communicate consumer trust."
-    imageSide="right"
-    background="navy"
-    ratio="portrait"
-  />
 
   <section class="bg-white pt-section pb-16">
     <div class="container">

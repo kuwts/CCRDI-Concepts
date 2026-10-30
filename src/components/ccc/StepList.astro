@@ -1,70 +1,217 @@
 ---
-// A vertical list of steps (numbered) or a timeline (dated milestones), joined by a thin
-// gold line. A block, not a section. Content order is the reading order (an ordered list).
+// A vertical timeline (dated milestones) or process (numbered steps) on a scroll-drawn spine.
+// Signature: as the list scrolls through the view, a gold line draws down the spine, scrubbed
+// by the scroll like StackedServices' depth (not on a timer); each marker lights up when the
+// line reaches it, and that item's year (or number) and text rise into place, as the theme's
+// portfolio grid titles do. Timeline years are set large in the serif, in their own column on
+// large screens. Progressive enhancement: the markup is the finished state; the script only
+// rewinds it when motion is allowed, so reduced motion and no-JS show everything, unmoved.
+// A block, not a section; an ordered list.
 interface Step {
-  /** the step's name; a timeline item can have just a marker and text */
+  /** the item's name; a timeline item can have just a marker and text */
   title?: string;
   text?: string;
-  /** timeline: the date or label shown on the marker, e.g. "1987" */
+  /** timeline: the date or label, e.g. "1987" (shown large, as the item's heading if no title) */
   marker?: string;
 }
 interface Props {
   items: Step[];
-  /** `steps`: numbered markers (01, 02…); `timeline`: each item's `marker` (e.g. a year) */
-  variant?: 'steps' | 'timeline';
+  /** `timeline`: years / labels in their own column (default); `steps`: numbered markers */
+  variant?: 'timeline' | 'steps';
   /** `light` on white or ivory (default), `dark` on navy */
   tone?: 'light' | 'dark';
-  /** heading level for the step titles (default h3) */
+  /** heading level for each item (default h3) */
   as?: 'h2' | 'h3' | 'h4';
   class?: string;
 }
 
-const { items, variant = 'steps', tone = 'light', as: Heading = 'h3', class: className = '' } = Astro.props;
-import { animDelay } from '@/utils/animDelay';
-
+const { items, variant = 'timeline', tone = 'light', as: Heading = 'h3', class: className = '' } = Astro.props;
 const dark = tone === 'dark';
-const markerText = (s: Step, i: number) => (variant === 'timeline' ? (s.marker ?? '') : String(i + 1).padStart(2, '0'));
+const timeline = variant === 'timeline';
+const num = (i: number) => String(i + 1).padStart(2, '0');
+// a year or short number is set large; a word label ("Coast to coast") a size down
+const short = (m?: string) => !!m && /^\S{1,6}$/.test(m.trim());
 ---
 
-<ol class:list={['relative', className]}>
+<ol
+  class:list={[
+    'steplist relative',
+    // where the spine runs: the centre of the marker column (year column + gap + half a marker)
+    timeline ? '[--spine-x:1.5rem] lg:[--spine-x:17.5rem]' : '[--spine-x:1.5rem]',
+    dark && 'steplist-dark',
+    className,
+  ]}
+  style="--progress: 1"
+  data-steplist
+>
+  {/* the spine: a faint track, and the gold line drawn over it */}
+  <span class:list={['steplist-track', dark ? 'bg-white/10' : 'bg-dark/10']} aria-hidden="true"></span>
+  <span class:list={['steplist-fill', dark ? 'bg-hairline-dark' : 'bg-hairline-light']} aria-hidden="true"></span>
+
   {items.map((s, i) => (
-    <li class:list={['relative grid grid-cols-[3rem_1fr] gap-x-5 sm:gap-x-8 pb-10 last:pb-0 has-anim fade', animDelay[i]]}>
-      {/* the connecting line, behind the markers (not after the last item) */}
-      {i < items.length - 1 && (
-        <span
-          class:list={['absolute top-12 bottom-0 left-6 w-px -translate-x-1/2', dark ? 'bg-hairline-dark' : 'bg-hairline-light']}
-          aria-hidden="true"
-        ></span>
-      )}
-      {variant === 'steps' ? (
-        <span
-          class:list={[
-            'relative flex size-12 items-center justify-center rounded-full border text-sm font-medium tabular-nums',
-            dark ? 'border-hairline-dark bg-dark text-white' : 'border-hairline-light bg-white text-dark',
-          ]}
-          aria-hidden="true"
-        >
-          {markerText(s, i)}
-        </span>
-      ) : (
-        <span class="relative flex h-12 items-start justify-center pt-1.5" aria-hidden="true">
-          <span class:list={['block size-3 rounded-full border-2', dark ? 'border-hairline-dark bg-dark' : 'border-hairline-light bg-white']}></span>
-        </span>
-      )}
-      <div class:list={[variant === 'steps' && 'pt-2.5']}>
-        {/* timeline: the marker is a small label above a title, or the item's heading when there's no title */}
-        {variant === 'timeline' && s.marker && (s.title ? (
-          <p class:list={['mb-1 text-eyebrow uppercase', dark ? 'text-primary' : 'text-gold-text']}>{s.marker}</p>
+    <li
+      class:list={[
+        'steplist-item relative grid gap-x-5 sm:gap-x-8 pb-14 last:pb-0 lg:pb-20',
+        timeline ? 'grid-cols-[3rem_1fr] lg:grid-cols-[14rem_3rem_1fr]' : 'grid-cols-[3rem_1fr]',
+      ]}
+      data-active=""
+    >
+      {/* the marker, centred on the spine */}
+      <span class:list={['steplist-marker relative z-1 row-start-1 flex justify-center', timeline ? 'col-start-1 lg:col-start-2 h-14 lg:h-16 items-center' : 'col-start-1 h-12 items-center']} aria-hidden="true">
+        {timeline ? (
+          <span class="steplist-dot block size-3.5 rounded-full border-2"></span>
         ) : (
-          <Heading class:list={['text-h3', s.text && 'mb-3', dark ? 'text-white' : 'text-dark']}>{s.marker}</Heading>
-        ))}
+          <span class="steplist-num flex size-12 items-center justify-center rounded-full border text-sm font-medium tabular-nums">{num(i)}</span>
+        )}
+      </span>
+
+      {timeline && s.marker && (
+        <div class="steplist-year row-start-1 col-start-2 lg:col-start-1 overflow-clip lg:text-right" style="overflow-clip-margin: 0.2em">
+          {s.title ? (
+            <p class:list={['steplist-rise font-heading', short(s.marker) ? 'text-5xl lg:text-6xl leading-none' : 'text-3xl lg:text-4xl leading-tight text-balance', dark ? 'text-white' : 'text-dark']}>{s.marker}</p>
+          ) : (
+            <Heading class:list={['steplist-rise font-heading', short(s.marker) ? 'text-5xl lg:text-6xl leading-none' : 'text-3xl lg:text-4xl leading-tight text-balance', dark ? 'text-white' : 'text-dark']}>{s.marker}</Heading>
+          )}
+        </div>
+      )}
+
+      <div class:list={['steplist-body col-start-2', timeline ? 'row-start-2 lg:row-start-1 lg:col-start-3 mt-4 lg:mt-1.5' : 'row-start-1 pt-2.5']}>
         {s.title && (
           <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>
-            {variant === 'steps' && <span class="sr-only">{markerText(s, i)}. </span>}{s.title}
+            {!timeline && <span class="sr-only">{num(i)}. </span>}{s.title}
           </Heading>
         )}
-        {s.text && <p class:list={['max-w-measure', s.title && 'mt-3', dark ? 'text-white/80' : 'text-text']}>{s.text}</p>}
+        {s.text && <p class:list={['max-w-measure leading-relaxed', s.title && 'mt-3', dark ? 'text-white/80' : 'text-text']}>{s.text}</p>}
       </div>
     </li>
   ))}
 </ol>
+
+<style>
+  .steplist-track,
+  .steplist-fill {
+    position: absolute;
+    left: var(--spine-x);
+    top: var(--spine-top, 0);
+    bottom: var(--spine-bottom, 0);
+    width: 1px;
+    translate: -50% 0;
+  }
+  .steplist-fill {
+    transform-origin: top;
+    scale: 1 var(--progress);
+  }
+
+  /* markers: hollow until the line reaches them, then filled gold */
+  .steplist-dot,
+  .steplist-num {
+    border-color: var(--color-hairline-light);
+    background: var(--color-white);
+    color: var(--color-dark);
+    transition:
+      background-color var(--duration-base) var(--ease-theme),
+      color var(--duration-base) var(--ease-theme),
+      scale 0.6s var(--ease-theme);
+  }
+  .steplist-dark .steplist-dot,
+  .steplist-dark .steplist-num {
+    border-color: var(--color-hairline-dark);
+    background: var(--color-dark);
+    color: var(--color-white);
+  }
+  [data-active] .steplist-dot {
+    background: var(--color-hairline-light);
+    scale: 1.15;
+  }
+  .steplist-dark [data-active] .steplist-dot {
+    background: var(--color-hairline-dark);
+  }
+  /* filled number markers: navy on Heritage Gold (6.95:1) */
+  [data-active] .steplist-num {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-dark);
+  }
+
+  /* rewound state, only while the script animates (never with reduced motion or no JS) */
+  [data-steplist][data-animate] .steplist-item:not([data-active]) .steplist-rise {
+    transform: translateY(105%);
+  }
+  [data-steplist][data-animate] .steplist-item:not([data-active]) .steplist-body {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  [data-steplist][data-animate] .steplist-item:not([data-active]) .steplist-dot {
+    scale: 0.6;
+  }
+  [data-steplist][data-animate] .steplist-rise {
+    transition: transform 0.9s var(--ease-theme);
+  }
+  [data-steplist][data-animate] .steplist-body {
+    transition:
+      opacity var(--duration-slow) var(--ease-theme) 120ms,
+      transform var(--duration-slow) var(--ease-theme) 120ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .steplist-dot,
+    .steplist-num {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Draws each spine with the scroll and lights the items it reaches. The spine runs from the
+  // first marker to the last; the line's tip follows a point 65% down the viewport, and only
+  // ever moves forward.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-steplist]').forEach((list) => {
+    const items = [...list.querySelectorAll<HTMLElement>('.steplist-item')];
+    const markers = items.map((li) => li.querySelector<HTMLElement>('.steplist-marker')!);
+    if (!items.length) return;
+
+    // spine geometry (also with reduced motion: it's layout, not movement)
+    let top = 0;
+    let length = 1;
+    const measure = () => {
+      const box = list.getBoundingClientRect();
+      const first = markers[0].getBoundingClientRect();
+      const last = markers[markers.length - 1].getBoundingClientRect();
+      top = first.top + first.height / 2 - box.top;
+      const bottom = last.top + last.height / 2 - box.top;
+      length = Math.max(bottom - top, 1);
+      list.style.setProperty('--spine-top', `${top}px`);
+      list.style.setProperty('--spine-bottom', `${box.height - bottom}px`);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    if (reduceMotion) return;
+
+    // rewind, then draw and reveal with the scroll. The line follows the scroll as it draws
+    // but never retracts: once drawn (and its items lit) it stays, like the theme's reveals.
+    list.dataset.animate = '';
+    items.forEach((li) => delete li.dataset.active);
+    let frame = 0;
+    let drawn = 0;
+    const update = () => {
+      frame = 0;
+      const listTop = list.getBoundingClientRect().top;
+      const tip = Math.max(window.innerHeight * 0.65 - listTop - top, drawn * length);
+      drawn = Math.min(Math.max(tip / length, 0), 1);
+      list.style.setProperty('--progress', String(drawn));
+      items.forEach((li, i) => {
+        const m = markers[i].getBoundingClientRect();
+        const at = m.top + m.height / 2 - listTop - top;
+        if (tip >= at - 1) li.dataset.active = ''; // once lit, an item stays lit
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  });
+</script>

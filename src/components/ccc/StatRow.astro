@@ -1,8 +1,11 @@
 ---
-// A row of key facts or figures (value + label), divided by gold hairlines. A block, not a
-// section: place it inside any section. Values are text, so non-numeric facts ("Coast to
-// coast") work too; no count-up animation (numbers are read as they are). Built for 2 to 4
-// items: one row on large screens, two columns on tablets, stacked on phones.
+// Key facts as a row of tiles, in the language of the theme's Facts stat tiles: a two-digit
+// index (as on StackedServices), a large count-up number (the theme's CounterUp: it drops to
+// 60% just before it's seen, then counts up over 1.5s), the label, and a gold rule that draws
+// across the foot of the tile in step with the count. Tiles reveal in a stagger. A block,
+// not a section. Values are text, so "1987" (a year: CounterUp leaves it) or "Coast to
+// coast" work too. Reduced motion: final numbers, rules drawn, no movement.
+import CounterUp from '@/components/CounterUp.astro';
 import { animDelay } from '@/utils/animDelay';
 
 interface Stat {
@@ -13,42 +16,67 @@ interface Stat {
 }
 interface Props {
   items: Stat[];
-  /** `light` on white or ivory (default), `dark` on navy */
-  tone?: 'light' | 'dark';
-  align?: 'left' | 'center';
+  /** `dark` on navy (default; Facts' translucent tiles), `light` on ivory (white tiles) */
+  tone?: 'dark' | 'light';
   class?: string;
 }
 
-const { items, tone = 'light', align = 'left', class: className = '' } = Astro.props;
+const { items, tone = 'dark', class: className = '' } = Astro.props;
 
-// columns on large screens follow the number of items (written out for Tailwind)
 const cols = { 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4' }[Math.min(Math.max(items.length, 1), 4) as 1 | 2 | 3 | 4];
 const dark = tone === 'dark';
-// dividers: above each item on phones; left of the second column on tablets; left of every
-// item but the first on large screens
-const divider = [
-  'border-t pt-6 first:border-t-0 first:pt-0',
-  'sm:border-t-0 sm:pt-0 sm:even:border-l sm:even:pl-8',
-  'lg:border-l lg:pl-8 lg:first:border-l-0 lg:first:pl-0',
-];
+// a number reads as a figure; anything with a word in it (or a year) is set smaller, as in Facts
+const isFigure = (v: string) => /\d/.test(v) && !/[A-Za-z]{3,}/.test(v);
 ---
 
-<dl class:list={['grid grid-cols-1 sm:grid-cols-2 gap-y-6 sm:gap-y-12', cols, className]}>
+{/* two to a row on phones and tablets, an odd last tile full width (as Facts' stat tiles do) */}
+<dl class:list={['grid grid-cols-2 gap-4 sm:gap-6', cols, className]}>
   {items.map((s, i) => (
     <div
       class:list={[
-        'flex flex-col-reverse justify-end gap-3 pr-0 sm:pr-8 has-anim fade',
-        divider,
-        dark ? 'border-hairline-dark' : 'border-hairline-light',
-        align === 'center' && 'text-center items-center',
+        'stat-tile relative flex min-h-44 sm:min-h-56 flex-col overflow-hidden p-6 sm:p-8 md:p-10 has-anim fade last:odd:col-span-2 lg:last:odd:col-span-1',
+        dark ? 'bg-white/3 text-white' : 'rounded-card bg-white text-dark',
         animDelay[i],
       ]}
+      style={`--rule-delay: ${i * 120 + 250}ms`}
     >
-      <dt class:list={['text-[15px] leading-snug', dark ? 'text-white/80' : 'text-mutedDark']}>
+      <span class:list={['text-sm tabular-nums', dark ? 'text-white/60' : 'text-mutedDark']} aria-hidden="true">
+        {String(i + 1).padStart(2, '0')}
+      </span>
+      {/* the label is the term, the value its description; shown value first */}
+      <dt class:list={['order-3 mt-3 text-[15px] leading-snug text-balance', dark ? 'text-white/80' : 'text-mutedDark']}>
         {s.label}
         {s.note && <span class:list={['mt-1 block text-[13px]', dark ? 'text-white/70' : 'text-mutedDark']}>{s.note}</span>}
       </dt>
-      <dd class:list={['font-heading text-h2', dark ? 'text-white' : 'text-dark']}>{s.value}</dd>
+      <dd class:list={['order-2 mt-auto pt-6 sm:pt-10 font-semibold tabular-nums', isFigure(s.value) ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-xl sm:text-2xl md:text-3xl leading-snug']}>
+        <CounterUp value={s.value} />
+      </dd>
+      {/* drawn once the tile is revealed, over the same 1.5s as the count */}
+      <span
+        class:list={['stat-rule absolute inset-x-0 bottom-0 h-px origin-left', dark ? 'bg-hairline-dark' : 'bg-hairline-light']}
+        aria-hidden="true"
+      ></span>
     </div>
   ))}
 </dl>
+
+<style>
+  .stat-rule {
+    scale: 0 1;
+    transition: scale 1.5s var(--ease-theme) var(--rule-delay);
+  }
+  .stat-tile:global(.is-visible) .stat-rule {
+    scale: 1 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stat-rule {
+      scale: 1 1;
+      transition: none;
+    }
+  }
+  @media print {
+    .stat-rule {
+      scale: 1 1;
+    }
+  }
+</style>

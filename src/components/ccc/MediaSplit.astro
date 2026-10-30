@@ -1,6 +1,13 @@
 ---
-// Media and text side by side: a photo (left or right) next to an eyebrow, heading, text,
-// an optional pull quote and a link. Stacks on phones (photo first). A complete section.
+// A photo beside an eyebrow, heading, text and link, in the theme's asymmetric grid (a wide
+// photo column, a narrow text column offset to the far side). Signature: the photo unveils
+// upward and settles from a slight zoom as it comes into view (`has-anim clip`), then drifts
+// gently against the scroll (a slow parallax, scrubbed like StackedServices); the heading
+// rises from behind its own edge (`has-anim mask`, as the portfolio grid titles do) and the
+// text follows in a stagger. An optional framework statement sits in StackedServices'
+// frosted navy pane, overlapping the photo's inner edge like the anniversary seal's stamp.
+// Stacks on phones (photo first, the pane overlapping its foot). A complete section.
+// Reduced motion: everything in place, no parallax.
 import AstroImage from '@/components/helper/AstroImage.astro';
 import LineLink from '@/components/LineLink.astro';
 
@@ -12,12 +19,12 @@ interface Props {
   title: string;
   /** one paragraph or several */
   text?: string | string[];
-  /** a framework statement set as a pull quote under the text */
+  /** a framework statement, set in the frosted pane over the photo (never an invented quote) */
   quote?: string;
   link?: { label: string; href: string; target?: string };
   imageSide?: 'left' | 'right';
   background?: 'white' | 'light' | 'navy';
-  /** photo shape: `landscape` 3:2 (default) or `portrait` 4:5 */
+  /** photo shape: `landscape` 4:3 (default) or `portrait` 4:5 */
   ratio?: 'landscape' | 'portrait';
   /** heading level for the title (default h2) */
   as?: 'h2' | 'h3';
@@ -39,49 +46,112 @@ const {
   class: className = '',
 } = Astro.props;
 const navy = background === 'navy';
+const right = imageSide === 'right';
 const paragraphs = text ? (Array.isArray(text) ? text : [text]) : [];
+const delays = ['delay-200', 'delay-300', 'delay-[400ms]', 'delay-500'];
 ---
 
 <section
   class:list={[
-    'py-section',
+    'py-section overflow-x-clip',
     background === 'white' && 'bg-white',
     background === 'light' && 'bg-light',
     navy && 'bg-dark bg-grain text-white',
     className,
   ]}
+  data-media-split
 >
   <div class="container">
-    <div class="row items-center gap-y-10">
-      <div class:list={['lg:col-6 has-anim fade', imageSide === 'right' && 'lg:order-2']}>
-        <AstroImage
-          src={image}
-          alt={imageAlt}
-          widths={[600, 900, 1200]}
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          class:list={['w-full rounded-card object-cover', ratio === 'portrait' ? 'aspect-[4/5]' : 'aspect-[3/2]']}
-        />
-      </div>
-      <div class:list={['lg:col-5', imageSide === 'right' ? 'lg:order-1 lg:mr-auto' : 'lg:ml-auto']}>
-        {eyebrow && <p class:list={['mb-4 text-eyebrow uppercase has-anim fade', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
-        <Heading class:list={['text-h2 has-anim fade delay-100', navy ? 'text-white' : 'text-dark']}>{title}</Heading>
-        {paragraphs.map((p) => (
-          <p class:list={['mt-5 text-body max-w-measure has-anim fade delay-150', navy ? 'text-white/85' : 'text-text']}>{p}</p>
-        ))}
+    <div class="row items-center gap-y-16">
+      <!-- Photo, with the statement pane overlapping its inner edge -->
+      <div class:list={['lg:col-7 relative', right && 'lg:order-2']}>
+        <div
+          class:list={['has-anim clip relative overflow-hidden rounded-card', ratio === 'portrait' ? 'aspect-[4/5]' : 'aspect-[4/3]']}
+        >
+          <AstroImage
+            src={image}
+            alt={imageAlt}
+            widths={[600, 900, 1200, 1600]}
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            class="media-split-photo absolute inset-x-0 -top-[6%] h-[112%] w-full object-cover"
+          />
+        </div>
         {quote && (
-          <p
+          <div
             class:list={[
-              'pull-quote mt-8 has-anim fade delay-200 [--pull-quote-size:clamp(1.375rem,1.2rem+0.6vw,1.75rem)]',
-              navy ? 'text-white [--pull-quote-rule:var(--color-hairline-dark)]' : 'text-dark',
+              'has-anim fade delay-300 relative z-1 mt-4 rounded-lg p-8 text-white sm:p-10',
+              // phones: a tile of its own under the photo (Facts' translucent tile on navy)
+              navy ? 'max-lg:bg-white/5' : 'max-lg:bg-dark',
+              // large screens: StackedServices' frosted pane, inside the photo's lower inner corner
+              'lg:absolute lg:bottom-6 lg:mt-0 lg:w-[min(28rem,calc(100%-3rem))] lg:bg-dark/75 lg:backdrop-blur-2xl',
+              right ? 'lg:left-6' : 'lg:right-6',
             ]}
           >
-            {quote}
-          </p>
+            <span class="text-4xl text-primary" aria-hidden="true">✲</span>
+            <p class="pull-quote mt-4 [--pull-quote-size:clamp(1.25rem,1.1rem+0.5vw,1.5rem)] [--pull-quote-rule:var(--color-hairline-dark)]">
+              {quote}
+            </p>
+          </div>
         )}
+      </div>
+
+      <!-- Text: narrow, offset to the far side; beside a tall (portrait) photo it stays in view
+           while the photo scrolls past, as the homepage intro does beside its card stack -->
+      <div class:list={['lg:col-4', right ? 'lg:order-1 lg:mr-auto' : 'lg:ml-auto', ratio === 'portrait' && 'lg:sticky lg:top-32 lg:self-start lg:pt-16']}>
+        {eyebrow && (
+          <div class="has-anim mask">
+            <p class:list={['text-eyebrow uppercase', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>
+          </div>
+        )}
+        <div class="has-anim mask delay-100 mt-4">
+          <Heading class:list={['text-h2', navy ? 'text-white' : 'text-dark']}>{title}</Heading>
+        </div>
+        {paragraphs.map((p, i) => (
+          <p class:list={['mt-6 text-body max-w-measure has-anim fade', delays[i] ?? 'delay-500', navy ? 'text-white/85' : 'text-text']}>{p}</p>
+        ))}
         {link && (
-          <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" class="mt-8 has-anim fade delay-200" />
+          <div class:list={['mt-8 has-anim fade', delays[paragraphs.length] ?? 'delay-500']}>
+            <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" />
+          </div>
         )}
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* the <img> is rendered by AstroImage, so the selector is global */
+  :global(.media-split-photo) {
+    translate: 0 calc(var(--parallax, 0) * 1%);
+  }
+</style>
+
+<script>
+  // Slow parallax: the photo drifts up to 5% against the scroll while its section is on screen.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-media-split]').forEach((section) => {
+      const frames = [...section.querySelectorAll<HTMLElement>('.has-anim.clip')];
+      let frame = 0;
+      let onScreen = false;
+      const update = () => {
+        frame = 0;
+        const vh = window.innerHeight;
+        frames.forEach((f) => {
+          const r = f.getBoundingClientRect();
+          // -1 when the frame's centre is at the bottom of the view, 1 at the top
+          const p = Math.min(Math.max((vh / 2 - (r.top + r.height / 2)) / (vh / 2 + r.height / 2), -1), 1);
+          f.style.setProperty('--parallax', (p * 5).toFixed(2));
+        });
+      };
+      const onScroll = () => {
+        if (onScreen && !frame) frame = requestAnimationFrame(update);
+      };
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        if (onScreen) onScroll();
+      }).observe(section);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    });
+  }
+</script>

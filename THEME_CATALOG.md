@@ -12,12 +12,13 @@ A reference to every component and page template in this Astro theme, and a guid
 
 1. [How to read this catalog](#how-to-read-this-catalog)
 2. [Shared animation systems](#shared-animation-systems)
-3. [Component quick reference](#component-quick-reference)
-4. [Components in detail](#components-in-detail)
-5. [Page templates](#page-templates)
-6. [Rebranding](#rebranding)
-7. [SEO](#seo)
-8. [Best uses by site type](#best-uses-by-site-type)
+3. [Theme design language](#theme-design-language)
+4. [Component quick reference](#component-quick-reference)
+5. [Components in detail](#components-in-detail)
+6. [Page templates](#page-templates)
+7. [Rebranding](#rebranding)
+8. [SEO](#seo)
+9. [Best uses by site type](#best-uses-by-site-type)
 
 ---
 
@@ -45,15 +46,82 @@ These are defined once and reused across many components. Component entries refe
 
 | Name | Where it's defined | What it does |
 | --- | --- | --- |
-| **Scroll reveal** (`has-anim`) | `@utility has-anim` in [src/styles/global.css](src/styles/global.css); observer in [src/layouts/Base.astro](src/layouts/Base.astro) | Element starts transparent, 25px lower and at 99% scale, then fades and rises in when it enters the viewport (IntersectionObserver, bottom margin −15%). Runs once. Only `opacity`/`transform` change, so unrevealed content is still read by screen readers, found by find-in-page and printed. |
-| **Scroll reveal, fade** (`has-anim fade`) | same | Gentler version: only an 8px rise, no scale. |
+| **Scroll reveal** (`has-anim`) | `@utility has-anim` in [src/styles/global.css](src/styles/global.css); observer in [src/layouts/Base.astro](src/layouts/Base.astro) | Element starts transparent and `--reveal-distance` (12px) lower, then fades and rises in over `--duration-slow` (700ms) when it enters the viewport (IntersectionObserver, bottom margin −15%). Runs once. Only `opacity`/`transform` change, so unrevealed content is still read by screen readers, found by find-in-page and printed. (CCC: the theme's 25px rise with a 99% scale, over 400ms, was calmed in the UI proposal.) |
+| **Scroll reveal, fade** (`has-anim fade`) | same | Kept as an alias of the default reveal. |
+| **Scroll reveal, pop** (`has-anim pop`) | same | CCC: fades and scales in place (0.9 → 1 over 0.9s); the anniversary seal. |
+| **Scroll reveal, clip** (`has-anim clip`) | same | CCC: a photo frame unveils upward (`clip-path`, 1.1s) while the `<img>` inside settles from 1.12 to 1 (1.4s), like a camera coming to rest. Used by `MediaSplit`. |
+| **Scroll reveal, mask** (`has-anim mask`) | same | CCC: the wrapper clips and stays put; its children rise from behind its edge (105% → 0, 0.9s), as the theme's portfolio grid titles do. For headings and eyebrows. |
 | **Stagger** (`delay-*`, `animDelay[i]`) | [src/utils/animDelay.ts](src/utils/animDelay.ts) | Adds 0–500ms transition delays by item index. All delays are switched off below the `md` breakpoint. |
 | **Motion curve** (`ease-theme`) | `--ease-theme` in the `@theme` block of global.css | The theme's one easing curve, `cubic-bezier(.2,1,.2,1)`, for every movement and hover effect (reveals, buttons, links, menus, carousels, the showreel zoom). Use `ease-theme` / `var(--ease-theme)`; plain `ease-out` only for small opacity fades. |
-| **Button text roll** (`btn`) | `@utility btn` in global.css | On hover or keyboard focus the label slides up and fades out while a copy (from `data-text`) rises in from below. Long labels wrap and the button grows taller instead of overflowing. |
-| **Line-link wipe** (`line-link`) | `@utility line-link` in global.css | On hover or keyboard focus a faint underline shrinks away, then a solid green underline draws in from the left after 0.3s. |
+| **Buttons** (`btn`, `btn-white`, `btn-black`) | `@utility btn` / `btn-gold-ring` in global.css | CCC: gold-outline buttons; on hover or focus a quiet fill and a slow sheen across the border (1.6s), and a 1px press. (The theme's label roll was removed in the UI proposal.) Long labels wrap. |
+| **Line-link wipe** (`line-link`) | `@utility line-link` in global.css | A faint gold underline at rest; on hover or keyboard focus a full gold underline draws in from the left (250ms) and the arrow nudges 2px. |
+| **Scroll-scrubbed effects** | `StackedServices` (cards), `StepList` (CCC timeline), `MediaSplit` (CCC parallax) | Driven by the scroll position in a `requestAnimationFrame` loop (passive scroll listener, recomputed on resize), not by timers, so they track the reader's pace. Off with reduced motion. |
 | **Pause control** (`PauseButton`) | [src/components/PauseButton.astro](src/components/PauseButton.astro) | Moving content (logo wall, team marquee, autoplaying videos) only moves while it's on screen and the tab is visible, pauses on hover, and has a "Pause …" button that appears when it gets keyboard focus (WCAG 2.2.2). |
 
-> **Reduced motion and no JavaScript:** with "reduce motion" turned on, `has-anim` content appears in place with no movement, and smooth scrolling is off. Without JavaScript, a `<noscript>` style in Base.astro shows it. `StackedServices`, the Services page's card deck, `TeamGroupCarousel`, `Clients`, `Showreel`, `CounterUp`, `DropdownNav`, `Faq`, the pricing count and `ReviewCarousel`'s video cards also respect reduced motion (details in each entry). Hover effects and slider transitions still animate.
+> **Reduced motion and no JavaScript:** with "reduce motion" turned on, `has-anim` content (all variants) appears in place with no movement, and smooth scrolling is off. Without JavaScript, a `<noscript>` style in Base.astro shows it. `StackedServices`, the Services page's card deck, `TeamGroupCarousel`, `Clients`, `Showreel`, `CounterUp`, `DropdownNav`, `Faq`, the pricing count and `ReviewCarousel`'s video cards also respect reduced motion (details in each entry). Hover effects and slider transitions still animate.
+
+---
+
+## Theme design language
+
+How the theme's best components are built, so new ones can be designed in the same language. Read with the [Shared animation systems](#shared-animation-systems) above.
+
+### The idea behind each signature component
+
+Every premium component has **one physical idea**, carried out with restraint: one thing moves, it moves on the theme's curve, and the rest of the component stays still and legible.
+
+| Component | Signature idea | Why it feels premium |
+| --- | --- | --- |
+| **StackedServices** | Sticky cards stack as you scroll; each covered card scales down by depth (`1.1 - 0.1 × depth`), scrubbed by the scroll (a `requestAnimationFrame` loop), not on a timer. Each card is a photo seen through a frosted navy pane (`bg-dark/75 backdrop-blur-2xl`) inset by a 16px photo frame (`p-4`). | Physical depth that follows the reader's own pace; the frame-within-a-frame gives each card a printed, mounted quality. |
+| **WorkProcess** | Tall translucent tiles with a large decorative glyph (✳ ✺ ✲ ❋, `text-6xl`), the title, then a long gap (`mb-24`) before the text at the foot: vertical tension. Staggered reveal; a CTA strip under a faint divider (`border-white/5`) with an overlapping avatar stack. | Generous negative space inside each tile, ornament used once and large, quiet reveals. |
+| **Facts** | A 12-column bento: tiles of different spans (8/4, 6/6, 7/5) in translucent white on navy (`bg-white/3`, square corners, no border), uppercase tracked labels, numbers that count up (`CounterUp`) and staggered reveals (100–400ms). | Asymmetry and varied tile sizes read as editorial, not templated; the counters add life to static facts. |
+| **PortfolioCarousel / PortfolioCard** | A centred, looping slider with wide gaps and a thin progress bar (3px × 330px) between "01" and the total; text Prev / Next. On hover a card's image zooms, a full colour wash (95%) floods it, and the title and category rise in after 200ms. The grid variant uses a **mask reveal**: the category drops from above and the title rises from below, each inside an `overflow-hidden` line (700ms). | A single, confident hover moment; typography that appears from behind an edge instead of fading. |
+| **ReviewCarousel** | A free-scrolling drag slider (`cursor-grab`, free mode, mouse-wheel) of white `rounded-card` tiles on ivory, `min-h-90`; a summary tile with an oversized number (`text-8xl text-black/40`); video cards autoplay muted under a gradient. | Tactile drag, big quiet numerals, and content-first cards with no chrome. |
+| **Showreel** | A custom "Play" pill follows the cursor (scales in from 0 over 0.2s); clicking expands the video into a fullscreen dialog with a FLIP animation (0.5s, `ease-theme`); the close button rotates 90° on hover. | The interface responds to the hand; the expansion keeps the reader oriented. |
+| **Homepage hero** | Cascading fade-ups (eyebrow → H1 → actions → lead: 0 / 100 / 150ms), a scattered-dot shape at low opacity behind, an overlapping avatar stack (`-ml-4`) with hover tooltips, and a seal stamped across the hero's edge. | Layers that overlap section boundaries make the page feel composed rather than stacked. |
+| **Clients** | Logos cycle per column: each enters from 10% below with a blur (8px → 0, 0.5s, `ease-theme`) and leaves upward with a blur (0.3s, `ease-in`), columns offset in time. Pauses on hover, focus and off screen. | Motion with focus-pull (blur) feels photographic, not mechanical. |
+| **Case-study layout** | An eyebrow + H1, a wide feature image that overlaps the next section (`-mb-12`), then a 4/7 split: a sidebar of facts, each revealed 100ms after the last (inline delays), with "~ " list markers, beside a long-form body. "What's next" sits under a faint rule (`border-black/5`). | Asymmetric columns and overlap; the sidebar reads like a printed spec sheet. |
+| **BlogCard** | Featured horizontal card (6/6) and grid cards; uppercase chip (`bg-dark/5`, 13px, tracked); the arrow nudges up-right on hover. (Theme: the image panned by switching `transform-origin`; CCC: a 4% zoom.) | Small, precise hover details; consistent chip and arrow language. |
+
+### Cards and tiles
+
+- **On navy:** translucent white tiles with no border and **square corners**: `bg-white/3` (Facts), `bg-white/5` (WorkProcess). Over photos, the frosted pane `bg-dark/75 backdrop-blur-2xl` with `rounded-lg`, inset in a `rounded-card` photo frame by `p-4`.
+- **On ivory:** white tiles, `rounded-card` (12px), no border, no shadow (ReviewCarousel). Pills: `rounded-full`, `border-dark/10`, `bg-white`, `px-5 py-2`.
+- **Padding:** `p-8 md:p-10` for content tiles; `p-6 md:p-7` for denser cards; `px-8 py-8` for tall process tiles.
+- **Shadows:** almost none. Only tooltips (`shadow-xl`) and the seal (`drop-shadow-xl`). Depth comes from translucency, overlap and scale, not shadows.
+- **Heights:** tiles are tall and let space breathe (`min-h-90` reviews, `h-95` stacked cards, `mb-24` inside process tiles); content sits at the foot with `mt-auto`.
+
+### Typography inside components
+
+- **Labels:** uppercase, tracked, 13px (`uppercase tracking-widest text-[13px]`, Facts), or the CCC `text-eyebrow` (13px, 0.08em, gold).
+- **Numbering:** two-digit indices ("01", `text-4xl` in StackedServices' top-right corner; "01 / 03" around the slider's progress bar).
+- **Ornament:** one large glyph per tile (✳ ✺ ✲ ❋), "~ " list markers, a "———" dash rule (`tracking-[-3px]`).
+- **Numbers:** large Inter semibold (`text-3xl md:text-5xl`, Facts); oversized quiet numerals (`text-8xl text-black/40`, reviews).
+- **Headings in components:** CCC `text-h3` (serif, 600) for card titles; section titles through `SectionTitle` (`text-h2`).
+- **Body in tiles:** `text-sm`/`text-[15px]`, `leading-relaxed`, white at 70–80% on navy.
+
+### Animation
+
+- **What animates:** one primary element per component (the stack, the wash, the count, the logo) plus staggered reveals. Body text only fades up; it is never scrubbed or masked.
+- **Reveals:** `has-anim` (12px rise, 700ms), `fade`, `pop`, `clip` and `mask` (above). Stagger with `animDelay[i]` (100ms steps) or inline `transition-delay` (sidebar facts); no delays below `md`.
+- **Scroll-driven:** a `requestAnimationFrame` loop on a passive scroll listener, recomputed on resize; the value is written to a CSS variable or a transform. Scrubbed effects track the reader both ways (StackedServices); reveals run once (and a drawn line stays drawn).
+- **Durations:** feedback 150–250ms; hover reveals 300ms (+200ms delay for text after a wash); image zoom and mask reveals 700–900ms; counters 1.5s linear; slow sheens 1.6s.
+- **Easing:** `ease-theme` (`cubic-bezier(.2,1,.2,1)`) for everything that moves; `ease-in` only for exits (logo blur out); linear for counters.
+- **Always:** moving content runs only on screen, pauses on hover and focus, and has a `PauseButton`; reduced motion shows the final state with no movement.
+
+### Hover, focus, images and dividers
+
+- **Hover = focus:** every hover effect also runs on keyboard focus (`group-focus-within`), and the gold-and-navy focus ring is always visible.
+- **Hover moments:** image zoom (`--zoom-image`, 4%), full colour wash with text rising after 200ms, arrow nudge (2px), underline draw, close button rotation. Nothing hovers that can't be clicked.
+- **Images:** `rounded-card` crops at fixed ratios (3:2 cards, 16:9 feature, 4:3 or 4:5 splits), photos under navy panes or washes, frames that overlap section edges.
+- **Dividers:** faint (`border-white/5` on navy, `border-black/5` on white) inside components; CCC gold hairlines (`hairline-top`, 1px) only between sections.
+
+### Layout patterns
+
+- **Asymmetry:** 8/4 (homepage intro beside the card stack), 4/7 (case study), 6/6 (featured blog), bento spans (Facts), 7/4 offset (CCC MediaSplit).
+- **Sticky beside scrolling:** a sticky text column beside a scrolling column of cards (homepage intro).
+- **Overlap:** feature images over the next section (`-mb-12`), the seal across an edge, avatar stacks, frosted panes over photos.
+- **Dark vs light:** navy sections use translucent tiles, white text at 70–100% and faint white dividers; light sections use white tiles on ivory (or ivory on white), navy text and gold accents. A section title sits centred above; content blocks align to the grid.
 
 ---
 
@@ -450,26 +518,32 @@ All are in `src/components/ccc/`, built for the CCC design (bold-round spacing, 
 
 #### StatRow
 
-- **File:** [src/components/ccc/StatRow.astro](src/components/ccc/StatRow.astro) (block)
-- **For:** two to four key facts or figures in a row, divided by gold hairlines; the value in the serif at H2 size, the label under it. A `<dl>` (label = term, value = description).
-- **Props:** `items: { value, label, note? }[]`, `tone?: 'light' | 'dark'` (white/ivory or navy), `align?: 'left' | 'center'`, `class?`.
-- **Layout:** one row on large screens, two columns on tablets, stacked on phones (dividers above each item).
-- **Best for:** short confirmed facts with a value: founding year, years of recognition, "1 winner per category", markets served. Text values work ("Coast to coast"). No count-up, so figures read as they are.
-- **Could fit:** Our Brands (instead of or beside `Facts`), the Consumer Choice Award page, 40 Years, About, For Businesses.
-- **Considered:** `Facts` (a heavy bento grid on navy only, built for one specific layout), `CounterUp` (animation only).
-- **Base theme candidate:** yes: a light alternative to `Facts` that most sites need.
-- **Visual weight:** Light.
+- **File:** [src/components/ccc/StatRow.astro](src/components/ccc/StatRow.astro) (block). **Rebuilt (round 2)** in the theme's design language.
+- **For:** two to four key facts as a row of tiles, in the language of `Facts`' stat tiles. A `<dl>` (label = term, value = description, shown value first).
+- **Signature:** the tiles reveal in a stagger; each number counts up through the theme's own `CounterUp` (drops to 60% just before it's seen, counts up over 1.5s); a gold rule draws across the foot of each tile in step with the count (`scale` 0 → 1 over 1.5s on `ease-theme`, delayed by tile). A two-digit index sits top-left, as on `StackedServices`; the number sits at the foot (`mt-auto`), as in `WorkProcess`' tiles.
+- **Props:** `items: { value, label, note? }[]`, `tone?: 'dark' | 'light'` (default `dark`: Facts' translucent `bg-white/3` square tiles on navy; `light`: white `rounded-card` tiles on ivory, like ReviewCarousel's), `class?`.
+- **Layout:** one row on large screens; two to a row below, an odd last tile full width (as Facts' stat tiles do).
+- **Type:** figures in Inter semibold (`text-4xl` → `text-6xl`), as Facts' numbers; text values (a word or a year) a size down. Years aren't counted (CounterUp shows "1987" as it is).
+- **Reduced motion / no JS:** final numbers, rules drawn, nothing moves.
+- **Best for:** short confirmed facts with a value: founding year, years of recognition, "1 winner per category", markets served.
+- **Could fit:** Our Brands (beside or instead of `Facts`), the Consumer Choice Award page, 40 Years, About.
+- **Considered:** `Facts` (a heavy bento on navy only, tied to the About content shape; StatRow is its stat tiles as a reusable row), `CounterUp` (used inside).
+- **Base theme candidate:** yes: a light companion to `Facts`.
+- **Visual weight:** Light to Medium.
 
 #### StepList
 
-- **File:** [src/components/ccc/StepList.astro](src/components/ccc/StepList.astro) (block)
-- **For:** a vertical process (numbered 01, 02… markers) or a timeline (a dot per item, with the date or label as the item's heading), joined by a thin gold line. An `<ol>`; step numbers are read by screen readers ("01. Category Selection").
-- **Props:** `items: { title?, text?, marker? }[]`, `variant?: 'steps' | 'timeline'`, `tone?: 'light' | 'dark'`, `as?: 'h2' | 'h3' | 'h4'` (title level, default h3), `class?`.
-- **Best for:** steps with explanations (how winners are chosen, how to apply, how a research project runs); milestones with dates (40 Years).
-- **Could fit:** Consumer Choice Award (the selection process), 40 Years (milestones), CCRDI (how research works, when supplied), For Businesses (how to get involved, when supplied).
-- **Considered:** `WorkProcess` (four tall cards on navy with a CTA strip: horizontal, fixed to four, decorative glyphs; not suited to long step text or dates).
-- **Base theme candidate:** yes: vertical steps and timelines are common corporate needs the theme lacks.
-- **Visual weight:** Light.
+- **File:** [src/components/ccc/StepList.astro](src/components/ccc/StepList.astro) (block, with a small script). **Rebuilt (round 2)** in the theme's design language.
+- **For:** a vertical timeline (dated milestones; default) or a process (numbered steps), on a spine. An `<ol>`; step numbers are read by screen readers ("01. Category Selection"); a timeline item with no title uses its year or label as its heading.
+- **Signature:** a **scroll-drawn spine**. As the list moves through the view, a gold line draws down from the first marker to the last, following a point 65% down the viewport (a `requestAnimationFrame` scroll loop, as in `StackedServices`); it only moves forward, so once drawn it stays. Each marker lights when the line reaches it (a hollow ring fills gold and grows slightly; numbered markers turn navy-on-gold), and that item's year rises from behind its own edge (the mask reveal of the portfolio grid titles) while its text fades up.
+- **Props:** `items: { title?, text?, marker? }[]`, `variant?: 'timeline' | 'steps'`, `tone?: 'light' | 'dark'`, `as?: 'h2' | 'h3' | 'h4'`, `class?`.
+- **Layout:** timeline: on large screens a 14rem year column (years in the serif at `text-6xl`, right-aligned; word labels such as "Coast to coast" a size down), the spine, then the text; on phones the spine at the left with the year above its text. Steps: spine at the left, numbered circles.
+- **Progressive enhancement:** the markup is the finished state (every item lit, line full). The script measures the spine (always) and rewinds the items only when motion is allowed, so reduced motion and no-JS show everything in place.
+- **Best for:** milestones with dates (40 Years); steps with explanations (how winners are chosen, how research works).
+- **Could fit:** 40 Years (milestones), the Consumer Choice Award page (the selection process), CCRDI and For Businesses (when process copy is supplied).
+- **Considered:** `WorkProcess` (four horizontal tiles on navy with a CTA strip; fixed to four, not for dates or long step text).
+- **Base theme candidate:** yes.
+- **Visual weight:** Medium.
 
 #### FeatureGrid
 
@@ -551,14 +625,17 @@ All are in `src/components/ccc/`, built for the CCC design (bold-round spacing, 
 
 #### MediaSplit
 
-- **File:** [src/components/ccc/MediaSplit.astro](src/components/ccc/MediaSplit.astro) (section)
-- **For:** a photo beside an eyebrow, heading, one or more paragraphs, an optional pull quote and a link. Photo left or right; stacks on phones with the photo first.
-- **Props:** `image`, `imageAlt`, `eyebrow?`, `title`, `text?: string | string[]`, `quote?`, `link?`, `imageSide?: 'left' | 'right'`, `background?: 'white' | 'light' | 'navy'`, `ratio?: 'landscape' | 'portrait'`, `as?`, `class?`.
+- **File:** [src/components/ccc/MediaSplit.astro](src/components/ccc/MediaSplit.astro) (section, with a small script). **Rebuilt (round 2)** in the theme's design language.
+- **For:** a photo beside an eyebrow, heading, text and link, in the theme's asymmetric grid: a wide photo column (7) and a narrow text column (4) offset to the far side.
+- **Signature:** the photo **unveils upward and settles** from a slight zoom as it comes into view (`has-anim clip`), then **drifts gently with the scroll** (a slow parallax of up to 5%, scrubbed while on screen); the eyebrow and heading **rise from behind their edges** (`has-anim mask`), the text and link follow in a stagger. An optional framework statement sits in `StackedServices`' frosted navy pane (`bg-dark/75 backdrop-blur-2xl`, with a ✲ glyph and the pull-quote style) inside the photo's lower inner corner; on phones it becomes a tile of its own under the photo.
+- **Props:** `image`, `imageAlt`, `eyebrow?`, `title`, `text?: string | string[]`, `quote?` (framework text only), `link?`, `imageSide?: 'left' | 'right'`, `background?: 'white' | 'light' | 'navy'`, `ratio?: 'landscape' | 'portrait'` (4:3 or 4:5), `as?`, `class?`.
+- **Portrait photos:** the text column is sticky on large screens (it stays in view while the tall photo scrolls past), as the homepage intro is beside its card stack.
+- **Reduced motion:** the photo in place, unclipped and unzoomed, no parallax; text in place.
 - **Best for:** a story section with one strong photo: the anniversary narrative, a brand introduction, "who we are".
 - **Could fit:** About (story), 40 Years (the narrative, as a second section), the brand pages (an introduction), For Businesses.
-- **Considered:** the About intro image block and the Portfolio detail layout (both tied to their pages), `Facts` (bento, navy only).
+- **Considered:** `BlogCard` horizontal (a 6/6 card for articles), the About intro image block and the case-study layout (both tied to their pages).
 - **Base theme candidate:** yes.
-- **Visual weight:** Medium.
+- **Visual weight:** Medium to Heavy.
 
 #### Statement
 
