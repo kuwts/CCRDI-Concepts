@@ -34,6 +34,8 @@ content, and page lists in scripts.
 | **Reduced-motion `scale` dropped by the CSS minifier** when combined with `transform` in one rule; split into separate rules. | `src/styles/global.css` (`has-anim` clip/mask) | Generic. |
 | **Transform breaks a stretched link.** A transformed ancestor becomes the containing block for `after:inset-0`; nudge with margin instead. | `src/components/ccc/NewsList.astro` | Pattern note for all stretched-link cards. |
 | **Breadcrumb JSON-LD URL** kept a trailing slash. | `src/pages/our-brands/[slug].astro` | Generic. |
+| **Closed dropdown links stayed in the Tab order.** The desktop panel collapses visually but its links were still reachable by Tab after Esc or closing. Closed panels are now `hidden` once the close transition ends (a timer, cleared on reopen). | `src/components/menu/DropdownNav.astro` | Generic. |
+| **Header crowded at 1024–1279px** once a menu item gets a dropdown caret. Logo `lg:w-36` (was `lg:w-40`) keeps at least 8px between items. | `src/components/Header.astro` | Logo widths depend on the logo's shape; check with `dropdown.cjs`. |
 
 ## 2. Spacing, typography and interaction (UI proposal and bold round)
 

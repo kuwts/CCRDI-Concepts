@@ -163,11 +163,18 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
         ethical issues that would negate them from consideration."
       - "Nominating Award-Winners": "After the list of companies has been refined, market
         insights are integrated with AI results."
-- [ ] **Confirm the award winners directory link.** "Find a Trusted Business" (header and
-      homepage hero) now goes to https://ccaward.com/award-winners/, the official Consumer
-      Choice Award winners directory (Canada and USA), linked as "Award Winners" in
-      ccaward.com's navigation; opens in a new tab. The Canada-only directory is
-      https://ccaward.com/award-winners/canada/ if the client prefers it.
+- [ ] **Confirm the award winners directory link.** "Find a Trusted Business" (header, mobile
+      menu and homepage hero) and the Consumer Choice Award page's closing link go to
+      https://ccaward.com/award-winners/canada/, the Canada-only page of the official Consumer
+      Choice Award winners directory (the project owner chose it over the full Canada and USA
+      directory, https://ccaward.com/award-winners/); opens in a new tab.
+- [ ] **New labels "Phone" and "Address"** (Contact page details), approved by the project
+      owner, for client confirmation. content.md supplies "Email" but no labels for the phone
+      and address.
+- [ ] **Confirm the Our Brands menu.** "Our Brands" in the header and mobile menu is now a
+      dropdown (approved by the project owner) listing Our Brands, Consumer Choice Award,
+      Consumer Choice Marketing and Consumer Choice Research, Data & Insights. The page names
+      are the existing ones; no new text.
 - [ ] **Confirm the footer social links.** They are Consumer Choice Award's official accounts,
       as linked from ccaward.com's header and footer (CCC has no accounts of its own yet):
       Facebook https://www.facebook.com/consumerchoiceaward/, Instagram
@@ -248,8 +255,8 @@ Every placeholder on the site. Each one must be replaced before launch.
 - Header, mobile menu and footer logo: the client's CCC logo, in a temporary reversed version
   until the official one arrives (see Still needed)
 - Favicon set: a temporary CC monogram from the CCC logo, pending approval (see Still needed)
-- Header button "Find a Trusted Business": ccaward.com award winners directory, pending
-  confirmation (see Still needed)
+- Header button "Find a Trusted Business": ccaward.com award winners directory (Canada),
+  pending confirmation (see Still needed)
 - Footer email: hidden until the client provides a general email address (the footer CTA
   above it already links to Contact). Use a general address only (e.g. an info@ mailbox),
   never an individual person's email.

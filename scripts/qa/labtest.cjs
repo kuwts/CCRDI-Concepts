@@ -112,9 +112,9 @@ const results = []; const ok = (c, ctx, m) => { results.push(c); if (!c) console
     ok(went, ctx, 'news row is clickable as a whole'); if (went) { await p.goBack({ waitUntil: 'networkidle' }); await p.waitForTimeout(500); }
     // reduced motion: reveals shown without movement
     if (reduce) { const rv = await p.evaluate(() => { const cs = getComputedStyle(document.querySelector('dl .has-anim')); return { op: cs.opacity, tr: cs.transform }; }); ok(rv.op === '1' && rv.tr === 'none', ctx, `reveals static (${JSON.stringify(rv)})`); }
-    // axe
+    // axe (skips the theme's dev-only breakpoint badge, DeviceSizeIndicator)
     await p.addScriptTag({ content: axe });
-    const v = await p.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] })).violations.map((x) => `${x.id}(${x.nodes.length}): ${x.nodes[0].target}`));
+    const v = await p.evaluate(async () => (await axe.run({ exclude: [['.z-500000']] }, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] })).violations.map((x) => `${x.id}(${x.nodes.length}): ${x.nodes[0].target}`));
     ok(v.length === 0, ctx, `axe: ${v.join(' | ') || 'none'}`);
     ok(errs.length === 0, ctx, `console errors: ${errs.join(' | ') || 'none'}`);
     await p.close();

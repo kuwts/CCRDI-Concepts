@@ -207,10 +207,10 @@ Every premium component has **one physical idea**, carried out with restraint: o
 - **For:** desktop dropdown menus.
 - **Props:** `items: { name, url, children?: { name, url }[] }[]`, `currentPath: string`.
 - **Animations:** a single white panel with a pointer arrow slides sideways to follow the hovered item; its height animates between menus of different lengths; child links fade up with a 40ms stagger; the other top-level items dim to 50%. Reduced motion: no animation.
-- **Keyboard and touch:** items with children are buttons (`aria-expanded`, `aria-controls`). Hover opens a menu; click, Enter, Space or Arrow Down open it and keep it open. Tab goes from the button into its links, and from the last link on to the next item. Esc closes and returns focus to the button; clicking outside or tabbing away closes it.
+- **Keyboard and touch:** items with children are buttons (`aria-expanded`, `aria-controls`). Hover opens a menu; click, Enter, Space or Arrow Down open it and keep it open. Tab goes from the button into its links, and from the last link on to the next item. Esc closes and returns focus to the button; clicking outside or tabbing away closes it. A closed menu's links are `hidden` once the close transition ends, so Tab skips them.
 - **Visual weight:** Light.
 - **Used on:** all pages (inside Header).
-- **Notes:** a parent item's `url` isn't used (it's a button); give it `"#"` in `menu.json`.
+- **Notes:** a parent item's `url` isn't used (it's a button); give it `"#"` in `menu.json`, or repeat the parent page as the first child (CCC: "Our Brands" lists /our-brands first, then the three brand pages).
 
 #### Footer
 

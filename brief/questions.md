@@ -3,7 +3,7 @@
 Decisions only you can make, logged while building unattended. Each one has the choice made in
 the meantime (the safest reasonable one); none of them is hard to undo.
 
-1. **Contact details labels.** *Answered: approve "Phone" and "Address" (to apply; client to
+1. **Contact details labels.** *Answered: approve "Phone" and "Address" (applied; client to
    confirm the labels, gaps.md).* content.md has the label "Email" (form fields) but none for phone
    or address. The Contact page shows "Email" as a label and the phone and address placeholders
    without labels. Approve "Phone" and "Address" as labels?
@@ -16,8 +16,9 @@ the meantime (the safest reasonable one); none of them is hard to undo.
 4. **Brand page links.** *Answered: keep "Learn More" to the brand pages.* The Our Brands cards now link to the new brand pages with "Learn More"
    (content.md button label), instead of the website / Contact links. The Award's website link
    moved to its brand page sidebar. OK?
-5. **Main menu.** *Answered: make "Our Brands" a dropdown with the three brand pages (to
-   apply).* "Our Brands" stays a single link; the three brand pages are reached from it
+5. **Main menu.** *Answered: make "Our Brands" a dropdown with the three brand pages
+   (applied: Our Brands, then the three brand pages, in the header and the mobile menu; works
+   with keyboard, mouse and touch; the header fits at every width from 1024px).* "Our Brands" stays a single link; the three brand pages are reached from it
    (and the footer). Make it a dropdown with the three brands instead?
 6. **Careers thank-you page.** *Answered: kept, dev only.* /thank-you/application (the theme's
    job application confirmation) is built only by `npm run dev`, with the other demo pages; it's
@@ -36,7 +37,8 @@ the meantime (the safest reasonable one); none of them is hard to undo.
    site's social links as `sameAs`, so search engines are told those are Consumer Choice
    Canada's profiles. Keep that, or leave them out of `sameAs` until CCC has its own accounts?
 10. **Winners directory scope.** *Answered: use the Canada-only page,
-    https://ccaward.com/award-winners/canada/ (to apply; client to confirm, gaps.md).* "Find a Trusted Business" goes to the full directory
+    https://ccaward.com/award-winners/canada/ (applied to the header, the homepage hero and
+    the Award page's closing link; client to confirm, gaps.md).* "Find a Trusted Business" goes to the full directory
     (https://ccaward.com/award-winners/, Canada and USA). Use the Canada-only page instead?
 11. **Truncated instruction.** *Answered: the project owner sent the rest of the request*
     (footer email, SEO descriptions, form labels, domain question, structured data, Marketing

@@ -169,6 +169,7 @@ const linkClass =
     let active: string | null = null;
     let pinned = false; // opened by click/keyboard: stays open when the pointer leaves
     let leaveTimer = 0;
+    let hideTimer = 0;
 
     const moveTo = (i: string, slide: boolean) => {
       const item = nav.querySelector<HTMLElement>(`[data-nav-item="${i}"]`);
@@ -190,6 +191,7 @@ const linkClass =
 
     const open = (i: string) => {
       clearTimeout(leaveTimer);
+      clearTimeout(hideTimer);
       const menu = menus.get(i);
       const wasOpen = nav.hasAttribute('data-open');
       active = i;
@@ -221,6 +223,12 @@ const linkClass =
       nav.removeAttribute('data-dimmed');
       box.style.height = '0px';
       menus.forEach((m) => m.classList.remove('is-shown'));
+      // once the panel has collapsed (0.25s), hide its menus, so their links leave the Tab
+      // order instead of staying focusable inside the invisible panel
+      clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        if (active === null) menus.forEach((m) => (m.hidden = true));
+      }, 300);
     };
 
     triggers.forEach((t) => {
