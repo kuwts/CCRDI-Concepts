@@ -107,7 +107,7 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
 
 <script>
   import Swiper from 'swiper';
-  import { Navigation, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
+  import { Navigation, Pagination, Mousewheel } from 'swiper/modules';
   import 'swiper/css';
   import 'swiper/css/pagination';
 
@@ -117,6 +117,9 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
 
     // repeated slides: still clickable, but not tabbable
     root.querySelectorAll('[data-repeat] a').forEach((a) => a.setAttribute('tabindex', '-1'));
+    // links and images aren't native drag sources here: a mouse drag starting on a card's link
+    // or logo would otherwise start the browser's own drag and fight the slider
+    root.querySelectorAll('a, img').forEach((n) => n.setAttribute('draggable', 'false'));
 
     const active = root.querySelector<HTMLElement>('[data-active]');
     const totalReal = Number(root.dataset.total) || 1;
@@ -124,16 +127,25 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
     const nextEl = root.querySelector<HTMLElement>('.pf-next');
     const prevEl = root.querySelector<HTMLElement>('.pf-prev');
 
+    // A drag or swipe moves one slide, like Prev / Next. (The theme's free mode let a mouse
+    // drag coast on momentum and spin through the looped slides.) The slider follows the
+    // pointer while dragging; on release it settles on the neighbouring slide in the drag's
+    // direction, however far or fast the drag went.
+    let dragFrom: number | null = null;
     new Swiper(el, {
-      modules: [Navigation, Pagination, Mousewheel, FreeMode],
+      modules: [Navigation, Pagination, Mousewheel],
       slidesPerView: 2,
       spaceBetween: 0,
       speed: 600,
       loop: true,
       loopAdditionalSlides: 3,
       centeredSlides: true,
-      freeMode: { enabled: true, sticky: false },
-      mousewheel: { forceToAxis: true, sensitivity: 1, releaseOnEdges: true },
+      threshold: 8, // a click that moves a few pixels is still a click
+      shortSwipes: true,
+      longSwipesRatio: 0.2,
+      preventClicks: true, // a drag never opens a card's link
+      preventClicksPropagation: true,
+      mousewheel: { forceToAxis: true, thresholdDelta: 30, releaseOnEdges: true },
       breakpoints: {
         0: { slidesPerView: 1 },
         640: { slidesPerView: 2 },
@@ -141,6 +153,27 @@ const btn = 'cursor-pointer px-3 py-2.5 text-[14px] font-bold tracking-wider tex
       pagination: progressEl ? { el: progressEl, type: 'progressbar' } : false,
       navigation: nextEl && prevEl ? { nextEl, prevEl } : false,
       on: {
+        // Loop mode re-orders the slides as a drag begins, so positions are tracked by
+        // `realIndex` (stable through that) and corrected with the loop-aware `slideToLoop`.
+        touchStart(sw) {
+          dragFrom = sw.realIndex;
+        },
+        slideChangeTransitionStart(sw) {
+          // a long or fast drag could cross more than one slide: settle on the neighbour
+          if (dragFrom === null) return;
+          const from = dragFrom;
+          dragFrom = null;
+          const count = sw.slides.length;
+          let delta = (sw.realIndex - from + count) % count;
+          if (delta > count / 2) delta -= count;
+          if (Math.abs(delta) > 1) sw.slideToLoop((from + Math.sign(delta) + count) % count, sw.params.speed);
+        },
+        touchEnd(sw) {
+          // released without changing slide (a click, or a short drag that snapped back)
+          requestAnimationFrame(() => {
+            if (dragFrom !== null && sw.realIndex === dragFrom) dragFrom = null;
+          });
+        },
         slideChange(sw) {
           if (active && typeof sw.realIndex === 'number')
             active.textContent = String((sw.realIndex % totalReal) + 1).padStart(2, '0');

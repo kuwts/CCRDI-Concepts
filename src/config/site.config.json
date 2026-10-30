@@ -31,8 +31,8 @@
       "awardEdgeLight": "#E8C44C",
       "awardEdgeDeep": "#C0902C",
       "marketingEdge": "#D92329",
-      "researchEdge": "#DA242A",
-      "researchEdgeLight": "#F4D1D8"
+      "researchEdge": "#D2D3DA",
+      "researchEdgeDeep": "#A3A5AE"
     },
     "font": {
       "heading": { "name": "Source Serif 4 Variable", "fallback": "serif" },

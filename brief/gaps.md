@@ -84,9 +84,10 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] **Approve the brand card edge colours** (thin inset border on the navy brand cards, a
       gradient in each brand's own colours): Award, CCC logo gold #E8C44C into medal gold
       #C0902C; Marketing, CCM deep red lifted to #D92329 into the checkmark gold #CF9F28;
-      CCRDI, its red lifted to #DA242A into its bright red #ED1C28 and the pale pink of its
-      pixel squares #F4D1D8. The two lifted reds are on-dark shades of the logo reds (the
-      originals are 1.43:1 and 2.71:1 on navy); both clear 3:1.
+      CCRDI, the silver-grey of its logo's circuit ring #D2D3DA into a darker silver #A3A5AE
+      (changed from red, which sat too close to Marketing's). The Marketing red is an on-dark
+      shade of the CCM deep red (the original is 1.43:1 on navy); it clears 3:1. On navy:
+      Award gold 9.1:1 and 5.3:1, Marketing 3.1:1 into 6.3:1, CCRDI silver 10.3:1 and 6.3:1.
 - [ ] **An icon or monogram version of the CCC logo for the favicon.** The theme's favicon set
       stays until then.
 - [ ] **Confirm the updated division colours** (taken from the new logos; approved by the
@@ -213,7 +214,7 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       - Thin gold hairlines at a few section transitions, including a new edge gold, #A9802A, in
         `brand.colors.goldEdge`. It's used only for lines on the edge between navy and a light
         section, because it meets 3:1 against both (4.26:1 navy, 3.61:1 white, 3.31:1 ivory).
-      - A subtle woven linen texture on navy (CSS/SVG, no image file).
+      - A fine paper texture on navy, only just noticeable up close (CSS/SVG, no image file).
       - Italic pull quotes for framework statements.
       - Wider section spacing.
       The hero photo was changed from Old Québec (Château Frontenac, a hotel brand's building)

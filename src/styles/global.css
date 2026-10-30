@@ -45,8 +45,8 @@
   --color-award-edge-light: var(--brand-awardEdgeLight); /* CCC logo gold, 9.1:1 on navy */
   --color-award-edge-deep: var(--brand-awardEdgeDeep); /* medal gold, 5.3:1 */
   --color-marketing-edge: var(--brand-marketingEdge); /* CCM deep red, lifted: 3.1:1 */
-  --color-research-edge: var(--brand-researchEdge); /* CCRDI red, lifted: 3.1:1 */
-  --color-research-edge-light: var(--brand-researchEdgeLight); /* CCRDI pixel-square pink */
+  --color-research-edge: var(--brand-researchEdge); /* CCRDI circuit-ring silver, 10.3:1 */
+  --color-research-edge-deep: var(--brand-researchEdgeDeep); /* a darker silver, 6.3:1 */
 
   /* Neutrals and fixed tints. Use these (or the white/black/dark opacity steps)
      instead of one-off hex values. */
@@ -83,11 +83,11 @@
      this gold does (4.26:1 on navy, 3.61:1 on white, 3.31:1 on ivory) */
   --color-hairline-edge: var(--brand-goldEdge);
 
-  /* A woven linen texture for navy: horizontal and vertical fibres plus a soft paper tone,
-     drawn as an SVG turbulence filter (no image file). The fibres darken the navy more than
-     they lighten it: the brightest fleck still leaves white text at 11.6:1 and Heritage Gold
-     at 5.25:1 (measured per pixel), so text contrast stays AA everywhere on navy. */
-  --grain-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='0' y='0' width='100%' height='100%' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75 0.03' numOctaves='3' seed='4' stitchTiles='stitch' result='h'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.75' numOctaves='3' seed='9' stitchTiles='stitch' result='v'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='4' seed='13' stitchTiles='stitch' result='p'/%3E%3CfeComposite in='h' in2='v' operator='arithmetic' k2='0.5' k3='0.5' result='hv'/%3E%3CfeComposite in='hv' in2='p' operator='arithmetic' k2='0.6' k3='0.4' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.28 0 0 0 -0.14' result='lt'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.76 0 0 0 0.38' result='dk'/%3E%3CfeMerge%3E%3CfeMergeNode in='dk'/%3E%3CfeMergeNode in='lt'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23g)'/%3E%3C/svg%3E");
+  /* A fine paper texture for navy, only just noticeable up close: horizontal and vertical
+     fibres plus a soft paper tone, drawn as an SVG turbulence filter (no image file). It
+     darkens more than it lightens: at the brightest fleck white text stays at 13.9:1 and
+     Heritage Gold at 6.3:1 (measured per pixel), so text contrast is effectively unchanged. */
+  --grain-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='0' y='0' width='100%' height='100%' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75 0.03' numOctaves='3' seed='4' stitchTiles='stitch' result='h'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.75' numOctaves='3' seed='9' stitchTiles='stitch' result='v'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='4' seed='13' stitchTiles='stitch' result='p'/%3E%3CfeComposite in='h' in2='v' operator='arithmetic' k2='0.5' k3='0.5' result='hv'/%3E%3CfeComposite in='hv' in2='p' operator='arithmetic' k2='0.6' k3='0.4' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.14 0 0 0 -0.07' result='lt'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.4 0 0 0 0.2' result='dk'/%3E%3CfeMerge%3E%3CfeMergeNode in='dk'/%3E%3CfeMergeNode in='lt'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23g)'/%3E%3C/svg%3E");
   --grain-size: 240px 240px;
 
   /* Motion durations (brief/ui-proposal.md) */
@@ -154,7 +154,7 @@
 :root {
   --edge-award: linear-gradient(135deg, var(--color-award-edge-light), var(--color-award-edge-deep) 55%, var(--color-award-edge-light));
   --edge-marketing: linear-gradient(135deg, var(--color-marketing-edge), var(--color-marketing-on-dark));
-  --edge-research: linear-gradient(135deg, var(--color-research-edge), var(--color-research-on-dark) 60%, var(--color-research-edge-light));
+  --edge-research: linear-gradient(135deg, var(--color-research-edge), var(--color-research-edge-deep) 55%, var(--color-research-edge));
 }
 
 /* An inset 1px border in a gradient (`--edge`), drawn by a mask so it follows the corner

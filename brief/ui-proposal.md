@@ -220,9 +220,9 @@ subtle-motion rule and WCAG 2.1 AA.
     white.
 - **Navy texture:** a woven linen texture (an SVG turbulence filter: horizontal and vertical
   fibres plus a soft paper tone, 240px tile) on the page background (so every navy area has it)
-  and on the sticky header. The first version (3.5% white speckle) was invisible in practice and
-  was replaced. The fibres darken more than they lighten; at the brightest fleck white text stays
-  above 12:1, Heritage Gold above 5.5:1 and 60% white above 5:1, at 1x and 2x.
+  and on the sticky header, tuned to be only just noticeable up close, like fine paper. (The
+  first 3.5% speckle was invisible; the next version, a stronger linen, competed with content.)
+  At the brightest fleck white text stays at 13.9:1 and Heritage Gold at 6.3:1.
 - **Pull quotes:** italic serif with a gold rule (`pull-quote`), framework text only.
   - Home: §13 lead message.
   - For Businesses: the Growth pillar.
