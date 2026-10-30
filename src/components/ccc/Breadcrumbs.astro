@@ -1,0 +1,49 @@
+---
+// Breadcrumbs: where a page sits in the site (Home > Our Brands > CCRDI). The last item is
+// the current page (not a link, aria-current="page"); separators are hidden from screen
+// readers. Best on pages two or more levels deep, placed above the page title.
+import { Icon } from 'astro-icon/components';
+
+interface Crumb {
+  label: string;
+  /** omit on the last item (the current page) */
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+  /** `dark` on a navy page header (default), `light` on white or ivory */
+  tone?: 'dark' | 'light';
+  /** the navigation landmark's name (default "Breadcrumb") */
+  label?: string;
+  class?: string;
+}
+
+const { items, tone = 'dark', label = 'Breadcrumb', class: className = '' } = Astro.props;
+const dark = tone === 'dark';
+---
+
+<nav aria-label={label} class={className}>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+    {items.map((c, i) => {
+      const current = i === items.length - 1;
+      return (
+        <li class="flex items-center gap-x-2">
+          {i > 0 && <Icon name="lucide:chevron-right" class:list={['size-3.5 shrink-0', dark ? 'text-white/60' : 'text-mutedDark']} aria-hidden="true" />}
+          {current || !c.href ? (
+            <span aria-current={current ? 'page' : undefined} class:list={['font-medium', dark ? 'text-white' : 'text-dark']}>{c.label}</span>
+          ) : (
+            <a
+              href={c.href}
+              class:list={[
+                'underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base)',
+                dark ? 'text-white/80 hover:text-white hover:decoration-primary' : 'text-mutedDark hover:text-dark hover:decoration-gold-text',
+              ]}
+            >
+              {c.label}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

@@ -1,0 +1,87 @@
+---
+// Media and text side by side: a photo (left or right) next to an eyebrow, heading, text,
+// an optional pull quote and a link. Stacks on phones (photo first). A complete section.
+import AstroImage from '@/components/helper/AstroImage.astro';
+import LineLink from '@/components/LineLink.astro';
+
+interface Props {
+  image: string;
+  /** describe the photo; empty only if it's purely decorative */
+  imageAlt: string;
+  eyebrow?: string;
+  title: string;
+  /** one paragraph or several */
+  text?: string | string[];
+  /** a framework statement set as a pull quote under the text */
+  quote?: string;
+  link?: { label: string; href: string; target?: string };
+  imageSide?: 'left' | 'right';
+  background?: 'white' | 'light' | 'navy';
+  /** photo shape: `landscape` 3:2 (default) or `portrait` 4:5 */
+  ratio?: 'landscape' | 'portrait';
+  /** heading level for the title (default h2) */
+  as?: 'h2' | 'h3';
+  class?: string;
+}
+
+const {
+  image,
+  imageAlt,
+  eyebrow,
+  title,
+  text,
+  quote,
+  link,
+  imageSide = 'left',
+  background = 'white',
+  ratio = 'landscape',
+  as: Heading = 'h2',
+  class: className = '',
+} = Astro.props;
+const navy = background === 'navy';
+const paragraphs = text ? (Array.isArray(text) ? text : [text]) : [];
+---
+
+<section
+  class:list={[
+    'py-section',
+    background === 'white' && 'bg-white',
+    background === 'light' && 'bg-light',
+    navy && 'bg-dark bg-grain text-white',
+    className,
+  ]}
+>
+  <div class="container">
+    <div class="row items-center gap-y-10">
+      <div class:list={['lg:col-6 has-anim fade', imageSide === 'right' && 'lg:order-2']}>
+        <AstroImage
+          src={image}
+          alt={imageAlt}
+          widths={[600, 900, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          class:list={['w-full rounded-card object-cover', ratio === 'portrait' ? 'aspect-[4/5]' : 'aspect-[3/2]']}
+        />
+      </div>
+      <div class:list={['lg:col-5', imageSide === 'right' ? 'lg:order-1 lg:mr-auto' : 'lg:ml-auto']}>
+        {eyebrow && <p class:list={['mb-4 text-eyebrow uppercase has-anim fade', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
+        <Heading class:list={['text-h2 has-anim fade delay-100', navy ? 'text-white' : 'text-dark']}>{title}</Heading>
+        {paragraphs.map((p) => (
+          <p class:list={['mt-5 text-body max-w-measure has-anim fade delay-150', navy ? 'text-white/85' : 'text-text']}>{p}</p>
+        ))}
+        {quote && (
+          <p
+            class:list={[
+              'pull-quote mt-8 has-anim fade delay-200 [--pull-quote-size:clamp(1.375rem,1.2rem+0.6vw,1.75rem)]',
+              navy ? 'text-white [--pull-quote-rule:var(--color-hairline-dark)]' : 'text-dark',
+            ]}
+          >
+            {quote}
+          </p>
+        )}
+        {link && (
+          <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" class="mt-8 has-anim fade delay-200" />
+        )}
+      </div>
+    </div>
+  </div>
+</section>

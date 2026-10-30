@@ -1,0 +1,48 @@
+---
+// A callout or notice: a short message set apart from the text around it (an update, a
+// note, a key point). A block, not a section; not dismissible, so it can't hide anything
+// important. The body goes in the default slot.
+import { Icon } from 'astro-icon/components';
+import LineLink from '@/components/LineLink.astro';
+
+interface Props {
+  title?: string;
+  /**
+   * `note`: ivory panel with a gold rule on the left (default);
+   * `outline`: white panel with a hairline border and a gold top edge;
+   * `navy`: navy panel with the grain, white text
+   */
+  variant?: 'note' | 'outline' | 'navy';
+  /** an icon-set name, e.g. lucide:info (decorative) */
+  icon?: string;
+  link?: { label: string; href: string; target?: string };
+  /** heading level for the title (default h3) */
+  as?: 'h2' | 'h3' | 'h4' | 'p';
+  class?: string;
+}
+
+const { title, variant = 'note', icon, link, as: Heading = 'h3', class: className = '' } = Astro.props;
+const navy = variant === 'navy';
+---
+
+<div
+  role="note"
+  class:list={[
+    'flex gap-4 sm:gap-5 rounded-card p-6 sm:p-8 has-anim fade',
+    variant === 'note' && 'bg-light border-l-2 border-hairline-light rounded-l-none',
+    variant === 'outline' && 'bg-white border border-line border-t-2 border-t-hairline-light',
+    navy && 'bg-dark bg-grain text-white',
+    className,
+  ]}
+>
+  {icon && <Icon name={icon} class:list={['size-6 shrink-0 mt-0.5', navy ? 'text-primary' : 'text-gold-text']} aria-hidden="true" />}
+  <div class="min-w-0">
+    {title && <Heading class:list={['text-xl font-heading font-semibold leading-snug', navy ? 'text-white' : 'text-dark']}>{title}</Heading>}
+    <div class:list={['max-w-measure [&>p+p]:mt-3', title && 'mt-2', navy ? 'text-white/85' : 'text-text']}>
+      <slot />
+    </div>
+    {link && (
+      <LineLink href={link.href} label={link.label} target={link.target} tone={navy ? 'white' : 'dark'} icon="arrow" class="mt-4 text-[15px]" />
+    )}
+  </div>
+</div>

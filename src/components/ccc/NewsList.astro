@@ -1,0 +1,56 @@
+---
+// A list of news items, announcements or press releases: date, category, headline and an
+// optional summary, one per row between hairlines. Lighter than the BlogCard grid when there
+// are many items or no photos. The headline is the link (the whole row is clickable). A
+// block, not a section; for white or ivory backgrounds.
+import { Icon } from 'astro-icon/components';
+import { animDelay } from '@/utils/animDelay';
+
+interface NewsItem {
+  title: string;
+  href: string;
+  /** the date as shown, e.g. "October 2026" */
+  date?: string;
+  /** the same date in ISO format for <time>, e.g. "2026-10-01" */
+  datetime?: string;
+  category?: string;
+  excerpt?: string;
+}
+interface Props {
+  items: NewsItem[];
+  /** heading level for headlines (default h3) */
+  as?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { items, as: Heading = 'h3', class: className = '' } = Astro.props;
+---
+
+<ul class:list={['border-t border-hairline-light', className]}>
+  {items.map((n, i) => (
+    <li class:list={['has-anim fade', animDelay[i % 3]]}>
+      <article class="group relative grid gap-x-8 gap-y-2 border-b border-line py-7 md:grid-cols-[11rem_1fr_auto] md:py-8">
+        <p class="text-sm text-mutedDark md:pt-1">
+          {n.date && (n.datetime ? <time datetime={n.datetime}>{n.date}</time> : n.date)}
+        </p>
+        <div class="min-w-0">
+          {n.category && <p class="mb-2 text-eyebrow uppercase text-gold-text">{n.category}</p>}
+          <Heading class="text-h3 text-dark">
+            <a
+              href={n.href}
+              class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 group-hover:decoration-current"
+            >
+              {n.title}
+            </a>
+          </Heading>
+          {n.excerpt && <p class="mt-3 max-w-measure text-text">{n.excerpt}</p>}
+        </div>
+        <Icon
+          name="lucide:arrow-up-right"
+          class="hidden size-6 text-dark transition-transform duration-(--duration-base) group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none md:block md:mt-1"
+          aria-hidden="true"
+        />
+      </article>
+    </li>
+  ))}
+</ul>

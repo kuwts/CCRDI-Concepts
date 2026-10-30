@@ -1,0 +1,60 @@
+---
+// Download cards for a media kit or resources: each file's name, a short description, its
+// format and size. The name is the link (the whole card is clickable); format and size are
+// read with it (aria-describedby). Same-site files get the `download` attribute. A block,
+// not a section; for white or ivory backgrounds.
+import { Icon } from 'astro-icon/components';
+import { animDelay } from '@/utils/animDelay';
+
+interface DownloadFile {
+  title: string;
+  description?: string;
+  href: string;
+  /** e.g. "PNG", "PDF", "ZIP" */
+  format: string;
+  /** e.g. "110 KB" */
+  size?: string;
+}
+interface Props {
+  items: DownloadFile[];
+  /** columns on large screens (default 3) */
+  columns?: 2 | 3;
+  /** a unique id on the page (description ids are built from it) */
+  id: string;
+  /** heading level for file names (default h3) */
+  as?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { items, columns = 3, id, as: Heading = 'h3', class: className = '' } = Astro.props;
+const cols = columns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
+const icon = (format: string) => (/^(png|jpe?g|svg|webp|gif)$/i.test(format) ? 'lucide:file-image' : 'lucide:file-text');
+const sameSite = (href: string) => href.startsWith('/') && !href.startsWith('//');
+---
+
+<ul class:list={['grid grid-cols-1 md:grid-cols-2 gap-6', cols, className]}>
+  {items.map((f, i) => (
+    <li class:list={['has-anim fade', animDelay[i % 3]]}>
+      <article class="group relative flex h-full flex-col rounded-card border border-line bg-white p-6 sm:p-8 transition-colors duration-(--duration-base) hover:border-hairline-light focus-within:border-hairline-light">
+        <Icon name={icon(f.format)} class="mb-6 size-8 text-gold-text" aria-hidden="true" />
+        <Heading class="text-xl font-semibold leading-snug text-dark">
+          <a
+            href={f.href}
+            download={sameSite(f.href) ? '' : undefined}
+            aria-describedby={`${id}-${i}-meta`}
+            class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 hover:decoration-current"
+          >
+            {f.title}
+          </a>
+        </Heading>
+        {f.description && <p class="mt-3 text-text">{f.description}</p>}
+        <p id={`${id}-${i}-meta`} class="mt-auto flex items-center gap-2 pt-8 text-sm font-medium text-mutedDark">
+          <Icon name="lucide:download" class="size-4 transition-transform duration-(--duration-base) group-hover:translate-y-0.5 motion-reduce:transition-none" aria-hidden="true" />
+          <span>{f.format}</span>
+          {f.size && <span aria-hidden="true">·</span>}
+          {f.size && <span>{f.size}</span>}
+        </p>
+      </article>
+    </li>
+  ))}
+</ul>

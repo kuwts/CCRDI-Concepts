@@ -10,7 +10,7 @@ import config from './src/config/site.config.json' with { type: 'json' };
 
 // kept out of the XML sitemap (every one of these pages is also noindex)
 const noIndexPaths = [
-  '/thank-you/',
+  '/thank-you/', '/component-lab',
   '/style-guide',
   '/blog',
   '/blog-horizontal',

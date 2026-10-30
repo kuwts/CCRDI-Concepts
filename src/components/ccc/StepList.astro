@@ -1,0 +1,70 @@
+---
+// A vertical list of steps (numbered) or a timeline (dated milestones), joined by a thin
+// gold line. A block, not a section. Content order is the reading order (an ordered list).
+interface Step {
+  /** the step's name; a timeline item can have just a marker and text */
+  title?: string;
+  text?: string;
+  /** timeline: the date or label shown on the marker, e.g. "1987" */
+  marker?: string;
+}
+interface Props {
+  items: Step[];
+  /** `steps`: numbered markers (01, 02…); `timeline`: each item's `marker` (e.g. a year) */
+  variant?: 'steps' | 'timeline';
+  /** `light` on white or ivory (default), `dark` on navy */
+  tone?: 'light' | 'dark';
+  /** heading level for the step titles (default h3) */
+  as?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { items, variant = 'steps', tone = 'light', as: Heading = 'h3', class: className = '' } = Astro.props;
+import { animDelay } from '@/utils/animDelay';
+
+const dark = tone === 'dark';
+const markerText = (s: Step, i: number) => (variant === 'timeline' ? (s.marker ?? '') : String(i + 1).padStart(2, '0'));
+---
+
+<ol class:list={['relative', className]}>
+  {items.map((s, i) => (
+    <li class:list={['relative grid grid-cols-[3rem_1fr] gap-x-5 sm:gap-x-8 pb-10 last:pb-0 has-anim fade', animDelay[i]]}>
+      {/* the connecting line, behind the markers (not after the last item) */}
+      {i < items.length - 1 && (
+        <span
+          class:list={['absolute top-12 bottom-0 left-6 w-px -translate-x-1/2', dark ? 'bg-hairline-dark' : 'bg-hairline-light']}
+          aria-hidden="true"
+        ></span>
+      )}
+      {variant === 'steps' ? (
+        <span
+          class:list={[
+            'relative flex size-12 items-center justify-center rounded-full border text-sm font-medium tabular-nums',
+            dark ? 'border-hairline-dark bg-dark text-white' : 'border-hairline-light bg-white text-dark',
+          ]}
+          aria-hidden="true"
+        >
+          {markerText(s, i)}
+        </span>
+      ) : (
+        <span class="relative flex h-12 items-start justify-center pt-1.5" aria-hidden="true">
+          <span class:list={['block size-3 rounded-full border-2', dark ? 'border-hairline-dark bg-dark' : 'border-hairline-light bg-white']}></span>
+        </span>
+      )}
+      <div class:list={[variant === 'steps' && 'pt-2.5']}>
+        {/* timeline: the marker is a small label above a title, or the item's heading when there's no title */}
+        {variant === 'timeline' && s.marker && (s.title ? (
+          <p class:list={['mb-1 text-eyebrow uppercase', dark ? 'text-primary' : 'text-gold-text']}>{s.marker}</p>
+        ) : (
+          <Heading class:list={['text-h3', s.text && 'mb-3', dark ? 'text-white' : 'text-dark']}>{s.marker}</Heading>
+        ))}
+        {s.title && (
+          <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>
+            {variant === 'steps' && <span class="sr-only">{markerText(s, i)}. </span>}{s.title}
+          </Heading>
+        )}
+        {s.text && <p class:list={['max-w-measure', s.title && 'mt-3', dark ? 'text-white/80' : 'text-text']}>{s.text}</p>}
+      </div>
+    </li>
+  ))}
+</ol>

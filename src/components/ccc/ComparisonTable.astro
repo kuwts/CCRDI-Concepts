@@ -1,0 +1,73 @@
+---
+// A comparison table: rows of items compared across a few columns (e.g. brand, role, core
+// message). A real <table> with a caption, column headers and row headers. On small screens
+// it scrolls sideways inside a keyboard-focusable region, with the row headers kept in view.
+// A block, not a section; for white or ivory backgrounds.
+interface Props {
+  /** names the table (and its scroll region) */
+  caption: string;
+  /** show the caption above the table (default) or keep it for screen readers only */
+  captionVisible?: boolean;
+  columns: string[];
+  /** one array of cell text per row; the first cell is the row header */
+  rows: string[][];
+  /** a column to emphasise (0-based), e.g. the one being recommended */
+  highlight?: number;
+  /** a unique id on the page */
+  id: string;
+  class?: string;
+}
+
+const { caption, captionVisible = true, columns, rows, highlight, id, class: className = '' } = Astro.props;
+const captionId = `${id}-caption`;
+const hl = (i: number) => highlight === i;
+---
+
+<div class:list={['has-anim fade', className]}>
+  <div
+    role="region"
+    aria-labelledby={captionId}
+    tabindex="0"
+    class="overflow-x-auto rounded-card border border-line bg-white"
+  >
+    <table class="w-full min-w-[40rem] border-collapse text-left">
+      <caption
+        id={captionId}
+        class:list={[captionVisible ? 'border-b border-line px-6 py-5 text-left text-eyebrow uppercase text-gold-text' : 'sr-only']}
+      >
+        {caption}
+      </caption>
+      <thead>
+        <tr class="border-b-2 border-hairline-light">
+          {columns.map((c, i) => (
+            <th
+              scope="col"
+              class:list={[
+                'px-6 py-4 align-bottom text-sm font-semibold text-dark',
+                i === 0 && 'sticky left-0 z-1 bg-white',
+                hl(i) && 'bg-light',
+              ]}
+            >
+              {c}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr class="border-t border-line first:border-t-0">
+            {r.map((cell, i) =>
+              i === 0 ? (
+                <th scope="row" class:list={['sticky left-0 z-1 bg-white px-6 py-5 align-top font-heading text-lg font-semibold text-dark', hl(0) && 'bg-light']}>
+                  {cell}
+                </th>
+              ) : (
+                <td class:list={['px-6 py-5 align-top text-text', hl(i) && 'bg-light']}>{cell}</td>
+              ),
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

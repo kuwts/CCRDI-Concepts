@@ -1,0 +1,53 @@
+---
+// A statement band: one strong framework statement, centred in the pull-quote style, with a
+// short gold rule above and optional gold hairlines framing the section. Framework text only:
+// never an invented quote or a testimonial, so there is no attribution. A complete section.
+interface Props {
+  statement: string;
+  eyebrow?: string;
+  background?: 'white' | 'light' | 'navy';
+  /** gold hairlines at the top and bottom of the section */
+  hairlines?: boolean;
+  /** `p` (default) when the statement isn't a heading; `h2` when it heads the section */
+  as?: 'p' | 'h2';
+  class?: string;
+}
+
+const { statement, eyebrow, background = 'light', hairlines = false, as: Tag = 'p', class: className = '' } = Astro.props;
+const navy = background === 'navy';
+---
+
+<section
+  class:list={[
+    'py-section',
+    background === 'white' && 'bg-white',
+    background === 'light' && 'bg-light',
+    navy && 'bg-dark bg-grain text-white',
+    hairlines && 'hairline-top',
+    hairlines && navy && 'hairline-dark',
+    className,
+  ]}
+>
+  <div class="container">
+    <div class="row justify-center text-center">
+      <div class="lg:col-10 xl:col-9">
+        {eyebrow && <p class:list={['mb-6 text-eyebrow uppercase has-anim fade', navy ? 'text-primary' : 'text-gold-text']}>{eyebrow}</p>}
+        <span class:list={['mx-auto mb-8 block h-px w-16 has-anim fade', navy ? 'bg-hairline-dark' : 'bg-hairline-light']} aria-hidden="true"></span>
+        <Tag
+          class:list={[
+            'pull-quote border-l-0! pl-0! lg:pl-0! has-anim fade delay-100 [--pull-quote-size:clamp(1.875rem,1.35rem+1.9vw,3rem)]',
+            navy ? 'text-white' : 'text-dark',
+          ]}
+        >
+          {statement}
+        </Tag>
+      </div>
+    </div>
+  </div>
+  {/* the closing hairline, at the bottom of the section */}
+  {hairlines && (
+    <div class="pointer-events-none absolute inset-x-0 bottom-0" aria-hidden="true">
+      <div class="container"><div class:list={['h-px', navy ? 'bg-hairline-dark' : 'bg-hairline-light']}></div></div>
+    </div>
+  )}
+</section>

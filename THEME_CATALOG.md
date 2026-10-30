@@ -89,6 +89,18 @@ These are defined once and reused across many components. Component entries refe
 | [LoadMore](#loadmore) | "+" load-more button | Light | Blog, Blog Horizontal, Portfolio |
 | [PauseButton](#pausebutton) | Keyboard pause control for moving content | — | Inside Clients, TeamGroupCarousel, ReviewCarousel, Showreel |
 | [AnniversarySeal](#anniversaryseal) | CCC 40th anniversary seal (SVG) | Light | Home (hero), Footer (all pages) |
+| [StatRow](#statrow) | Key facts in a row, gold dividers | Light | Component lab only (not yet approved) |
+| [StepList](#steplist) | Vertical steps or a dated timeline | Light | Component lab only |
+| [FeatureGrid](#featuregrid) | Icon features / services / values | Light | Component lab only |
+| [Callout](#callout) | Notice or note panel | Light | Component lab only |
+| [Tabs](#tabs) | Accessible tabs | Medium | Component lab only |
+| [ComparisonTable](#comparisontable) | Comparison table with a scroll region | Medium | Component lab only |
+| [DownloadCards](#downloadcards) | Media kit / resource downloads | Light | Component lab only |
+| [NewsList](#newslist) | News or press releases as a list | Light | Component lab only |
+| [CtaBand](#ctaband) | Call-to-action band (navy, ivory, split) | Medium | Component lab only |
+| [MediaSplit](#mediasplit) | Photo beside text (left / right) | Medium | Component lab only |
+| [Statement](#statement) | One framework statement, centred pull quote | Medium | Component lab only |
+| [Breadcrumbs](#breadcrumbs) | Page trail | Light | Component lab only |
 | [AstroImage](#astroimage) | Image helper | — | Everywhere |
 | [AstroVideo](#astrovideo) | Video helper | — | Home, About, Services (via Showreel / ReviewCarousel) |
 
@@ -431,6 +443,144 @@ These are defined once and reused across many components. Component entries refe
 - **Animations:** none.
 - **Visual weight:** Light.
 - **Used on:** Home (a stamp on the edge between the hero and the showreel, right-aligned with the hero's right column; `size-24` → `lg:size-44`; one fade-and-scale in via `has-anim pop`; navy-and-gold double focus ring), Footer (CTA row).
+
+### CCC components (component lab)
+
+All are in `src/components/ccc/`, built for the CCC design (bold-round spacing, Source Serif 4 / Inter type scale, gold hairlines, navy grain, the pull-quote style, gold-outline buttons, `@theme` tokens only, no hex values). Each is responsive, keyboard accessible, WCAG 2.1 AA and respects reduced motion (`has-anim` reveals are static; hover nudges and transitions are off). **Status: shown only on `/component-lab` (noindex, not in the sitemap or nav); not used on any real page until approved.** "Block" components have no section padding and go inside any section; "section" components are complete `<section>`s with `py-section`.
+
+#### StatRow
+
+- **File:** [src/components/ccc/StatRow.astro](src/components/ccc/StatRow.astro) (block)
+- **For:** two to four key facts or figures in a row, divided by gold hairlines; the value in the serif at H2 size, the label under it. A `<dl>` (label = term, value = description).
+- **Props:** `items: { value, label, note? }[]`, `tone?: 'light' | 'dark'` (white/ivory or navy), `align?: 'left' | 'center'`, `class?`.
+- **Layout:** one row on large screens, two columns on tablets, stacked on phones (dividers above each item).
+- **Best for:** short confirmed facts with a value: founding year, years of recognition, "1 winner per category", markets served. Text values work ("Coast to coast"). No count-up, so figures read as they are.
+- **Could fit:** Our Brands (instead of or beside `Facts`), the Consumer Choice Award page, 40 Years, About, For Businesses.
+- **Considered:** `Facts` (a heavy bento grid on navy only, built for one specific layout), `CounterUp` (animation only).
+- **Base theme candidate:** yes: a light alternative to `Facts` that most sites need.
+- **Visual weight:** Light.
+
+#### StepList
+
+- **File:** [src/components/ccc/StepList.astro](src/components/ccc/StepList.astro) (block)
+- **For:** a vertical process (numbered 01, 02… markers) or a timeline (a dot per item, with the date or label as the item's heading), joined by a thin gold line. An `<ol>`; step numbers are read by screen readers ("01. Category Selection").
+- **Props:** `items: { title?, text?, marker? }[]`, `variant?: 'steps' | 'timeline'`, `tone?: 'light' | 'dark'`, `as?: 'h2' | 'h3' | 'h4'` (title level, default h3), `class?`.
+- **Best for:** steps with explanations (how winners are chosen, how to apply, how a research project runs); milestones with dates (40 Years).
+- **Could fit:** Consumer Choice Award (the selection process), 40 Years (milestones), CCRDI (how research works, when supplied), For Businesses (how to get involved, when supplied).
+- **Considered:** `WorkProcess` (four tall cards on navy with a CTA strip: horizontal, fixed to four, decorative glyphs; not suited to long step text or dates).
+- **Base theme candidate:** yes: vertical steps and timelines are common corporate needs the theme lacks.
+- **Visual weight:** Light.
+
+#### FeatureGrid
+
+- **File:** [src/components/ccc/FeatureGrid.astro](src/components/ccc/FeatureGrid.astro) (block)
+- **For:** features, services or values as a grid: a decorative Lucide icon (gold), a title, a short text and an optional `LineLink`, each item under a gold hairline (no boxes). A `<ul>`.
+- **Props:** `items: { icon?, title, text?, link? { label, href } }[]`, `columns?: 2 | 3 | 4`, `tone?: 'light' | 'dark'`, `as?` (title level), `class?`.
+- **Best for:** 3 to 8 parallel items with a short description each: pillars, services, audiences, benefits.
+- **Could fit:** CCRDI (core services), the homepage-style pillars elsewhere (About), For Businesses (audiences), Consumer Choice Marketing (services, when supplied).
+- **Considered:** `StackedServices` (sticky stacking photo cards: heavy and photo-led), `WorkProcess` (four steps only), the Services showcase deck (one full card per item).
+- **Base theme candidate:** yes.
+- **Visual weight:** Light.
+
+#### Callout
+
+- **File:** [src/components/ccc/Callout.astro](src/components/ccc/Callout.astro) (block)
+- **For:** a short note set apart from the text around it (`role="note"`); the body goes in the default slot. Not dismissible, so it can't hide anything important.
+- **Props:** `title?`, `variant?: 'note' | 'outline' | 'navy'` (ivory with a gold side rule; white with a hairline border and gold top edge; navy with the grain), `icon?` (decorative), `link?: { label, href, target? }`, `as?: 'h2' | 'h3' | 'h4' | 'p'`, `class?`.
+- **Best for:** one key point, an update, a deadline, where to find more (e.g. "nominations open", a media contact note).
+- **Could fit:** Media & Partners (media enquiries), Contact (response times, when supplied), legal pages (a summary note), 40 Years (anniversary events, when supplied).
+- **Considered:** none in the theme (the theme has no notice pattern).
+- **Base theme candidate:** yes.
+- **Visual weight:** Light.
+
+#### Tabs
+
+- **File:** [src/components/ccc/Tabs.astro](src/components/ccc/Tabs.astro) (block, with a small script)
+- **For:** related content of the same kind, one panel at a time. WAI-ARIA tabs with automatic activation: Tab moves into the tab list (only the selected tab is in the Tab order) and on to the open panel; Left / Right arrows move between tabs and wrap; Home / End jump to the first / last. The selected tab has a gold underline. On small screens the tab list scrolls sideways and fades the edge with more tabs. Without JavaScript every panel is shown under its own label.
+- **Props:** `items: { label, title?, body }[]` (`body` is markdown), `label` (names the tab list for screen readers), `id` (unique on the page), `as?` (level for panel titles and the no-JS labels), `class?`.
+- **Motion:** the underline slides in and panels fade in (250ms); both off with reduced motion.
+- **Best for:** 2 to 5 short, parallel panels people choose between: purpose / mission / vision; one panel per audience; one per brand.
+- **Could fit:** About (purpose, mission, vision), For Businesses (one tab per audience), Our Brands (a compact brand summary, if the deck becomes too long).
+- **Considered:** `Faq` (an accordion: better when people may want several items open, or for long lists).
+- **Base theme candidate:** yes.
+- **Visual weight:** Medium.
+
+#### ComparisonTable
+
+- **File:** [src/components/ccc/ComparisonTable.astro](src/components/ccc/ComparisonTable.astro) (block)
+- **For:** rows compared across a few columns, as a real `<table>` with a caption, column headers and row headers. The table sits in a named, keyboard-focusable region that scrolls sideways on small screens (arrow keys scroll it), with the row headers kept in view.
+- **Props:** `caption` (names the table and region), `captionVisible?` (default true), `columns: string[]`, `rows: string[][]` (first cell is the row header), `highlight?` (a column to emphasise, 0-based), `id`, `class?`.
+- **Best for:** structured comparisons with short cells: brand / role / core message; programme options; what each brand offers.
+- **Could fit:** Our Brands (the §2 brand architecture), For Businesses (which brand helps with what, when supplied).
+- **Considered:** the `.content` prose styles (no table styling), Pricing cards (marketing layout, not comparison).
+- **Base theme candidate:** yes.
+- **Visual weight:** Medium.
+
+#### DownloadCards
+
+- **File:** [src/components/ccc/DownloadCards.astro](src/components/ccc/DownloadCards.astro) (block)
+- **For:** files to download: name (the link; the whole card is clickable), description, format and size (read with the link through `aria-describedby`), a file icon. Same-site files get the `download` attribute.
+- **Props:** `items: { title, description?, href, format, size? }[]`, `columns?: 2 | 3`, `id`, `as?` (name level), `class?`.
+- **Best for:** downloadable files: logo packages, fact sheets, press kits, reports.
+- **Could fit:** Media & Partners (the logo downloads placeholder), CCRDI (reports, when supplied).
+- **Considered:** `BlogCard` (article cards with images; no file details).
+- **Base theme candidate:** yes.
+- **Visual weight:** Light.
+
+#### NewsList
+
+- **File:** [src/components/ccc/NewsList.astro](src/components/ccc/NewsList.astro) (block)
+- **For:** news, announcements or press releases as rows between hairlines: date (in `<time>` when an ISO date is given), category, headline (the link; the whole row is clickable) and an optional summary.
+- **Props:** `items: { title, href, date?, datetime?, category?, excerpt? }[]`, `as?` (headline level), `class?`.
+- **Best for:** many items, or items without photos: press releases, announcements, winner news.
+- **Could fit:** Media & Partners (news and press releases), the homepage news section (if photos aren't supplied).
+- **Considered:** `BlogCard` (photo cards; heavier when there are many items or no photos).
+- **Base theme candidate:** yes.
+- **Visual weight:** Light.
+
+#### CtaBand
+
+- **File:** [src/components/ccc/CtaBand.astro](src/components/ccc/CtaBand.astro) (section)
+- **For:** a call to action: optional eyebrow, a heading (optionally in the pull-quote style), a line of text and up to two actions (`Button` + `LineLink`).
+- **Props:** `eyebrow?`, `title`, `text?`, `primary?` / `secondary?`: `{ label, href, target? }`, `variant?: 'navy' | 'ivory' | 'split'` (centred on navy with the grain; centred on ivory; on white with heading left, actions right and a gold hairline above), `quote?` (pull-quote title), `as?`, `class?`.
+- **Best for:** closing a page with one next step (contact, find a trusted business, read the story). Keep one main `Button` per page: where the hero already has one, use only `secondary`.
+- **Could fit:** the end of the brand pages, For Businesses, Media & Partners, About.
+- **Considered:** the `WorkProcess` CTA strip (tied to that section), the Footer CTA (site-wide).
+- **Base theme candidate:** yes.
+- **Visual weight:** Medium.
+
+#### MediaSplit
+
+- **File:** [src/components/ccc/MediaSplit.astro](src/components/ccc/MediaSplit.astro) (section)
+- **For:** a photo beside an eyebrow, heading, one or more paragraphs, an optional pull quote and a link. Photo left or right; stacks on phones with the photo first.
+- **Props:** `image`, `imageAlt`, `eyebrow?`, `title`, `text?: string | string[]`, `quote?`, `link?`, `imageSide?: 'left' | 'right'`, `background?: 'white' | 'light' | 'navy'`, `ratio?: 'landscape' | 'portrait'`, `as?`, `class?`.
+- **Best for:** a story section with one strong photo: the anniversary narrative, a brand introduction, "who we are".
+- **Could fit:** About (story), 40 Years (the narrative, as a second section), the brand pages (an introduction), For Businesses.
+- **Considered:** the About intro image block and the Portfolio detail layout (both tied to their pages), `Facts` (bento, navy only).
+- **Base theme candidate:** yes.
+- **Visual weight:** Medium.
+
+#### Statement
+
+- **File:** [src/components/ccc/Statement.astro](src/components/ccc/Statement.astro) (section)
+- **For:** one strong statement, centred in the italic pull-quote style, with a short gold rule above and optional gold hairlines framing the section. Framework text only: never an invented quote or a testimonial, so there's no attribution.
+- **Props:** `statement`, `eyebrow?`, `background?: 'white' | 'light' | 'navy'`, `hairlines?`, `as?: 'p' | 'h2'`, `class?`.
+- **Best for:** the §13 lead message, the brand purpose, a tagline.
+- **Could fit:** About (the lead message), 40 Years (the §10 headline line), between sections on long pages.
+- **Considered:** the `pull-quote` utility (used inline next to a card stack; this is the full-width version).
+- **Base theme candidate:** yes, as a "statement band".
+- **Visual weight:** Medium.
+
+#### Breadcrumbs
+
+- **File:** [src/components/ccc/Breadcrumbs.astro](src/components/ccc/Breadcrumbs.astro) (block)
+- **For:** where a page sits in the site. A `<nav>` (default name "Breadcrumb") with an ordered list; the last item is the current page (`aria-current="page"`, not a link); chevron separators are hidden from screen readers.
+- **Props:** `items: { label, href? }[]`, `tone?: 'dark' | 'light'` (on a navy page header, or on white / ivory), `label?` (landmark name), `class?`.
+- **Best for:** pages two or more levels deep.
+- **Could fit:** the three brand pages (Home › Our Brands › brand), future press releases under Media & Partners.
+- **Considered:** none in the theme.
+- **Base theme candidate:** yes.
+- **Visual weight:** Light.
 
 #### CCC changes to theme components
 

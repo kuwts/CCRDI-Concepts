@@ -1,0 +1,167 @@
+---
+// Tabs: related content of the same kind shown one panel at a time (e.g. Mission / Vision /
+// Purpose, or one panel per audience). WAI-ARIA tabs pattern with automatic activation:
+// Tab moves into the tab list and on to the open panel; Left / Right arrows move between
+// tabs (wrapping), Home / End jump to the first / last. Without JavaScript every panel is
+// shown, each under its own label. A block, not a section; for white or ivory backgrounds.
+import { markdownify } from '@/utils/textConverter';
+
+interface Tab {
+  label: string;
+  /** optional heading inside the panel */
+  title?: string;
+  /** markdown or inline HTML */
+  body: string;
+}
+interface Props {
+  items: Tab[];
+  /** what the tabs are, for screen readers (e.g. "Our purpose, mission and vision") */
+  label: string;
+  /** a unique id on the page (tab and panel ids are built from it) */
+  id: string;
+  /** heading level for panel titles and the no-JS labels (default h3) */
+  as?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { items, label, id, as: Heading = 'h3', class: className = '' } = Astro.props;
+---
+
+<div class:list={['ccc-tabs', className]} data-tabs>
+  <div
+    role="tablist"
+    aria-label={label}
+    class="-mx-1 flex gap-x-6 sm:gap-x-10 overflow-x-auto scrollbar-hidden border-b border-line px-1"
+    hidden
+  >
+    {items.map((t, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`${id}-tab-${i}`}
+        aria-controls={`${id}-panel-${i}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        tabindex={i === 0 ? 0 : -1}
+        class="tab relative shrink-0 cursor-pointer whitespace-nowrap py-4 text-[15px] font-medium text-mutedDark transition-colors duration-(--duration-fast) hover:text-dark aria-selected:text-dark"
+        data-tab
+      >
+        {t.label}
+      </button>
+    ))}
+  </div>
+
+  {items.map((t, i) => (
+    <div
+      role="tabpanel"
+      id={`${id}-panel-${i}`}
+      aria-labelledby={`${id}-tab-${i}`}
+      tabindex="0"
+      class="pt-8 lg:pt-10"
+      data-tab-panel
+    >
+      {/* without JavaScript the tab list is hidden, so each panel shows its own label */}
+      <Heading class="mb-4 text-eyebrow uppercase text-gold-text" data-tab-fallback>{t.label}</Heading>
+      {t.title && <p class="mb-4 font-heading text-h3 text-dark">{t.title}</p>}
+      <div class="max-w-measure text-body text-text [&>p+p]:mt-4" set:html={markdownify(t.body, true)} />
+    </div>
+  ))}
+</div>
+
+<style>
+  /* the selected tab's gold underline */
+  .tab::after {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    height: 2px;
+    content: '';
+    background: var(--color-hairline-light);
+    scale: 0 1;
+    transition: scale var(--duration-base) var(--ease-theme);
+  }
+  .tab[aria-selected='true']::after {
+    scale: 1 1;
+  }
+  /* when the tab list scrolls sideways (small screens), fade the edge with more tabs */
+  [role='tablist'][data-more='end'] {
+    mask-image: linear-gradient(to right, black calc(100% - 3rem), transparent);
+  }
+  [role='tablist'][data-more='start'] {
+    mask-image: linear-gradient(to left, black calc(100% - 3rem), transparent);
+  }
+  [role='tablist'][data-more='both'] {
+    mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);
+  }
+  /* a short fade as a panel opens */
+  [data-tabs][data-ready] [data-tab-panel]:not([hidden]) {
+    animation: tab-in var(--duration-base) var(--ease-theme);
+  }
+  @keyframes tab-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tab::after {
+      transition: none;
+    }
+    [data-tabs][data-ready] [data-tab-panel]:not([hidden]) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const list = root.querySelector<HTMLElement>('[role="tablist"]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-tab-panel]')];
+    if (!list || !tabs.length) return;
+
+    const select = (index: number, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[i].hidden = !on;
+      });
+      if (focus) {
+        tabs[index].focus();
+        tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    };
+
+    // enhance: show the tab list, hide the no-JS labels and every panel but the first
+    list.hidden = false;
+    root.querySelectorAll<HTMLElement>('[data-tab-fallback]').forEach((el) => (el.hidden = true));
+    select(0);
+    root.dataset.ready = '';
+
+    // mark which edge of a scrolling tab list hides more tabs (for the edge fade)
+    const updateMore = () => {
+      const max = list.scrollWidth - list.clientWidth;
+      if (max <= 1) return delete list.dataset.more;
+      const start = list.scrollLeft > 1, end = list.scrollLeft < max - 1;
+      list.dataset.more = start && end ? 'both' : start ? 'start' : 'end';
+    };
+    list.addEventListener('scroll', updateMore, { passive: true });
+    window.addEventListener('resize', updateMore);
+    updateMore();
+
+    tabs.forEach((tab, i) => tab.addEventListener('click', () => select(i)));
+    list.addEventListener('keydown', (e) => {
+      const current = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (current < 0) return;
+      const last = tabs.length - 1;
+      const next =
+        e.key === 'ArrowRight' ? (current === last ? 0 : current + 1)
+        : e.key === 'ArrowLeft' ? (current === 0 ? last : current - 1)
+        : e.key === 'Home' ? 0
+        : e.key === 'End' ? last
+        : -1;
+      if (next < 0) return;
+      e.preventDefault();
+      select(next, true);
+    });
+  });
+</script>

@@ -1,0 +1,54 @@
+---
+// A row of key facts or figures (value + label), divided by gold hairlines. A block, not a
+// section: place it inside any section. Values are text, so non-numeric facts ("Coast to
+// coast") work too; no count-up animation (numbers are read as they are). Built for 2 to 4
+// items: one row on large screens, two columns on tablets, stacked on phones.
+import { animDelay } from '@/utils/animDelay';
+
+interface Stat {
+  value: string;
+  label: string;
+  /** optional small print under the label, e.g. a source or a date */
+  note?: string;
+}
+interface Props {
+  items: Stat[];
+  /** `light` on white or ivory (default), `dark` on navy */
+  tone?: 'light' | 'dark';
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { items, tone = 'light', align = 'left', class: className = '' } = Astro.props;
+
+// columns on large screens follow the number of items (written out for Tailwind)
+const cols = { 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4' }[Math.min(Math.max(items.length, 1), 4) as 1 | 2 | 3 | 4];
+const dark = tone === 'dark';
+// dividers: above each item on phones; left of the second column on tablets; left of every
+// item but the first on large screens
+const divider = [
+  'border-t pt-6 first:border-t-0 first:pt-0',
+  'sm:border-t-0 sm:pt-0 sm:even:border-l sm:even:pl-8',
+  'lg:border-l lg:pl-8 lg:first:border-l-0 lg:first:pl-0',
+];
+---
+
+<dl class:list={['grid grid-cols-1 sm:grid-cols-2 gap-y-6 sm:gap-y-12', cols, className]}>
+  {items.map((s, i) => (
+    <div
+      class:list={[
+        'flex flex-col-reverse justify-end gap-3 pr-0 sm:pr-8 has-anim fade',
+        divider,
+        dark ? 'border-hairline-dark' : 'border-hairline-light',
+        align === 'center' && 'text-center items-center',
+        animDelay[i],
+      ]}
+    >
+      <dt class:list={['text-[15px] leading-snug', dark ? 'text-white/80' : 'text-mutedDark']}>
+        {s.label}
+        {s.note && <span class:list={['mt-1 block text-[13px]', dark ? 'text-white/70' : 'text-mutedDark']}>{s.note}</span>}
+      </dt>
+      <dd class:list={['font-heading text-h2', dark ? 'text-white' : 'text-dark']}>{s.value}</dd>
+    </div>
+  ))}
+</dl>

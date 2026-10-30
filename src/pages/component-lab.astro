@@ -1,0 +1,267 @@
+---
+// Component lab: an internal test page for the new CCC components (src/components/ccc/).
+// Not linked from the site, noindex and out of the sitemap (astro.config.mjs noIndexPaths).
+// Sample content is either framework text (sections 1 to 13, word for word, or the site's
+// existing content entries) or clearly marked demo content. Nothing here is approved copy.
+import { getEntry } from 'astro:content';
+
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import StepList from '@/components/ccc/StepList.astro';
+import FeatureGrid from '@/components/ccc/FeatureGrid.astro';
+import Callout from '@/components/ccc/Callout.astro';
+import Tabs from '@/components/ccc/Tabs.astro';
+import ComparisonTable from '@/components/ccc/ComparisonTable.astro';
+import DownloadCards from '@/components/ccc/DownloadCards.astro';
+import NewsList from '@/components/ccc/NewsList.astro';
+import CtaBand from '@/components/ccc/CtaBand.astro';
+import MediaSplit from '@/components/ccc/MediaSplit.astro';
+import Statement from '@/components/ccc/Statement.astro';
+import Breadcrumbs from '@/components/ccc/Breadcrumbs.astro';
+
+const brands = await getEntry('brands', 'index');
+const award = await getEntry('brandPages', 'consumer-choice-award');
+const ccrdi = await getEntry('brandPages', 'ccrdi');
+const forty = await getEntry('anniversary', 'index');
+const home = await getEntry('homepage', 'index');
+
+const stats = brands!.data.facts.stats;
+const steps = award!.data.process!.steps.map((s) => ({ title: s.heading, text: s.text }));
+const milestones = forty!.data.milestones.map((m) => ({ marker: m.title, text: m.content }));
+const pillars = home!.data.intro.items.map((p) => ({ icon: p.icon, title: p.title, text: p.info }));
+const services = ccrdi!.data.stack!.items.map((s) => ({ icon: s.icon, title: s.title, text: s.info }));
+const audiences = home!.data.process.steps.map((s) => ({ label: s.heading, body: s.text }));
+
+// where each block's sample text comes from
+const chip = { framework: 'Framework content', demo: 'Demo content' };
+---
+
+<Base title="Component lab" noindex>
+  <PageHeader subtitle="Internal test page: not linked, not indexed" title="Component lab" hairline />
+
+  <section class="bg-white py-section">
+    <div class="container space-y-8">
+      <div>
+        <p class="text-eyebrow uppercase text-gold-text">Component 01</p>
+        <h2 class="mt-2 text-h3 text-dark">Breadcrumbs</h2>
+        <p class="mt-2 max-w-measure text-text">Page trail for pages two or more levels deep. Dark (on navy) and light.</p>
+        <p class="mt-3 mb-4 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (page names; the last crumb is demo)</p>
+      </div>
+      <div class="rounded-card bg-dark bg-grain px-6 py-5">
+        <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Our Brands', href: '/our-brands' }, { label: 'CCRDI' }]} />
+      </div>
+      <Breadcrumbs tone="light" label="Breadcrumb (light)" items={[{ label: 'Home', href: '/' }, { label: 'Media & Partners', href: '/media' }, { label: '[Demo] Press release' }]} />
+    </div>
+  </section>
+
+  <section class="hairline-top bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 02</p>
+      <h2 class="mt-2 text-h3 text-dark">StatRow</h2>
+      <p class="mt-2 max-w-measure text-text">Key facts or figures in a row, divided by gold hairlines. Light and dark.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (confirmed public facts, as on Our Brands)</p>
+      <StatRow items={stats} />
+    </div>
+  </section>
+  <section class="bg-dark bg-grain py-section">
+    <div class="container">
+      <StatRow items={stats} tone="dark" align="center" />
+    </div>
+  </section>
+
+  <section class="bg-light py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 03</p>
+      <h2 class="mt-2 text-h3 text-dark">StepList</h2>
+      <p class="mt-2 max-w-measure text-text">A vertical process (numbered steps) or a timeline (dated milestones).</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (Award process from ccaward.com; 40 Years milestones)</p>
+      <div class="row gap-y-16">
+        <div class="lg:col-6">
+          <StepList items={steps} />
+        </div>
+        <div class="lg:col-5 lg:ml-auto">
+          <StepList items={milestones} variant="timeline" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 04</p>
+      <h2 class="mt-2 text-h3 text-dark">FeatureGrid</h2>
+      <p class="mt-2 max-w-measure text-text">Icon features, services or values, each under a gold hairline. 2, 3 or 4 columns; light and dark.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§4 pillars; §7 CCRDI services)</p>
+      <FeatureGrid items={pillars} columns={4} />
+    </div>
+  </section>
+  <section class="bg-dark bg-grain py-section">
+    <div class="container">
+      <FeatureGrid items={services} tone="dark" />
+    </div>
+  </section>
+
+  <section class="bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 05</p>
+      <h2 class="mt-2 text-h3 text-dark">Callout</h2>
+      <p class="mt-2 max-w-measure text-text">A short note or notice set apart from the text around it. Note, outline and navy.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.demo}</p>
+      <div class="grid gap-6 lg:grid-cols-3">
+        <Callout title="[Demo] Note" icon="lucide:info">
+          <p>[Demo] A short note for readers, such as when a programme opens or where to find more detail.</p>
+        </Callout>
+        <Callout title="[Demo] Outline" variant="outline" icon="lucide:calendar" link={{ label: 'Learn More', href: '/40-years' }}>
+          <p>[Demo] A notice with a link, for an update readers may want to follow.</p>
+        </Callout>
+        <Callout title="[Demo] Navy" variant="navy" icon="lucide:badge-check">
+          <p>[Demo] A stronger notice on navy, for a key point on a light page.</p>
+        </Callout>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-light py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 06</p>
+      <h2 class="mt-2 text-h3 text-dark">Tabs</h2>
+      <p class="mt-2 max-w-measure text-text">Related content of the same kind, one panel at a time. Arrow keys, Home and End move between tabs.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§3 purpose, mission, vision; §8 audiences)</p>
+      <div class="row gap-y-16">
+        <div class="lg:col-6">
+          <Tabs
+            id="lab-tabs-purpose"
+            label="Brand purpose, mission and vision"
+            items={[
+              { label: 'Brand Purpose', body: 'To strengthen trust between Canadian consumers and the businesses that serve them.' },
+              { label: 'Mission', body: 'To empower Canadians with trusted information while recognizing businesses that consistently deliver exceptional customer experiences.' },
+              { label: 'Vision', body: 'To become Canada’s most trusted authority on consumer confidence, business excellence, and marketplace intelligence.' },
+            ]}
+          />
+        </div>
+        <div class="lg:col-6">
+          <Tabs id="lab-tabs-audiences" label="Who We Serve" items={audiences} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 07</p>
+      <h2 class="mt-2 text-h3 text-dark">ComparisonTable</h2>
+      <p class="mt-2 max-w-measure text-text">Rows compared across a few columns. Scrolls sideways by keyboard on small screens, row names kept in view.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§2 Brand Architecture)</p>
+      <ComparisonTable
+        id="lab-architecture"
+        caption="Brand Architecture"
+        columns={['Brand', 'Primary Role', 'Core Message']}
+        rows={[
+          ['Consumer Choice Canada', 'Umbrella organization', 'Canada’s trusted consumer authority'],
+          ['Consumer Choice Award', 'Recognition', 'Recognizing businesses that earn consumer trust'],
+          ['Consumer Choice Marketing', 'Amplification and growth', 'Helping award-winning businesses tell their story and grow'],
+          ['CCRDI', 'Research and intelligence', 'Turning consumer data into business confidence'],
+        ]}
+        highlight={2}
+      />
+    </div>
+  </section>
+
+  <section class="bg-light py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 08</p>
+      <h2 class="mt-2 text-h3 text-dark">DownloadCards</h2>
+      <p class="mt-2 max-w-measure text-text">Media kit or resource files: name, description, format and size. The first card downloads a real file.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.demo}</p>
+      <DownloadCards
+        id="lab-downloads"
+        items={[
+          { title: '[Demo] Share image', description: '[Demo] The default social share image, with the Consumer Choice Canada logo.', href: '/images/share-default.png', format: 'PNG', size: '69 KB' },
+          { title: '[Demo] Logo package', description: '[Demo] Logo files for print and screen.', href: '#lab-downloads-demo', format: 'ZIP', size: '[Demo] 2 MB' },
+          { title: '[Demo] Fact sheet', description: '[Demo] A one-page summary for media.', href: '#lab-downloads-demo', format: 'PDF', size: '[Demo] 300 KB' },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="bg-white py-section">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 09</p>
+      <h2 class="mt-2 text-h3 text-dark">NewsList</h2>
+      <p class="mt-2 max-w-measure text-text">News or announcements as a list, one row per item. Lighter than the news card grid.</p>
+      <p class="mt-3 mb-12 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.demo}</p>
+      <NewsList
+        items={[
+          { title: '[Demo] News headline one', href: '/media', date: '[Demo] October 2026', datetime: '2026-10-01', category: '[Demo] Announcement', excerpt: '[Demo] A one- or two-line summary of the story.' },
+          { title: '[Demo] News headline two', href: '/media', date: '[Demo] September 2026', datetime: '2026-09-01', category: '[Demo] Press release' },
+          { title: '[Demo] News headline three', href: '/media', date: '[Demo] August 2026', datetime: '2026-08-01', category: '[Demo] Media', excerpt: '[Demo] A short summary.' },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="hairline-top bg-white pt-section pb-16">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 10</p>
+      <h2 class="mt-2 text-h3 text-dark">MediaSplit</h2>
+      <p class="mt-2 max-w-measure text-text">A photo beside an eyebrow, heading, text, optional pull quote and link. Image left or right; white, ivory or navy.</p>
+      <p class="mt-3 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§10; §13 lead message; placeholder photos)</p>
+    </div>
+  </section>
+  <MediaSplit
+    image="images/placeholders/forty-montreal-old-port.jpg"
+    imageAlt={forty!.data.image_alt}
+    eyebrow="40 Years"
+    title="Celebrating 40 Years of Trust"
+    text={[
+      'For 40 years, Consumer Choice Award has helped Canadians recognize businesses that earn consumer confidence. The creation of Consumer Choice Canada marks the next chapter: bringing recognition, marketing, research, data, and insight together under one national organization.',
+    ]}
+    link={{ label: 'Read Our Story', href: '/40-years' }}
+  />
+  <MediaSplit
+    image="images/placeholders/about-intro-peggys-cove-harbour.jpg"
+    imageAlt="Fishing boats and wooden houses around the harbour at Peggy's Cove, Nova Scotia"
+    eyebrow="About"
+    title="Canada’s Trusted Consumer Authority"
+    text="For more than 40 years, Consumer Choice has helped consumers make better decisions while recognizing businesses that earn their trust."
+    quote="Consumer Choice Canada helps Canadians make more confident decisions while helping businesses earn, understand, and communicate consumer trust."
+    imageSide="right"
+    background="navy"
+    ratio="portrait"
+  />
+
+  <section class="bg-white pt-section pb-16">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 11</p>
+      <h2 class="mt-2 text-h3 text-dark">Statement</h2>
+      <p class="mt-2 max-w-measure text-text">One framework statement, centred in the pull-quote style. Ivory, white or navy; optional framing hairlines.</p>
+      <p class="mt-3 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§13 lead message; §3 tagline)</p>
+    </div>
+  </section>
+  <Statement statement="Consumer Choice Canada helps Canadians make more confident decisions while helping businesses earn, understand, and communicate consumer trust." eyebrow="About" hairlines background="white" />
+  <Statement statement="Building Trust Between Consumers and Business." background="navy" />
+
+  <section class="bg-white pt-section pb-16">
+    <div class="container">
+      <p class="text-eyebrow uppercase text-gold-text">Component 12</p>
+      <h2 class="mt-2 text-h3 text-dark">CtaBand</h2>
+      <p class="mt-2 max-w-measure text-text">A call to action: heading, text and up to two actions. Navy, ivory and split.</p>
+      <p class="mt-3 inline-block rounded-full border border-line px-3 py-1 text-[13px] text-mutedDark">{chip.framework} (§3 taglines; interface labels)</p>
+    </div>
+  </section>
+  <CtaBand
+    variant="navy"
+    eyebrow="Contact"
+    title="Recognizing Excellence. Delivering Insight. Inspiring Confidence."
+    primary={{ label: 'Contact Us', href: '/contact' }}
+    secondary={{ label: 'Explore Our Brands', href: '/our-brands' }}
+  />
+  <CtaBand variant="ivory" title="Where Consumer Trust Begins." quote secondary={{ label: 'Find a Trusted Business', href: 'https://ccaward.com/award-winners/', target: '_blank' }} />
+  <CtaBand
+    variant="split"
+    title="Building Trust Between Consumers and Business."
+    text="Draw on credible research and trusted consumer insight to understand Canadian markets."
+    secondary={{ label: 'Contact Us', href: '/contact' }}
+  />
+</Base>

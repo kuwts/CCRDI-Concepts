@@ -1,0 +1,45 @@
+---
+// A grid of features, services or values: an icon, a title, a short text and an optional
+// link, each item topped by a gold hairline (no boxes). A block, not a section.
+import { Icon } from 'astro-icon/components';
+import LineLink from '@/components/LineLink.astro';
+import { animDelay } from '@/utils/animDelay';
+
+interface Feature {
+  /** an icon-set name, e.g. lucide:award (decorative) */
+  icon?: string;
+  title: string;
+  text?: string;
+  link?: { label: string; href: string };
+}
+interface Props {
+  items: Feature[];
+  /** columns on large screens (default 3) */
+  columns?: 2 | 3 | 4;
+  /** `light` on white or ivory (default), `dark` on navy */
+  tone?: 'light' | 'dark';
+  /** heading level for the item titles (default h3) */
+  as?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { items, columns = 3, tone = 'light', as: Heading = 'h3', class: className = '' } = Astro.props;
+
+const cols = { 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-2 xl:grid-cols-4' }[columns];
+const dark = tone === 'dark';
+---
+
+<ul class:list={['grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12', cols, className]}>
+  {items.map((f, i) => (
+    <li class:list={['border-t pt-8 has-anim fade', dark ? 'border-hairline-dark' : 'border-hairline-light', animDelay[i % 4]]}>
+      {f.icon && (
+        <Icon name={f.icon} class:list={['mb-6 size-8', dark ? 'text-primary' : 'text-gold-text']} aria-hidden="true" />
+      )}
+      <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>{f.title}</Heading>
+      {f.text && <p class:list={['mt-3 max-w-measure', dark ? 'text-white/80' : 'text-text']}>{f.text}</p>}
+      {f.link && (
+        <LineLink href={f.link.href} label={f.link.label} tone={dark ? 'white' : 'dark'} icon="arrow" class="mt-5 text-[15px]" />
+      )}
+    </li>
+  ))}
+</ul>

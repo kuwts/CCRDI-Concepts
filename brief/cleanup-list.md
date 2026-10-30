@@ -27,6 +27,8 @@ changes (CLAUDE.md).
 | `src/pages/style-guide.astro` | /style-guide | `faq`, `astro-embed` | nothing |
 | `src/content/thank-you/application.mdx` | /thank-you/application | `thankYou` (shared template stays for /thank-you/contact) | the job form `action` only |
 
+| `src/pages/component-lab.astro` | /component-lab | the new CCC components (`src/components/ccc/`) | nothing (internal test page, noindex, not in the sitemap) |
+
 **Keep:** `src/pages/thank-you/[slug].astro` (it builds /thank-you/contact), `privacy.astro`,
 `404.astro`, `favicon.ico.ts`, `robots.txt.ts`, `site.webmanifest.ts`.
 
