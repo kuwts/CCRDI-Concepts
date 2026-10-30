@@ -75,6 +75,13 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       CCRDI, Consumer Choice Marketing). The Award's only public copy is a 255 x 300 PNG.
 - [ ] **Official reversed logos for dark backgrounds**, to replace the temporary recoloured CCC
       logo (ccc-reversed.png); reversed CCM and CCRDI versions too, if the client has them.
+- [ ] **Confirm the logos may be offered as downloads** on Media & Partners: the client's
+      supplied Consumer Choice Canada, Consumer Choice Marketing and CCRDI logos (trimmed PNGs,
+      transparent), titled with the brand names, with format and size shown. The Consumer
+      Choice Award medal is left out until a vector version arrives (the only copy is 255 x 300).
+      The download section's heading is still [CLIENT TO PROVIDE: logo downloads heading].
+- [ ] **New label "Our Milestones"** (the 40 Years timeline heading), for client confirmation;
+      it follows the approved section labels (Our Mission, Our Vision, Our Purpose).
 - [ ] **Approve the temporary all-white sub-brand logos** used on the navy brand cards (the
       brand slider on Home, 40 Years and the brand pages, and the Our Brands panels):
       ccm-white.png and ccrdi-white.png, made from the client's logos. Every pixel is white;
@@ -322,16 +329,18 @@ be rewritten for the client's photos.
    the Next Generation of Consumer Confidence" (the two halves of the §10 headline, approved)
 2. Feature video, poster and body photo: placeholders (see above)
 3. Sidebar: anniversary seal (1987, pending confirmation); "Visit Website" → ccaward.com
-   (pending confirmation, as on Our Brands); three confirmed milestones (see Still needed);
-   list heading "Our Brands"
-4. Family of Brands slider (the homepage component): reuses the homepage brand photos; links to
+   (pending confirmation, as on Our Brands); list heading "Our Brands"
+4. Milestones timeline (StepList): heading "Our Milestones" (new label, see Still needed); the
+   three confirmed milestones (see Still needed)
+5. Family of Brands slider (the homepage component): reuses the homepage brand photos; links to
    /our-brands
 
 ### For Businesses, Media & Partners, Contact, legal and 404 pages
 - For Businesses: no placeholders (brand cards reuse the homepage brand photos)
 - Media & Partners: [CLIENT TO PROVIDE: media contact heading], [CLIENT TO PROVIDE: media
-  contact name, email and phone], [CLIENT TO PROVIDE: logo downloads heading],
-  [CLIENT TO PROVIDE: logo download files]; news: the homepage placeholders
+  contact name, email and phone] (a Callout under the body, with "Contact Us"),
+  [CLIENT TO PROVIDE: logo downloads heading] (the downloads are the client's logos, see Still
+  needed); news: the homepage placeholders, as a list
 - Contact: [CLIENT TO PROVIDE: contact intro heading], [CLIENT TO PROVIDE: contact intro text],
   email, phone, address, [CLIENT TO PROVIDE: sending message], [CLIENT TO PROVIDE: error
   message]; form notifications email (Netlify dashboard)

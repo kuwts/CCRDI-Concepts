@@ -18,6 +18,8 @@ interface DownloadFile {
   format: string;
   /** e.g. "110 KB" */
   size?: string;
+  /** the saved file's name (same-site files) */
+  filename?: string;
 }
 interface Props {
   items: DownloadFile[];
@@ -50,7 +52,7 @@ const sameSite = (href: string) => href.startsWith('/') && !href.startsWith('//'
           <Heading class="text-h3 text-dark">
             <a
               href={f.href}
-              download={sameSite(f.href) ? '' : undefined}
+              download={sameSite(f.href) ? (f.filename ?? '') : undefined}
               aria-describedby={`${id}-${i}-meta`}
               class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-(--duration-base) after:absolute after:inset-0 group-hover:decoration-current"
             >

@@ -185,7 +185,8 @@ const introStackSchema = z.object({
 const processSchema = z.object({
   title: z.string(),
   steps: z.array(z.object({ heading: z.string(), text: z.string() })),
-  cta: z.object({ title: z.string(), button: linkSchema }),
+  // a CTA strip under the steps (WorkProcess); optional
+  cta: z.object({ title: z.string(), button: linkSchema }).optional(),
 });
 
 // logo wall: light logos for a dark section (Clients)
@@ -273,6 +274,8 @@ export const anniversary = defineCollection({
       link: linkSchema.optional(),
     }),
     // confirmed facts only (sources in brief/gaps.md)
+    // the timeline's section heading (StepList)
+    milestones_title: z.string().optional(),
     milestones: z.array(z.object({ title: z.string(), content: z.string() })),
     family: z.object({ title: z.string(), items: z.array(z.string()) }),
     next: z.object({
@@ -342,6 +345,10 @@ export const brandPages = defineCollection({
     accent: z.string(),
     // its mark on navy (the rule under the H1); defaults to `accent`
     accent_on_dark: z.string().optional(),
+    // the closing call to action (CtaBand) at the end of the page
+    closing: z
+      .object({ eyebrow: z.string().optional(), title: z.string(), text: z.string().optional(), link: linkSchema })
+      .optional(),
     image: z.string(),
     image_alt: z.string().default(''),
     sidebar: z.object({
@@ -511,8 +518,14 @@ export const pages = defineCollection({
     cta: linkSchema.optional(),
     cta_note: z.string().optional(),
     cta_heading: z.string().optional(),
-    // show the homepage news cards under the body (Media & Partners)
+    // show the homepage news under the body (Media & Partners)
     news: z.boolean().default(false),
+    // a note for media enquiries under the body (Callout)
+    media_contact: z.object({ title: z.string(), body: z.string() }).optional(),
+    // files to download (DownloadCards): `file` is a path in src/assets; format and size are read from it
+    downloads: z
+      .object({ title: z.string(), items: z.array(z.object({ title: z.string(), file: z.string(), filename: z.string().optional() })) })
+      .optional(),
     // a logo wall under the header (Media & Partners): the Our Brands logos
     brand_logos: z.boolean().default(false),
     draft: z.boolean().default(false),

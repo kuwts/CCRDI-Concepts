@@ -11,7 +11,10 @@ import LineLink from '@/components/LineLink.astro';
 import SectionTitle from '@/components/SectionTitle.astro';
 import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
-import WorkProcess from '@/components/WorkProcess.astro';
+import StepList from '@/components/ccc/StepList.astro';
+import CtaBand from '@/components/ccc/CtaBand.astro';
+import Breadcrumbs from '@/components/ccc/Breadcrumbs.astro';
+import config from '@/config/site.config.json';
 import StackedServices from '@/components/StackedServices.astro';
 import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
@@ -32,6 +35,20 @@ const brands = home!.data.projects.items.map((p) => ({ ...p, imageAlt: p.image_a
 const testimonials = data.testimonials ? home!.data.testimonials : undefined;
 const { process, stack } = data;
 const external = (href: string) => /^https?:\/\//.test(href);
+
+// breadcrumbs (Home › Our Brands › brand) and the same trail as BreadcrumbList structured data
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Our Brands', href: '/our-brands' }, { label: data.title }];
+const site = Astro.site ?? new URL(config.baseURL);
+const breadcrumbData = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href ?? Astro.url.pathname.replace(/(.)\/$/, '$1'), site).href,
+  })),
+};
 ---
 
 <Base title={data.title} image={data.image} seo={data.seo}>
@@ -39,6 +56,7 @@ const external = (href: string) => /^https?:\/\//.test(href);
     <div class="container -mt-1.5">
       <div class="row justify-center">
         <div class="lg:col-12 text-center">
+          <Breadcrumbs items={crumbs} class="mb-10 flex justify-center" />
           <p class="has-anim fade mb-5 font-medium">{data.eyebrow}</p>
           <h1 class="text-h1 has-anim fade delay-100 text-white break-words">
             {data.title}
@@ -109,9 +127,25 @@ const external = (href: string) => /^https?:\/\//.test(href);
     </div>
   </section>
 
-  <!-- Process cards (Award) -->
+  <!-- The process (Award): its heading beside the numbered steps, on navy -->
   {process && (
-    <WorkProcess subtitle="" title={process.title} steps={process.steps} cta={process.cta} />
+    <section class="py-section">
+      <div class="container">
+        <div class="row gap-y-14">
+          <div class="lg:col-5">
+            <div class="lg:sticky lg:top-32">
+              <div class="has-anim mask">
+                <h2 class="text-h2 text-white">{process.title}</h2>
+              </div>
+              <span class="draw-x has-anim mt-8 block h-px w-20 bg-hairline-dark" style="--draw-delay: 300ms" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="lg:col-6 lg:ml-auto">
+            <StepList items={process.steps.map((s) => ({ title: s.heading, text: s.text }))} variant="steps" tone="dark" />
+          </div>
+        </div>
+      </div>
+    </section>
   )}
 
   <!-- Intro + card stack (CCRDI's core services) -->
@@ -166,4 +200,17 @@ const external = (href: string) => /^https?:\/\//.test(href);
       <PortfolioCarousel projects={brands} />
     </section>
   )}
+
+  <!-- Closing call to action -->
+  {data.closing && (
+    <CtaBand
+      variant="ivory"
+      eyebrow={data.closing.eyebrow}
+      title={data.closing.title}
+      text={data.closing.text}
+      secondary={data.closing.link}
+    />
+  )}
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />
 </Base>

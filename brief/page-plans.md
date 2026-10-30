@@ -127,3 +127,78 @@ tagline; the service list is pending confirmation), so one section is added:
 | # | Section | Component | Content | Source |
 |---|---|---|---|---|
 | 4 | **New:** testimonials | `SectionTitle` + `ReviewCarousel` (ivory) | the homepage testimonial placeholders (award winners telling their story fits Marketing) | placeholders |
+
+---
+
+# Round 3: new components on real pages (proposal; waiting for approval)
+
+Each plan replaces the section that already carries the content; nothing is shown twice. All copy
+is from framework sections 1 to 13, content.md (including its interface labels), or ccaward.com
+facts already logged in gaps.md. Anything missing is a `[CLIENT TO PROVIDE: …]` placeholder.
+The homepage is unchanged.
+
+## 40 Years (`/40-years`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 1–2 | Header, showreel | unchanged | | | |
+| 3 | Sidebar + body | case-study layout | Sidebar keeps the seal, the Award link and the Our Brands list; **the three milestones move out of it** | | milestones removed from the sidebar |
+| 4 | **Milestones (new section, white, gold hairline above)** | `StepList` timeline | Heading `[CLIENT TO PROVIDE: milestones heading]` (no approved label fits); items: "1987", "Coast to coast", "2027" with their confirmed lines | ccaward.com (gaps.md) | replaces the sidebar milestones |
+| 5 | Family of Brands | `PortfolioCarousel` (ivory) | unchanged | | |
+
+## Consumer Choice Award (`/our-brands/consumer-choice-award`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 0 | **Breadcrumbs** | `Breadcrumbs` (dark) in the page header, above the eyebrow | Home › Our Brands › Consumer Choice Award | page title labels | new |
+| 1–3 | Header, feature photo, sidebar + body | unchanged | | | |
+| 4 | **The selection process (navy)** | `SectionTitle`-style heading on the left (sticky), `StepList` steps (dark) on the right | Heading: "Canada's only award organization to utilize statistically supported independent research."; the four steps with their text | ccaward.com (gaps.md) | **replaces** `WorkProcess` (the same four steps as cards) |
+| 5 | Family of Brands | `PortfolioCarousel` (white) | unchanged | | |
+| 6 | **Closing CTA (ivory)** | `CtaBand` ivory | Eyebrow "Consumers"; title "Make more confident decisions with trusted recognition and independent insight."; text "Recognizing and celebrating business excellence since 1987"; LineLink "Find a Trusted Business" → winners directory | §8; ccaward.com; labels | new; takes over the line and link from WorkProcess's CTA strip (removed with it) |
+
+## Consumer Choice Marketing (`/our-brands/consumer-choice-marketing`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 0 | **Breadcrumbs** | as above | Home › Our Brands › Consumer Choice Marketing | labels | new |
+| 1–5 | Header, photo, sidebar + body, testimonials, Family of Brands | unchanged | | | |
+| 6 | **Closing CTA (ivory)** | `CtaBand` ivory | Eyebrow "Award Winners"; title "Turn consumer recognition into stronger credibility, visibility, and growth."; LineLink "Contact Us" → /contact | §8; labels | new |
+
+## CCRDI (`/our-brands/ccrdi`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 0 | **Breadcrumbs** | as above | Home › Our Brands › Consumer Choice Research, Data & Insights | labels; page H1 | new |
+| 1–5 | Header, photo, sidebar + body, core services, Family of Brands | unchanged | | | |
+| 6 | **Closing CTA (ivory)** | `CtaBand` ivory | Eyebrow "Business Leaders"; title "Understand how your organization is perceived, where it stands, and where opportunities exist."; LineLink "Contact Us" → /contact | §8; labels | new |
+
+Brand pages also get **BreadcrumbList structured data** (JSON-LD: Home, Our Brands, the brand),
+with absolute URLs from `baseURL` (still example.com until the domain is confirmed, questions.md #12).
+The closing CTA is ivory and comes after the white brand slider, so it doesn't sit navy-on-navy
+against the footer. No `Button`: the header already carries the site's main action.
+
+## Media & Partners (`/media`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 1–2 | Header, Family of Brands logo wall | unchanged | | | |
+| 3 | Body | `.content` | Intro line, CCC and CCRDI one-liners (unchanged) **plus a `Callout` (note) for media enquiries**: title `[CLIENT TO PROVIDE: media contact heading]`, body `[CLIENT TO PROVIDE: media contact name, email and phone]`, LineLink "Contact Us" → /contact | §8, §12; gaps.md; labels | **replaces** the media contact heading and placeholder in the body |
+| 4 | **Logo downloads (ivory)** | heading + `DownloadCards` | Heading `[CLIENT TO PROVIDE: logo downloads heading]`; cards (see decision 2) | gaps.md | **replaces** the logo downloads placeholder in the body |
+| 5 | **News (white, gold hairline)** | `SectionTitle` + `NewsList` | The homepage news placeholders (heading, 4 items: headline, summary, date, category), with their placeholder photos for the cursor preview | homepage content | **replaces** the `BlogCard` news grid |
+
+## Our Brands (`/our-brands`)
+| # | Section | Component | Content | Source | Change |
+|---|---|---|---|---|---|
+| 3 | Brand architecture | see decision 1 | Brand / Primary Role / Core Message for the four brands, caption "Brand Architecture" | §2 | |
+
+## Decisions needed
+1. **Our Brands: the `Facts` bento is already the §2 brand architecture** (one tile per brand
+   with its role and core message, plus the three confirmed facts). A table beside it would
+   duplicate it. CLAUDE.md says Our Brands must keep every section of the theme's page.
+   - **A (recommended):** replace `Facts` with the `ComparisonTable` (§2), followed by a
+     `StatRow` for the three confirmed facts (1987, 40+, 1). This needs a one-off exception to
+     the keep-every-section rule for Our Brands (I'd note it in CLAUDE.md).
+   - **B:** keep `Facts` and skip the table on Our Brands (the rule stays as written).
+2. **Media: the logo download files.** Use the client's supplied logos as the downloads
+   (Consumer Choice Canada, Consumer Choice Marketing, CCRDI: the trimmed PNGs; Consumer Choice
+   Award: the medal from ccaward.com), titled with the brand names, format and size shown, no
+   descriptions? Or keep placeholder cards until the client supplies a media kit? Recommended:
+   the supplied logos, logged in gaps.md for the client to confirm they may be downloaded (the
+   temporary white versions are not offered).
+3. **40 Years: milestones heading.** A placeholder heading (recommended; it gives the timeline a
+   proper section heading), or no heading (the years carry the structure)?

@@ -10,6 +10,7 @@ import Showreel from '@/components/Showreel.astro';
 import PortfolioCarousel from '@/components/PortfolioCarousel.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
+import StepList from '@/components/ccc/StepList.astro';
 
 const entry = await getEntry('anniversary', 'index');
 const data = entry!.data;
@@ -74,13 +75,8 @@ const external = (href: string) => /^https?:\/\//.test(href);
               )
             }
           </div>
-          {data.milestones.map((info, i) => (
-            <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(i + 1) * 100}ms`}>
-              <p class="text-lg font-medium text-black mb-3">{info.title}</p>
-              <p>{info.content}</p>
-            </div>
-          ))}
-          <div class="mb-8 lg:mb-12 has-anim fade" style={`transition-delay: ${(data.milestones.length + 1) * 100}ms`}>
+          {/* the milestones are the timeline below */}
+          <div class="mb-8 lg:mb-12 has-anim fade" style="transition-delay: 100ms">
             <p class="text-lg font-medium text-black mb-3">{data.family.title}</p>
             <ul class="space-y-1.5">
               {data.family.items.map((s) => <li><span aria-hidden="true">~ </span>{s}</li>)}
@@ -99,6 +95,20 @@ const external = (href: string) => /^https?:\/\//.test(href);
       </div>
     </div>
   </section>
+
+  <!-- Milestones: a timeline drawn with the scroll -->
+  {data.milestones.length > 0 && (
+    <section class="hairline-top bg-white py-section">
+      <div class="container">
+        <SectionTitle title={data.milestones_title ?? ''} />
+        <div class="row justify-center">
+          <div class="lg:col-10 xl:col-9">
+            <StepList items={data.milestones.map((m) => ({ marker: m.title, text: m.content }))} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- Family of brands: the homepage brand slider -->
   {brands.length > 0 && (
