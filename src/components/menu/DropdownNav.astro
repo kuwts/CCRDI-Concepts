@@ -3,6 +3,7 @@
 // slides sideways to follow the active item; its height animates between menus
 // and the links fade up in a stagger. Opens on hover, and on click / Enter /
 // Space for the parent buttons; Esc, clicking outside or tabbing away closes it.
+import { getLang } from '@/i18n';
 
 interface NavChild {
   name: string;
@@ -24,8 +25,10 @@ const strip = currentPath.replace(/\/$/, '') || '/';
 const isActive = (u: string) => u !== '#' && strip === u.replace(/\/$/, '');
 const inSection = (item: NavItem) => isActive(item.url) || !!item.children?.some((c) => isActive(c.url));
 
+// French labels are longer: slightly tighter items at lg (1024–1279px) so the header fits
+const pad = getLang(Astro.url) === 'fr' ? 'px-2' : 'px-2.5';
 const linkClass =
-  'flex items-center gap-0.5 px-2.5 xl:px-5.5 py-5 text-[15px] leading-none font-medium whitespace-nowrap cursor-pointer transition-colors duration-200 group-data-dimmed/nav:text-white/50 data-current:text-white! hover:text-white';
+  pad + ' flex items-center gap-0.5 xl:px-5.5 py-5 text-[15px] leading-none font-medium whitespace-nowrap cursor-pointer transition-colors duration-200 group-data-dimmed/nav:text-white/50 data-current:text-white! hover:text-white';
 ---
 
 <div class="group/nav relative mx-auto hidden lg:block" data-dropnav>

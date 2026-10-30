@@ -4,7 +4,7 @@ import { formatDate } from '@/utils/formatDate';
 import { readingTime } from '@/utils/readingTime';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import { Icon } from "astro-icon/components";
-import { getLang, ui } from '@/i18n';
+import { getLang, ordinalsHTML, ui } from '@/i18n';
 
 /** A card without a blog post behind it (e.g. a homepage news item); the date is shown as written. */
 interface CardItem {
@@ -59,7 +59,10 @@ const external = !post && item?.external;
 const linkAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 // the link's name: the title (in its own language), plus "opens in a new tab" in the page's
 // language ("in English, opens in a new tab" for an English item on a French page)
-const t = ui(getLang(Astro.url));
+const lang = getLang(Astro.url);
+const t = ui(lang);
+// the date, with French ordinals as superscripts ("1er octobre 2026")
+const dateHTML = ordinalsHTML(meta[0], lang);
 const textLang = !post ? item?.lang : undefined;
 const newTab = textLang ? t.inEnglishNewTab : t.newTab;
 const datetime = !post ? item?.datetime : undefined;
@@ -107,7 +110,7 @@ const clamp = post ? 'line-clamp-2' : '';
             <p class:list={['my-6 text-[15px]', clamp]} lang={textLang}>{description}</p>
             <div class="mt-0 lg:mt-auto flex items-end justify-between">
               <p class="text-[14px]">
-                {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
+                {datetime ? <time datetime={datetime} set:html={dateHTML} /> : <Fragment set:html={dateHTML} />}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
               </p>
               <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
                 <Icon name="lucide:arrow-up-right" class="size-6" />
@@ -135,7 +138,7 @@ const clamp = post ? 'line-clamp-2' : '';
           <p class:list={['mt-3 mb-6 text-[15px]', clamp]} lang={textLang}>{description}</p>
           <div class="mt-auto flex items-end justify-between">
             <p class="text-[14px]">
-              {datetime ? <time datetime={datetime}>{meta[0]}</time> : meta[0]}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
+              {datetime ? <time datetime={datetime} set:html={dateHTML} /> : <Fragment set:html={dateHTML} />}{meta[1] && <><span class="mx-2" aria-hidden="true">—</span> {meta[1]}</>}
             </p>
             <span class="inline-flex items-center gap-1 text-[14px] text-dark group-hover/img:text-black transition group-hover/img:translate-x-1 group-hover/img:-translate-y-1" aria-hidden="true">
               <Icon name="lucide:arrow-up-right" class="size-6" />

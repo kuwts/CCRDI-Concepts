@@ -100,6 +100,8 @@ Also: `src/dev-pages/component-lab.astro` (the lab page) as the theme's componen
 | **Mixed-language items:** `BlogCard` / `NewsList` `lang` prop; BlogCard's link name moved from `aria-label` to an sr-only span so the title can carry `lang` | `BlogCard.astro`, `ccc/NewsList.astro` | Generic. |
 | **Form in two languages:** shared Netlify form with a `language` field, localized thank-you page, custom validation messages from content (`form.validation`) | `src/pages/contact.astro`, contact schema | Generic. |
 | **CounterUp** counts in the page's locale | `CounterUp.astro` | Generic. |
+| **Short header button label** for the tight `lg` bar (`headerButton.shortLabel`), one span displayed per width so the accessible name matches the visible text | `Header.astro`, `site.config.json` | Generic; French spacing values are CCC's. |
+| **French ordinals as superscripts** (`ordinalsHTML`, escaped HTML with `<sup>`), used for dates and timeline text | `src/i18n/index.ts`, `BlogCard.astro`, `ccc/NewsList.astro`, `ccc/StepList.astro` | Generic for French. |
 | **Localized 404** for a language folder via Netlify `_redirects` | `public/_redirects`, `src/pages/404.astro` | Generic (Netlify). |
 | **QA:** `i18n.cjs` (pairs, hreflang, switcher, labels, form), `frtypo.cjs` (French typography in `dist/fr`) | `scripts/qa/` | Page pairs come from `routes.json`; the English-label list is CCC's. |
 

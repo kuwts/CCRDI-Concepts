@@ -166,6 +166,7 @@
     },
     "headerButton": {
       "label": "Trouver une entreprise de confiance",
+      "shortLabel": "Entreprises de confiance",
       "url": "https://ccaward.com/fr/laureats/canada/"
     }
   },

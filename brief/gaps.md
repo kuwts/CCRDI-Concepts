@@ -330,10 +330,16 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
       because some have errors (e.g. "La seule organisation canadienne de subventions…":
       "subventions" means grants); ours are new drafts. The client may want ccaward.com/fr
       corrected too.
-- [ ] **French header button at 1024–1287px.** "Trouver une entreprise de confiance" is 83px
-      wider than "Find a Trusted Business", and the French desktop header overflows from 1024
-      to 1287px (up to about 109px short at 1024). Waiting for the project owner's decision
-      before shortening anything.
+- [x] **French header button at 1024–1279px** (decided by the project owner, 2026-10-30): the
+      desktop bar shows the shorter label **"Entreprises de confiance"** at 1024–1279px, where
+      "Trouver une entreprise de confiance" doesn't fit; the full label from 1280px and in the
+      mobile menu. Only one label is displayed at a time, so the button's accessible name always
+      matches its visible text. French pages also use slightly tighter header spacing at those
+      widths (nav items, button padding, switcher gap). The header fits at every width from
+      1024 to 1600.
+- [ ] **For the translator's review:** the short header label "Entreprises de confiance"
+      (site.config.json → fr.headerButton.shortLabel), meant to keep the "trusted" meaning of
+      "Find a Trusted Business" in fewer words.
 - [ ] French press releases: the headlines link to the English releases, so they stay in
       English (marked lang="en", with "(en anglais, s’ouvre dans un nouvel onglet)" for screen
       readers). Does Consumer Choice Award publish French releases that could be linked
@@ -344,6 +350,9 @@ Copy sources: the Key Messaging Framework (sections 1 to 13) and content.md.
 - [ ] Netlify: both contact forms post to the same form ("contact") with a `language` field
       (en or fr); the French thank-you page is /fr/merci/contact. public/_redirects serves the
       French 404 page for missing /fr/ URLs. Check both after the first deploy.
+- [x] French ordinals are set as superscripts (OQLF): "1<sup>er</sup> octobre 2026" in the press
+      release dates, "40<sup>e</sup> anniversaire" on /fr/40-ans (ordinalsHTML in src/i18n;
+      scripts/qa/frtypo.cjs flags any ordinal left on the line).
 - [ ] French interface labels that are new wording (translations of the English labels):
       "Les publics que nous servons" (Who We Serve), "Nos jalons" (Our Milestones), "Pourquoi
       Consumer Choice", "Organisation faîtière" (Umbrella organization), "Rayonnement et

@@ -7,6 +7,8 @@
 // large screens. Progressive enhancement: the markup is the finished state; the script only
 // rewinds it when motion is allowed, so reduced motion and no-JS show everything, unmoved.
 // A block, not a section; an ordered list.
+import { getLang, ordinalsHTML } from '@/i18n';
+
 interface Step {
   /** the item's name; a timeline item can have just a marker and text */
   title?: string;
@@ -28,6 +30,8 @@ interface Props {
 const { items, variant = 'timeline', tone = 'light', as: Heading = 'h3', class: className = '' } = Astro.props;
 const dark = tone === 'dark';
 const timeline = variant === 'timeline';
+// French ordinals as superscripts ("40e anniversaire")
+const lang = getLang(Astro.url);
 const num = (i: number) => String(i + 1).padStart(2, '0');
 // a year or short number is set large; a word label ("Coast to coast") a size down
 const short = (m?: string) => !!m && /^\S{1,6}$/.test(m.trim());
@@ -78,10 +82,10 @@ const short = (m?: string) => !!m && /^\S{1,6}$/.test(m.trim());
       <div class:list={['steplist-body col-start-2', timeline ? 'row-start-2 lg:row-start-1 lg:col-start-3 mt-4 lg:mt-1.5' : 'row-start-1 pt-2.5']}>
         {s.title && (
           <Heading class:list={['text-h3', dark ? 'text-white' : 'text-dark']}>
-            {!timeline && <span class="sr-only">{num(i)}. </span>}{s.title}
+            {!timeline && <span class="sr-only">{num(i)}. </span>}<Fragment set:html={ordinalsHTML(s.title, lang)} />
           </Heading>
         )}
-        {s.text && <p class:list={['max-w-measure leading-relaxed', s.title && 'mt-3', dark ? 'text-white/80' : 'text-text']}>{s.text}</p>}
+        {s.text && <p class:list={['max-w-measure leading-relaxed', s.title && 'mt-3', dark ? 'text-white/80' : 'text-text']} set:html={ordinalsHTML(s.text, lang)} />}
       </div>
     </li>
   ))}

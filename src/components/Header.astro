@@ -26,6 +26,14 @@ const inSection = (item: MenuItem) =>
 
 // header button: the site's main action (site.config.json → headerButton)
 const { headerButton } = siteText(lang);
+// a shorter label for the desktop bar at lg (1024–1279px), where the full one doesn't fit (French:
+// "Entreprises de confiance"); the full label from xl and in the mobile menu. Only one label is
+// displayed at a time, so the button's accessible name is always its visible text. `!` because
+// the btn utility sets `display: block` on its spans.
+const shortLabel = 'shortLabel' in headerButton ? headerButton.shortLabel : undefined;
+// French: tighter switcher gap and button padding (with the short label) so the bar fits at
+// lg and at 1280px; measured at every width from 1024 to 1600
+const fr = lang === 'fr';
 const external = /^https?:\/\//.test(headerButton.url);
 const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 
@@ -61,7 +69,7 @@ const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
           <DropdownNav items={menu.main} currentPath={pathname} />
 
           <!-- desktop language switcher + header button -->
-          <div class="hidden shrink-0 items-center gap-3 xl:gap-5 lg:flex">
+          <div class:list={['hidden shrink-0 items-center lg:flex', fr ? 'gap-2 xl:gap-3' : 'gap-3 xl:gap-5']}>
             <a
               href={switchHref}
               lang={otherLang.lang}
@@ -72,10 +80,17 @@ const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
             </a>
             <a
               href={headerButton.url}
-              class="btn btn-sm btn-white"
+              class:list={['btn btn-sm btn-white', fr && 'max-xl:[--btn-px:16px]!']}
               {...extAttrs}
             >
-              <span>{headerButton.label}</span>
+              {shortLabel ? (
+                <>
+                  <span class="xl:hidden!">{shortLabel}</span>
+                  <span class="hidden! xl:block!">{headerButton.label}</span>
+                </>
+              ) : (
+                <span>{headerButton.label}</span>
+              )}
             </a>
           </div>
 

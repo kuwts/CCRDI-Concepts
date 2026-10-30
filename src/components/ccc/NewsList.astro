@@ -9,7 +9,7 @@
 import { Icon } from 'astro-icon/components';
 import AstroImage from '@/components/helper/AstroImage.astro';
 import { animDelay } from '@/utils/animDelay';
-import { getLang, ui } from '@/i18n';
+import { getLang, ordinalsHTML, ui } from '@/i18n';
 
 interface NewsItem {
   title: string;
@@ -37,7 +37,8 @@ interface Props {
 
 const { items, as: Heading = 'h3', class: className = '' } = Astro.props;
 const hasImages = items.some((n) => n.image);
-const t = ui(getLang(Astro.url));
+const lang = getLang(Astro.url);
+const t = ui(lang);
 ---
 
 <div class:list={['relative', className]} data-newslist>
@@ -46,7 +47,7 @@ const t = ui(getLang(Astro.url));
       <li class:list={['has-anim fade', animDelay[i % 4]]}>
         <article class="news-row group relative grid gap-x-8 gap-y-2 border-b border-dark/10 py-8 md:grid-cols-[11rem_1fr_auto] md:py-10" data-news-index={n.image ? i : undefined}>
           <p class="text-sm text-mutedDark md:pt-1.5">
-            {n.date && (n.datetime ? <time datetime={n.datetime}>{n.date}</time> : n.date)}
+            {n.date && (n.datetime ? <time datetime={n.datetime} set:html={ordinalsHTML(n.date, lang)} /> : <Fragment set:html={ordinalsHTML(n.date, lang)} />)}
           </p>
           <div class="news-body min-w-0">
             {n.category && <p class="mb-2 text-eyebrow uppercase text-gold-text">{n.category}</p>}

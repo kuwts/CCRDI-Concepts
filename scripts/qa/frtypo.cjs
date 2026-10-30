@@ -1,6 +1,7 @@
 // usage: node frtypo.cjs <projectDir>
 // French typography (OQLF) in the built French pages (dist/fr): a non-breaking space before
-// ":" and inside « », a narrow non-breaking space before ";", "?" and "!", curly apostrophes.
+// ":" and inside « », a narrow non-breaking space before ";", "?" and "!", curly apostrophes,
+// ordinals in superscript ("1er" as 1<sup>er</sup>).
 // Reads visible text, alt text and aria labels; skips English passages (lang="en", e.g. press
 // releases), [CLIENT TO PROVIDE: ...] placeholders, scripts and styles.
 const fs = require('fs');
@@ -17,6 +18,7 @@ const rules = [
   [/[^  ][;?!](?=\s|$)/, 'needs a narrow non-breaking space before ; ? !'],
   [/«(?! )|(?<! )»/, 'needs non-breaking spaces inside « »'],
   [/\w'\w/, 'straight apostrophe (use ’)'],
+  [/\b\d+(?:ers?|res?|es?)\b/, 'ordinal not in superscript (1<sup>er</sup>, 40<sup>e</sup>)'],
 ];
 let problems = 0;
 for (const f of files) {

@@ -89,6 +89,19 @@ export function formatLongDate(iso: string, lang: Lang): string {
   return lang === 'fr' ? parts.replace(/^1 /, '1er ') : parts;
 }
 
+const escapeHTML = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/**
+ * Text as HTML (escaped) with French ordinals set as superscripts, as the OQLF recommends:
+ * "1er" → 1<sup>er</sup>, "40e" → 40<sup>e</sup>, also "re", "es", "ers", "res". English text
+ * is only escaped. Render with `set:html`.
+ */
+export function ordinalsHTML(text: string, lang: Lang): string {
+  const safe = escapeHTML(text);
+  return lang === 'fr' ? safe.replace(/\b(\d+)(ers?|res?|es?)\b/g, '$1<sup>$2</sup>') : safe;
+}
+
 /** A file size: "245 KB" and "1.2 MB" in English, "245 Ko" and "1,2 Mo" in French. */
 export function fileSize(bytes: number, lang: Lang): string {
   const [units, sep] = lang === 'fr' ? [['Ko', 'Mo'], ' '] : [['KB', 'MB'], ' '];
