@@ -34,6 +34,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@tailwindcss/typography": "^0.5.20",
+    "axe-core": "^4.10.2",
     "playwright": "^1.64.1",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
