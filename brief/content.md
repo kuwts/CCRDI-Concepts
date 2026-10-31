@@ -1,73 +1,127 @@
-# Consumer Choice Canada: approved website copy
+# Consumer Choice Research, Data & Insights (CCRDI): approved website copy
 
-Use this copy word for word. Do not add to it.
+Transcribed word for word from the client's Key Messaging Framework
+(Consumer_Choice_Canada_CCRDI_Key_Messaging.pdf), sections 1 to 13 only, with the section each
+line comes from. Use this copy word for word. Do not add to it. Where this file and the
+framework disagree, the framework wins.
+
+Not copy: the framework's direction text written for the client (e.g. section 6's "Strategic
+positioning recommendation", section 1's "Core rebrand idea", section 13's "This should be the
+central message..."), and everything after section 13 (draft notes).
 
 ## Site-wide
-Site name: Consumer Choice Canada
-Site-wide tagline: Recognizing Excellence. Delivering Insight. Inspiring Confidence.
-Alternate taglines (for secondary use only): Where Consumer Trust Begins. / Building Trust Between Consumers and Business. / The Future of Consumer Confidence.
+Site name: Consumer Choice Research, Data & Insights
+Short name: CCRDI (the framework's own short name, §2, §6, §7, §12)
 
-One-line description (meta description, footer):
-Consumer Choice Canada brings together trusted recognition, marketing support, and consumer intelligence to strengthen confidence between Canadians and the businesses that serve them.
+One-line description (meta description, footer), §12:
+CCRDI delivers independent consumer research, market intelligence, and industry benchmarking that turns data into better business decisions.
 
-## Lead message
-Consumer Choice Canada helps Canadians make more confident decisions while helping businesses earn, understand, and communicate consumer trust.
+Messaging hierarchy line, §9:
+Consumer Choice Research, Data & Insights — Turning Consumer Intelligence Into Business Confidence
 
-## Homepage hero
-Headline: Canada's Trusted Consumer Authority
-Body: For more than 40 years, Consumer Choice has helped consumers make better decisions while recognizing businesses that earn their trust. Today, Consumer Choice Canada brings together research, recognition, marketing, and consumer intelligence under one national organization.
+Role and core message, §2 (Brand architecture table):
+- Primary role: Research and intelligence
+- Core message: Turning consumer data into business confidence
 
-## Positioning statement
-Consumer Choice Canada is Canada's leading consumer trust organization, dedicated to recognizing excellence, delivering market intelligence, and helping consumers make more confident purchasing decisions.
+Family-of-brands line, §3:
+Consumer Choice Research, Data & Insights: Delivering independent research, consumer intelligence, industry benchmarking, and strategic insight.
 
-## Brand purpose
-To strengthen trust between Canadian consumers and the businesses that serve them.
+Relationship line, §12:
+CCRDI provides the independent research, data, and insight that supports award selection and broader industry intelligence.
 
-## Mission
-To empower Canadians with trusted information while recognizing businesses that consistently deliver exceptional customer experiences.
+## Positioning, mission, vision (§6)
+Positioning statement:
+Consumer Choice Research, Data & Insights transforms consumer behaviour, market intelligence, and independent research into actionable business insight.
 
-## Vision
-To become Canada's most trusted authority on consumer confidence, business excellence, and marketplace intelligence.
+Mission:
+To provide organizations with trusted consumer intelligence that improves business performance, strengthens customer experience, and identifies competitive opportunities.
 
-## Messaging pillars
-- Trust: For four decades, Consumer Choice has helped Canadians identify businesses they can trust.
-- Recognition: Celebrating businesses that consistently earn the confidence of their customers.
-- Intelligence: Transforming consumer sentiment and market data into meaningful, actionable insight.
-- Growth: Helping Canadian businesses understand, improve, and communicate their competitive strengths.
+Vision:
+To become Canada’s leading source of consumer behaviour research and industry benchmarking.
 
-## About Consumer Choice Canada
-Consumer Choice Canada is the parent organization behind a family of trusted Canadian brands dedicated to understanding, recognizing, and promoting business excellence.
+Recommended taglines:
+- Data That Builds Better Businesses.
+- Turning Consumer Data Into Business Confidence.
+- Independent Research. Meaningful Insights.
+- Understanding Consumers. Empowering Business.
+- Research That Builds Trust.
 
-Our organization brings together Consumer Choice Award, Consumer Choice Marketing, and Consumer Choice Research, Data & Insights. Together, these divisions provide Canadian businesses with trusted recognition, marketing support, market intelligence, and consumer insight designed to strengthen brands and customer relationships.
+## Homepage hero (§7)
+Headline: Data That Builds Better Businesses
+Body: Powered by ISUCORP, Consumer Choice Research, Data & Insights provides independent research, consumer intelligence, and market analysis that helps organizations make smarter business decisions.
 
-## Family of brands
-- Consumer Choice Award (Recognizing Excellence): Recognizing excellence and celebrating businesses Canadians trust.
-  Relationship line: Consumer Choice Award is the recognition division of Consumer Choice Canada.
-- Consumer Choice Marketing (Helping Great Businesses Grow): Helping award-winning businesses communicate their success, strengthen their reputation, and grow.
-  Relationship line: Consumer Choice Marketing helps award-winning businesses communicate their recognition and strengthen market visibility.
-- Consumer Choice Research, Data & Insights (Turning Consumer Intelligence Into Business Confidence): Delivering independent research, consumer intelligence, industry benchmarking, and strategic insight.
-  Relationship line: CCRDI provides the independent research, data, and insight that supports award selection and broader industry intelligence.
+## Core Services (§7)
+- Consumer Research: Understanding what customers think, expect, value, and prioritize.
+- Industry Benchmarking: Helping organizations understand how they perform relative to competitors and category leaders.
+- Market Intelligence: Tracking consumer sentiment, emerging trends, and changing market expectations.
+- Award Research: Providing the independent research methodology behind Consumer Choice Award winner selection.
+- Strategic Insights: Turning reliable consumer data into recommendations that support better business decisions.
 
-## Audiences
-- Consumers: Make more confident decisions with trusted recognition and independent insight.
-- Award Winners: Turn consumer recognition into stronger credibility, visibility, and growth.
+## ISUCORP credibility message (§7)
+Powered by ISUCORP’s independent research methodology, CCRDI delivers objective consumer intelligence trusted by organizations across Canada.
+
+## Audiences (§8)
+CCRDI's audiences:
 - Business Leaders: Understand how your organization is perceived, where it stands, and where opportunities exist.
+- Industry Associations: Access category-level trends, benchmarks, and consumer intelligence.
 - Media and Partners: Draw on credible research and trusted consumer insight to understand Canadian markets.
 
-## 40th anniversary
-Headline: Celebrating 40 Years of Trust — Building the Next Generation of Consumer Confidence
+Parent-level audiences (only where Consumer Choice Canada is described):
+- Consumers: Make more confident decisions with trusted recognition and independent insight.
+- Award Winners: Turn consumer recognition into stronger credibility, visibility, and growth.
 
-For 40 years, Consumer Choice Award has helped Canadians recognize businesses that earn consumer confidence. The creation of Consumer Choice Canada marks the next chapter: bringing recognition, marketing, research, data, and insight together under one national organization.
+## Family of brands (sister brands; family-of-brands sections and the footer only)
+Messaging hierarchy, §9:
+- Consumer Choice Canada — Canada’s Trusted Consumer Authority
+- Consumer Choice Award — Recognizing Excellence
+- Consumer Choice Marketing — Helping Great Businesses Grow
+- Consumer Choice Research, Data & Insights — Turning Consumer Intelligence Into Business Confidence
 
-This evolution builds on four decades of trust while expanding the organization's role in the Canadian marketplace. Consumer Choice Canada will continue to celebrate excellence, while also helping consumers make better decisions and helping businesses understand, earn, and communicate consumer confidence.
+Roles and core messages, §2:
+- Consumer Choice Canada: Umbrella organization; Canada’s trusted consumer authority
+- Consumer Choice Award: Recognition; Recognizing businesses that earn consumer trust
+- Consumer Choice Marketing: Amplification and growth; Helping award-winning businesses tell their story and grow
+- CCRDI: Research and intelligence; Turning consumer data into business confidence
+
+One-liners, §3 and §12:
+- Consumer Choice Canada (§12): Consumer Choice Canada brings together trusted recognition, marketing support, and consumer intelligence to strengthen confidence between Canadians and the businesses that serve them.
+- Consumer Choice Award (§3): Recognizing excellence and celebrating businesses Canadians trust.
+- Consumer Choice Award relationship line (§12): Consumer Choice Award is the recognition division of Consumer Choice Canada.
+- Consumer Choice Marketing (§3): Helping award-winning businesses communicate their success, strengthen their reputation, and grow.
+- Consumer Choice Marketing relationship line (§12): Consumer Choice Marketing helps award-winning businesses communicate their recognition and strengthen market visibility.
+
+Parent organization, §3 (About Consumer Choice Canada), for describing the parent only:
+Consumer Choice Canada is the parent organization behind a family of trusted Canadian brands dedicated to understanding, recognizing, and promoting business excellence.
+
+## Future direction only (§11; not used at launch)
+The new architecture creates room for future products and services without changing the brand again. Potential opportunities include:
+- Consumer confidence and trust indices
+- Industry benchmarking reports
+- Category and regional market reports
+- Certification and verification programs
+- Consumer sentiment tracking
+- Custom research and advisory services
+- Subscription-based data and insight products
+- Annual national or regional consumer confidence reports
+
+Approved by the project owner: not used at launch (the intro is written for the client).
+Logged in gaps.md as a possible "future direction" section if the client wants one.
+
+## Confirmed public facts (approved exception; sources in gaps.md)
+From https://www.ccaward.com (Consumer Choice Award's process steps), word for word; to be
+re-checked against the live page before the Core Services page is built:
+- "Populating Categories": "CCRDI powered by IsuCorp. gathers all businesses within a geographic Territory to establish a complete universe of accounts within a Business Category."
+- "Qualifying Relevant Companies": "The Universe of Accounts provided by CCRDI is further vetted by Consumer Choice Award to ensure that all companies provided have no legal or ethical issues that would negate them from consideration."
 
 ## Interface labels
-These are the only navigation, button and section labels allowed. They are not from the
-client's content file; they were drafted for the site structure and need approval.
+These are not from the framework. All are reused from the labels approved for the Consumer
+Choice Canada site, except "Core Services" (the framework's §7 heading). They need the client's
+approval for CCRDI (gaps.md).
 
-Navigation: About, Our Brands, 40 Years, For Businesses, Media, Contact
-Page titles: Home, About, Our Brands, 40 Years, For Businesses, Media & Partners, Contact, Privacy Policy, Accessibility Statement
-Buttons: Explore Our Brands, Find a Trusted Business, Learn More, Contact Us, Read Our Story
-Section labels: Our Mission, Our Vision, Our Purpose, Our Pillars, Family of Brands, Who We Serve
+Navigation: About, Core Services, Media, Contact
+Page titles: Home, About, Core Services, Media & Partners, Contact, Privacy Policy, Accessibility Statement
+Buttons: Contact Us, Learn More, Return Home
+Section labels: About, Our Mission, Our Vision, Family of Brands, Who We Serve
 404 page: Page not found / Return Home
 Contact form fields: Name, Email, Organization, Message, Send
+Contact detail labels: Email, Phone, Address

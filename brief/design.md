@@ -1,52 +1,87 @@
-# Consumer Choice Canada: design direction
+# CCRDI: design direction
 
-Feel: an established national institution. Calm, confident, heritage-led. Think a respected
-Canadian standards body or foundation, not a marketing agency. Generous white space.
+Approved by the project owner (conversion plan, 2026-10-30). The client has supplied no CCRDI
+design brief beyond the logo; this direction is the project owner's.
 
-## Typography
-- Headings: Source Serif 4 (install @fontsource-variable/source-serif-4)
-- Body and UI: Inter (install @fontsource-variable/inter)
-- Self-host both. Remove any Google Fonts links the theme uses.
+**Feel:** a sister brand to Consumer Choice Canada (CCC), with the same premium quality, but
+slightly more modern and data-driven, and not CCC in different colours. CCC is navy, gold and
+ivory, a serif, a paper grain and a 40-year seal: an institution. CCRDI keeps the same grid,
+spacing, motion, components and finish, and gets a cool, precise identity of its own: a
+near-black ink with red from the logo, silver hairlines, a cool mist background, a geometric
+sans for headings, tighter corners, and motifs from the logo (the pixel squares, the circuit
+ring, the tracked "RESEARCH • DATA • INSIGHTS" caps with red dots). The shared body font
+(Inter) and the shared layout are the family link.
+
+**Layout variant: to be chosen** from the phase 3 specimen (component lab):
+- A. Dark-led: Ink for the hero, header, footer and several dark sections (CCC's navy layout).
+- B. Light-led: mostly White and Mist, Ink for text, only a few dark sections (header, footer,
+  one feature section), red used sparingly for buttons and small accents.
 
 ## Colour tokens
---color-primary: #0B2545        (header, hero, footer, primary buttons)
---color-primary-700: #13315C    (hover states, secondary dark panels)
---color-gold: #D4A843           (seal, rules, accents on navy ONLY; fails contrast on white)
---color-gold-text: #8A6514      (gold text or icons on light backgrounds)
---color-red: #C8102E            (rare Canadian accent only; never buttons)
---color-surface: #FFFFFF        (main background)
---color-surface-alt: #F8F6F1    (alternating section background, ivory)
---color-text: #1F2933           (body text)
---color-text-muted: #52606D     (captions, secondary copy)
---color-border: #E4E7EB         (card borders, dividers)
+All from the logo (`src/assets/images/brands/ccrdi-logo.png`, the most common pixel of each
+colour). Set in `src/config/site.config.json` → `brand.colors`; no hex values in components.
 
-Division accents, taken from the brands' logos (updated; brief/division-colours.md; client
-to confirm). Fill = family-of-brands panels and the brand sliders' colour wash; mark = small
-marks on white or ivory; on navy = marks on navy and the thin decorative line on the fill.
---color-award: #D4A843 (Consumer Choice Award; mark #8A6514; on navy #D4A843)
---color-marketing: #7B1417 deep red (Consumer Choice Marketing; mark #7B1417; on navy and
-  decorative line: CCM checkmark gold #CF9F28)
---color-research: #3A3A3C charcoal (CCRDI; mark: CCRDI red #C82127; on navy and decorative
-  line: CCRDI bright red #ED1C28)
-The decorative lines are never used for text.
+| Role | Name | Hex | Source | Use |
+|---|---|---|---|---|
+| dark | Ink | #1E1F22 | logo charcoal, deepened (same neutral hue) | header, hero, footer, dark sections, body text |
+| dark-700 | Charcoal | #3A3A3C | the "CC" letters | secondary dark panels, hover on dark, cards on ink |
+| primary | CCRDI Red | #C82127 | the "RDI" letters | buttons, links and eyebrows on light, focus ring on light |
+| primary-bright | Signal Red | #ED1C28 | the bright pixel squares | decorative marks on ink, large text (24px+); never small text |
+| primary-deep | Wine | #8F2635 | the dark pixel squares | button hover, red text needing extra contrast |
+| tint | Blush | #F4D1D8 | the pale pixel squares | light end of a red data ramp; text on ink |
+| silver | Silver | #D6D8D9 | the circuit ring (26% opacity in the logo; full strength here) | hairlines and borders on light (decorative); secondary text and eyebrows on ink |
+| muted | Steel | #9EA1A6 | silver, darkened | muted text on ink |
+| mutedDark | Slate | #55585E | charcoal, lightened | captions and secondary text on light |
+| light | Mist | #F2F3F4 | silver, lightened | alternating light sections |
+| surface | White | #FFFFFF | | page background |
+
+Sister-brand colours, used only on the family-of-brands slides: Consumer Choice Canada navy
+#0B2545 and gold #D4A843; Consumer Choice Award gold #D4A843; Consumer Choice Marketing deep
+red #7B1417 with its checkmark gold #CF9F28.
+
+## Contrast (WCAG 2.1 AA)
+| Pair | Ratio | Use |
+|---|---|---|
+| White on Ink / Charcoal | 16.48 / 11.35 | all text |
+| Silver on Ink / Charcoal | 11.52 / 7.94 | all text |
+| Steel on Ink / Charcoal | 6.36 / 4.38 | all text on Ink; large text only on Charcoal |
+| Blush on Ink | 11.74 | all text |
+| Signal Red on Ink / Charcoal | 3.76 / 2.59 | large text and marks on Ink; decorative only on Charcoal |
+| Ink on White / Mist | 16.48 / 14.83 | all text |
+| Slate on White / Mist | 7.13 / 6.42 | all text |
+| CCRDI Red on White / Mist / Silver | 5.67 / 5.10 / 3.97 | text on White and Mist; marks only on Silver |
+| Wine on White / Mist | 8.41 / 7.57 | all text |
+| Signal Red on White | 4.38 | large text and marks only |
+| Primary button: White on CCRDI Red; hover White on Wine | 5.67; 8.41 | all sizes |
+| Primary button edge against Ink | 2.91 | the label identifies the button (1.4.11); focus ring white on dark |
+| Secondary button on dark: Ink on White | 16.48 | |
+| Silver hairline on White | 1.43 | decorative only, never the only boundary of a control |
+| Focus ring: CCRDI Red on White / White on Ink | 5.67 / 16.48 | |
+
+Buttons: one primary red button per page (white text); `LineLink`s for everything else (white
+on dark; ink with a red underline on light). Eyebrows: CCRDI Red on light, Silver on dark.
+
+## Typography
+- Headings: Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`, self-hosted),
+  weights 600 and 700.
+- Body and UI: Inter (`@fontsource-variable/inter`, kept from CCC); tabular figures for stats.
+- Eyebrows: Inter, uppercase, wide tracking, after the logo's "RESEARCH • DATA • INSIGHTS"; a
+  red dot separator where an eyebrow has more than one part.
+- No Google Fonts links.
 
 ## Shape and spacing
-- Card radius 12px, button radius 8px
-- 8px spacing scale
-- Subtle shadows only
+- Card radius 6px, button radius 4px.
+- The theme's 8px spacing scale and section spacing, unchanged.
+- Subtle shadows only.
 
 ## Icons
-One icon set only (Lucide or Phosphor), consistent stroke weight.
+One icon set only (Lucide), consistent stroke weight.
 
 ## Imagery
-Real Canadian business owners and customers in their own settings. No stock handshakes,
-trophies, or people pointing at laptops. Use neutral, clearly labelled image placeholders
-until the client supplies photos.
+Free-licence research and data photography as placeholders (people at work with data, reports,
+screens and workshops; no visible logos or brand names; no stock handshakes, trophies or people
+pointing at laptops), logged in placeholder-media.md and replaced with the client's photography
+before launch.
 
 ## Motion
-Subtle fade-up on scroll at most. Respect prefers-reduced-motion.
-
-## Signature component (the one planned new component; still confirm with me first)
-An original, scalable SVG 40th anniversary seal: "40 Years of Trust" with a [FOUNDING YEAR]
-placeholder, in navy and Heritage Gold, with an accessible title and light and dark variants.
-Used in the hero, footer, and 40 Years page.
+The theme's scroll reveals and one easing curve. Respect prefers-reduced-motion.

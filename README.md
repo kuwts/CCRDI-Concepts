@@ -1,1 +1,1 @@
-# Obicol-AI-Starter
+# Consumer Choice Research, Data & Insights (CCRDI) website
