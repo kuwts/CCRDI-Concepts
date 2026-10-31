@@ -13,7 +13,7 @@ import Facts from '@/components/Facts.astro';
 import TeamGrid from '@/components/TeamGrid.astro';
 import { entryId, getLang, ui } from '@/i18n';
 
-// English at /about, French at /fr/a-propos (src/pages/fr/a-propos.astro)
+// English at /about, French at /fr/a-propos (src/pages/_fr/a-propos.astro, routed while French is on)
 const lang = getLang(Astro.url);
 const home = await getEntry('homepage', entryId('index', lang));
 const { testimonials } = home!.data;

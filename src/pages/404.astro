@@ -3,8 +3,8 @@ import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
 import { getLang, languages, ui } from '@/i18n';
 // heading and button: content.md 404 labels (site.config.json → ui); the message is a
-// placeholder (brief/gaps.md). French: /fr/404 (src/pages/fr/404.astro), served for missing
-// /fr/ URLs by public/_redirects.
+// placeholder (brief/gaps.md). French: /fr/404 (src/pages/_fr/404.astro), served for missing
+// /fr/ URLs by the Netlify _redirects file astro.config.mjs writes while French is on.
 const lang = getLang(Astro.url);
 const t = ui(lang);
 ---

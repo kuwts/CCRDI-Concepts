@@ -4,7 +4,7 @@ import AstroImage from '@/components/helper/AstroImage.astro';
 import DropdownNav from '@/components/menu/DropdownNav.astro';
 
 import site from '@/config/site.config.json';
-import { alternates, getLang, languages, menuFor, siteText, ui } from '@/i18n';
+import { alternates, frenchEnabled, getLang, languages, menuFor, siteText, ui } from '@/i18n';
 
 // typed so menus without dropdowns (no `children` anywhere) still check
 interface MenuItem {
@@ -39,7 +39,7 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
 
 // language switcher: the same page in the other language (src/i18n/routes.json), or its home.
 // Compact "FR"/"EN" in the header bar, the full name in the mobile menu; the link text is in
-// the other language, so it carries that `lang`.
+// the other language, so it carries that `lang`. Shown only while French is switched on.
 const other = lang === 'fr' ? 'en' : 'fr';
 const otherLang = languages[other];
 const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
@@ -70,14 +70,16 @@ const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
 
           <!-- desktop language switcher + header button -->
           <div class:list={['hidden shrink-0 items-center lg:flex', fr ? 'gap-2 xl:gap-3' : 'gap-3 xl:gap-5']}>
-            <a
-              href={switchHref}
-              lang={otherLang.lang}
-              hreflang={otherLang.lang}
-              class="py-1 text-[15px] font-medium text-white/85 underline decoration-transparent decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
-            >
-              {otherLang.short}<span class="sr-only"> – {otherLang.name}</span>
-            </a>
+            {frenchEnabled && (
+              <a
+                href={switchHref}
+                lang={otherLang.lang}
+                hreflang={otherLang.lang}
+                class="py-1 text-[15px] font-medium text-white/85 underline decoration-transparent decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
+              >
+                {otherLang.short}<span class="sr-only"> – {otherLang.name}</span>
+              </a>
+            )}
             <a
               href={headerButton.url}
               class:list={['btn btn-sm btn-white', fr && 'max-xl:[--btn-px:16px]!']}
@@ -203,14 +205,16 @@ const switchHref = alternates(Astro.url)?.[other] ?? otherLang.home;
     }
   </ul>
 
-  <a
-    href={switchHref}
-    lang={otherLang.lang}
-    hreflang={otherLang.lang}
-    class="mt-5 inline-block self-start py-2 text-[15px] font-medium text-white/85 underline decoration-white/30 decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
-  >
-    {otherLang.name}
-  </a>
+  {frenchEnabled && (
+    <a
+      href={switchHref}
+      lang={otherLang.lang}
+      hreflang={otherLang.lang}
+      class="mt-5 inline-block self-start py-2 text-[15px] font-medium text-white/85 underline decoration-white/30 decoration-1 underline-offset-4 transition hover:text-white hover:decoration-primary/70"
+    >
+      {otherLang.name}
+    </a>
+  )}
 
   <a
     href={headerButton.url}

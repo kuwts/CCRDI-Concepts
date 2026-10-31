@@ -1,5 +1,5 @@
 {
-  "baseURL": "https://consumerchoicecanada.com",
+  "baseURL": "https://ccrdi.example",
   "trailingSlash": false,
   "locale": {
     "lang": "en-CA",
@@ -19,7 +19,8 @@
         "ogLocale": "fr_CA",
         "name": "Français",
         "short": "FR",
-        "home": "/fr"
+        "home": "/fr",
+        "enabled": false
       }
     }
   },
@@ -140,34 +141,28 @@
   },
   "fr": {
     "seo": {
-      "title": "Consumer Choice Canada",
-      "description": "Consumer Choice Canada réunit une reconnaissance fiable, du soutien marketing et de l’intelligence consommateur pour renforcer la confiance entre la population canadienne et les entreprises qui la servent.",
+      "title": "",
+      "description": "",
       "author": "",
-      "image": "/images/share-default.png",
-      "pages": {
-        "/fr/404": {
-          "title": "",
-          "description": "Depuis quatre décennies, Consumer Choice aide la population canadienne à repérer les entreprises dignes de confiance.",
-          "image": ""
-        }
-      }
+      "image": "",
+      "pages": {}
     },
     "footer": {
       "cta": {
-        "title": "Reconnaître l’excellence. Éclairer les décisions. Inspirer confiance.",
-        "url": "/fr/nous-joindre",
-        "label": "Nous joindre"
+        "title": "",
+        "url": "",
+        "label": ""
       },
-      "description": "Consumer Choice Canada réunit une reconnaissance fiable, du soutien marketing et de l’intelligence consommateur pour renforcer la confiance entre la population canadienne et les entreprises qui la servent.",
-      "email": "[CLIENT TO PROVIDE: email]",
-      "phone": "[CLIENT TO PROVIDE: phone]",
-      "address_line_1": "[CLIENT TO PROVIDE: address]",
+      "description": "",
+      "email": "",
+      "phone": "",
+      "address_line_1": "",
       "address_line_2": ""
     },
     "headerButton": {
-      "label": "Trouver une entreprise de confiance",
-      "shortLabel": "Entreprises de confiance",
-      "url": "https://ccaward.com/fr/laureats/canada/"
+      "label": "",
+      "shortLabel": "",
+      "url": ""
     }
   },
   "ui": {

@@ -17,7 +17,7 @@ import { entryId, fileSize, formatLongDate, getLang, isFrenchEntry, localizePath
 // The theme's long-form page (privacy.astro) for the other `pages` entries:
 // /media (Media & Partners: logo wall, body with a media enquiries note, logo downloads and
 // the homepage news as a list) and /accessibility.
-// /privacy keeps its own page file. French pages: src/pages/fr/[page].astro.
+// /privacy keeps its own page file. French pages: src/pages/_fr/[page].astro (routed while French is on).
 export async function getStaticPaths() {
   const entries = await getCollection('pages', (e) => !isFrenchEntry(e.id) && e.id !== 'privacy' && !e.data.draft);
   return entries.map((entry) => ({ params: { page: entry.id }, props: { entry } }));

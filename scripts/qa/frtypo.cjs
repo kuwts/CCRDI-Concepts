@@ -7,7 +7,16 @@
 const fs = require('fs');
 const path = require('path');
 const [, , projectDir] = process.argv;
+const config = JSON.parse(fs.readFileSync(path.join(projectDir, 'src/config/site.config.json'), 'utf8'));
+if (config.i18n.languages.fr.enabled !== true) {
+  console.log('French disabled (site.config.json → i18n.languages.fr.enabled): nothing to check');
+  process.exit(0);
+}
 const root = path.join(projectDir, 'dist/fr');
+if (!fs.existsSync(root)) {
+  console.log('No dist/fr: run the build first');
+  process.exit(1);
+}
 const files = [];
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : e.name.endsWith('.html') && files.push(path.join(d, e.name))));
 walk(root);

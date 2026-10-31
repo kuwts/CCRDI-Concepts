@@ -13,7 +13,7 @@ import LineLink from '@/components/LineLink.astro';
 import { entryId, getLang, ui } from '@/i18n';
 
 // Our Brands: the theme's Services page, with its own content (src/content/brands)
-// English at /our-brands, French at /fr/nos-marques (src/pages/fr/nos-marques.astro)
+// English at /our-brands (the French version was removed with the CCC French content)
 const lang = getLang(Astro.url);
 const home = await getEntry('homepage', entryId('index', lang));
 const { testimonials } = home!.data;

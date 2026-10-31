@@ -9,6 +9,11 @@ const fs = require('fs');
 const path = require('path');
 const { createRequire } = require('module');
 const [, , projectDir, base] = process.argv;
+const config = JSON.parse(fs.readFileSync(path.join(projectDir, 'src/config/site.config.json'), 'utf8'));
+if (config.i18n.languages.fr.enabled !== true) {
+  console.log('French disabled (site.config.json → i18n.languages.fr.enabled): nothing to check');
+  process.exit(0);
+}
 const { chromium } = createRequire(projectDir + '/package.json')('playwright');
 const routes = JSON.parse(fs.readFileSync(path.join(projectDir, 'src/i18n/routes.json'), 'utf8'));
 const pairs = routes.filter((r) => r.en !== '/404');

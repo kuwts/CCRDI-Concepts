@@ -13,7 +13,7 @@ import AnniversarySeal from '@/components/ccc/AnniversarySeal.astro';
 import StepList from '@/components/ccc/StepList.astro';
 import { entryId, getLang, ui } from '@/i18n';
 
-// English at /40-years, French at /fr/40-ans (src/pages/fr/40-ans.astro)
+// English at /40-years (the French version was removed with the CCC French content)
 const lang = getLang(Astro.url);
 const entry = await getEntry('anniversary', entryId('index', lang));
 const data = entry!.data;

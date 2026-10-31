@@ -1059,19 +1059,19 @@ Related settings in the same file: `locale` (`lang` for `<html lang>`, `format` 
 
 ## Languages (English and French)
 
-CCC is bilingual: English at the root, Canadian French (fr-CA) under `/fr` with French slugs.
+The site is built to be bilingual: English at the root, Canadian French (fr-CA) under `/fr` with French slugs. **French is switched off** until the end of the CCRDI project (`site.config.json` → `i18n.languages.fr.enabled: false`): no `/fr` pages are routed, the language switcher and the hreflang / `og:locale:alternate` tags aren't written (`alternates()` returns undefined), the sitemap has no French chunk or alternates, and `i18n.cjs` / `frtypo.cjs` exit with "French disabled". The CCC French content was removed; the infrastructure below is unchanged. To switch it on: set the flag, add the French entries, route pairs and `fr` site text, and have the translation reviewed.
 
 - **`src/i18n/routes.json`:** every English URL paired with its French URL. The switcher, hreflang, the sitemap's alternates and the French route files read it.
 - **`src/i18n/index.ts`:** `getLang(Astro.url)` (French under `/fr`), `entryId(id, lang)` (French singletons are `fr`, other French entries `fr/<id>`), `isFrenchEntry`, `localizePath` (English paths in shared code → French URLs on French pages), `siteText` / `menuFor` / `ui` (site-wide text, menus and interface labels per language), `fill`, `formatLongDate` ("1er octobre 2026"), `ordinalsHTML` (French ordinals as `<sup>`: 1<sup>er</sup>, 40<sup>e</sup>; used for dates in `BlogCard` / `NewsList` and `StepList` text), `fileSize` ("1,2 Mo").
 - **Content:** French entries in each collection's `fr/` folder, named like the English ones (`homepage/fr/index.mdx`, `brand-pages/fr/consumer-choice-award.mdx`). Singleton loaders match `index.mdx` and `fr/index.mdx`; English listings filter out French entries.
 - **Config:** `site.config.json` → `i18n.languages` (tags, `og:locale`, names, home URLs), `fr` (SEO defaults, footer, header button), `ui.en` / `ui.fr` (labels that were hard-coded in components: skip link, menu, pause/play, carousel, breadcrumb, seal, form honeypot, …); `menu.json` → `fr`.
-- **Pages:** each template reads its language from the URL; `src/pages/fr/` holds thin wrappers that render the English template (`<About />`), plus `getStaticPaths` for the dynamic ones with slugs from `routes.json`.
+- **Pages:** each template reads its language from the URL; `src/pages/_fr/` holds thin wrappers (routed by the `french-pages` integration in `astro.config.mjs` only while `i18n.languages.fr.enabled` is on) that render the English template (`<About />`), plus `getStaticPaths` for the dynamic ones with slugs from `routes.json`.
 - **`<head>`:** `html lang`, hreflang for both languages and `x-default` (English), written like the canonical URL; `og:locale` and `og:locale:alternate`; Organization JSON-LD in French on `/fr`.
 - **Sitemap:** `sitemap-en-0.xml` and `sitemap-fr-0.xml` (`chunks`), each URL with its alternates (`serialize`); French thank-you and 404 pages left out.
 - **Mixed-language content:** `BlogCard` and `NewsList` items take `lang` (e.g. `"en"` for English press releases on French pages): the title and summary get `lang`, the screen-reader note reads "(en anglais, s’ouvre dans un nouvel onglet)".
 - **Forms:** the same Netlify form on both contact pages, with a hidden `language` field; French custom validation messages (`form.validation`), French thank-you page `/fr/merci/contact`.
-- **404:** `/fr/404`, served for missing `/fr/` URLs by `public/_redirects` (Netlify).
-- **QA:** `scripts/qa/i18n.cjs` and `scripts/qa/frtypo.cjs`; `stage.cjs` covers the French pages.
+- **404:** `/fr/404`, served for missing `/fr/` URLs by a Netlify `_redirects` file that `astro.config.mjs` writes to `dist` while French is on.
+- **QA:** `scripts/qa/i18n.cjs` and `scripts/qa/frtypo.cjs`; `stage.cjs` covers the French pages while French is on.
 
 ## SEO
 

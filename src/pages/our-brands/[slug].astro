@@ -20,7 +20,7 @@ import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
 import { entryId, getLang, isFrenchEntry, localizePath, ui } from '@/i18n';
 
-// French pages: src/pages/fr/nos-marques/[slug].astro (entries in brand-pages/fr/)
+// French pages: removed with the CCC French content
 export async function getStaticPaths() {
   const entries = await getCollection('brandPages', (e) => !isFrenchEntry(e.id));
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));

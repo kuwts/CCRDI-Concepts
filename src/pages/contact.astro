@@ -8,7 +8,7 @@ import Button from '@/components/Button.astro';
 import site from '@/config/site.config.json';
 import { entryId, fill, getLang, localizePath, ui } from '@/i18n';
 
-// English at /contact, French at /fr/nous-joindre (src/pages/fr/nous-joindre.astro); both send
+// English at /contact, French at /fr/nous-joindre (src/pages/_fr/nous-joindre.astro, routed while French is on); both send
 // to the same Netlify form, with a `language` field saying which page it came from
 const lang = getLang(Astro.url);
 const t = ui(lang);

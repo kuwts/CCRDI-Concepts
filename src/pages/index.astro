@@ -23,7 +23,7 @@ import { getPressReleases } from '@/lib/content';
 import { entryId, formatLongDate, getLang, localizePath, ui } from '@/i18n';
 
 // every section reads its copy (and placeholders) from the homepage entry, in the page's
-// language (English at /, French at /fr: src/pages/fr/index.astro)
+// language (English at /, French at /fr while it's on: src/pages/_fr/index.astro)
 const lang = getLang(Astro.url);
 const t = ui(lang);
 const home = await getEntry('homepage', entryId('index', lang));

@@ -1,7 +1,9 @@
 // English at the root, French under /fr (Canadian French, fr-CA). Pages, components and
 // layouts take their language from the URL; site-wide text for each language lives in
 // site.config.json (English at the top level, French in `fr`, interface strings in `ui`) and
-// menu.json (`fr`). French content entries sit in each collection's `fr/` folder.
+// menu.json (`fr`). French content entries sit in each collection's `fr/` folder, and the French
+// page templates in src/pages/_fr/, routed only while French is switched on
+// (site.config.json → i18n.languages.fr.enabled; astro.config.mjs).
 import config from '@/config/site.config.json';
 import menuConfig from '@/config/menu.json';
 import routes from '@/i18n/routes.json';
@@ -10,6 +12,9 @@ export type Lang = 'en' | 'fr';
 
 export const languages = config.i18n.languages;
 
+/** French is switched on: /fr pages, the language switcher, hreflang and the French sitemap. */
+export const frenchEnabled = config.i18n.languages.fr.enabled === true;
+
 /** The page's language, from its URL: French pages live under /fr. */
 export function getLang(url: URL): Lang {
   return /^\/fr(\/|$)/.test(url.pathname) ? 'fr' : 'en';
@@ -17,8 +22,12 @@ export function getLang(url: URL): Lang {
 
 const clean = (path: string) => path.replace(/(.)\/$/, '$1') || '/';
 
-/** The page's English and French URLs (routes.json), or undefined for unpaired pages. */
+/**
+ * The page's English and French URLs (routes.json), or undefined for unpaired pages and while
+ * French is switched off (so no hreflang links or og:locale:alternate are written).
+ */
 export function alternates(url: URL): Record<Lang, string> | undefined {
+  if (!frenchEnabled) return undefined;
   const path = clean(url.pathname);
   return routes.find((r) => r.en === path || r.fr === path);
 }

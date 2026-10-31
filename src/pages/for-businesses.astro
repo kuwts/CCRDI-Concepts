@@ -14,7 +14,7 @@ import ReviewCarousel from '@/components/ReviewCarousel.astro';
 import { animDelay } from '@/utils/animDelay';
 import { entryId, getLang } from '@/i18n';
 
-// English at /for-businesses, French at /fr/entreprises (src/pages/fr/entreprises.astro)
+// English at /for-businesses (the French version was removed with the CCC French content)
 const lang = getLang(Astro.url);
 const entry = await getEntry('businesses', entryId('index', lang));
 const { title, intro, audiences, brands } = entry!.data;
