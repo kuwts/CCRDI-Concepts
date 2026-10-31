@@ -15,6 +15,8 @@ import routes from './src/i18n/routes.json' with { type: 'json' };
 // production build never contains them (brief/cleanup-list.md). [pattern, entrypoint]
 const devOnlyPages = [
   ['/component-lab', './src/dev-pages/component-lab.astro'],
+  ['/component-lab/brand', './src/dev-pages/brand/index.astro'],
+  ['/component-lab/brand/[variant]', './src/dev-pages/brand/[variant].astro'],
   ['/style-guide', './src/dev-pages/style-guide.astro'],
   ['/blog', './src/dev-pages/blog/index.astro'],
   ['/blog/[slug]', './src/dev-pages/blog/[slug].astro'],

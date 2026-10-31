@@ -24,3 +24,4 @@ Updated as the conversion goes on.
 | Unused logos | `src/assets/images/brands/ccc-logo.webp`, `ccm-logo.webp` | client originals; trimmed copies are used |
 | Theme share image | `public/images/ogimage.png` | the theme's screenshot, not referenced |
 | Source Serif 4 | `@fontsource-variable/source-serif-4` (package.json) | after the heading font changes |
+| Brand specimen data | `src/dev-pages/brand/palette.json` | once the chosen palette is in site.config.json, point the specimen at `brand.colors` or remove the specimen pages (`src/dev-pages/brand/`, dev only) |

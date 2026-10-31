@@ -2,8 +2,9 @@
 interface Props {
   label: string;
   href?: string;
-  /** gold-outline button: `white` on navy backgrounds, `black` on light ones */
-  variant?: 'white' | 'black';
+  /** gold-outline button: `white` on navy backgrounds, `black` on light ones; `primary`: solid,
+   *  white on the primary colour */
+  variant?: 'white' | 'black' | 'primary';
   type?: 'button' | 'submit';
   block?: boolean;
   target?: string;
@@ -22,7 +23,7 @@ const {
   class: className = '',
 } = Astro.props;
 
-const variantClass = variant === 'black' ? 'btn-black' : 'btn-white';
+const variantClass = { white: 'btn-white', black: 'btn-black', primary: 'btn-primary' }[variant];
 const classes = ['btn', variantClass, block ? 'flex w-full' : '', className]
   .filter(Boolean)
   .join(' ');

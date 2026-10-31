@@ -27,6 +27,9 @@ in ccc-archive/gaps.md.
 - [ ] Official CCRDI logo as SVG, a reversed (white) version for dark backgrounds, and a
       favicon or app icon. The site will use a temporary reversed logo and favicon made from
       the supplied PNG (src/assets/images/brands/ccrdi-logo.png).
+- [ ] A horizontal version of the CCRDI logo for the header. The supplied logo is a stacked
+      lockup (about 2.2:1); at header height its "CONSUMER CHOICE" and "RESEARCH • DATA •
+      INSIGHTS" lines are very small.
 - [ ] Service detail copy: the framework gives one line per Core Service. A short description
       of each (what it covers, who it's for, deliverables) would let each service have more
       than one line, or its own page later.

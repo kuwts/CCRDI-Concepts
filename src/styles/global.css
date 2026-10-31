@@ -17,6 +17,7 @@
   --color-dark: var(--brand-dark); /* navy: header, hero, footer, dark sections */
   --color-muted: var(--brand-muted); /* light text on navy */
   --color-mutedDark: var(--brand-mutedDark); /* captions and secondary copy on light */
+  --color-primary-deep: var(--brand-primaryDeep, var(--brand-primary)); /* solid button hover (btn-primary) */
 
   /* The rest of the CCC palette (site.config.json → brand.colors) */
   --color-navy-700: var(--brand-navy700); /* hover states, secondary dark panels */
@@ -678,6 +679,19 @@
     translate var(--duration-fast) var(--ease-theme);
   &:is(:hover, :focus-visible) {
     background-color: color-mix(in srgb, var(--color-dark) 5%, transparent);
+  }
+}
+/* Solid button: white text on the primary colour, deepening on hover or keyboard focus.
+   For the page's one main action. */
+@utility btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 600;
+  transition:
+    background-color var(--duration-base) var(--ease-theme),
+    translate var(--duration-fast) var(--ease-theme);
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-primary-deep);
   }
 }
 @utility btn-dark {

@@ -1,0 +1,16 @@
+{
+  "_comment": "Proposed CCRDI palette (brief/design.md), for the brand specimen only (/component-lab/brand, dev only). Once a layout variant is chosen these values move into site.config.json → brand.colors and this file goes on the cleanup list.",
+  "colors": [
+    { "key": "ink", "name": "Ink", "hex": "#1E1F22", "role": "dark", "source": "logo charcoal, deepened", "use": "header, hero, footer, dark sections, body text" },
+    { "key": "charcoal", "name": "Charcoal", "hex": "#3A3A3C", "role": "dark-700", "source": "the “CC” letters", "use": "secondary dark panels, cards on Ink" },
+    { "key": "red", "name": "CCRDI Red", "hex": "#C82127", "role": "primary", "source": "the “RDI” letters", "use": "buttons, links and eyebrows on light" },
+    { "key": "signalRed", "name": "Signal Red", "hex": "#ED1C28", "role": "primary-bright", "source": "the bright pixel squares", "use": "marks and large text on Ink" },
+    { "key": "wine", "name": "Wine", "hex": "#8F2635", "role": "primary-deep", "source": "the dark pixel squares", "use": "button hover, red text with extra contrast" },
+    { "key": "blush", "name": "Blush", "hex": "#F4D1D8", "role": "tint", "source": "the pale pixel squares", "use": "light end of a red data ramp; text on Ink" },
+    { "key": "silver", "name": "Silver", "hex": "#D6D8D9", "role": "silver", "source": "the circuit ring", "use": "hairlines on light; secondary text on Ink" },
+    { "key": "steel", "name": "Steel", "hex": "#9EA1A6", "role": "muted", "source": "Silver, darkened", "use": "muted text on Ink; chart bars" },
+    { "key": "slate", "name": "Slate", "hex": "#55585E", "role": "mutedDark", "source": "Charcoal, lightened", "use": "captions and secondary text on light" },
+    { "key": "mist", "name": "Mist", "hex": "#F2F3F4", "role": "light", "source": "Silver, lightened", "use": "alternating light sections" },
+    { "key": "white", "name": "White", "hex": "#FFFFFF", "role": "surface", "source": "", "use": "page background" }
+  ]
+}

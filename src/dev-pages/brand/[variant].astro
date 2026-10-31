@@ -1,0 +1,399 @@
+---
+// Brand specimen, one layout variant per page (dev only, not linked, noindex):
+//   /component-lab/brand/a  A, dark-led: Ink for the hero, header, footer and several sections
+//   /component-lab/brand/b  B, light-led: White and Mist, Ink for text, one dark feature section
+// Both are compared side by side on /component-lab/brand. The proposed palette
+// (src/dev-pages/brand/palette.json, brief/design.md) is mapped onto the theme's colour roles for
+// this page only, so the real components (Button, LineLink, SectionTitle, FeatureGrid, StatRow)
+// show it; the site's own header and footer are hidden and drawn here with the CCRDI logo.
+// Copy is framework text (sections 6, 7, 8, 9, 12) or the approved interface labels; the
+// figures and the chart are sample data, marked as such.
+import '@fontsource-variable/plus-jakarta-sans';
+import Base from '@/layouts/Base.astro';
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import FeatureGrid from '@/components/ccc/FeatureGrid.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import { headStyle } from './spec';
+
+export function getStaticPaths() {
+  return [{ params: { variant: 'a' } }, { params: { variant: 'b' } }];
+}
+
+const { variant } = Astro.params;
+const dark = variant === 'a';
+const name = dark ? 'A, dark-led' : 'B, light-led';
+
+
+// framework §7 (Core Services), word for word
+const services = [
+  { icon: 'lucide:users', title: 'Consumer Research', text: 'Understanding what customers think, expect, value, and prioritize.' },
+  { icon: 'lucide:chart-column', title: 'Industry Benchmarking', text: 'Helping organizations understand how they perform relative to competitors and category leaders.' },
+  { icon: 'lucide:trending-up', title: 'Market Intelligence', text: 'Tracking consumer sentiment, emerging trends, and changing market expectations.' },
+  { icon: 'lucide:award', title: 'Award Research', text: 'Providing the independent research methodology behind Consumer Choice Award winner selection.' },
+  { icon: 'lucide:lightbulb', title: 'Strategic Insights', text: 'Turning reliable consumer data into recommendations that support better business decisions.' },
+];
+
+// sample figures and chart data: not CCRDI data
+const stats = [
+  { value: '48', label: 'Sample figure', note: 'Not CCRDI data' },
+  { value: '120', label: 'Sample figure', note: 'Not CCRDI data' },
+  { value: '86%', label: 'Sample figure', note: 'Not CCRDI data' },
+  { value: '2,400', label: 'Sample figure', note: 'Not CCRDI data' },
+];
+const bars = [
+  { label: 'Category leader', value: 86 },
+  { label: 'Your organization', value: 82, highlight: true },
+  { label: 'Competitor B', value: 77 },
+  { label: 'Competitor C', value: 74 },
+  { label: 'Competitor D', value: 70 },
+  { label: 'Competitor E', value: 66 },
+];
+const average = Math.round(bars.reduce((n, b) => n + b.value, 0) / bars.length);
+const ticks = [0, 20, 40, 60, 80, 100];
+
+const nav = ['About', 'Core Services', 'Media', 'Contact'];
+const family = ['Consumer Choice Canada', 'Consumer Choice Award', 'Consumer Choice Marketing'];
+const legal = ['Privacy Policy', 'Accessibility Statement'];
+
+// section surfaces per variant
+type Surface = 'dark' | 'light' | 'white';
+const s: Record<'hero' | 'cards' | 'data' | 'statement', Surface> = dark
+  ? { hero: 'dark', cards: 'white', data: 'dark', statement: 'light' }
+  : { hero: 'light', cards: 'white', data: 'light', statement: 'dark' };
+const bg: Record<Surface, string> = { dark: 'bg-dark text-white', light: 'bg-light text-dark', white: 'bg-white text-dark' };
+---
+
+<Base title={`Brand specimen ${variant.toUpperCase()}`} noindex footerClass="hidden">
+  <Fragment slot="head" set:html={headStyle} />
+
+  <p class="spec-tag bg-(--spec-charcoal) py-2 text-center text-[13px] text-white">
+    Brand specimen · Variant {name} · sample layout, not a site page
+  </p>
+
+  <!-- Header (drawn: the site header still carries the CCC logo until the brand is applied) -->
+  <div class="bg-dark text-white">
+    <div class="container flex items-center justify-between gap-8 py-4">
+      <AstroImage src="/images/brands/ccrdi-reversed.png" alt="Consumer Choice Research, Data & Insights" height={80} loading="eager" class="h-14 w-auto lg:h-18" />
+      <ul class="hidden items-center gap-10 text-[15px] font-medium lg:flex">
+        {nav.map((n) => <li>{n}</li>)}
+      </ul>
+      <Button href="#" label="Contact Us" variant="primary" class="btn-sm max-sm:hidden" />
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class:list={['relative overflow-hidden', bg[s.hero]]}>
+    <svg class="spec-motif pointer-events-none absolute -right-64 top-1/2 h-[640px] w-[640px] -translate-y-1/2 max-lg:opacity-50" viewBox="0 0 640 640" aria-hidden="true">
+      {/* the logo's circuit ring: broken concentric arcs and three traces with end nodes */}
+      <g fill="none" stroke-linecap="butt" class={dark ? 'stroke-(--spec-silver) opacity-10' : 'stroke-(--spec-slate) opacity-10'}>
+        <circle cx="400" cy="320" r="250" stroke-width="34" stroke-dasharray="300 26 420 26 520 26" />
+        <circle cx="400" cy="320" r="196" stroke-width="30" stroke-dasharray="240 24 360 24 560 24" transform="rotate(40 400 320)" />
+        <circle cx="400" cy="320" r="146" stroke-width="26" stroke-dasharray="180 22 260 22 400 22" transform="rotate(-30 400 320)" />
+        <path d="M20 250 H120 L160 300 M20 330 H140 M20 410 H120 L160 360" stroke-width="10" />
+        <circle cx="20" cy="250" r="14" stroke-width="10" />
+        <circle cx="20" cy="330" r="14" stroke-width="10" />
+        <circle cx="20" cy="410" r="14" stroke-width="10" />
+      </g>
+    </svg>
+    {/* the logo's pixel squares */}
+    <svg class="pointer-events-none absolute right-3 top-3 h-20 w-32 sm:right-16 sm:top-8 sm:h-36 sm:w-56 lg:right-24" viewBox="0 0 224 144" aria-hidden="true">
+      {[
+        [196, 6, 16, 'signalRed'], [160, 22, 14, 'signalRed'], [208, 70, 14, 'signalRed'], [120, 58, 10, 'wine'],
+        [140, 90, 10, 'red'], [100, 92, 9, 'signalRed'], [176, 96, 8, 'red'], [84, 52, 9, 'blush'], [128, 30, 8, 'blush'],
+        [176, 60, 9, 'blush'], [152, 120, 8, 'red'], [60, 80, 9, 'red'], [112, 124, 8, 'wine'], [40, 110, 7, 'blush'],
+      ].map(([x, y, size, c]) => (
+        <rect x={x} y={y} width={size} height={size} rx="2" fill={`var(--spec-${c})`} />
+      ))}
+    </svg>
+
+    <div class="container relative py-24 lg:py-36">
+      <div class="row">
+        <div class="lg:col-7">
+          <p class:list={['spec-eyebrow mb-6 has-anim fade', dark ? 'text-(--spec-silver)' : 'text-primary']}>
+            Turning Consumer Intelligence Into Business Confidence
+          </p>
+          <h1 class="mb-10 text-display has-anim fade delay-100">Data That Builds Better Businesses</h1>
+          <div class="flex flex-wrap items-center gap-x-10 gap-y-5 has-anim fade delay-150">
+            <Button href="#" label="Contact Us" variant="primary" />
+            <LineLink href="#" label="Core Services" tone={dark ? 'white' : 'dark'} icon="arrow" />
+          </div>
+        </div>
+        <div class="lg:col-5 max-lg:mt-10 lg:pt-28">
+          <p class:list={['text-lead max-w-measure has-anim fade delay-100', dark ? 'text-white/80' : 'text-mutedDark']}>
+            Powered by ISUCORP, Consumer Choice Research, Data &amp; Insights provides independent research, consumer intelligence, and market analysis that helps organizations make smarter business decisions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Card section -->
+  <section class:list={['py-section', bg[s.cards], !dark && 'hairline-top']}>
+    <div class="container">
+      <SectionTitle subtitle="Core Services" title="Independent Research. Meaningful Insights." align="left" />
+      <FeatureGrid items={services} columns={3} tone="light" />
+    </div>
+  </section>
+
+  <!-- Stat row and chart -->
+  <section class:list={['py-section', bg[s.data]]}>
+    <div class="container">
+      <div class="mb-15 lg:mb-20">
+        <p class:list={['spec-eyebrow mb-3', dark ? 'text-(--spec-silver)' : 'text-primary']}>Industry Benchmarking</p>
+        <h2 class="text-h2">Turning Consumer Data Into Business Confidence.</h2>
+      </div>
+
+      <StatRow items={stats} tone={dark ? 'dark' : 'light'} />
+
+      <figure class:list={['spec-chart mt-12 rounded-card p-6 sm:p-10 has-anim fade', dark ? 'bg-white/3 is-dark' : 'bg-white']}>
+        <figcaption class="mb-8">
+          <p class="font-heading text-h3 font-semibold">Customer satisfaction index by competitor</p>
+          <p class:list={['mt-1 text-[14px]', dark ? 'text-(--spec-steel)' : 'text-mutedDark']}>Sample data, not CCRDI research · index, 0 to 100</p>
+        </figcaption>
+
+        <div class="spec-plot">
+          {/* gridlines and the category average, behind the bars */}
+          <div class="spec-grid" aria-hidden="true">
+            {ticks.map((t) => <span style={{ left: `${t}%` }}><i>{t}</i></span>)}
+            <span class="spec-avg" style={{ left: `${average}%` }}><i>Category average {average}</i></span>
+          </div>
+          <ul class="spec-bars">
+            {bars.map((b) => (
+              <li class:list={['spec-row', b.highlight && 'is-hl']} tabindex="0" aria-label={`${b.label}: ${b.value}`}>
+                <span class="spec-label">{b.label}</span>
+                <span class="spec-track">
+                  <span class="spec-bar" style={{ width: `${b.value}%` }}></span>
+                  <span class="spec-value" style={{ left: `${b.value}%` }}>{b.value}</span>
+                  <span class="spec-tip" aria-hidden="true">{b.label}: {b.value}{b.highlight ? ` (${b.value - average > 0 ? '+' : ''}${b.value - average} against the average)` : ''}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <details class="mt-8 text-[14px]">
+          <summary class="cursor-pointer font-medium">Show as a table</summary>
+          <table class="mt-4 w-full max-w-md text-left">
+            <thead><tr><th class="py-1 font-medium">Organization</th><th class="py-1 text-right font-medium">Index</th></tr></thead>
+            <tbody>
+              {bars.map((b) => <tr><td class="py-1">{b.label}</td><td class="py-1 text-right tabular-nums">{b.value}</td></tr>)}
+              <tr><td class="py-1">Category average</td><td class="py-1 text-right tabular-nums">{average}</td></tr>
+            </tbody>
+          </table>
+        </details>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Feature statement -->
+  <section class:list={['py-section', bg[s.statement]]}>
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-9">
+          <p class:list={['spec-eyebrow mb-6', s.statement === 'dark' ? 'text-(--spec-silver)' : 'text-primary']}>Research That Builds Trust.</p>
+          <p class="font-heading text-statement font-medium has-anim fade">
+            Powered by ISUCORP’s independent research methodology, CCRDI delivers objective consumer intelligence trusted by organizations across Canada.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (drawn, as the header) -->
+  <div class="bg-dark py-section text-(--spec-silver)">
+    <div class="container">
+      <div class="row gap-y-12">
+        <div class="lg:col-5">
+          <AstroImage src="/images/brands/ccrdi-reversed.png" alt="Consumer Choice Research, Data & Insights" height={96} class="mb-6 h-20 w-auto" />
+          <p class="max-w-sm text-[15px]">CCRDI delivers independent consumer research, market intelligence, and industry benchmarking that turns data into better business decisions.</p>
+        </div>
+        <div class="lg:col-7 grid grid-cols-2 gap-8 sm:grid-cols-3 text-[15px]">
+          <ul class="space-y-3">{nav.map((n) => <li class="text-white">{n}</li>)}</ul>
+          <ul class="space-y-3"><li class="spec-eyebrow mb-4">Family of Brands</li>{family.map((n) => <li class="text-white">{n}</li>)}</ul>
+          <ul class="space-y-3">{legal.map((n) => <li class="text-white">{n}</li>)}</ul>
+        </div>
+      </div>
+      <div class="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-white/10 pt-8">
+        <p class="font-heading text-h3 font-semibold text-white">Independent Research. Meaningful Insights.</p>
+        <Button href="#" label="Contact Us" variant="primary" />
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style is:global>
+  /* the logo's tracked caps ("RESEARCH • DATA • INSIGHTS") */
+  .spec-eyebrow {
+    font-size: var(--text-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .text-display,
+  .text-h2,
+  .text-h3,
+  .text-statement {
+    letter-spacing: -0.02em;
+  }
+  /* light stat tiles: the rule under each tile in CCRDI Red (the site's silver hairline
+     vanishes on a white tile) */
+  .stat-tile .bg-hairline-light {
+    background: var(--color-primary);
+  }
+  .stat-tile dd,
+  .stat-tile [data-counter] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Chart: horizontal bars from a zero baseline, one highlighted; 4px rounded data ends,
+     hairline gridlines, the category average as a labelled reference line, a tooltip on
+     hover or keyboard focus. Light: CCRDI Red against Steel; on Ink: Signal Red against Steel. */
+  .spec-chart {
+    --panel: var(--spec-white);
+    --hl: var(--spec-red);
+    --rest: var(--spec-steel);
+    --grid: var(--spec-silver);
+    --ink: var(--spec-ink);
+    --sub: var(--spec-slate);
+  }
+  .spec-chart.is-dark {
+    --panel: color-mix(in srgb, var(--spec-white) 3%, var(--spec-ink));
+    --hl: var(--spec-signalRed);
+    --grid: color-mix(in srgb, var(--spec-white) 14%, transparent);
+    --ink: var(--spec-white);
+    --sub: var(--spec-steel);
+    color: var(--spec-white);
+  }
+  .spec-plot {
+    position: relative;
+    padding: 0 0 28px;
+    --label-w: 150px;
+  }
+  @media (max-width: 575px) {
+    .spec-plot {
+      --label-w: 0px;
+    }
+  }
+  .spec-grid {
+    position: absolute;
+    inset: 0 2.5rem 0 var(--label-w);
+  }
+  .spec-grid span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--grid);
+  }
+  .spec-grid i {
+    position: absolute;
+    bottom: 0;
+    translate: -50% 0;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--sub);
+    font-variant-numeric: tabular-nums;
+  }
+  .spec-grid .spec-avg {
+    background: var(--ink);
+    top: -10px;
+  }
+  .spec-grid .spec-avg i {
+    top: -28px;
+    bottom: auto;
+    white-space: nowrap;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .spec-bars {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    padding-top: 22px;
+  }
+  .spec-row {
+    display: grid;
+    grid-template-columns: var(--label-w) 1fr;
+    align-items: center;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  @media (max-width: 575px) {
+    .spec-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+  .spec-label {
+    font-size: 14px;
+    color: var(--sub);
+    padding-right: 16px;
+  }
+  .spec-row.is-hl .spec-label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .spec-track {
+    position: relative;
+    height: 22px;
+    margin-right: 2.5rem;
+  }
+  .spec-bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--rest);
+    border-radius: 0 4px 4px 0;
+    transition: filter var(--duration-fast) var(--ease-theme);
+  }
+  .spec-row.is-hl .spec-bar {
+    background: var(--hl);
+  }
+  .spec-value {
+    position: absolute;
+    top: 50%;
+    translate: 8px -50%;
+    padding: 0 4px;
+    background: var(--panel);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--sub);
+  }
+  .spec-row.is-hl .spec-value {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .spec-tip {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    z-index: 2;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: var(--spec-ink);
+    color: var(--spec-white);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--spec-white) 16%, transparent);
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease-theme);
+  }
+  .spec-row:is(:hover, :focus-visible) .spec-tip {
+    opacity: 1;
+  }
+  .spec-row:is(:hover, :focus-visible) .spec-bar {
+    filter: brightness(1.08);
+  }
+  .spec-chart summary:focus-visible {
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spec-tip,
+    .spec-bar {
+      transition: none;
+    }
+  }
+</style>
