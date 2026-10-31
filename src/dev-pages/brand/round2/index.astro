@@ -1,5 +1,5 @@
 ---
-// Brand specimen, round 2 (dev only, not linked, noindex): the three CCRDI design directions side
+// Brand specimen, round 2 (dev only, not linked, noindex; kept as presented, at /component-lab/brand/round-2): the three CCRDI design directions side
 // by side for the project owner's choice. Each direction is its own page (report.astro,
 // platform.astro, signal.astro) built with the theme's components; here each shows its palette
 // with contrast, its type pairing, and a live preview of the page in a frame at a desktop width
@@ -93,12 +93,12 @@ const checks = (id: string) => {
                 </tbody>
               </table>
 
-              <a href={`/component-lab/brand/${d.id}`} class="line-link mt-8 inline-block text-[15px] font-medium text-(--spec-ink)">Open {d.name} full size</a>
+              <a href={`/component-lab/brand/round-2/${d.id}`} class="line-link mt-8 inline-block text-[15px] font-medium text-(--spec-ink)">Open {d.name} full size</a>
             </div>
 
             <div class="lg:col-8">
               <div class="idx-frame" data-spec-frame>
-                <iframe src={`/component-lab/brand/${d.id}`} title={`${d.name}: sample page`} tabindex="-1" loading={i === 0 ? 'eager' : 'lazy'}></iframe>
+                <iframe src={`/component-lab/brand/round-2/${d.id}`} title={`${d.name}: sample page`} tabindex="-1" loading={i === 0 ? 'eager' : 'lazy'}></iframe>
               </div>
             </div>
           </div>

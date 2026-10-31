@@ -25,5 +25,7 @@ Updated as the conversion goes on.
 | Theme share image | `public/images/ogimage.png` | the theme's screenshot, not referenced |
 | Source Serif 4 | `@fontsource-variable/source-serif-4` (package.json) | after the heading font changes |
 | Brand specimen, round 1 | `src/dev-pages/brand/round1/` (dev only) | superseded by round 2 |
-| Brand specimen, round 2 | `src/dev-pages/brand/` (dev only) | once a direction is in site.config.json and the components, keep the chosen page as a reference or remove all three |
-| Fonts not chosen | `@fontsource-variable/plus-jakarta-sans` (round 1) and the two round 2 pairings not chosen, among `@fontsource-variable/instrument-sans`, `@fontsource/ibm-plex-mono`, `@fontsource-variable/geist`, `@fontsource-variable/geist-mono`, `@fontsource-variable/archivo`, `@fontsource-variable/jetbrains-mono` (package.json) | after the choice |
+| Brand specimen, round 2 | `src/dev-pages/brand/round2/` (dev and preview builds) | kept as presented; remove once a round 3 direction is chosen |
+| Brand specimen, round 3 | `src/dev-pages/brand/round3/` (dev and preview builds) | once the chosen direction is in site.config.json and the components, keep its page as a reference or remove all three; drop `build:preview` and the `brandPages` routes in astro.config.mjs |
+| Placeholder photos not used by the chosen direction | `src/assets/images/placeholders/ccrdi-*.jpg` | see placeholder-media.md for which direction uses each |
+| Fonts not chosen | `@fontsource-variable/plus-jakarta-sans` (round 1) and the two round 2 pairings not chosen, among `@fontsource-variable/instrument-sans`, `@fontsource/ibm-plex-mono`, `@fontsource-variable/geist`, `@fontsource-variable/geist-mono`, `@fontsource-variable/archivo`, `@fontsource-variable/jetbrains-mono`, and the round 3 pairings not chosen among `@fontsource-variable/fraunces`, `@fontsource-variable/dm-sans`, `@fontsource-variable/bricolage-grotesque` (package.json) | after the choice |

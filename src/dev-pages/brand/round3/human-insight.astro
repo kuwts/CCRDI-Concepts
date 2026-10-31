@@ -1,0 +1,338 @@
+---
+// Design direction 02: Human Insight (/component-lab/brand/human-insight; dev and preview builds).
+// Warm and editorial: a trusted research partner focused on people. Linen and sand, a deeper
+// crimson take on the CCRDI red, Fraunces for headings with DM Sans, rounded full-colour
+// photography of real people and consumers, and data drawn as people. The logo's circuit ring
+// draws around a portrait; its squares become respondents in the chart.
+// Theme components: Button, LineLink, BlogCard (the homepage news layout: one featured, then a
+// grid), StatRow, Statement, AstroImage, CounterUp; reveals, stagger, overlap.
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import Statement from '@/components/ccc/Statement.astro';
+import CounterUp from '@/components/CounterUp.astro';
+import { animDelay } from '@/utils/animDelay';
+import SpecLayout from './parts/SpecLayout.astro';
+import SpecHeader from './parts/SpecHeader.astro';
+import SpecFooter from './parts/SpecFooter.astro';
+import CircuitRing from './parts/CircuitRing.astro';
+import PixelCluster from './parts/PixelCluster.astro';
+import UnitChart from './parts/UnitChart.astro';
+import { audiences, credibility, hero, labels, positioning, sampleNote, sampleStats, services, taglines } from './copy';
+
+// full-colour photography of people (brief/placeholder-media.md)
+const servicePhotos = [
+  '/images/placeholders/ccrdi-conversation-mugs.jpg',
+  '/images/placeholders/ccrdi-team-laptop.jpg',
+  '/images/placeholders/ccrdi-fruit-market.jpg',
+  '/images/placeholders/ccrdi-cafe-owners.jpg',
+  '/images/placeholders/ccrdi-focus-group.jpg',
+];
+const cards = services.map((s, i) => ({
+  title: s.title,
+  description: s.text,
+  date: '',
+  category: String(i + 1).padStart(2, '0'),
+  image: servicePhotos[i],
+  imageAlt: '',
+  href: '#',
+}));
+const audiencePhotos = [
+  '/images/placeholders/ccrdi-shop-owner.jpg',
+  '/images/placeholders/ccrdi-community-meeting.jpg',
+  '/images/placeholders/ccrdi-panel-speakers.jpg',
+];
+const groups = [
+  { name: 'Your organization', value: 82, highlight: true },
+  { name: 'Category average', value: 76 },
+  { name: 'Category leader', value: 86 },
+];
+const [lineOne, lineTwo] = ['Data That Builds', 'Better Businesses'];
+---
+
+<SpecLayout id="human-insight" index={2}>
+  <SpecHeader />
+
+  <!-- Hero: an editorial headline beside a portrait inside the logo's ring -->
+  <section class="relative overflow-hidden pt-14 pb-24 lg:pt-20 lg:pb-32">
+    <div class="container">
+      <div class="row items-center gap-y-14">
+        <div class="lg:col-7">
+          <p class="spec-label is-signal mb-8 text-(--spec-crimson) has-anim fade">{hero.eyebrow}</p>
+          {/* the title, word for word, set in two lines; the second in the serif's italic */}
+          <h1 class="hi-display">
+            <span class="block has-anim mask"><span class="block">{lineOne}</span></span>
+            <span class="block has-anim mask delay-100"><span class="block italic">{lineTwo}</span></span>
+          </h1>
+          <p class="mt-9 max-w-[32rem] text-lead text-(--spec-taupe) has-anim fade delay-200">{hero.lead}</p>
+          <div class="mt-10 flex flex-wrap items-center gap-x-9 gap-y-5 has-anim fade delay-300">
+            <Button href="#" label={labels.contact} variant="primary" />
+            <LineLink href="#" label={labels.coreServices} tone="dark" icon="arrow" />
+          </div>
+        </div>
+
+        <div class="lg:col-5">
+          <div class="hi-collage relative mx-auto max-w-[36rem]">
+            <CircuitRing delay={350} class="absolute inset-0 h-full w-full text-(--spec-crimson) opacity-70" />
+            <div class="hi-portrait has-anim">
+              <AstroImage src="/images/placeholders/ccrdi-portrait-smiling.jpg" alt="A smiling woman with curly hair, resting her head on her hand" widths={[400, 800, 1000]} sizes="(min-width: 1024px) 300px, 50vw" loading="eager" class="h-full w-full object-cover object-[50%_35%]" />
+            </div>
+            <PixelCluster tone="warm" delay={900} class="absolute right-[2%] top-[2%] w-[26%]" />
+            <div class="hi-inset has-anim clip delay-300">
+              <AstroImage src="/images/placeholders/ccrdi-market-exchange.jpg" alt="A customer paying a vendor across a market stall" widths={[300, 600]} sizes="200px" loading="eager" class="h-full w-full object-cover" />
+            </div>
+            {/* a sample figure, as a card resting on the collage */}
+            <div class="hi-figure has-anim fade delay-500">
+              <p class="spec-label text-(--spec-taupe)">Sample figure</p>
+              <p class="hi-figure-value mt-2"><CounterUp value="86%" /></p>
+              <div class="mt-3 flex gap-1" aria-hidden="true">
+                {Array.from({ length: 10 }, (_, i) => <i class:list={['hi-figure-dot', i < 9 && 'is-on']} style={`--i:${i}`}></i>)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Services: the homepage news layout (one featured card, then a grid) -->
+  <section class="border-t border-(--spec-clay) pt-section pb-[calc(var(--spacing-section-sm)-2rem)] lg:pb-[calc(var(--spacing-section-lg)-3rem)]">
+    <div class="container">
+      <div class="row items-end">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-6 text-(--spec-crimson) has-anim fade">{labels.coreServices}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.research}</h2>
+        </div>
+        <div class="lg:col-5 lg:offset-1 max-lg:mt-6">
+          <p class="text-lead text-(--spec-taupe) has-anim fade delay-100">{positioning}</p>
+        </div>
+      </div>
+      <div class="row hi-cards mt-8">
+        <div class="col-12 has-anim fade"><BlogCard horizontal item={cards[0]} /></div>
+        {cards.slice(1).map((c, i) => (
+          <div class:list={['lg:col-3 md:col-6 has-anim fade', animDelay[i]]}><BlogCard item={c} /></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stat row on sand -->
+  <section class="bg-light py-section">
+    <div class="container">
+      <div class="row mb-14 items-end lg:mb-20">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-6 text-(--spec-crimson) has-anim fade">{sampleNote}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.trust}</h2>
+        </div>
+        <div class="lg:col-5 lg:offset-1 max-lg:mt-6">
+          <p class="text-(--spec-taupe) has-anim fade delay-100">{credibility}</p>
+        </div>
+      </div>
+      <StatRow items={sampleStats} tone="light" class="hi-stats" />
+    </div>
+  </section>
+
+  <!-- Chart: people -->
+  <section class="py-section">
+    <div class="container">
+      <div class="row gap-y-14">
+        <div class="lg:col-4">
+          <p class="spec-label is-signal mb-6 text-(--spec-crimson) has-anim fade">{services[0].title}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.understanding}</h2>
+          <p class="mt-6 text-(--spec-taupe) has-anim fade delay-100">{services[0].text}</p>
+          <p class="spec-label mt-10 text-(--spec-taupe)">Sample data · each square one of 100 respondents</p>
+        </div>
+        <div class="lg:col-7 lg:offset-1">
+          <UnitChart groups={groups} caption="Sample data: respondents out of 100, by organization" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Serve: three portraits -->
+  <section class="border-t border-(--spec-clay) py-section">
+    <div class="container">
+      <p class="spec-label is-signal mb-12 text-(--spec-crimson) has-anim fade">{labels.whoWeServe}</p>
+      <ul class="grid gap-x-8 gap-y-14 md:grid-cols-3">
+        {audiences.map((a, i) => (
+          <li class:list={['hi-person group', i === 1 && 'md:mt-16']}>
+            <div class:list={['overflow-hidden rounded-card has-anim clip', animDelay[i]]}>
+              <AstroImage src={audiencePhotos[i]} alt="" widths={[400, 800]} sizes="(min-width: 768px) 30vw, 100vw" class="aspect-[4/5] w-full object-cover" />
+            </div>
+            <h3 class="mt-7 text-h3 has-anim fade">{a.title}</h3>
+            <p class="mt-3 text-[16px] leading-relaxed text-(--spec-taupe) has-anim fade delay-50">{a.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Statement: the theme's word-by-word statement band, in the serif's italic -->
+  <Statement statement={credibility} background="white" />
+
+  <SpecFooter tone="warm" motif="warm" />
+</SpecLayout>
+
+<style is:global>
+  [data-direction='human-insight'] {
+    --text-h2: clamp(2rem, 1.5rem + 1.8vw, 3.25rem);
+    --text-h3: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+    --text-statement: clamp(1.625rem, 1.3rem + 1vw, 2.25rem);
+  }
+  [data-direction='human-insight'] :is(h1, h2, h3, .text-h2, .text-h3, .text-statement) {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-variation-settings: 'SOFT' 50, 'WONK' 0;
+    letter-spacing: -0.015em;
+  }
+  [data-direction='human-insight'] .spec-label {
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+  .hi-display {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 1.7rem + 4.4vw, 5.5rem);
+    font-weight: 360;
+    font-variation-settings: 'SOFT' 60, 'WONK' 0;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+  .hi-display .italic {
+    font-weight: 330;
+    color: var(--spec-crimson);
+  }
+  /* the hero collage: a portrait inside the logo's ring (ring geometry: CircuitRing's viewBox,
+     -20 0 620 600, centre 300,300; the portrait is a circle of radius 140 inside the inner ring) */
+  .hi-collage {
+    aspect-ratio: 620 / 600;
+  }
+  .hi-portrait {
+    position: absolute;
+    left: 51.6%;
+    top: 50%;
+    width: 45.2%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    overflow: hidden;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 1.3s var(--ease-theme);
+  }
+  .hi-portrait:global(.has-anim) {
+    opacity: 1;
+    transform: none;
+  }
+  .hi-portrait img {
+    scale: 1.12;
+    transition: scale 1.6s var(--ease-theme);
+  }
+  .hi-portrait:global(.is-visible) {
+    clip-path: circle(50% at 50% 50%);
+  }
+  .hi-portrait:global(.is-visible) img {
+    scale: 1;
+  }
+  .hi-inset {
+    position: absolute;
+    right: 0;
+    bottom: 2%;
+    width: 30%;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 0 6px var(--spec-linen);
+  }
+  .hi-figure {
+    position: absolute;
+    left: 0;
+    bottom: 4%;
+    padding: 16px 18px 18px;
+    border-radius: 16px;
+    background: var(--spec-white);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--spec-espresso) 8%, transparent), 0 12px 32px color-mix(in srgb, var(--spec-espresso) 10%, transparent);
+  }
+  .hi-figure-value {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 380;
+    line-height: 1;
+    color: var(--spec-crimson);
+  }
+  .hi-figure-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px var(--spec-clay);
+  }
+  .hi-figure-dot.is-on {
+    background: var(--spec-crimson);
+    box-shadow: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-out calc(900ms + var(--i) * 70ms);
+  }
+  :global(.is-visible) .hi-figure-dot.is-on {
+    opacity: 1;
+  }
+  /* BlogCard, warmed: serif titles, the index as a small rose chip, a crimson arrow */
+  .hi-cards article {
+    padding-inline: 0;
+  }
+  .hi-cards article span.inline-block,
+  .hi-cards article [class*='rounded-full'] {
+    background: var(--spec-rose);
+    color: var(--spec-espresso);
+  }
+  .hi-cards article p {
+    color: var(--spec-taupe);
+  }
+  .hi-cards article .lucide-arrow-up-right,
+  .hi-cards article [aria-hidden='true'] svg {
+    color: var(--spec-crimson);
+  }
+  .hi-cards article img {
+    filter: saturate(0.92) sepia(0.06);
+  }
+  /* StatRow on sand: white tiles, serif numerals, crimson rule */
+  .hi-stats .stat-tile {
+    border-radius: var(--radius-card);
+  }
+  .hi-stats dd {
+    font-family: var(--font-heading);
+    font-weight: 350;
+    letter-spacing: -0.02em;
+  }
+  .hi-stats .stat-rule {
+    background: var(--spec-crimson);
+    height: 2px;
+  }
+  .hi-person img {
+    filter: saturate(0.92) sepia(0.06);
+    transition: scale var(--duration-slow) var(--ease-theme);
+  }
+  .hi-person:hover img {
+    scale: var(--zoom-image);
+  }
+  /* the statement band in the serif's italic, crimson rule */
+  [data-direction='human-insight'] .pull-quote {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 350;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hi-portrait {
+      clip-path: circle(50% at 50% 50%);
+      transition: none;
+    }
+    .hi-portrait img,
+    .hi-figure-dot.is-on {
+      scale: 1;
+      opacity: 1;
+      transition: none;
+    }
+    .hi-person img {
+      transition: none;
+    }
+  }
+</style>

@@ -100,6 +100,9 @@ for reference only: they are not sources of copy or rules for this site.
   schema changes in that file, so new fields can silently disappear in dev while the build
   is fine. Confirm against the dev server, not only `npm run build`.
 - Changes that should go back into the base theme are recorded in BACKPORT.md.
+- Brand design directions (dev only): /component-lab/brand (round 3) and
+  /component-lab/brand/round-2. `npm run build:preview` builds the site with them included, for a
+  preview deploy; `npm run build` (production) never does.
 
 ## Pre-launch
 - The CCRDI domain is set. `baseURL` in site.config.json is the placeholder

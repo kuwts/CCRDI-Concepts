@@ -1,0 +1,105 @@
+---
+// The round 3 specimen footer, after the site footer's structure: the logo and one-line
+// description, then the menu, the family of brands and the legal links, and a copyright line
+// under a rule, with the logo's squares. Tones: `light` (on the page, ink rule above), `warm`
+// (on sand) and `field` (on the direction's dark field, reversed logo). Links go nowhere.
+import AstroImage from '@/components/helper/AstroImage.astro';
+import PixelCluster from './PixelCluster.astro';
+import { family, labels, oneLiner } from '../copy';
+
+interface Props {
+  tone?: 'light' | 'warm' | 'field';
+  /** the cluster's tone (PixelCluster) */
+  motif?: 'logo' | 'mono' | 'warm' | 'onred';
+  /** on a red or wine field the reversed logo's red letters vanish: use the all-white logo */
+  logo?: 'colour' | 'reversed' | 'white';
+  class?: string;
+}
+const { tone = 'light', motif = 'mono', logo, class: className = '' } = Astro.props;
+const logoSrc = {
+  colour: '/images/brands/ccrdi.png',
+  reversed: '/images/brands/ccrdi-reversed.png',
+  white: '/images/brands/ccrdi-white.png',
+}[logo ?? (tone === 'field' ? 'reversed' : 'colour')];
+const year = new Date().getFullYear();
+const columns = [
+  { title: '', links: labels.nav },
+  { title: labels.family, links: family },
+  { title: '', links: labels.legal },
+];
+---
+
+<footer class:list={['spec-footer', `is-${tone}`, className]}>
+  <div class="container">
+    <div class="row gap-y-14 pt-16 pb-14 lg:pt-20">
+      <div class="lg:col-5">
+        <AstroImage
+          src={logoSrc}
+          alt="Consumer Choice Research, Data & Insights"
+          height={120}
+          class="h-16 w-auto lg:h-18"
+        />
+        <p class="spec-footer-muted mt-7 max-w-sm text-[15px] leading-relaxed">{oneLiner}</p>
+      </div>
+      <div class="lg:col-7 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+        {columns.map((c) => (
+          <div>
+            <p class="spec-label spec-footer-muted mb-5 min-h-[1.3em]">{c.title}</p>
+            <ul class="space-y-3 text-[15px]">
+              {c.links.map((l) => <li><a href="#" class="spec-footer-link">{l}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="spec-footer-base flex flex-wrap items-center justify-between gap-6 py-7">
+      <p class="spec-label spec-footer-muted">{labels.copyright} {year} Consumer Choice Research, Data &amp; Insights</p>
+      <PixelCluster tone={motif} class="w-10" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .spec-footer {
+    color: var(--spec-ink);
+  }
+  .spec-footer.is-light {
+    border-top: 1px solid var(--spec-ink);
+  }
+  .spec-footer.is-warm {
+    background: var(--spec-sand);
+  }
+  .spec-footer.is-field {
+    background: var(--spec-field, var(--spec-ink));
+    color: var(--spec-white);
+  }
+  .spec-footer-muted {
+    color: var(--spec-muted-text);
+  }
+  .is-field .spec-footer-muted {
+    color: color-mix(in srgb, var(--spec-white) 72%, transparent);
+  }
+  .spec-footer-base {
+    border-top: 1px solid var(--spec-rule);
+  }
+  .is-field .spec-footer-base {
+    border-color: color-mix(in srgb, var(--spec-white) 16%, transparent);
+  }
+  /* hover or focus: an underline in the accent draws in from the left */
+  .spec-footer-link {
+    background: linear-gradient(var(--spec-accent), var(--spec-accent)) 0 100% / 0 1px no-repeat;
+    padding-bottom: 2px;
+    transition: background-size var(--duration-base) var(--ease-theme);
+  }
+  .is-field .spec-footer-link {
+    background-image: linear-gradient(var(--spec-white), var(--spec-white));
+  }
+  .spec-footer-link:is(:hover, :focus-visible) {
+    background-size: 100% 1px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spec-footer-link {
+      transition: none;
+    }
+  }
+</style>

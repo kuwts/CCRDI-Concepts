@@ -1,0 +1,356 @@
+---
+// Design direction 01: Precision (/component-lab/brand/precision; dev and preview builds). Light,
+// monochrome, technical: the best of round 2 in one page. Platform's cool canvas on a fine grid,
+// bordered panels with corner marks and the mono; Signal's layered composition (a photograph
+// overlapping the next section under a frosted ink pane, a sticky statement beside the stacked
+// cards); the instrument panel and the pixel-square heat map as the signature animations. Red
+// is a signal only. Theme components: Button, LineLink, StackedServices, StatRow, AstroImage,
+// the reveals, clip reveal, stagger and overlap (THEME_CATALOG.md, "Theme design language").
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import StackedServices from '@/components/StackedServices.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import { animDelay } from '@/utils/animDelay';
+import SpecLayout from './parts/SpecLayout.astro';
+import SpecHeader from './parts/SpecHeader.astro';
+import SpecFooter from './parts/SpecFooter.astro';
+import CircuitRing from './parts/CircuitRing.astro';
+import PixelCluster from './parts/PixelCluster.astro';
+import PixelMatrix from './parts/PixelMatrix.astro';
+import Sparkline from './parts/Sparkline.astro';
+import { audiences, credibility, hero, labels, oneLiner, positioning, sampleNote, sampleStats, services, taglines } from './copy';
+
+// sample data, not CCRDI research
+const readout = [
+  { name: services[0].title, value: '72.4', trend: [61, 63, 62, 66, 65, 68, 70, 69, 72] },
+  { name: services[1].title, value: '+6.1', trend: [40, 44, 43, 47, 52, 50, 55, 58, 61] },
+  { name: services[2].title, value: '0.82', trend: [70, 68, 71, 69, 73, 76, 74, 78, 82] },
+];
+const columns = Array.from({ length: 24 }, (_, i) => String(i + 1).padStart(2, '0'));
+const seed = (r: number, c: number) => Math.round(48 + Math.sin(c / 3.2 + r * 1.7) * 22 + Math.cos(c / 7 + r) * 10 + (c - 12) * (r % 2 ? 0.6 : -0.4));
+const names = ['Category leader', 'Your organization', 'Competitor B', 'Competitor C', 'Competitor D', 'Competitor E'];
+const rows = names.map((name, r) => ({
+  name,
+  highlight: r === 1,
+  values: columns.map((_, c) => Math.min(98, Math.max(6, r === 1 ? Math.round(34 + c * 2.6 + Math.sin(c / 2.4) * 6) : seed(r, c)))),
+}));
+const pills = ['Research', 'Data', 'Insights'];
+---
+
+<SpecLayout id="precision" index={1}>
+  <SpecHeader />
+
+  <!-- Hero: the headline beside an instrument panel, on the grid -->
+  <section class="precision-canvas relative overflow-hidden pt-16 pb-28 lg:pt-24 lg:pb-40">
+    <div class="container relative">
+      <div class="row items-center gap-y-16">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-8 has-anim fade">{hero.eyebrow}</p>
+          <h1 class="precision-display has-anim mask delay-100"><span class="block">{hero.title}</span></h1>
+          <p class="mt-8 max-w-[33rem] text-lead text-(--spec-slate) has-anim fade delay-200">{hero.lead}</p>
+          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5 has-anim fade delay-300">
+            <Button href="#" label={labels.contact} variant="primary" />
+            <LineLink href="#" label={labels.coreServices} tone="dark" icon="arrow" />
+          </div>
+        </div>
+
+        <div class="lg:col-6 xl:col-5 xl:offset-1">
+          <div class="precision-panel has-anim fade delay-150">
+            <div class="precision-panel-bar">
+              <span class="spec-label"><span class="spec-num">01</span> · Sample data</span>
+              <span class="precision-live" aria-hidden="true"></span>
+            </div>
+            <div class="p-3">
+              {/* the instrument: the logo's ring draws and its squares assemble, on ink */}
+              <div class="precision-screen relative aspect-[4/3] overflow-hidden rounded-[5px]">
+                <CircuitRing delay={400} traces={false} class="absolute left-[2%] top-[5%] w-[64%] text-(--spec-silver) opacity-60" />
+                <PixelCluster delay={900} class="absolute right-[8%] top-[12%] w-[38%]" />
+                <span class="spec-label absolute bottom-4 left-4 text-white/70">Research <span aria-hidden="true">•</span> Data <span aria-hidden="true">•</span> Insights</span>
+              </div>
+            </div>
+            <dl class="grid grid-cols-3 border-t border-(--spec-rule)">
+              {readout.map((r, i) => (
+                <div class:list={['precision-readout', i > 0 && 'border-l border-(--spec-rule)']} style={`--rule-delay:${1200 + i * 160}ms`}>
+                  <dt class="spec-label text-[11px]! text-(--spec-slate)">{r.name}</dt>
+                  <dd class="spec-num mt-3 text-xl font-medium">{r.value}</dd>
+                  <dd class="mt-3"><Sparkline values={r.trend} class="w-full!" /></dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A photograph overlapping the next section, a frosted ink pane across its corner -->
+  <div class="relative z-10 -mt-14 -mb-24 lg:-mt-20 lg:-mb-36">
+    <div class="container">
+      <div class="precision-photo relative has-anim clip aspect-[4/3] md:aspect-[16/7] overflow-hidden rounded-card">
+        <AstroImage src="/images/placeholders/ccrdi-meeting-room.jpg" alt="" widths={[800, 1200, 1600, 2000]} sizes="(min-width: 1320px) 1296px, 100vw" class="h-full w-full object-cover" />
+        <div class="absolute inset-x-4 bottom-4 rounded-lg bg-dark/75 p-7 text-white backdrop-blur-2xl md:inset-x-auto md:left-6 md:bottom-6 md:w-[27rem] md:p-9">
+          <p class="spec-label mb-5 text-white/70">ISUCORP</p>
+          <p class="text-[17px] leading-relaxed md:text-lg">{credibility}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About: the sticky statement beside the stacked cards -->
+  <section class="bg-(--spec-white) border-b border-(--spec-rule) pt-[calc(var(--spacing-section-sm)+6rem)] lg:pt-[calc(var(--spacing-section-md)+9rem)] pb-section">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-8">
+          <div class="lg:sticky lg:top-32 lg:grid lg:grid-cols-12">
+            <p class="spec-label is-signal lg:col-span-3 max-lg:mb-6 has-anim fade">{labels.about}</p>
+            <div class="lg:col-span-8 space-y-8">
+              <h2 class="precision-quote has-anim fade">{positioning}</h2>
+              <p class="max-w-measure text-(--spec-slate) has-anim fade delay-100">{oneLiner}</p>
+              <ul class="flex flex-wrap gap-2.5 pt-2">
+                {pills.map((p, i) => <li class:list={['precision-pill spec-label has-anim', animDelay[i + 1]]}>{p}</li>)}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-4 max-lg:mt-16 precision-stack">
+          <StackedServices services={services.map((s) => ({ icon: s.icon, title: s.title, info: s.text, image: s.image, imageAlt: '' }))} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stat row: one instrument strip -->
+  <section class="precision-canvas py-section">
+    <div class="container">
+      <div class="row mb-14 items-end lg:mb-16">
+        <div class="lg:col-7">
+          <p class="spec-label is-signal mb-6 has-anim fade">{sampleNote}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.confidence}</h2>
+        </div>
+      </div>
+      <StatRow items={sampleStats} tone="light" class="precision-stats" />
+    </div>
+  </section>
+
+  <!-- Chart: the pixel heat map in a panel -->
+  <section class="border-y border-(--spec-rule) bg-(--spec-white) py-section">
+    <div class="container">
+      <div class="row mb-12 items-end">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-6 has-anim fade">{services[1].title}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.data}</h2>
+        </div>
+        <div class="lg:col-5 lg:offset-1 max-lg:mt-6">
+          <p class="text-(--spec-slate) has-anim fade delay-100">{services[1].text}</p>
+        </div>
+      </div>
+      <div class="precision-panel">
+        <div class="precision-panel-bar">
+          <span class="spec-label">Sample data · index by period</span>
+          <span class="spec-label spec-num">06 × 24</span>
+        </div>
+        <div class="p-6 sm:p-10">
+          <PixelMatrix rows={rows} columns={columns} caption="Sample data: index by period for six organizations" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Serve: three panels -->
+  <section class="precision-canvas py-section">
+    <div class="container">
+      <p class="spec-label is-signal mb-12 has-anim fade">{labels.whoWeServe}</p>
+      <ul class="grid gap-4 md:grid-cols-3">
+        {audiences.map((a, i) => (
+          <li class:list={['precision-panel is-card p-8 md:p-10 has-anim fade', animDelay[i]]}>
+            <span class="spec-label spec-num text-(--spec-slate)">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-16 text-h3">{a.title}</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-(--spec-slate)">{a.text}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="row mt-20 items-end lg:mt-28">
+        <p class="lg:col-8 text-statement font-medium has-anim fade">{taglines.research}</p>
+        <div class="lg:col-4 flex lg:justify-end max-lg:mt-8 has-anim fade delay-100">
+          <Button href="#" label={labels.contact} variant="primary" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SpecFooter tone="light" motif="mono" class="bg-(--spec-white)" />
+</SpecLayout>
+
+<style is:global>
+  [data-direction='precision'] {
+    --text-h2: clamp(1.875rem, 1.4rem + 1.5vw, 2.75rem);
+  }
+  [data-direction='precision'] :is(h1, h2, h3) {
+    letter-spacing: -0.03em;
+  }
+  .precision-display {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 1.6rem + 4.2vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+  .precision-quote {
+    font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2.125rem);
+    font-weight: 500;
+    line-height: 1.22;
+  }
+  /* the canvas: a fine grid */
+  .precision-canvas {
+    background-color: var(--spec-canvas);
+    background-image:
+      linear-gradient(var(--spec-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--spec-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+  /* a panel: white, 1px border, corner marks that extend on hover or focus */
+  .precision-panel {
+    position: relative;
+    background: var(--spec-white);
+    border: 1px solid var(--spec-rule);
+    border-radius: var(--radius-card);
+    transition: border-color var(--duration-base) ease-out;
+  }
+  .precision-panel::before,
+  .precision-panel::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border: 0 solid var(--spec-ink);
+    pointer-events: none;
+    transition:
+      width var(--duration-base) var(--ease-theme),
+      height var(--duration-base) var(--ease-theme);
+  }
+  .precision-panel::before {
+    top: -5px;
+    left: -5px;
+    border-width: 1px 0 0 1px;
+  }
+  .precision-panel::after {
+    bottom: -5px;
+    right: -5px;
+    border-width: 0 1px 1px 0;
+  }
+  .precision-panel.is-card:is(:hover, :focus-within) {
+    border-color: var(--spec-steel);
+  }
+  .precision-panel.is-card:is(:hover, :focus-within)::before,
+  .precision-panel.is-card:is(:hover, :focus-within)::after {
+    width: 18px;
+    height: 18px;
+  }
+  .precision-panel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--spec-rule);
+    color: var(--spec-slate);
+  }
+  /* a still red dot: the panel is "live" (no blinking) */
+  .precision-live {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--spec-red);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--spec-red) 18%, transparent);
+  }
+  .precision-screen {
+    background-color: var(--spec-ink);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--spec-white) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--spec-white) 5%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .precision-readout {
+    padding: 16px;
+  }
+  .precision-photo img,
+  .precision-stack img {
+    filter: grayscale(1) contrast(1.08) brightness(1.02);
+  }
+  .precision-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--spec-slate);
+    mix-blend-mode: soft-light;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .precision-stack .text-primary {
+    color: var(--spec-silver);
+  }
+  .precision-stack article .text-4xl {
+    font-family: var(--spec-mono);
+    font-size: 1.5rem;
+  }
+  .precision-pill {
+    padding: 9px 16px;
+    border: 1px solid var(--spec-rule);
+    border-radius: 999px;
+    background: var(--spec-canvas);
+  }
+  .precision-pill:first-child::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: 0 9px 1px 0;
+    vertical-align: middle;
+    background: var(--spec-red);
+  }
+  /* StatRow as one instrument strip: shared borders, mono figures, a short red rule */
+  .precision-stats {
+    gap: 0 !important;
+    border: 1px solid var(--spec-rule);
+    border-radius: var(--radius-card);
+    background: var(--spec-white);
+    overflow: hidden;
+  }
+  .precision-stats .stat-tile {
+    background: transparent;
+    border-radius: 0;
+    padding-bottom: 4rem;
+  }
+  .precision-stats .stat-tile + .stat-tile {
+    border-left: 1px solid var(--spec-rule);
+  }
+  @media (max-width: 1023px) {
+    .precision-stats .stat-tile:nth-child(odd) {
+      border-left: 0;
+    }
+    .precision-stats .stat-tile:nth-child(n + 3) {
+      border-top: 1px solid var(--spec-rule);
+    }
+  }
+  .precision-stats .stat-tile > span:first-child,
+  .precision-stats dt {
+    font-family: var(--spec-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .precision-stats dd {
+    font-family: var(--spec-mono);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+  }
+  .precision-stats .stat-rule {
+    background: var(--spec-red);
+    height: 2px;
+    width: 40px;
+    right: auto;
+    left: 2.5rem;
+    bottom: 2.25rem;
+  }
+</style>

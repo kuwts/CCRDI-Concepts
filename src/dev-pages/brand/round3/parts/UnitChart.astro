@@ -1,0 +1,158 @@
+---
+// A chart of people (round 3, Human Insight): for each group a ten-by-ten grid in which every
+// square is one of a hundred respondents, drawn as the logo's pixel squares with soft corners.
+// Signature: as it comes into view the squares fill in from the bottom row up, one after another
+// in a gentle wave, like a room filling up, while the percentage counts up beneath (the theme's
+// CounterUp). The highlighted group fills in crimson, the others in taupe; empty places stay as
+// clay outlines. Hover or keyboard focus on a group lets the others recede. A table view carries
+// the numbers. Reduced motion: filled, no wave.
+import CounterUp from '@/components/CounterUp.astro';
+
+interface Props {
+  groups: { name: string; value: number; highlight?: boolean }[];
+  caption: string;
+  class?: string;
+}
+const { groups, caption, class: className = '' } = Astro.props;
+// fill order: bottom row first, left to right, so the grid fills like a room
+const order = Array.from({ length: 100 }, (_, i) => {
+  const row = 9 - Math.floor(i / 10);
+  return row * 10 + (i % 10);
+});
+---
+
+<figure class:list={['unit-chart', className]}>
+  <ul class="unit-groups">
+    {groups.map((g, gi) => {
+      const filled = new Set(order.slice(0, g.value));
+      return (
+        <li
+          class:list={['unit-group has-anim', g.highlight && 'is-hl']}
+          tabindex="0"
+          aria-label={`${g.name}: ${g.value} of 100`}
+          style={`--g:${gi * 260}ms`}
+        >
+          <div class="unit-grid" aria-hidden="true">
+            {Array.from({ length: 100 }, (_, cell) => {
+              const rank = order.indexOf(cell);
+              return <i class:list={[filled.has(cell) && 'is-on']} style={filled.has(cell) ? `--r:${rank}` : undefined}></i>;
+            })}
+          </div>
+          <p class="unit-value" aria-hidden="true"><CounterUp value={`${g.value}%`} /></p>
+          <p class="unit-name" aria-hidden="true">{g.name}</p>
+        </li>
+      );
+    })}
+  </ul>
+
+  <details class="unit-table">
+    <summary>Show as a table</summary>
+    <table>
+      <caption class="sr-only">{caption}</caption>
+      <tbody>
+        {groups.map((g) => <tr><th scope="row">{g.name}</th><td>{g.value} of 100</td></tr>)}
+      </tbody>
+    </table>
+  </details>
+</figure>
+
+<style>
+  .unit-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 4.5rem);
+  }
+  @media (max-width: 767px) {
+    .unit-groups {
+      grid-template-columns: 1fr;
+      max-width: 22rem;
+    }
+  }
+  .unit-group {
+    border-radius: 14px;
+    outline-offset: 10px;
+    transition: opacity var(--duration-base) ease-out;
+  }
+  .unit-group:global(.has-anim) {
+    opacity: 1;
+    transform: none;
+  }
+  .unit-groups:has(.unit-group:is(:hover, :focus-visible)) .unit-group:not(:hover, :focus-visible) {
+    opacity: 0.4;
+  }
+  .unit-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+  }
+  .unit-grid i {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px var(--spec-clay);
+  }
+  .unit-grid i.is-on {
+    --fill: var(--spec-taupe);
+    background: var(--fill);
+    box-shadow: none;
+    opacity: 0;
+    scale: 0.4;
+    transition:
+      opacity 0.45s ease-out,
+      scale 0.8s var(--ease-theme);
+    transition-delay: calc(var(--g) + var(--r) * 11ms);
+  }
+  .is-hl .unit-grid i.is-on {
+    --fill: var(--spec-crimson);
+  }
+  .unit-group:global(.is-visible) .unit-grid i.is-on {
+    opacity: 1;
+    scale: 1;
+  }
+  .unit-value {
+    margin-top: 1.75rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 2rem + 2.2vw, 4rem);
+    font-weight: 350;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .is-hl .unit-value {
+    color: var(--spec-crimson);
+  }
+  .unit-name {
+    margin-top: 0.6rem;
+    font-size: 15px;
+    color: var(--spec-taupe);
+  }
+  .is-hl .unit-name {
+    color: var(--spec-espresso);
+    font-weight: 600;
+  }
+  .unit-table {
+    margin-top: 3rem;
+    font-size: 14px;
+  }
+  .unit-table summary {
+    cursor: pointer;
+    width: max-content;
+    font-weight: 500;
+  }
+  .unit-table table {
+    margin-top: 1rem;
+    border-collapse: collapse;
+  }
+  .unit-table :is(th, td) {
+    padding: 6px 28px 6px 0;
+    border-bottom: 1px solid var(--spec-clay);
+    text-align: left;
+    font-weight: 400;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .unit-grid i.is-on {
+      opacity: 1;
+      scale: 1;
+      transition: none;
+    }
+  }
+</style>

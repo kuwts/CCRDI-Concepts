@@ -1,0 +1,254 @@
+---
+// Stacked bars in the logo's pinks (round 3, Vivid): for each organization, how a hundred
+// responses split across five levels, in a five-step ramp from the logo's mid pink to plum
+// (validated: monotone lightness, visible steps, the light end clears white). Signature: as it
+// comes into view the segments cascade in, each growing from its left edge in turn, row after
+// row, on the theme's curve. Hover a segment and its level lights up across every row while the
+// rest recede; keyboard focus on a row shows its split. Labels inside a segment only where it's
+// wide enough, ink on the light steps and white on the dark ones. A table view carries every
+// number. Reduced motion: in place.
+interface Props {
+  rows: { name: string; values: number[]; highlight?: boolean }[];
+  /** names for the five levels, low to high */
+  levels: string[];
+  caption: string;
+  class?: string;
+}
+const { rows, levels, caption, class: className = '' } = Astro.props;
+const steps = ['pink', 'coral', 'red', 'wine', 'plum'];
+// the light steps carry ink labels, the dark ones white
+const labelInk = (l: number) => l < 2;
+---
+
+<figure class:list={['stacked-bars', className]}>
+  <ul class="sb-legend" aria-hidden="true">
+    {levels.map((l, i) => <li><i class={`sb-${steps[i]}`}></i>{l}</li>)}
+  </ul>
+
+  <ol class="sb-rows has-anim">
+    {rows.map((r, ri) => {
+      let start = 0;
+      return (
+        <li
+          class:list={['sb-row', r.highlight && 'is-hl']}
+          tabindex="0"
+          aria-label={`${r.name}: ${r.values.map((v, i) => `${levels[i]} ${v}%`).join(', ')}`}
+        >
+          <span class="sb-name" aria-hidden="true">{r.name}</span>
+          <span class="sb-bar" aria-hidden="true">
+            {r.values.map((v, l) => {
+              const seg = (
+                <span
+                  class:list={['sb-seg', `sb-${steps[l]}`, labelInk(l) && 'is-ink']}
+                  data-l={l}
+                  style={`left:${start}%;width:${v}%;--d:${ri * 90 + l * 120}ms`}
+                >
+                  {v >= 9 && <b>{v}</b>}
+                  <span class="sb-tip">{levels[l]} · {v}%</span>
+                </span>
+              );
+              start += v;
+              return seg;
+            })}
+          </span>
+        </li>
+      );
+    })}
+  </ol>
+
+  <details class="sb-table">
+    <summary>Show as a table</summary>
+    <div class="sb-table-scroll" role="region" aria-label={caption} tabindex="0">
+      <table>
+        <caption class="sr-only">{caption}</caption>
+        <thead><tr><th scope="col"></th>{levels.map((l) => <th scope="col">{l}</th>)}</tr></thead>
+        <tbody>
+          {rows.map((r) => <tr><th scope="row">{r.name}</th>{r.values.map((v) => <td>{v}%</td>)}</tr>)}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</figure>
+
+<style>
+  .stacked-bars {
+    --label: 12rem;
+  }
+  @media (max-width: 767px) {
+    .stacked-bars {
+      --label: 0px;
+    }
+  }
+  .sb-pink { background: var(--spec-pink); }
+  .sb-coral { background: var(--spec-coral); }
+  .sb-red { background: var(--spec-red); }
+  .sb-wine { background: var(--spec-wine); }
+  .sb-plum { background: var(--spec-plum); }
+  .sb-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin: 0 0 2rem var(--label);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--spec-wine);
+  }
+  .sb-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sb-legend i {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+  .sb-rows:global(.has-anim) {
+    opacity: 1;
+    transform: none;
+  }
+  .sb-rows {
+    display: grid;
+    gap: 14px;
+  }
+  .sb-row {
+    display: grid;
+    grid-template-columns: var(--label) 1fr;
+    align-items: center;
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+  @media (max-width: 767px) {
+    .sb-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+  .sb-name {
+    padding-right: 1rem;
+    font-size: 15px;
+    color: var(--spec-wine);
+  }
+  .sb-row.is-hl .sb-name {
+    color: var(--spec-ink);
+    font-weight: 700;
+  }
+  .sb-row.is-hl .sb-name::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+    background: var(--spec-red);
+    vertical-align: 1px;
+  }
+  .sb-bar {
+    position: relative;
+    display: block;
+    height: 40px;
+  }
+  .sb-row.is-hl .sb-bar {
+    box-shadow: 0 0 0 2px var(--spec-white), 0 0 0 4px var(--spec-ink);
+    border-radius: 2px;
+  }
+  .sb-seg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    border-right: 2px solid var(--spec-white);
+    transform-origin: left center;
+    scale: 0 1;
+    transition:
+      scale 0.9s var(--ease-theme) var(--d),
+      opacity var(--duration-base) ease-out;
+  }
+  .sb-seg:last-child {
+    border-right: 0;
+  }
+  .sb-seg b {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--spec-white);
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 0.4s ease-out calc(var(--d) + 500ms);
+  }
+  .sb-seg.is-ink b {
+    color: var(--spec-ink);
+  }
+  .sb-rows:global(.is-visible) .sb-seg {
+    scale: 1 1;
+  }
+  .sb-rows:global(.is-visible) .sb-seg b {
+    opacity: 1;
+  }
+  .sb-tip {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 10px);
+    z-index: 3;
+    padding: 7px 10px;
+    white-space: nowrap;
+    background: var(--spec-ink);
+    color: var(--spec-white);
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) ease-out;
+  }
+  .sb-seg:hover .sb-tip {
+    opacity: 1;
+  }
+  /* focus and context: a hovered segment's level lights up across every row */
+  .sb-rows:has(.sb-seg[data-l='0']:hover) .sb-seg:not([data-l='0']),
+  .sb-rows:has(.sb-seg[data-l='1']:hover) .sb-seg:not([data-l='1']),
+  .sb-rows:has(.sb-seg[data-l='2']:hover) .sb-seg:not([data-l='2']),
+  .sb-rows:has(.sb-seg[data-l='3']:hover) .sb-seg:not([data-l='3']),
+  .sb-rows:has(.sb-seg[data-l='4']:hover) .sb-seg:not([data-l='4']) {
+    opacity: 0.25;
+  }
+  .sb-rows:has(.sb-row:focus-visible) .sb-row:not(:focus-visible) .sb-seg {
+    opacity: 0.3;
+  }
+  .sb-table {
+    margin-top: 2rem;
+    font-size: 14px;
+  }
+  .sb-table summary {
+    cursor: pointer;
+    width: max-content;
+    font-weight: 600;
+  }
+  .sb-table-scroll {
+    margin-top: 1rem;
+    overflow-x: auto;
+  }
+  .sb-table table {
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .sb-table :is(th, td) {
+    padding: 6px 18px 6px 0;
+    border-bottom: 1px solid var(--spec-blush);
+    text-align: right;
+    font-weight: 400;
+  }
+  .sb-table th[scope='row'] {
+    text-align: left;
+    white-space: nowrap;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sb-seg {
+      scale: 1 1;
+      transition: opacity var(--duration-base) ease-out;
+    }
+    .sb-seg b {
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+// A light header for the round 3 brand directions. It follows the site header's layout (logo,
+// centred menu, the main action on the right; the menu becomes a toggle below lg) on the
+// direction's light ground: sticky, a hairline under it, and once the page scrolls it turns
+// translucent with a frosted backdrop. The menu's hover underline draws in the direction's
+// accent. The site's own header (dark, with the CCC logo) is hidden on these pages; a light
+// variant of it would be built from the chosen direction. The links go nowhere: it's a specimen.
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import { labels } from '../copy';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<header class:list={['spec-header sticky top-0 z-50', className]} data-spec-header>
+  <div class="container flex items-center justify-between gap-8 py-3.5">
+    <a href="#" class="shrink-0" aria-label="Consumer Choice Research, Data & Insights, home">
+      <AstroImage src="/images/brands/ccrdi.png" alt="" height={96} loading="eager" class="h-13 w-auto lg:h-15" />
+    </a>
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="spec-nav flex items-center gap-10">
+        {labels.nav.map((n) => <li><a href="#">{n}</a></li>)}
+      </ul>
+    </nav>
+    <div class="flex items-center gap-4">
+      <Button href="#" label={labels.contact} variant="primary" class="btn-sm max-sm:hidden" />
+      <button type="button" class="spec-menu grid lg:hidden" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .spec-header {
+    background: var(--spec-page);
+    border-bottom: 1px solid var(--spec-rule);
+    transition:
+      background-color var(--duration-base) ease-out,
+      backdrop-filter var(--duration-base) ease-out;
+  }
+  .spec-header.is-scrolled {
+    background: color-mix(in srgb, var(--spec-page) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+  }
+  .spec-nav a {
+    position: relative;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--spec-ink);
+  }
+  /* hover or focus: an underline in the accent draws in from the left */
+  .spec-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1px;
+    background: var(--spec-accent);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale var(--duration-base) var(--ease-theme);
+  }
+  .spec-nav a:is(:hover, :focus-visible)::after {
+    scale: 1 1;
+  }
+  .spec-menu {
+    gap: 6px;
+    width: 40px;
+    height: 40px;
+    place-content: center;
+  }
+  .spec-menu span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--spec-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spec-nav a::after {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-spec-header]').forEach((header) => {
+    const set = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    set();
+    window.addEventListener('scroll', set, { passive: true });
+  });
+</script>

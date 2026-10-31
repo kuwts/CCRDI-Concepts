@@ -1,0 +1,365 @@
+---
+// Design direction 03: Vivid (/component-lab/brand/vivid; dev and preview builds). Bold and
+// confident: large fields of the logo's red and wine, its pinks as a data ramp, Bricolage
+// Grotesque condensed and very large, photography in a red and wine duotone, and the pixel
+// squares as a supergraphic. Signature: the squares assemble across the red hero while the ring
+// draws in wine; stacked bars in the pink-to-plum ramp cascade in segment by segment.
+// Theme components: Button, LineLink, FeatureGrid, StatRow, AstroImage; reveals, clip reveal,
+// stagger, overlap and the drawn hairlines (THEME_CATALOG.md, "Theme design language").
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import FeatureGrid from '@/components/ccc/FeatureGrid.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import { animDelay } from '@/utils/animDelay';
+import SpecLayout from './parts/SpecLayout.astro';
+import SpecHeader from './parts/SpecHeader.astro';
+import SpecFooter from './parts/SpecFooter.astro';
+import CircuitRing from './parts/CircuitRing.astro';
+import PixelCluster from './parts/PixelCluster.astro';
+import StackedBars from './parts/StackedBars.astro';
+import { audiences, credibility, hero, labels, positioning, sampleNote, sampleStats, services, taglines } from './copy';
+
+// sample data: how a hundred responses split across five levels, by organization
+const levels = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+const rows = [
+  { name: 'Category leader', values: [6, 10, 22, 34, 28] },
+  { name: 'Your organization', values: [8, 12, 24, 31, 25], highlight: true },
+  { name: 'Competitor B', values: [10, 15, 27, 29, 19] },
+  { name: 'Competitor C', values: [12, 18, 28, 26, 16] },
+  { name: 'Competitor D', values: [15, 20, 28, 24, 13] },
+];
+---
+
+<SpecLayout id="vivid" index={3}>
+  <SpecHeader />
+
+  <!-- Hero: a red field, very large type, the logo's squares as a supergraphic -->
+  <section class="vivid-hero relative overflow-hidden">
+    <CircuitRing weight="band" traces={false} delay={200} class="pointer-events-none absolute -left-[18rem] -bottom-[24rem] w-[52rem] text-(--spec-wine) opacity-70 max-md:-left-80" />
+    <PixelCluster tone="onred" delay={500} class="pointer-events-none absolute -right-14 -top-4 w-40 opacity-70 sm:-right-10 sm:top-10 sm:w-[24rem] sm:opacity-100 lg:-right-6 lg:top-14 lg:w-[34rem]" />
+    <div class="container relative pt-20 pb-40 lg:pt-28 lg:pb-56">
+      <p class="spec-label mb-8 text-white has-anim fade">{hero.eyebrow}</p>
+      <h1 class="vivid-display has-anim mask delay-100"><span class="block">{hero.title}</span></h1>
+      <div class="row mt-12 items-end lg:mt-16">
+        <div class="lg:col-5">
+          <p class="text-lead text-white/90 has-anim fade delay-200">{hero.lead}</p>
+        </div>
+        <div class="lg:col-6 lg:offset-1 max-lg:mt-10 flex flex-wrap items-center gap-x-9 gap-y-5 lg:justify-end has-anim fade delay-300">
+          <Button href="#" label={labels.contact} variant="primary" class="vivid-btn-light" />
+          <LineLink href="#" label={labels.coreServices} tone="white" icon="arrow" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A duotone photograph across the edge of the field, the positioning statement on blush -->
+  <div class="relative z-10 -mt-28 lg:-mt-40">
+    <div class="container">
+      <div class="row items-end">
+        <div class="lg:col-8">
+          <div class="vivid-duo has-anim clip aspect-[4/3] md:aspect-[16/10] overflow-hidden rounded-card">
+            <AstroImage src="/images/placeholders/ccrdi-market-shopper.jpg" alt="" widths={[800, 1200, 1600]} sizes="(min-width: 1320px) 860px, 100vw" class="h-full w-full object-cover object-[50%_40%]" />
+          </div>
+        </div>
+        <div class="lg:col-4 max-lg:-mt-14">
+          <div class="relative rounded-card bg-(--spec-blush) p-8 md:p-10 lg:-ml-24 lg:mb-14 has-anim fade delay-200">
+            <p class="spec-label mb-5 text-(--spec-wine)">{labels.about}</p>
+            <p class="vivid-statement text-(--spec-wine)">{positioning}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Services: a bento of colour tiles -->
+  <section class="py-section">
+    <div class="container">
+      <div class="row mb-14 items-end lg:mb-20">
+        <div class="lg:col-8">
+          <p class="spec-label mb-6 text-(--spec-red) has-anim fade">{labels.coreServices}</p>
+          <h2 class="vivid-h2 has-anim fade delay-50">{taglines.research}</h2>
+        </div>
+      </div>
+      <FeatureGrid items={services.map(({ icon, title, text }) => ({ icon, title, text }))} columns={3} class="vivid-tiles" />
+    </div>
+  </section>
+
+  <!-- Stat row on the wine field -->
+  <section class="vivid-field py-section">
+    <div class="container">
+      <div class="row mb-14 items-end lg:mb-20">
+        <div class="lg:col-7">
+          <p class="spec-label mb-6 text-(--spec-blush) has-anim fade">{sampleNote}</p>
+          <h2 class="vivid-h2 text-white has-anim fade delay-50">{taglines.trust}</h2>
+        </div>
+        <div class="lg:col-4 lg:offset-1 max-lg:mt-6">
+          <p class="text-white/85 has-anim fade delay-100">{credibility}</p>
+        </div>
+      </div>
+      <StatRow items={sampleStats} tone="dark" class="vivid-stats" />
+    </div>
+  </section>
+
+  <!-- Chart: stacked bars in the logo's pinks -->
+  <section class="bg-light py-section">
+    <div class="container">
+      <div class="row mb-14 items-end lg:mb-16">
+        <div class="lg:col-8">
+          <p class="spec-label mb-6 text-(--spec-red) has-anim fade">{services[2].title}</p>
+          <h2 class="vivid-h2 has-anim fade delay-50">{taglines.confidence}</h2>
+        </div>
+        <div class="lg:col-4 max-lg:mt-6">
+          <p class="text-(--spec-wine) has-anim fade delay-100">{services[2].text}</p>
+        </div>
+      </div>
+      <div class="rounded-card bg-(--spec-white) p-6 sm:p-10 lg:p-14">
+        <p class="spec-label mb-8 text-(--spec-wine)">Sample data · how 100 responses split across five levels</p>
+        <StackedBars rows={rows} levels={levels} caption="Sample data: responses by level for five organizations" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Serve: large rows that flood with red on hover -->
+  <section class="py-section">
+    <div class="container">
+      <p class="spec-label mb-10 text-(--spec-red) has-anim fade">{labels.whoWeServe}</p>
+      <ul class="vivid-rows">
+        {audiences.map((a, i) => (
+          <li class:list={['vivid-row has-anim fade', animDelay[i]]} tabindex="0">
+            <span class="vivid-row-num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="vivid-row-title">{a.title}</h3>
+            <p class="vivid-row-text">{a.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Closing band on red, beside a second duotone photograph -->
+  <section class="vivid-hero relative overflow-hidden py-section">
+    <PixelCluster tone="onred" class="pointer-events-none absolute -left-10 -bottom-12 w-56 opacity-80 lg:w-72" />
+    <div class="container relative">
+      <div class="row items-center gap-y-12">
+        <div class="lg:col-6">
+          <h2 class="vivid-h2 text-white has-anim fade">{taglines.understanding}</h2>
+          <div class="mt-10 has-anim fade delay-100">
+            <Button href="#" label={labels.contact} variant="primary" class="vivid-btn-light" />
+          </div>
+        </div>
+        <div class="lg:col-5 lg:offset-1">
+          <div class="vivid-duo has-anim clip aspect-[4/5] overflow-hidden rounded-card">
+            <AstroImage src="/images/placeholders/ccrdi-busy-shop.jpg" alt="" widths={[600, 900, 1200]} sizes="(min-width: 1024px) 520px, 100vw" class="h-full w-full object-cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SpecFooter tone="field" motif="onred" logo="white" class="vivid-footer" />
+</SpecLayout>
+
+<style is:global>
+  [data-direction='vivid'] :is(h1, h2, h3, .text-h2, .text-h3) {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+  [data-direction='vivid'] .spec-label {
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .vivid-hero {
+    background: var(--spec-red);
+    color: var(--spec-white);
+  }
+  .vivid-field {
+    background: var(--spec-wine);
+    color: var(--spec-white);
+  }
+  .vivid-display {
+    max-width: 11.5ch;
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 1.2rem + 9vw, 10.5rem);
+    font-weight: 800;
+    font-stretch: 78%;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+  }
+  .vivid-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 1.4rem + 3.6vw, 5rem);
+    font-weight: 800;
+    font-stretch: 80%;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+  }
+  .vivid-statement {
+    font-family: var(--font-heading);
+    font-size: clamp(1.375rem, 1.15rem + 0.8vw, 1.875rem);
+    font-weight: 700;
+    font-stretch: 88%;
+    line-height: 1.12;
+  }
+  /* on red: a white button with a wine label and a wine square */
+  .vivid-btn-light.btn-primary {
+    --btn-mark: var(--spec-red);
+    background: var(--spec-white);
+    color: var(--spec-wine);
+  }
+  .vivid-btn-light.btn-primary:is(:hover, :focus-visible) {
+    background: var(--spec-blush);
+  }
+  .vivid-hero :focus-visible,
+  .vivid-field :focus-visible {
+    outline-color: var(--spec-white);
+    box-shadow: 0 0 0 2px var(--spec-wine);
+  }
+  /* duotone: wine shadows, blush highlights */
+  .vivid-duo {
+    position: relative;
+    background: var(--spec-blush);
+    isolation: isolate;
+  }
+  .vivid-duo img {
+    filter: grayscale(1) contrast(1.25) brightness(1.15);
+    mix-blend-mode: multiply;
+  }
+  .vivid-duo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--spec-wine);
+    mix-blend-mode: lighten;
+    pointer-events: none;
+  }
+  /* FeatureGrid as a bento of colour tiles: the first spans two columns; each tile its own field */
+  .vivid-tiles {
+    gap: 12px !important;
+  }
+  .vivid-tiles > li {
+    --tile-text: var(--spec-white);
+    min-height: 19rem;
+    padding: 2rem !important;
+    border-radius: var(--radius-card);
+    color: var(--tile-text);
+    transition:
+      scale var(--duration-base) var(--ease-theme),
+      opacity var(--duration-slow) var(--ease-theme),
+      transform var(--duration-slow) var(--ease-theme);
+  }
+  @media (min-width: 1024px) {
+    .vivid-tiles > li:first-child {
+      grid-column: span 2;
+    }
+  }
+  .vivid-tiles > li:nth-child(1) { background: var(--spec-red); }
+  .vivid-tiles > li:nth-child(2) { background: var(--spec-blush); --tile-text: var(--spec-wine); }
+  .vivid-tiles > li:nth-child(3) { background: var(--spec-wine); }
+  .vivid-tiles > li:nth-child(4) { background: var(--spec-petal); --tile-text: var(--spec-ink); }
+  .vivid-tiles > li:nth-child(5) { background: var(--spec-plum); }
+  .vivid-tiles :is(h3, p, svg, .tabular-nums) {
+    color: var(--tile-text) !important;
+  }
+  .vivid-tiles .feature-rule {
+    display: none;
+  }
+  .vivid-tiles .tabular-nums {
+    font-family: var(--font-heading);
+    font-size: 3.25rem;
+    font-weight: 800;
+    font-stretch: 78%;
+    line-height: 0.8;
+    opacity: 0.9;
+  }
+  .vivid-tiles h3 {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
+    font-weight: 750;
+    font-stretch: 86%;
+  }
+  .vivid-tiles > li:is(:hover, :focus-within) {
+    scale: 1.015;
+  }
+  /* StatRow on wine: blush figures, white labels, the rule in blush */
+  .vivid-stats dd {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-stretch: 78%;
+    letter-spacing: -0.03em;
+    color: var(--spec-blush);
+    font-size: clamp(3.5rem, 2rem + 4vw, 6rem) !important;
+  }
+  .vivid-stats .stat-tile {
+    background: color-mix(in srgb, var(--spec-white) 6%, transparent) !important;
+    border-radius: var(--radius-card);
+  }
+  .vivid-stats .stat-rule {
+    height: 3px;
+  }
+  /* Who We Serve: rows that flood with red from the left on hover or focus */
+  .vivid-rows {
+    border-top: 2px solid var(--spec-ink);
+  }
+  .vivid-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5rem 1fr 1fr;
+    gap: 1rem 2rem;
+    align-items: baseline;
+    padding: 2rem 1rem;
+    border-bottom: 1px solid var(--spec-blush);
+    isolation: isolate;
+    outline-offset: -2px;
+  }
+  @media (max-width: 767px) {
+    .vivid-row {
+      grid-template-columns: 3rem 1fr;
+      padding: 1.5rem 0.5rem;
+    }
+    .vivid-row-text {
+      grid-column: 2;
+    }
+  }
+  .vivid-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--spec-red);
+    transform-origin: left center;
+    scale: 0 1;
+    transition: scale 0.55s var(--ease-theme);
+  }
+  .vivid-row:is(:hover, :focus-visible)::before {
+    scale: 1 1;
+  }
+  .vivid-row-num {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--spec-red);
+    transition: color var(--duration-base) ease-out;
+  }
+  .vivid-row-title {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);
+    font-weight: 800;
+    font-stretch: 80%;
+    line-height: 1;
+    transition: color var(--duration-base) ease-out;
+  }
+  .vivid-row-text {
+    color: var(--spec-wine);
+    transition: color var(--duration-base) ease-out;
+  }
+  .vivid-row:is(:hover, :focus-visible) :is(.vivid-row-num, .vivid-row-title, .vivid-row-text) {
+    color: var(--spec-white);
+  }
+  .vivid-footer {
+    --spec-field: var(--spec-wine);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vivid-row::before,
+    .vivid-tiles > li {
+      transition: none;
+    }
+  }
+</style>
