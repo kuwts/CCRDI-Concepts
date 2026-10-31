@@ -1,0 +1,103 @@
+---
+// The page frame for a brand specimen direction (dev only): the site's Base layout (scripts,
+// reveals, global styles) with the direction's palette, fonts and shape mapped onto the theme's
+// roles for this page only, the site header and footer hidden, and the specimen's shared type
+// details: the mono label, figures, and the primary button's red square.
+import '@fontsource-variable/instrument-sans/wdth.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/jetbrains-mono';
+import Base from '@/layouts/Base.astro';
+import { direction, headStyle } from '../directions';
+
+interface Props {
+  id: 'report' | 'platform' | 'signal';
+  index: number;
+}
+const { id, index } = Astro.props;
+const d = direction(id);
+---
+
+<Base title={`Brand specimen: ${d.name}`} noindex footerClass="hidden">
+  <Fragment slot="head" set:html={headStyle(d)} />
+  <div class="spec" data-direction={id}>
+    <slot />
+  </div>
+  <p class="spec-badge" aria-hidden="true">Specimen {String(index).padStart(2, '0')} · {d.name}</p>
+</Base>
+
+<style is:global>
+  body:has(.spec) {
+    background: var(--spec-page);
+    color: var(--spec-ink);
+  }
+  .spec {
+    --mono: var(--spec-mono);
+  }
+  /* data-style labels: the mono, small, tracked */
+  .spec .spec-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  /* a label led by one of the logo's squares, in red: the signal */
+  .spec .spec-label.is-signal::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin: 0 10px 1px 0;
+    vertical-align: middle;
+    background: var(--spec-red);
+  }
+  .spec .spec-num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  /* the primary button: ink, with a red square before the label that turns on hover */
+  .spec .btn-primary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .spec .btn-primary span::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    background: var(--spec-red);
+    transition: rotate var(--duration-base) var(--ease-theme);
+  }
+  .spec .btn-primary:is(:hover, :focus-visible) span::before {
+    rotate: 90deg;
+  }
+  .spec .text-display,
+  .spec .text-h1,
+  .spec .text-h2,
+  .spec .text-h3,
+  .spec .text-statement {
+    text-wrap: balance;
+  }
+  .spec-badge {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    z-index: 60;
+    padding: 6px 10px;
+    background: var(--spec-ink);
+    color: var(--spec-white);
+    font: 500 11px/1 var(--spec-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spec .btn-primary span::before {
+      transition: none;
+    }
+  }
+</style>

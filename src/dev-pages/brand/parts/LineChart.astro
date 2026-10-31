@@ -1,0 +1,324 @@
+---
+// A two-series line chart (dev only, brand specimen, Report direction). Signature: the lines draw
+// themselves as you read down the page, scrubbed by the scroll like StepList's spine (both ways),
+// and each data point appears as the line reaches it, as one of the logo's pixel squares; the
+// highlighted series ends in a labelled red square. Hover or keyboard focus on a period shows a
+// crosshair and both values. Gridlines are hairlines; axis labels are in the mono. A table view
+// carries the same numbers. Reduced motion and no JavaScript: drawn in full.
+interface Series {
+  name: string;
+  values: number[];
+  /** the series the chart is about: red, labelled at its end */
+  highlight?: boolean;
+}
+interface Props {
+  series: Series[];
+  /** period labels along the x axis */
+  periods: string[];
+  /** y axis range and gridlines */
+  min: number;
+  max: number;
+  ticks: number[];
+  /** what the numbers are, for the table and screen readers */
+  caption: string;
+  class?: string;
+}
+const { series, periods, min, max, ticks, caption, class: className = '' } = Astro.props;
+
+const W = 800;
+const H = 360;
+const pad = { l: 8, r: 8, t: 16, b: 8 };
+const x = (i: number) => pad.l + (i / (periods.length - 1)) * (W - pad.l - pad.r);
+const y = (v: number) => pad.t + (1 - (v - min) / (max - min)) * (H - pad.t - pad.b);
+const line = (vals: number[]) => vals.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join('');
+const last = periods.length - 1;
+const hl = series.find((s) => s.highlight);
+---
+
+<figure class:list={['line-chart', className]} data-line-chart>
+  <div class="line-plot">
+    {/* y gridlines and labels */}
+    <div class="line-grid" aria-hidden="true">
+      {ticks.map((t) => (
+        <span style={`top:${(y(t) / H) * 100}%`}><i>{t}</i></span>
+      ))}
+    </div>
+    <svg viewBox={`0 0 ${W} ${H}`} class="line-svg" aria-hidden="true" focusable="false">
+      {series.map((s) => (
+        <path d={line(s.values)} pathLength="1" class:list={['line-path', s.highlight && 'is-hl']} />
+      ))}
+    </svg>
+    {/* data points: HTML squares over the plot, so they stay square at any width */}
+    <div class="line-points" aria-hidden="true">
+      {series.map((s) =>
+        s.values.map((v, i) => (
+          <span
+            class:list={['line-point', s.highlight && 'is-hl', i === last && 'is-end']}
+            style={`left:${(x(i) / W) * 100}%;top:${(y(v) / H) * 100}%;--t:${(i / last).toFixed(3)}`}
+          ></span>
+        )),
+      )}
+      {hl && (
+        <span class="line-end-label" style={`left:${(x(last) / W) * 100}%;top:${(y(hl.values[last]) / H) * 100}%`}>
+          {hl.name} <b>{hl.values[last]}</b>
+        </span>
+      )}
+    </div>
+    {/* one column per period: hover or focus shows the crosshair and both values */}
+    <ol class="line-cols">
+      {periods.map((p, i) => (
+        <li
+          tabindex="0"
+          style={`left:${(x(i) / W) * 100}%`}
+          aria-label={`${p}: ${series.map((s) => `${s.name} ${s.values[i]}`).join(', ')}`}
+        >
+          <span class="line-cross" aria-hidden="true"></span>
+          <span class:list={['line-tip', i > last * 0.7 && 'is-left']} aria-hidden="true">
+            <em>{p}</em>
+            {series.map((s) => (
+              <span class:list={[s.highlight && 'is-hl']}><i></i>{s.name}<b>{s.values[i]}</b></span>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="line-x" aria-hidden="true">
+    {periods.map((p, i) => <span style={`left:${(x(i) / W) * 100}%`}>{p}</span>)}
+  </div>
+
+  <details class="line-table">
+    <summary>Show as a table</summary>
+    <table>
+      <caption class="sr-only">{caption}</caption>
+      <thead>
+        <tr><th scope="col">Period</th>{series.map((s) => <th scope="col">{s.name}</th>)}</tr>
+      </thead>
+      <tbody>
+        {periods.map((p, i) => (
+          <tr><th scope="row">{p}</th>{series.map((s) => <td>{s.values[i]}</td>)}</tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+</figure>
+
+<style>
+  .line-chart {
+    --p: 1;
+    --mono: var(--spec-mono, ui-monospace, monospace);
+  }
+  .line-plot {
+    position: relative;
+    aspect-ratio: 800 / 360;
+    margin-left: 2.25rem;
+  }
+  .line-grid span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--spec-rule);
+  }
+  .line-grid i {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    top: -0.55em;
+    font: 400 12px/1 var(--mono);
+    font-style: normal;
+    color: var(--spec-graphite);
+    font-variant-numeric: tabular-nums;
+  }
+  .line-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .line-path {
+    fill: none;
+    stroke: var(--spec-steel);
+    stroke-width: 1.5px;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - var(--p));
+  }
+  .line-path.is-hl {
+    stroke: var(--spec-red);
+    stroke-width: 2px;
+  }
+  .line-point {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    translate: -50% -50%;
+    background: var(--spec-paper, var(--spec-white));
+    box-shadow: inset 0 0 0 1.5px var(--spec-steel);
+    opacity: clamp(0, calc((var(--p) - var(--t)) * 30 + 1), 1);
+  }
+  .line-point.is-hl {
+    box-shadow: inset 0 0 0 1.5px var(--spec-red);
+  }
+  .line-point.is-hl.is-end {
+    width: 11px;
+    height: 11px;
+    background: var(--spec-red);
+    box-shadow: none;
+  }
+  .line-end-label {
+    position: absolute;
+    translate: -100% calc(-100% - 14px);
+    white-space: nowrap;
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--spec-ink);
+    opacity: clamp(0, calc((var(--p) - 0.97) * 40), 1);
+  }
+  .line-end-label b {
+    margin-left: 0.5em;
+    font-weight: 600;
+    color: var(--spec-red);
+  }
+  .line-cols {
+    position: absolute;
+    inset: 0;
+  }
+  .line-cols li {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    translate: -50% 0;
+    outline: none;
+  }
+  .line-cross {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--spec-ink);
+    opacity: 0;
+    transition: opacity var(--duration-fast) ease-out;
+  }
+  .line-tip {
+    position: absolute;
+    left: calc(50% + 12px);
+    top: 8px;
+    z-index: 2;
+    display: grid;
+    gap: 4px;
+    min-width: 200px;
+    padding: 10px 12px;
+    background: var(--spec-ink);
+    color: var(--spec-white);
+    font: 400 12px/1.3 var(--mono);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) ease-out;
+  }
+  .line-tip.is-left {
+    left: auto;
+    right: calc(50% + 12px);
+  }
+  .line-tip em {
+    font-style: normal;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .line-tip span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .line-tip i {
+    width: 8px;
+    height: 8px;
+    background: var(--spec-steel);
+  }
+  .line-tip .is-hl i {
+    background: var(--spec-red);
+  }
+  .line-tip b {
+    margin-left: auto;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .line-cols li:is(:hover, :focus-visible) .line-cross,
+  .line-cols li:is(:hover, :focus-visible) .line-tip {
+    opacity: 1;
+  }
+  .line-cols li:focus-visible .line-cross {
+    width: 2px;
+  }
+  .line-x {
+    position: relative;
+    height: 1.75rem;
+    margin: 0.75rem 0 0 2.25rem;
+    border-top: 1px solid var(--spec-ink);
+  }
+  .line-x span {
+    position: absolute;
+    top: 0.6rem;
+    translate: -50% 0;
+    font: 400 12px/1 var(--mono);
+    color: var(--spec-graphite);
+  }
+  .line-table {
+    margin-top: 1.5rem;
+    font: 400 13px/1.4 var(--mono);
+  }
+  .line-table summary {
+    cursor: pointer;
+    width: max-content;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .line-table table {
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .line-table :is(th, td) {
+    padding: 6px 20px 6px 0;
+    border-bottom: 1px solid var(--spec-rule);
+    text-align: left;
+    font-weight: 400;
+  }
+  @media (max-width: 575px) {
+    .line-x span:nth-child(even) {
+      display: none;
+    }
+    .line-end-label {
+      font-size: 11px;
+    }
+  }
+</style>
+
+<script>
+  // Scrub: the lines draw from 0 to 100% while the chart travels from 85% to 30% of the
+  // viewport's height, both ways. Reduced motion: drawn in full (the CSS default).
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-line-chart]').forEach((chart) => {
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const r = chart.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.55)));
+        chart.style.setProperty('--p', p.toFixed(4));
+      };
+      const onScroll = () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      };
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    });
+  }
+</script>

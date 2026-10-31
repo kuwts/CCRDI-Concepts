@@ -16,7 +16,11 @@ import routes from './src/i18n/routes.json' with { type: 'json' };
 const devOnlyPages = [
   ['/component-lab', './src/dev-pages/component-lab.astro'],
   ['/component-lab/brand', './src/dev-pages/brand/index.astro'],
-  ['/component-lab/brand/[variant]', './src/dev-pages/brand/[variant].astro'],
+  ['/component-lab/brand/report', './src/dev-pages/brand/report.astro'],
+  ['/component-lab/brand/platform', './src/dev-pages/brand/platform.astro'],
+  ['/component-lab/brand/signal', './src/dev-pages/brand/signal.astro'],
+  ['/component-lab/brand/round-1', './src/dev-pages/brand/round1/index.astro'],
+  ['/component-lab/brand/round-1/[variant]', './src/dev-pages/brand/round1/[variant].astro'],
   ['/style-guide', './src/dev-pages/style-guide.astro'],
   ['/blog', './src/dev-pages/blog/index.astro'],
   ['/blog/[slug]', './src/dev-pages/blog/[slug].astro'],

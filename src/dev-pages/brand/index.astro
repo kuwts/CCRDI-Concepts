@@ -1,210 +1,181 @@
 ---
-// Brand specimen (dev only, not linked, noindex): the proposed CCRDI palette with its contrast
-// ratios, the type pairing, and the two layout variants side by side. Each variant is its own
-// page (/component-lab/brand/a and /b, [variant].astro), shown here in a frame at a desktop width
-// of 1280px scaled to fit its column; below 1024px the variants stack at full size.
-import '@fontsource-variable/plus-jakarta-sans';
+// Brand specimen, round 2 (dev only, not linked, noindex): the three CCRDI design directions side
+// by side for the project owner's choice. Each direction is its own page (report.astro,
+// platform.astro, signal.astro) built with the theme's components; here each shows its palette
+// with contrast, its type pairing, and a live preview of the page in a frame at a desktop width
+// of 1280px, scaled to fit. Round 1 (two layout variants) stays at /component-lab/brand/round-1.
+import '@fontsource-variable/instrument-sans/wdth.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/jetbrains-mono';
 import Base from '@/layouts/Base.astro';
 import AstroImage from '@/components/helper/AstroImage.astro';
-import { colors, contrast, headStyle, hex } from './spec';
+import { contrast, direction, directions, fontFamily, headStyle, hexOf } from './directions';
 
-// where each colour may be used, by ratio: 4.5 all text, 3 large text and marks (WCAG 2.1 AA)
-const pairs: [string, string, string][] = [
-  ['white', 'ink', 'Text on Ink'],
-  ['white', 'charcoal', 'Text on Charcoal panels'],
-  ['silver', 'ink', 'Secondary text and eyebrows on Ink'],
-  ['steel', 'ink', 'Muted text on Ink'],
-  ['steel', 'charcoal', 'Muted text on Charcoal'],
-  ['blush', 'ink', 'Tint on Ink'],
-  ['signalRed', 'ink', 'Red marks and large text on Ink'],
-  ['signalRed', 'charcoal', 'Red on Charcoal'],
-  ['ink', 'white', 'Body text'],
-  ['ink', 'mist', 'Body text on Mist'],
-  ['slate', 'white', 'Captions'],
-  ['slate', 'mist', 'Captions on Mist'],
-  ['red', 'white', 'Links and eyebrows on White'],
-  ['red', 'mist', 'Links and eyebrows on Mist'],
-  ['wine', 'white', 'Deep red text'],
-  ['signalRed', 'white', 'Signal Red on White'],
-  ['white', 'red', 'Primary button label'],
-  ['white', 'wine', 'Primary button label, hover'],
-  ['red', 'ink', 'Primary button edge on Ink (the label identifies it)'],
-  ['steel', 'white', 'Chart bars on White (labelled, with a table view)'],
-  ['silver', 'white', 'Hairlines on White'],
-];
-const name = (key: string) => colors.find((c) => c.key === key)!.name;
-const rows = pairs.map(([fg, bg, use]) => {
-  const ratio = contrast(hex(fg), hex(bg));
-  const verdict = ratio >= 4.5 ? 'All text' : ratio >= 3 ? 'Large text and marks' : 'Decorative only';
-  return { fg, bg, use, ratio, verdict };
-});
-
-const variants = [
-  { id: 'a', title: 'A. Dark-led', text: 'Ink for the hero, header, footer and several dark sections, like the CCC site’s navy layout.' },
-  { id: 'b', title: 'B. Light-led', text: 'Mostly White and Mist with Ink text; Ink only for the header, footer and one feature section; red kept to buttons and small accents.' },
-];
+// the pairs that decide each palette: text, secondary text, red on the page, the primary button
+const checks = (id: string) => {
+  const d = direction(id);
+  const page = { report: 'paper', platform: 'canvas', signal: 'white' }[id]!;
+  const secondary = d.palette.some((c) => c.key === 'slate') ? 'slate' : 'graphite';
+  return [
+    ['Text', 'ink', page],
+    ['Secondary text', secondary, page],
+    ['Red label', 'red', page],
+    ['Button label', 'white', 'ink'],
+  ].map(([use, fg, bg]) => ({ use, ratio: contrast(hexOf(d, fg), hexOf(d, bg)) }));
+};
 ---
 
 <Base title="Brand specimen" noindex footerClass="hidden">
-  <Fragment slot="head" set:html={headStyle} />
+  <Fragment slot="head" set:html={headStyle(direction('signal'))} />
 
-  <div class="bg-dark text-white">
-    <div class="container flex flex-wrap items-center justify-between gap-6 py-6">
-      <AstroImage src="/images/brands/ccrdi-reversed.png" alt="Consumer Choice Research, Data & Insights" height={60} loading="eager" class="h-12 w-auto" />
-      <p class="text-[14px] text-(--spec-silver)">Brand specimen · dev only · for the project owner’s choice</p>
-    </div>
-  </div>
-
-  <!-- Palette -->
-  <section class="bg-white py-section text-dark">
-    <div class="container">
-      <p class="spec-eyebrow mb-3 text-primary">Palette</p>
-      <h1 class="mb-6 text-h1">CCRDI palette and type</h1>
-      <p class="mb-14 max-w-measure text-mutedDark">Every colour is taken from the CCRDI logo (the most common pixel of each colour in the supplied PNG). Ratios are WCAG 2.1 contrast, computed from the values below.</p>
-
-      <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {colors.map((c) => (
-          <li class="overflow-hidden rounded-card border border-(--spec-silver)">
-            <div class="h-24" style={{ background: c.hex }}></div>
-            <div class="p-4 text-[13px] leading-snug">
-              <p class="font-heading text-[15px] font-semibold">{c.name}</p>
-              <p class="tabular-nums text-mutedDark">{c.hex} · {c.role}</p>
-              <p class="mt-2 text-mutedDark">{c.use}</p>
-              <p class="mt-2 tabular-nums">White {contrast(c.hex, hex('white'))} · Ink {contrast(c.hex, hex('ink'))}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <h2 class="mt-20 mb-6 text-h3">Pairings</h2>
-      <div class="overflow-x-auto" role="region" aria-label="Colour pairings and contrast" tabindex="0">
-        <table class="w-full min-w-[640px] text-left text-[14px]">
-          <thead class="border-b border-(--spec-silver)">
-            <tr><th class="py-3 pr-4 font-medium">Sample</th><th class="py-3 pr-4 font-medium">Pair</th><th class="py-3 pr-4 font-medium">Use</th><th class="py-3 pr-4 text-right font-medium">Ratio</th><th class="py-3 font-medium">Verdict</th></tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr class="border-b border-(--spec-silver)/60">
-                <td class="py-2 pr-4"><span class="inline-block rounded-[4px] px-3 py-1 font-semibold" style={{ color: hex(r.fg), background: hex(r.bg), boxShadow: `inset 0 0 0 1px ${hex('silver')}` }}>Aa 82</span></td>
-                <td class="py-2 pr-4">{name(r.fg)} on {name(r.bg)}</td>
-                <td class="py-2 pr-4 text-mutedDark">{r.use}</td>
-                <td class="py-2 pr-4 text-right tabular-nums">{r.ratio.toFixed(2)}</td>
-                <td class="py-2">{r.verdict}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  <div class="spec-index">
+    <header class="border-b border-(--spec-rule)">
+      <div class="container flex flex-wrap items-center justify-between gap-6 py-4">
+        <AstroImage src="/images/brands/ccrdi.png" alt="Consumer Choice Research, Data & Insights" height={96} loading="eager" class="h-14 w-auto" />
+        <p class="idx-label text-(--spec-slate)">Brand specimen · round 2 · dev only</p>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Type -->
-  <section class="hairline-top bg-light py-section text-dark">
-    <div class="container">
-      <p class="spec-eyebrow mb-3 text-primary">Type</p>
-      <h2 class="mb-12 text-h2">Plus Jakarta Sans and Inter</h2>
-      <div class="row gap-y-12">
-        <div class="lg:col-7 space-y-6">
-          <p class="text-[13px] text-mutedDark">Headings: Plus Jakarta Sans, 600 to 700</p>
-          <p class="text-display">Data That Builds Better Businesses</p>
-          <p class="text-h2">Independent Research. Meaningful Insights.</p>
-          <p class="text-h3">Industry Benchmarking</p>
-        </div>
-        <div class="lg:col-5 space-y-6">
-          <p class="text-[13px] text-mutedDark">Body and interface: Inter (shared with Consumer Choice Canada)</p>
-          <p class="text-lead">Consumer Choice Research, Data &amp; Insights transforms consumer behaviour, market intelligence, and independent research into actionable business insight.</p>
-          <p class="text-body text-mutedDark">To provide organizations with trusted consumer intelligence that improves business performance, strengthens customer experience, and identifies competitive opportunities.</p>
-          <p class="spec-eyebrow text-primary">Research <span aria-hidden="true">•</span> Data <span aria-hidden="true">•</span> Insights</p>
-          <p class="font-heading text-[40px] font-semibold tabular-nums leading-none">0123456789</p>
-          <p class="text-[13px] text-mutedDark">Figures: tabular, so stats and table columns line up.</p>
-        </div>
+    <section class="pt-16 pb-10 lg:pt-24">
+      <div class="container">
+        <p class="idx-label idx-signal mb-6">Three directions</p>
+        <h1 class="max-w-4xl text-h1 font-semibold tracking-tight">Tech and data-forward, light-led, on the logo’s ink, red and silver</h1>
+        <p class="mt-6 max-w-measure text-(--spec-slate)">Each direction is a full sample page built with the theme’s components: a light header and hero, a card section, a stat row and a chart, in framework copy. Figures and chart values are sample data. Open each one full size to see its animations as you scroll.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- The two variants -->
-  <section class="bg-white py-section text-dark">
-    <div class="container">
-      <p class="spec-eyebrow mb-3 text-primary">Layout</p>
-      <h2 class="mb-4 text-h2">Two variants, side by side</h2>
-      <p class="mb-12 max-w-measure text-mutedDark">The same sample page (hero, card section, stat row, chart, a feature statement) in each layout, shown at a desktop width of 1280px, scaled down. Open either at full size to read it.</p>
-      <div class="grid gap-10 lg:grid-cols-2 lg:gap-6">
-        {variants.map((v) => (
-          <div>
-            <div class="mb-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-              <h3 class="text-h3">{v.title}</h3>
-              <a href={`/component-lab/brand/${v.id}`} class="line-link text-[15px] font-medium text-primary">Open full size</a>
+    {directions.map((d, i) => (
+      <section class="border-t border-(--spec-rule) py-16 lg:py-20">
+        <div class="container">
+          <div class="row gap-y-12">
+            <div class="lg:col-4">
+              <p class="idx-label text-(--spec-slate)">{String(i + 1).padStart(2, '0')}</p>
+              <h2 class="mt-3 text-[2.5rem] leading-none tracking-tight" style={`font-family:${fontFamily(d.fonts.heading)};font-weight:${d.id === 'report' ? 500 : 600};${d.id === 'signal' ? 'font-stretch:116%;' : ''}`}>{d.name}</h2>
+              <p class="mt-5 text-[15px] leading-relaxed text-(--spec-slate)">{d.summary}</p>
+
+              <dl class="mt-8 space-y-4 border-t border-(--spec-rule) pt-6 text-[14px]">
+                <div>
+                  <dt class="idx-label text-(--spec-slate)">Headings</dt>
+                  <dd class="mt-1 text-2xl" style={`font-family:${fontFamily(d.fonts.heading)};font-weight:${d.id === 'report' ? 500 : 600};${d.id === 'signal' ? 'font-stretch:116%;' : ''}`}>{d.fonts.heading} · Data That Builds</dd>
+                </div>
+                <div>
+                  <dt class="idx-label text-(--spec-slate)">Numbers, labels, eyebrows</dt>
+                  <dd class="mt-1 text-lg tabular-nums" style={`font-family:${fontFamily(d.fonts.mono)}`}>{d.fonts.mono} · 0123456789</dd>
+                </div>
+                <div>
+                  <dt class="idx-label text-(--spec-slate)">Body</dt>
+                  <dd class="mt-1" style={`font-family:${fontFamily(d.fonts.body)}`}>{d.fonts.body}{d.fonts.body === 'Inter' ? ' (shared with Consumer Choice Canada)' : ''}</dd>
+                </div>
+              </dl>
+
+              <ul class="mt-8 grid grid-cols-6 gap-1.5" aria-label={`${d.name} palette`}>
+                {d.palette.filter((c) => !/^h\d$/.test(c.key)).map((c) => (
+                  <li title={`${c.name} ${c.hex}: ${c.use}`}>
+                    <span class="block aspect-square rounded-[3px] border border-(--spec-rule)" style={`background:${c.hex}`}></span>
+                    <span class="mt-1.5 block text-[10px] leading-tight text-(--spec-slate)" style={`font-family:${fontFamily(d.fonts.mono)}`}>{c.name}<br />{c.hex}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <table class="mt-8 w-full text-[13px]">
+                <caption class="sr-only">{d.name}: key contrast ratios</caption>
+                <tbody>
+                  {checks(d.id).map((c) => (
+                    <tr class="border-t border-(--spec-rule)">
+                      <th scope="row" class="py-2 text-left font-normal text-(--spec-slate)">{c.use}</th>
+                      <td class="py-2 text-right tabular-nums">{c.ratio.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <a href={`/component-lab/brand/${d.id}`} class="line-link mt-8 inline-block text-[15px] font-medium text-(--spec-ink)">Open {d.name} full size</a>
             </div>
-            <p class="mb-5 text-[15px] text-mutedDark lg:min-h-12">{v.text}</p>
-            <div class="spec-frame overflow-hidden rounded-card border border-(--spec-silver)" data-spec-frame>
-              <iframe src={`/component-lab/brand/${v.id}`} title={`Brand specimen, variant ${v.title}`} loading="eager" tabindex="-1"></iframe>
+
+            <div class="lg:col-8">
+              <div class="idx-frame" data-spec-frame>
+                <iframe src={`/component-lab/brand/${d.id}`} title={`${d.name}: sample page`} tabindex="-1" loading={i === 0 ? 'eager' : 'lazy'}></iframe>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
+        </div>
+      </section>
+    ))}
+  </div>
 </Base>
 
 <style is:global>
-  .spec-eyebrow {
-    font-size: var(--text-eyebrow);
+  body:has(.spec-index) {
+    background: var(--spec-white);
+    color: var(--spec-ink);
+  }
+  .spec-index .idx-label {
+    font-family: var(--spec-mono);
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .text-display,
-  .text-h1,
-  .text-h2,
-  .text-h3 {
-    letter-spacing: -0.02em;
+  .spec-index .idx-signal::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin: 0 10px 1px 0;
+    vertical-align: middle;
+    background: var(--spec-red);
   }
-  .spec-frame {
+  /* a window onto the page: the top 1,000px of it at 1280px wide, scaled to the column, with a
+     fade at the foot; the full page opens from the link */
+  .idx-frame {
     position: relative;
+    height: var(--h, 640px);
+    overflow: hidden;
+    border: 1px solid var(--spec-rule);
+    border-radius: 8px;
   }
-  .spec-frame iframe {
+  .idx-frame::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 120px;
+    background: linear-gradient(transparent, var(--spec-white));
+    pointer-events: none;
+  }
+  .idx-frame iframe {
     display: block;
+    width: 1280px;
+    height: 1700px;
     border: 0;
     transform-origin: 0 0;
+    pointer-events: none;
   }
 </style>
 
 <script>
-  // Each variant renders at a desktop width (1280px) scaled to its column from 1024px up, and at
-  // its column's own width below that; the frame takes the page's full height, so the whole
-  // variant shows without an inner scrollbar.
+  // Each preview renders the page at 1280px wide and scales it to the column (the full page
+  // opens from the link). The dev toolbar and the dev size badge are hidden inside the frame.
   const DESKTOP = 1280;
-  const fit = (wrap: HTMLElement) => {
-    const frame = wrap.querySelector('iframe')!;
-    const doc = frame.contentDocument;
-    if (!doc?.documentElement) return;
-    const col = wrap.clientWidth;
-    const desktop = window.innerWidth >= 1024;
-    const width = desktop ? DESKTOP : col;
-    const scale = desktop ? col / DESKTOP : 1;
-    frame.style.width = `${width}px`;
-    frame.style.height = '900px';
-    const height = doc.documentElement.scrollHeight;
-    frame.style.height = `${height}px`;
-    frame.style.transform = scale === 1 ? '' : `scale(${scale})`;
-    wrap.style.height = `${Math.ceil(height * scale)}px`;
-  };
   document.querySelectorAll<HTMLElement>('[data-spec-frame]').forEach((wrap) => {
     const frame = wrap.querySelector('iframe')!;
-    const run = () => fit(wrap);
+    const fit = () => {
+      const scale = wrap.clientWidth / DESKTOP;
+      frame.style.transform = `scale(${scale})`;
+      wrap.style.setProperty('--h', `${Math.round(1700 * scale)}px`);
+    };
     frame.addEventListener('load', () => {
-      // the dev toolbar and the dev size badge aren't part of the variant
-      const style = frame.contentDocument?.createElement('style');
-      if (style) {
-        style.textContent = 'astro-dev-toolbar,.z-500000{display:none!important}';
-        frame.contentDocument!.head.append(style);
+      const doc = frame.contentDocument;
+      if (doc) {
+        const style = doc.createElement('style');
+        style.textContent = 'astro-dev-toolbar,.z-500000,.spec-badge{display:none!important}';
+        doc.head.append(style);
       }
-      run();
-      // fonts, images and reveals settle after load
-      [300, 1000, 2500].forEach((t) => setTimeout(run, t));
-      const body = frame.contentDocument?.body;
-      if (body) new ResizeObserver(run).observe(body);
     });
-    new ResizeObserver(run).observe(wrap);
+    fit();
+    new ResizeObserver(fit).observe(wrap);
   });
 </script>

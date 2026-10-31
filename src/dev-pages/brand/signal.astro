@@ -1,0 +1,246 @@
+---
+// Brand specimen, direction 3: Signal (dev only, /component-lab/brand/signal). Between Report and
+// Platform: the CCC homepage's composition (a hero over a photograph that overlaps the next
+// section, a frosted pane across its corner, a sticky statement beside the stacked cards) in a
+// crisp light palette, an expanded grotesk with a mono for data, monochrome photography, the
+// logo's circuit ring drawn as a fine line, and ranked bars that grow to a red signal.
+// Theme components: Button, LineLink, StackedServices, StatRow, AstroImage, CounterUp; the
+// homepage intro layout, overlap, clip and mask reveals (THEME_CATALOG.md, "Theme design language").
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import StackedServices from '@/components/StackedServices.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import SpecLayout from './parts/SpecLayout.astro';
+import SpecHeader from './parts/SpecHeader.astro';
+import CircuitRing from './parts/CircuitRing.astro';
+import PixelCluster from './parts/PixelCluster.astro';
+import BarChart from './parts/BarChart.astro';
+import { animDelay } from '@/utils/animDelay';
+import { audiences, credibility, hero, labels, oneLiner, positioning, sampleStats, services, taglines } from './copy';
+
+const pills = ['Research', 'Data', 'Insights'];
+const bars = [
+  { label: 'Category leader', value: 86 },
+  { label: 'Your organization', value: 82, highlight: true },
+  { label: 'Competitor B', value: 77 },
+  { label: 'Competitor C', value: 74 },
+  { label: 'Competitor D', value: 70 },
+  { label: 'Competitor E', value: 66 },
+];
+---
+
+<SpecLayout id="signal" index={3}>
+  <SpecHeader />
+
+  <!-- Hero over a photograph that overlaps the next section -->
+  <section class="relative">
+    <div class="relative overflow-hidden pt-16 lg:pt-28 pb-16 lg:pb-24">
+      <CircuitRing class="pointer-events-none absolute -right-[26rem] -top-56 w-[48rem] text-(--spec-rule) max-md:-right-80 max-md:opacity-60" />
+      <PixelCluster class="pointer-events-none absolute right-[6%] top-14 w-28 max-sm:hidden sm:w-40 lg:right-[5%] lg:top-32 lg:w-44" />
+      <div class="container relative">
+        <div class="row items-end">
+          <div class="lg:col-8 xl:col-7">
+            <p class="spec-label is-signal mb-8 has-anim fade">{hero.eyebrow}</p>
+            <h1 class="signal-display has-anim mask delay-100"><span class="block">{hero.title}</span></h1>
+            <div class="mt-10 flex flex-wrap items-center gap-x-10 gap-y-5 has-anim fade delay-200">
+              <Button href="#" label={labels.contact} variant="primary" />
+              <LineLink href="#" label={labels.coreServices} tone="dark" icon="arrow" />
+            </div>
+          </div>
+          <div class="lg:col-4 xl:col-4 xl:offset-1 max-lg:mt-10">
+            <p class="text-lead text-(--spec-slate) has-anim fade delay-150">{hero.lead}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10 -mb-24 lg:-mb-36">
+      <div class="container">
+        <div class="signal-photo relative has-anim clip aspect-[4/3] md:aspect-[16/7] overflow-hidden rounded-card">
+          <AstroImage src="/images/placeholders/ccrdi-meeting-room.jpg" alt="" widths={[800, 1200, 1600, 2000]} sizes="(min-width: 1320px) 1296px, 100vw" class="h-full w-full object-cover" />
+          {/* a frosted ink pane across the photo's corner, as on StackedServices' cards */}
+          <div class="absolute inset-x-4 bottom-4 md:inset-x-auto md:left-6 md:bottom-6 md:w-[26rem] rounded-lg bg-dark/75 p-7 text-white backdrop-blur-2xl md:p-9">
+            <p class="spec-label mb-5 text-(--spec-silver)">ISUCORP</p>
+            <p class="text-[17px] leading-relaxed md:text-lg">{credibility}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro: a sticky statement beside the card stack (the CCC homepage pattern) -->
+  <section class="bg-light pt-[calc(var(--spacing-section-sm)+6rem)] lg:pt-[calc(var(--spacing-section-lg)+9rem)] pb-section">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-8">
+          <div class="lg:sticky lg:top-32 lg:grid lg:grid-cols-12">
+            <p class="spec-label is-signal lg:col-span-3 max-lg:mb-6 has-anim fade">{labels.about}</p>
+            <div class="lg:col-span-8 space-y-8">
+              <h2 class="signal-quote has-anim fade">{positioning}</h2>
+              <p class="max-w-measure text-(--spec-slate) has-anim fade delay-100">{oneLiner}</p>
+              <ul class="flex flex-wrap gap-2.5 pt-2">
+                {pills.map((p, i) => (
+                  <li class:list={['signal-pill spec-label has-anim', animDelay[i]]}>{p}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-4 max-lg:mt-16 signal-stack">
+          <StackedServices services={services.map((s) => ({ icon: s.icon, title: s.title, info: s.text, image: s.image, imageAlt: '' }))} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stat row -->
+  <section class="py-section">
+    <div class="container">
+      <div class="row mb-14 lg:mb-20 items-end">
+        <div class="lg:col-7">
+          <p class="spec-label is-signal mb-6 has-anim fade">Sample figures</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.trust}</h2>
+        </div>
+      </div>
+      <StatRow items={sampleStats} tone="light" class="signal-stats" />
+    </div>
+  </section>
+
+  <!-- Chart -->
+  <section class="hairline-top py-section">
+    <div class="container">
+      <div class="row">
+        <div class="lg:col-4">
+          <p class="spec-label is-signal mb-6 has-anim fade">{services[1].title}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.confidence}</h2>
+          <p class="mt-6 text-(--spec-slate) has-anim fade delay-100">{services[1].text}</p>
+          <p class="spec-label mt-10 text-(--spec-slate)">Sample data · not CCRDI research</p>
+        </div>
+        <div class="lg:col-8 max-lg:mt-14 lg:pl-8">
+          <BarChart bars={bars} caption="Sample data: index by organization" averageLabel="Category average" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Serve -->
+  <section class="bg-light py-section">
+    <div class="container">
+      <p class="spec-label is-signal mb-12 has-anim fade">{labels.whoWeServe}</p>
+      <ul class="grid gap-x-8 gap-y-12 md:grid-cols-3">
+        {audiences.map((a, i) => (
+          <li class:list={['relative pt-8 has-anim fade', animDelay[i]]} style={`--draw-delay:${i * 140 + 200}ms`}>
+            <span class="draw-x absolute inset-x-0 top-0 h-px bg-(--spec-ink)" aria-hidden="true"></span>
+            <span class="spec-label spec-num text-(--spec-slate)">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-12 text-h3">{a.title}</h3>
+            <p class="mt-3 leading-relaxed text-(--spec-slate)">{a.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <footer class="bg-dark py-section text-white">
+    <div class="container">
+      <div class="row items-end gap-y-12">
+        <div class="lg:col-7">
+          <p class="signal-quote text-white has-anim fade">{taglines.research}</p>
+        </div>
+        <div class="lg:col-5 flex lg:justify-end has-anim fade delay-100">
+          <LineLink href="#" label={labels.contact} tone="white" icon="arrow" />
+        </div>
+      </div>
+      <div class="mt-20 flex flex-wrap items-end justify-between gap-10 border-t border-white/10 pt-10">
+        <div>
+          <AstroImage src="/images/brands/ccrdi-reversed.png" alt="Consumer Choice Research, Data & Insights" height={96} class="h-14 w-auto" />
+          <p class="mt-6 max-w-sm text-[14px] text-white/70">{oneLiner}</p>
+        </div>
+        <ul class="flex flex-wrap gap-x-8 gap-y-3">
+          {labels.nav.map((n) => <li><a href="#" class="spec-label text-white/85">{n}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </footer>
+</SpecLayout>
+
+<style is:global>
+  [data-direction='signal'] :is(h1, h2, h3, .text-h2, .text-h3) {
+    font-family: var(--font-heading);
+    font-stretch: 112%;
+    letter-spacing: -0.025em;
+  }
+  .signal-display {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 1.5rem + 4.6vw, 6rem);
+    font-weight: 600;
+    font-stretch: 116%;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .signal-quote {
+    font-family: var(--font-heading);
+    font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.375rem);
+    font-weight: 500;
+    font-stretch: 108%;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .signal-photo img,
+  .signal-stack img {
+    filter: grayscale(1) contrast(1.06) brightness(1.04);
+  }
+  .signal-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--spec-slate);
+    mix-blend-mode: soft-light;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  /* StackedServices: silver icons on the frosted ink panes; the index in the mono */
+  .signal-stack .text-primary {
+    color: var(--spec-silver);
+  }
+  .signal-stack article .text-4xl {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+  .signal-pill {
+    padding: 9px 16px;
+    border: 1px solid var(--spec-rule);
+    border-radius: 999px;
+    background: var(--spec-white);
+  }
+  .signal-pill:first-child::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: 0 9px 1px 0;
+    vertical-align: middle;
+    background: var(--spec-red);
+  }
+  /* StatRow: mist tiles, expanded numerals, mono labels, the rule in red */
+  .signal-stats .stat-tile {
+    background: var(--spec-mist);
+  }
+  .signal-stats .stat-tile > span:first-child,
+  .signal-stats dt {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .signal-stats dd {
+    font-family: var(--font-heading);
+    font-stretch: 116%;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .signal-stats .stat-rule {
+    background: var(--spec-red);
+    height: 2px;
+  }
+</style>

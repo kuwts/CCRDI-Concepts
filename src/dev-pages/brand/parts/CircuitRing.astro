@@ -1,0 +1,84 @@
+---
+// The logo's circuit ring (dev only, brand specimen), redrawn as fine line work: three broken
+// concentric arcs and three traces ending in nodes, at the logo's proportions. Decorative.
+// Signature: as it comes into view the arcs draw around from their gaps and the traces run out
+// to their nodes (stroke drawing, staggered, on the theme's curve), then it stays still.
+// `weight` sets the line: a 1px hairline (constant at any size) or the logo's broad bands.
+// Reduced motion: drawn, no movement.
+interface Props {
+  weight?: 'hairline' | 'band';
+  class?: string;
+}
+const { weight = 'hairline', class: className = '' } = Astro.props;
+
+const cx = 300;
+const cy = 300;
+const polar = (r: number, a: number) => [cx + r * Math.cos((a * Math.PI) / 180), cy + r * Math.sin((a * Math.PI) / 180)];
+const arc = (r: number, a0: number, a1: number) => {
+  const [x0, y0] = polar(r, a0);
+  const [x1, y1] = polar(r, a1);
+  return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+};
+// the logo's three rings, each broken in two or three places (angles in degrees, 0 = east)
+const rings = [
+  { r: 270, segs: [[-160, -82], [-74, 30], [44, 128], [140, 186]] },
+  { r: 215, segs: [[-150, -60], [-50, 70], [84, 196]] },
+  { r: 160, segs: [[-140, -10], [6, 120], [134, 204]] },
+];
+const band = weight === 'band';
+const width = band ? 34 : 1.25;
+const traces = [
+  { d: `M18 210H120L162 250`, node: [18, 210] },
+  { d: `M6 300H150`, node: [6, 300] },
+  { d: `M18 390H120L162 350`, node: [18, 390] },
+];
+let n = 0;
+---
+
+<svg class:list={['circuit-ring has-anim', className]} viewBox="-20 0 620 600" fill="none" aria-hidden="true" focusable="false">
+  <g stroke="currentColor" stroke-width={width} stroke-linecap={band ? 'butt' : 'square'} vector-effect={band ? undefined : 'non-scaling-stroke'}>
+    {rings.map(({ r, segs }) =>
+      segs.map(([a0, a1]) => (
+        <path d={arc(band ? r - 4 : r, a0, a1)} pathLength="1" style={`--d:${(n++) * 70}ms`} vector-effect={band ? undefined : 'non-scaling-stroke'} />
+      )),
+    )}
+    {traces.map((t, i) => (
+      <path d={t.d} pathLength="1" style={`--d:${300 + i * 120}ms`} stroke-width={band ? 10 : width} vector-effect={band ? undefined : 'non-scaling-stroke'} />
+    ))}
+  </g>
+  {traces.map((t, i) => (
+    <circle class="circuit-node" cx={t.node[0]} cy={t.node[1]} r={band ? 16 : 7} stroke="currentColor" stroke-width={band ? 10 : width} vector-effect={band ? undefined : 'non-scaling-stroke'} style={`--d:${900 + i * 120}ms`} />
+  ))}
+</svg>
+
+<style>
+  .circuit-ring path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.8s var(--ease-theme) var(--d);
+  }
+  .circuit-node {
+    opacity: 0;
+    transition: opacity 0.6s ease-out var(--d);
+  }
+  .circuit-ring:global(.has-anim) {
+    opacity: 1;
+    transform: none;
+  }
+  .circuit-ring:global(.is-visible) path {
+    stroke-dashoffset: 0;
+  }
+  .circuit-ring:global(.is-visible) .circuit-node {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .circuit-ring path {
+      stroke-dashoffset: 0;
+      transition: none;
+    }
+    .circuit-node {
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>

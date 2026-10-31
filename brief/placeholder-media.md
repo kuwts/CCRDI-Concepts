@@ -23,3 +23,8 @@ Listed by page as they are added. Placeholders carried over from the Consumer Ch
 
 | File | Used on | Description (alt text) | Source | Author | Licence |
 |---|---|---|---|---|---|
+| `ccrdi-tablet-charts.jpg` | Brand specimen (dev only) | A hand with a stylus on a tablet showing charts, beside printed charts | https://unsplash.com/photos/person-using-stylus-on-tablet-with-charts-ykgLX_CwtDw | Jakub Żerdzicki | Unsplash License |
+| `ccrdi-monitoring-screen.jpg` | Brand specimen (dev only) | A screen of metric panels with small line charts, seen at an angle | https://unsplash.com/photos/turned-on-monitoring-screen-qwtCeJ5cLYs | Stephen Dawson | Unsplash License |
+| `ccrdi-meeting-room.jpg` | Brand specimen (dev only) | A team meeting at laptops in a glass-walled room, seen from the corridor | https://unsplash.com/photos/group-of-people-having-a-meeting-VBLHICVh-lI | Mario Gogh | Unsplash License |
+| `ccrdi-open-office.jpg` | Brand specimen (dev only) | People working at desks in a bright open-plan office | https://unsplash.com/photos/people-working-at-desks-in-open-office-kN_kViDchA0 | Arlington Research | Unsplash License |
+| `ccrdi-paper-charts.jpg` | Brand specimen (dev only) | A hand holding a printed page of charts over a laptop, beside a calculator | https://unsplash.com/photos/a-person-holding-a-piece-of-paper-over-a-laptop-9PwLeZA-RGc | Jakub Żerdzicki | Unsplash License |

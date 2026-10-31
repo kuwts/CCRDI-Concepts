@@ -1,0 +1,59 @@
+---
+// A small trend line (dev only, brand specimen, Platform stat tiles). It draws in once its tile
+// is revealed, over the same 1.5s as the tile's count, and ends in a red square: the latest
+// value. Decorative: the tile's number carries the meaning. Reduced motion: drawn.
+interface Props {
+  values: number[];
+  class?: string;
+}
+const { values, class: className = '' } = Astro.props;
+const W = 120;
+const H = 32;
+const lo = Math.min(...values);
+const hi = Math.max(...values);
+const pts = values.map((v, i) => [(i / (values.length - 1)) * W, H - 3 - ((v - lo) / (hi - lo || 1)) * (H - 6)]);
+const d = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join('');
+const [ex, ey] = pts[pts.length - 1];
+---
+
+<svg class:list={['sparkline', className]} viewBox={`-2 0 ${W + 8} ${H}`} aria-hidden="true" focusable="false">
+  <path d={d} pathLength="1" />
+  <rect x={ex - 3} y={ey - 3} width="6" height="6" rx="1" />
+</svg>
+
+<style>
+  .sparkline {
+    width: 128px;
+    height: 32px;
+    overflow: visible;
+  }
+  .sparkline path {
+    fill: none;
+    stroke: var(--spec-steel);
+    stroke-width: 1.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.5s var(--ease-theme) var(--rule-delay, 250ms);
+  }
+  .sparkline rect {
+    fill: var(--spec-red);
+    opacity: 0;
+    transition: opacity 0.4s ease-out calc(var(--rule-delay, 250ms) + 1.2s);
+  }
+  :global(.is-visible) .sparkline path {
+    stroke-dashoffset: 0;
+  }
+  :global(.is-visible) .sparkline rect {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sparkline path {
+      stroke-dashoffset: 0;
+      transition: none;
+    }
+    .sparkline rect {
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>

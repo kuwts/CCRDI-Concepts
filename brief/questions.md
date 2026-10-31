@@ -4,8 +4,11 @@ Decisions only the project owner can make, logged while building. Each one has t
 in the meantime (the safest reasonable one); none of them is hard to undo. The Consumer Choice
 Canada site's questions are in ccc-archive/questions.md.
 
-1. **Layout variant (phase 3).** *Open.* The component lab specimen (`/component-lab`, dev only)
-   shows A, dark-led (Ink for the hero, header, footer and several dark sections, like CCC's
-   navy layout), and B, light-led (mostly White and Mist, a few dark sections, red used
-   sparingly). Which one? Each variant also opens full size at /component-lab/brand/a and /b
-   (screenshots at 1440 and 390 in screenshots/phase3/).
+1. **Layout variant (phase 3, round 1).** *Answered: light-led (B), as a base for round 2;
+   the round 1 specimen was too plain and template-like.* Kept at /component-lab/brand/round-1.
+2. **Design direction (phase 3, round 2).** *Open.* Three directions at /component-lab/brand
+   (dev only), each a full sample page built with the theme's components: 01 Report (minimal,
+   editorial; Instrument Sans and IBM Plex Mono), 02 Platform (technical; Geist and Geist Mono),
+   03 Signal (in between, the CCC homepage's composition; Archivo expanded and JetBrains Mono).
+   Which one, and anything to carry over from the others? Screenshots in
+   screenshots/phase3/round2/ (full pages with animations at rest, and mid-animation shots).

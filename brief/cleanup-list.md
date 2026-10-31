@@ -24,4 +24,6 @@ Updated as the conversion goes on.
 | Unused logos | `src/assets/images/brands/ccc-logo.webp`, `ccm-logo.webp` | client originals; trimmed copies are used |
 | Theme share image | `public/images/ogimage.png` | the theme's screenshot, not referenced |
 | Source Serif 4 | `@fontsource-variable/source-serif-4` (package.json) | after the heading font changes |
-| Brand specimen data | `src/dev-pages/brand/palette.json` | once the chosen palette is in site.config.json, point the specimen at `brand.colors` or remove the specimen pages (`src/dev-pages/brand/`, dev only) |
+| Brand specimen, round 1 | `src/dev-pages/brand/round1/` (dev only) | superseded by round 2 |
+| Brand specimen, round 2 | `src/dev-pages/brand/` (dev only) | once a direction is in site.config.json and the components, keep the chosen page as a reference or remove all three |
+| Fonts not chosen | `@fontsource-variable/plus-jakarta-sans` (round 1) and the two round 2 pairings not chosen, among `@fontsource-variable/instrument-sans`, `@fontsource/ibm-plex-mono`, `@fontsource-variable/geist`, `@fontsource-variable/geist-mono`, `@fontsource-variable/archivo`, `@fontsource-variable/jetbrains-mono` (package.json) | after the choice |

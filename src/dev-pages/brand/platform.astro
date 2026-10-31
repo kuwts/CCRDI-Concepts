@@ -1,0 +1,314 @@
+---
+// Brand specimen, direction 2: Platform (dev only, /component-lab/brand/platform). Technical,
+// like a refined data platform: a cool canvas on a fine grid, bordered panels with corner ticks
+// and mono labels, the logo's pixel squares spilling from a panel's corner, and a heat map of
+// pixel squares that assembles into its rows. Red appears as a signal only: a square on the
+// primary button and labels, the highlighted row, the last point of a trend.
+// Theme components: Button, LineLink, FeatureGrid, StatRow, AstroImage; the theme's reveals,
+// clip reveal and stagger (THEME_CATALOG.md, "Theme design language").
+import AstroImage from '@/components/helper/AstroImage.astro';
+import Button from '@/components/Button.astro';
+import LineLink from '@/components/LineLink.astro';
+import FeatureGrid from '@/components/ccc/FeatureGrid.astro';
+import StatRow from '@/components/ccc/StatRow.astro';
+import SpecLayout from './parts/SpecLayout.astro';
+import SpecHeader from './parts/SpecHeader.astro';
+import PixelCluster from './parts/PixelCluster.astro';
+import PixelMatrix from './parts/PixelMatrix.astro';
+import Sparkline from './parts/Sparkline.astro';
+import { animDelay } from '@/utils/animDelay';
+import { audiences, credibility, hero, labels, oneLiner, positioning, sampleStats, services, taglines } from './copy';
+
+// sample data, not CCRDI research
+const readout = [
+  { name: services[0].title, value: '72.4', trend: [61, 63, 62, 66, 65, 68, 70, 69, 72] },
+  { name: services[1].title, value: '+6.1', trend: [40, 44, 43, 47, 52, 50, 55, 58, 61] },
+  { name: services[2].title, value: '0.82', trend: [70, 68, 71, 69, 73, 76, 74, 78, 82] },
+];
+const columns = Array.from({ length: 24 }, (_, i) => String(i + 1).padStart(2, '0'));
+// smooth sample trends: a slow wave per row plus a gentle drift
+const seed = (r: number, c: number) => Math.round(48 + Math.sin(c / 3.2 + r * 1.7) * 22 + Math.cos(c / 7 + r) * 10 + (c - 12) * (r % 2 ? 0.6 : -0.4));
+const names = ['Category leader', 'Your organization', 'Competitor B', 'Competitor C', 'Competitor D', 'Competitor E'];
+const rows = names.map((name, r) => ({
+  name,
+  highlight: r === 1,
+  values: columns.map((_, c) => Math.min(98, Math.max(6, r === 1 ? Math.round(34 + c * 2.6 + Math.sin(c / 2.4) * 6) : seed(r, c)))),
+}));
+---
+
+<SpecLayout id="platform" index={2}>
+  <SpecHeader />
+
+  <!-- Hero: headline beside an instrument panel -->
+  <section class="platform-canvas relative overflow-hidden pt-16 pb-section lg:pt-24">
+    <div class="container relative">
+      <div class="row items-center gap-y-16">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-8 has-anim fade">{hero.eyebrow}</p>
+          <h1 class="platform-display has-anim fade delay-100">{hero.title}</h1>
+          <p class="mt-8 max-w-[34rem] text-lead text-(--spec-slate) has-anim fade delay-150">{hero.lead}</p>
+          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5 has-anim fade delay-200">
+            <Button href="#" label={labels.contact} variant="primary" />
+            <LineLink href="#" label={labels.coreServices} tone="dark" icon="arrow" />
+          </div>
+        </div>
+
+        <div class="lg:col-6 xl:col-5 xl:offset-1">
+          <div class="relative">
+            <PixelCluster class="pointer-events-none absolute -top-24 -right-3 z-10 w-28 sm:-top-28 sm:w-36" />
+            <div class="platform-panel has-anim fade delay-150">
+              <div class="platform-panel-bar">
+                <span class="spec-label"><span class="spec-num">01</span> · Sample data</span>
+              </div>
+              <div class="p-3">
+                <div class="platform-photo has-anim clip aspect-[4/3] overflow-hidden rounded-[4px]">
+                  <AstroImage src="/images/placeholders/ccrdi-monitoring-screen.jpg" alt="" widths={[600, 900, 1200]} sizes="(min-width: 1024px) 520px, 100vw" loading="eager" class="h-full w-full object-cover" />
+                </div>
+              </div>
+              <dl class="grid grid-cols-3 border-t border-(--spec-rule)">
+                {readout.map((r, i) => (
+                  <div class:list={['platform-readout has-anim fade', animDelay[i + 1], i > 0 && 'border-l border-(--spec-rule)']} style={`--rule-delay:${300 + i * 150}ms`}>
+                    <dt class="spec-label text-(--spec-slate) text-[11px]!">{r.name}</dt>
+                    <dd class="mt-3 spec-num text-xl font-medium">{r.value}</dd>
+                    <dd class="mt-3"><Sparkline values={r.trend} class="w-full!" /></dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Services: a bordered grid of panels -->
+  <section class="border-y border-(--spec-rule) bg-(--spec-white) py-section">
+    <div class="container">
+      <div class="row mb-14 lg:mb-20 items-end">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-6 has-anim fade"><span class="spec-num">02</span> · {labels.coreServices}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.research}</h2>
+        </div>
+        <div class="lg:col-5 lg:offset-1 max-lg:mt-6">
+          <p class="text-(--spec-slate) has-anim fade delay-100">{positioning}</p>
+        </div>
+      </div>
+      <FeatureGrid items={services.map(({ icon, title, text }) => ({ icon, title, text }))} columns={3} class="platform-cells" />
+    </div>
+  </section>
+
+  <!-- Stat row -->
+  <section class="platform-canvas py-section">
+    <div class="container">
+      <div class="row mb-14 lg:mb-16 items-end">
+        <div class="lg:col-7">
+          <p class="spec-label is-signal mb-6 has-anim fade"><span class="spec-num">03</span> · Sample figures</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.confidence}</h2>
+        </div>
+      </div>
+      <StatRow items={sampleStats} tone="light" class="platform-stats" />
+    </div>
+  </section>
+
+  <!-- Chart: the pixel heat map in a panel -->
+  <section class="bg-(--spec-white) border-t border-(--spec-rule) py-section">
+    <div class="container">
+      <div class="row mb-12 items-end">
+        <div class="lg:col-6">
+          <p class="spec-label is-signal mb-6 has-anim fade"><span class="spec-num">04</span> · {services[1].title}</p>
+          <h2 class="text-h2 has-anim fade delay-50">{taglines.data}</h2>
+        </div>
+        <div class="lg:col-5 lg:offset-1 max-lg:mt-6">
+          <p class="text-(--spec-slate) has-anim fade delay-100">{services[1].text}</p>
+        </div>
+      </div>
+      <div class="platform-panel">
+        <div class="platform-panel-bar">
+          <span class="spec-label">Sample data · index by period</span>
+          <span class="spec-label spec-num">06 × 24</span>
+        </div>
+        <div class="p-6 sm:p-10">
+          <PixelMatrix rows={rows} columns={columns} caption="Sample data: index by period for six organizations" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Serve: three audience panels, and the credibility line -->
+  <section class="platform-canvas py-section">
+    <div class="container">
+      <p class="spec-label is-signal mb-12 has-anim fade"><span class="spec-num">05</span> · {labels.whoWeServe}</p>
+      <ul class="grid gap-4 md:grid-cols-3">
+        {audiences.map((a, i) => (
+          <li class:list={['platform-panel p-8 md:p-10 has-anim fade', animDelay[i]]}>
+            <span class="spec-label spec-num text-(--spec-slate)">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-16 text-h3">{a.title}</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-(--spec-slate)">{a.text}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="row mt-20 items-end">
+        <p class="lg:col-8 text-statement font-medium has-anim fade">{credibility}</p>
+        <div class="lg:col-4 max-lg:mt-8 flex lg:justify-end has-anim fade delay-100">
+          <Button href="#" label={labels.contact} variant="primary" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-(--spec-rule) bg-(--spec-white) pt-14 pb-24">
+    <div class="container flex flex-wrap items-end justify-between gap-10">
+      <div>
+        <AstroImage src="/images/brands/ccrdi.png" alt="Consumer Choice Research, Data & Insights" height={96} class="h-14 w-auto" />
+        <p class="mt-6 max-w-sm text-[14px] text-(--spec-slate)">{oneLiner}</p>
+      </div>
+      <ul class="flex flex-wrap gap-x-8 gap-y-3">
+        {labels.nav.map((n) => <li><a href="#" class="spec-label">{n}</a></li>)}
+      </ul>
+    </div>
+  </footer>
+</SpecLayout>
+
+<style is:global>
+  [data-direction='platform'] {
+    --text-h2: clamp(1.875rem, 1.4rem + 1.5vw, 2.75rem);
+  }
+  [data-direction='platform'] :is(h1, h2, h3) {
+    letter-spacing: -0.03em;
+  }
+  .platform-display {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 1.6rem + 4.2vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+  /* the canvas: a fine grid, fading out toward the edges */
+  .platform-canvas {
+    background-color: var(--spec-canvas);
+    background-image:
+      linear-gradient(var(--spec-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--spec-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+  .platform-canvas > .container {
+    position: relative;
+  }
+  /* a panel: white, 1px border, corner ticks */
+  .platform-panel {
+    position: relative;
+    background: var(--spec-white);
+    border: 1px solid var(--spec-rule);
+    border-radius: var(--radius-card);
+  }
+  .platform-panel::before,
+  .platform-panel::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border: 0 solid var(--spec-ink);
+    pointer-events: none;
+  }
+  .platform-panel::before {
+    top: -5px;
+    left: -5px;
+    border-width: 1px 0 0 1px;
+  }
+  .platform-panel::after {
+    bottom: -5px;
+    right: -5px;
+    border-width: 0 1px 1px 0;
+  }
+  .platform-panel-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--spec-rule);
+    color: var(--spec-slate);
+  }
+  .platform-photo img {
+    filter: grayscale(1) contrast(1.1) brightness(1.05);
+  }
+  .platform-readout {
+    padding: 16px;
+  }
+  /* FeatureGrid as a bordered grid of cells; the empty sixth cell carries the pixel motif */
+  .platform-cells {
+    gap: 0 !important;
+    border-top: 1px solid var(--spec-rule);
+    border-left: 1px solid var(--spec-rule);
+  }
+  .platform-cells > li,
+  .platform-cells::after {
+    padding: 2rem;
+    border-right: 1px solid var(--spec-rule);
+    border-bottom: 1px solid var(--spec-rule);
+  }
+  .platform-cells::after {
+    content: '';
+    background-image: radial-gradient(var(--spec-rule) 1.5px, transparent 1.5px);
+    background-size: 14px 14px;
+    background-position: 2rem 2rem;
+    background-origin: content-box;
+  }
+  @media (max-width: 1023px) {
+    .platform-cells::after {
+      display: none;
+    }
+  }
+  .platform-cells .feature-rule {
+    background: var(--spec-red);
+    scale: 0 1;
+    height: 2px;
+  }
+  .platform-cells .feature:is(:hover, :focus-within) .feature-rule {
+    scale: 1 1;
+  }
+  .platform-cells .feature-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--spec-ink);
+  }
+  .platform-cells .tabular-nums {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--spec-slate);
+  }
+  .platform-cells .feature > div:last-child {
+    margin-top: 4rem;
+  }
+  .platform-cells p {
+    font-size: 15px;
+    color: var(--spec-slate);
+  }
+  /* StatRow as instrument panels */
+  .platform-stats .stat-tile {
+    background: var(--spec-white);
+    border: 1px solid var(--spec-rule);
+    border-radius: var(--radius-card);
+  }
+  .platform-stats .stat-tile > span:first-child,
+  .platform-stats dt {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .platform-stats dd {
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+  }
+  .platform-stats .stat-rule {
+    background: var(--spec-red);
+    height: 2px;
+    width: 40px;
+    left: 2.5rem;
+    bottom: 2.25rem;
+  }
+  .platform-stats .stat-tile {
+    padding-bottom: 4rem;
+  }
+</style>
