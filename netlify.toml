@@ -1,0 +1,17 @@
+# Netlify (CCRDI-Concepts): the preview build, the site plus the brand design directions
+# (rounds 1 to 3), with the root sent to the directions overview while the client chooses.
+# Once a direction is chosen and the site is built, the build command goes back to
+# `npm run build` and the redirect below is removed.
+[build]
+  command = "npm run build:preview"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# the site's homepage still has the CCC copy (phases 4 and 5): show the directions instead
+[[redirects]]
+  from = "/"
+  to = "/component-lab/brand/"
+  status = 302
+  force = true

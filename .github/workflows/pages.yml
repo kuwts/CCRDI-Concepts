@@ -1,12 +1,11 @@
 # The preview build (the site plus the brand design directions, rounds 1 to 3) on GitHub Pages,
 # for review: https://<owner>.github.io/<repo>/component-lab/brand/
-# Runs on every push to main, or by hand from the Actions tab. Pages must be set to
-# "GitHub Actions" once (Settings → Pages → Build and deployment → Source).
+# The preview is hosted on Netlify (netlify.toml); this is a by-hand alternative, run from the
+# Actions tab. Pages must be set to "GitHub Actions" once (Settings → Pages → Build and
+# deployment → Source).
 name: Deploy preview to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

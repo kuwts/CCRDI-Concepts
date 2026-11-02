@@ -103,8 +103,9 @@ for reference only: they are not sources of copy or rules for this site.
 - Brand design directions (dev only): /component-lab/brand (round 3),
   /component-lab/brand/round-2 and /component-lab/brand/round-1. `npm run build:preview` builds
   the site with them included, for a preview deploy; `npm run build` (production) never does.
-  Every push to main deploys the preview build to GitHub Pages
-  (https://kuwts.github.io/CCRDI-Concepts/component-lab/brand/; .github/workflows/pages.yml and
+  Netlify builds every push to main with the preview build and sends / to the directions
+  overview (netlify.toml); before launch, the build command goes back to `npm run build` and that
+  redirect is removed. A GitHub Pages alternative runs by hand (.github/workflows/pages.yml and
   scripts/deploy/pages-base.mjs, which prefixes the site's root paths with /CCRDI-Concepts and
   marks every page noindex).
 
@@ -119,6 +120,8 @@ for reference only: they are not sources of copy or rules for this site.
   both return nothing, and src/assets/images/placeholders/ and src/assets/videos/placeholders/
   are no longer used.
 - The official logo, favicon set and share image replace the temporary ones.
+- Netlify builds production, not the preview: netlify.toml's build command is `npm run build`
+  and its redirect from / to the design directions is removed.
 - French: translated, reviewed and approved by a professional translator or a native French
   speaker (/brief/gaps.md), switched on, and `node scripts/qa/i18n.cjs` and
   `node scripts/qa/frtypo.cjs .` report no problems; or the site launches in English only by
