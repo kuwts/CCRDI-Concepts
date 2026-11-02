@@ -100,9 +100,13 @@ for reference only: they are not sources of copy or rules for this site.
   schema changes in that file, so new fields can silently disappear in dev while the build
   is fine. Confirm against the dev server, not only `npm run build`.
 - Changes that should go back into the base theme are recorded in BACKPORT.md.
-- Brand design directions (dev only): /component-lab/brand (round 3) and
-  /component-lab/brand/round-2. `npm run build:preview` builds the site with them included, for a
-  preview deploy; `npm run build` (production) never does.
+- Brand design directions (dev only): /component-lab/brand (round 3),
+  /component-lab/brand/round-2 and /component-lab/brand/round-1. `npm run build:preview` builds
+  the site with them included, for a preview deploy; `npm run build` (production) never does.
+  Every push to main deploys the preview build to GitHub Pages
+  (https://kuwts.github.io/CCRDI-Concepts/component-lab/brand/; .github/workflows/pages.yml and
+  scripts/deploy/pages-base.mjs, which prefixes the site's root paths with /CCRDI-Concepts and
+  marks every page noindex).
 
 ## Pre-launch
 - The CCRDI domain is set. `baseURL` in site.config.json is the placeholder

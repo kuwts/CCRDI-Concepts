@@ -15,8 +15,6 @@ import routes from './src/i18n/routes.json' with { type: 'json' };
 // production build never contains them (brief/cleanup-list.md). [pattern, entrypoint]
 const devOnlyPages = [
   ['/component-lab', './src/dev-pages/component-lab.astro'],
-  ['/component-lab/brand/round-1', './src/dev-pages/brand/round1/index.astro'],
-  ['/component-lab/brand/round-1/[variant]', './src/dev-pages/brand/round1/[variant].astro'],
   ['/style-guide', './src/dev-pages/style-guide.astro'],
   ['/blog', './src/dev-pages/blog/index.astro'],
   ['/blog/[slug]', './src/dev-pages/blog/[slug].astro'],
@@ -29,10 +27,11 @@ const devOnlyPages = [
   ['/team', './src/dev-pages/team.astro'],
   ['/services', './src/dev-pages/services.astro'],
 ];
-// The brand design directions for the client presentation (round 3, with round 2 kept as
-// presented). Routed by `astro dev`, and built only by the preview build
-// (`npm run build:preview`, BRAND_PREVIEW=1), never by `npm run build`; noindex and out of the
-// sitemap either way. [pattern, entrypoint]
+// The brand design directions for the client presentation (round 3, with rounds 1 and 2 kept
+// as presented). Routed by `astro dev`, and built only by the preview build
+// (`npm run build:preview`, BRAND_PREVIEW=1; deployed to GitHub Pages by
+// .github/workflows/pages.yml), never by `npm run build`; noindex and out of the sitemap either
+// way. [pattern, entrypoint]
 const brandPreview = process.env.BRAND_PREVIEW === '1';
 const brandPages = [
   ['/component-lab/brand', './src/dev-pages/brand/round3/index.astro'],
@@ -43,6 +42,8 @@ const brandPages = [
   ['/component-lab/brand/round-2/report', './src/dev-pages/brand/round2/report.astro'],
   ['/component-lab/brand/round-2/platform', './src/dev-pages/brand/round2/platform.astro'],
   ['/component-lab/brand/round-2/signal', './src/dev-pages/brand/round2/signal.astro'],
+  ['/component-lab/brand/round-1', './src/dev-pages/brand/round1/index.astro'],
+  ['/component-lab/brand/round-1/[variant]', './src/dev-pages/brand/round1/[variant].astro'],
 ];
 /** @returns {import('astro').AstroIntegration} */
 const devPages = () => ({
